@@ -4,12 +4,13 @@ class Subcontractor < Third
   has_permissions :as_business_object
   has_contacts # please dont put in third.rb because has_contacts defines some routes and needs to know this class name
   has_address :address
+  has_number  :phone
+  has_number  :fax
   
   has_one :iban, :as => :has_iban
   
   belongs_to :activity_sector_reference
   
-  # for pagination : number of instances by index page
   SUBCONTRACTORS_PER_PAGE = 15
   
   named_scope :actives, :conditions => { :activated => true }
@@ -21,7 +22,13 @@ class Subcontractor < Third
   
   after_save :save_iban
   
+  has_search_index :only_attributes    => [:name, :siret_number],
+                   :only_relationships => [:legal_form, :iban, :contacts, :activity_sector_reference],
+                   :main_model         => true
+  
   @@form_labels[:activity_sector_reference] = "Code NAF :"
+  @@form_labels[:phone]                     = "Tél :"
+  @@form_labels[:fax]                       = "Fax :"
   
   def iban_attributes=(iban_attributes)
     if iban_attributes[:id].blank?

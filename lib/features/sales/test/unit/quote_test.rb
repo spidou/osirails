@@ -6,7 +6,7 @@ class QuoteTest < ActiveSupport::TestCase
   #TODO test has_permissions :as_business_object
   #TODO test has_address     :bill_to_address
   #TODO test has_address     :ship_to_address
-  #TODO test has_contact     :accept_from => :order_contacts
+  #TODO test has_contact     :accept_from => :order_and_customer_contacts
   
   should_belong_to :creator, :order, :send_quote_method, :order_form_type
   
@@ -15,9 +15,7 @@ class QuoteTest < ActiveSupport::TestCase
   
   should_have_attached_file :order_form
   
-  #TODO test validates_contact_presence
-  
-  should_validate_presence_of :order, :creator, :with_foreign_key => :default
+  should_validate_presence_of :order, :creator, :quote_contact, :with_foreign_key => :default
   
   should_validate_numericality_of :prizegiving, :carriage_costs, :discount, :deposit, :validity_delay
   
@@ -118,7 +116,7 @@ class QuoteTest < ActiveSupport::TestCase
         
         @quote = @order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
         @quote.creator = users(:sales_user)
-        @quote.contacts << contacts(:pierre_paul_jacques)
+        @quote.quote_contact_id = @order.all_contacts.first.id
         
         if y > 0
           @order.end_products.each_with_index do |end_product, index|
@@ -143,7 +141,7 @@ class QuoteTest < ActiveSupport::TestCase
         @order = @quote = nil
       end
       
-      context "in which we call 'quote_item_attributes=' with the correct parameters for #{z} quote_items" do
+      context "in which we call 'product_quote_item_attributes=' with the correct parameters for #{z} quote_items" do
         setup do
           @params = []
           z.times do |time|
@@ -170,7 +168,7 @@ class QuoteTest < ActiveSupport::TestCase
                          :should_destroy        => should_destroy }
           end
           flunk "@params should have #{z} elements, but has <#{@params.size}>" unless @params.size == z
-          flunk "quote_item_attributes= should success" unless @quote.quote_item_attributes=(@params)
+          flunk "product_quote_item_attributes= should success" unless @quote.product_quote_item_attributes=(@params)
           
           @quote.valid?
         end
@@ -281,7 +279,7 @@ class QuoteTest < ActiveSupport::TestCase
     end
   end
   
-  context "generate a reference" do
+  context "Thanks to 'has_reference', a quote" do
     setup do
       @reference_owner       = create_default_quote
       @other_reference_owner = create_default_quote
@@ -290,4 +288,16 @@ class QuoteTest < ActiveSupport::TestCase
     include HasReferenceTest
   end
   
+  context "Thanks to 'has_contact', a quote" do
+    setup do
+      @contact_owner = create_default_quote
+      @contact_keys = [ :quote_contact ]
+    end
+    
+    subject { @contact_owner }
+          
+    should_belong_to :quote_contact
+    
+    include HasContactTest
+  end
 end

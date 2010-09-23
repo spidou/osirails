@@ -20,11 +20,11 @@
 <% end %>
 
 <div class='presentation_medium'>
+  <h2>D&eacute;tails de l&apos;&eacute;v&egrave;nement</h2>
   
   <% form_for [tool, tool_event] ,:html => {:multipart => true} do |f| %>
     <%= f.error_messages %>
     
-    <h2>D&eacute;tails de l&apos;&eacute;v&egrave;nement</h2>
     <p>
       <%= f.label :name %>
       <%= f.form_or_view f.text_field(:name), :name%>

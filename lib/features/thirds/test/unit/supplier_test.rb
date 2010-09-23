@@ -1,24 +1,23 @@
 require File.dirname(__FILE__) + '/../thirds_test'
 
 class SupplierTest < ActiveSupport::TestCase
-  def setup
-    @supplier = Supplier.first
-  end
+  #TODO has_permissions :as_business_object
   
-  def test_uniqness_of_name
-    assert_no_difference 'Supplier.count' do
-      supplier = Supplier.create(:name => @supplier.name)
-      assert_not_nil supplier.errors.on(:name),
-        "A Supplier should have an uniq name"
-    end
-  end
+  should_have_one :iban
   
-  def test_uniqness_of_siret_number
-    assert_no_difference 'Supplier.count' do
-      supplier = Supplier.create(:siret_number => @supplier.siret_number)
-      assert_not_nil supplier.errors.on(:siret_number),
-        "A Supplier should have an uniq siret number"
+  should_belong_to :activity_sector_reference
+  
+  should_validate_presence_of :activity_sector_reference, :with_foreign_key => :default
+  
+  should_validate_uniqueness_of :name
+  should_validate_uniqueness_of :siret_number, :scoped_to => :type
+  
+  context "Thanks to 'has_contacts', a supplier" do
+    setup do
+      @contacts_owner = Supplier.new
     end
+    
+    include HasContactsTest
   end
   
   context "A supplier" do

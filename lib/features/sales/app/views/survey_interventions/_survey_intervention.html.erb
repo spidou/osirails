@@ -1,5 +1,6 @@
 <%
 intervention = survey_intervention
+contacts_owners = intervention.survey_step.order.customer.head_office_and_establishments
 id_attr = "id=\"intervention_#{intervention.id}\"" unless intervention.new_record?
 style   = "style=\"display:none\"" if intervention.should_destroy?
 %>
@@ -20,8 +21,11 @@ style   = "style=\"display:none\"" if intervention.should_destroy?
         <%= link_to(intervention.internal_actor.fullname, intervention.internal_actor) %>
       </p>
       <p>
-        <%= form.label :contact_ids %>
-        <%= display_contact(intervention.contact, :contacts_owner => intervention, :force_show_view => true) if intervention.contact %>
+        <%= form.label :survey_intervention_contact_id %>
+        <%= display_contact_picker(intervention, intervention.order_and_customer_contacts, :form => form,
+                                                                                           :contact_key => 'survey_intervention_contact',
+                                                                                           :contacts_owners => contacts_owners,
+                                                                                           :force_show_view => true)%>
       </p>
       <p>
         <%= form.label :comment %>

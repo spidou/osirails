@@ -1,10 +1,10 @@
 class CreateContacts < ActiveRecord::Migration
   def self.up
     create_table :contacts do |t|
-      t.references :contact_type
-      t.string  :first_name, :last_name, :job, :email, :gender
-      t.string  :avatar_file_name, :avatar_content_type
+      t.references :has_contact, :polymorphic => true
+      t.string  :first_name, :last_name, :job, :email, :gender, :avatar_file_name, :avatar_content_type
       t.integer :avatar_file_size
+      t.boolean :hidden
       
       t.timestamps
     end

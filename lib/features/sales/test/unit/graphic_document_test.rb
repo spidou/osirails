@@ -463,7 +463,7 @@ class GraphicDocumentTest < ActiveSupport::TestCase
     end
   end
   
-  context "generate a reference" do
+  context "Thanks to 'has_reference', a graphic_document" do
     setup do
       @reference_owner       = create_default_graphic_document
       @other_reference_owner = create_default_graphic_document

@@ -2,7 +2,6 @@ class Factor < ActiveRecord::Base
   has_permissions :as_business_object
   
   has_many :customers
-  has_many :invoices
   
   validates_presence_of   :name, :fullname
   validates_uniqueness_of :name

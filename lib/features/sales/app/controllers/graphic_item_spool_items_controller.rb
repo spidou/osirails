@@ -1,12 +1,14 @@
 class GraphicItemSpoolItemsController < ApplicationController
+  acts_as_step_controller :sham => true
+  
   helper :graphic_items
   
-  # GET /orders/[:order_id]/graphic_item_spool_items
+  # GET /orders/:order_id/graphic_item_spool_items
   def index
     @spool_items = GraphicItemSpoolItem.spool_items_by_user(current_user)
   end
   
-  # GET /orders/[:order_id]/graphic_item_spool_items/empty_spool
+  # GET /orders/:order_id/graphic_item_spool_items/empty_spool
   def empty_spool
     GraphicItem.find(:all).each do |gi|
       if gi.is_in_user_spool("image",current_user)
@@ -23,7 +25,7 @@ class GraphicItemSpoolItemsController < ApplicationController
     redirect_to :action => :index unless request.xhr?
   end
   
-  # GET /orders/[:order_id]/graphic_item_spool_items/[:graphic_item_spool_item_id]/remove_from_spool
+  # GET /orders/:order_id/graphic_item_spool_items/:graphic_item_spool_item_id/remove_from_spool
   def remove_from_spool
     graphic_item = GraphicItem.find(params[:graphic_item_spool_item_id])
     unless graphic_item.remove_from_graphic_item_spool(params[:file_type],current_user)

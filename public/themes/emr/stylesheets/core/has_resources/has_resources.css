@@ -1,20 +1,20 @@
 div.resources {
-  padding: 0 10px 6px 10px;
+  //padding: 0 10px 6px 10px;
   text-align: left;
 }
 
 div.resource_group {
-  display: inline-block;
+  display: block;
   -moz-border-radius: 0 0 10px 10px;
   border: 1px solid #7E98CB;
   padding: 4px;
-  margin: 5px;
+  margin: 0px 0px 8px 0px;
   text-align: left;
 }
 
 div.resource_group.new_records {
   display: block;
-  margin: 0 15px 0 15px;
+  //margin: 0 15px 0 15px;
 }
 
 div.resource_group h1 {
@@ -57,7 +57,7 @@ div.resource .details {
   display: inline-block;
   text-align: left;
   vertical-align: top;
-  background-color: #eaeaea;
+//  background-color: #eaeaea;
   margin: 3px 3px 3px 0;
   padding: 0 5px 4px 5px;
   min-width: 300px;
@@ -67,7 +67,7 @@ div.resource .details {
 
 div.resource .details h1 {
   background:inherit;
-	color:inherit;
+  color:inherit;
 	border:0;
 	margin:0;
 	padding:0;
@@ -76,6 +76,11 @@ div.resource .details h1 {
 	font-variant: inherit;
   text-align:left; 
   text-indent: 0;
+}
+
+div.resource .details em {
+  color: gray;
+  font-style: italic; 
 }
 
 div.resource div.preview {

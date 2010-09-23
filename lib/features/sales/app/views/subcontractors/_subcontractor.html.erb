@@ -1,10 +1,9 @@
 <div class="presentation_medium">
   <h2>Informations g&eacute;n&eacute;rales</h2>
   <% form_for @subcontractor do |form| %>
-    <%= render :partial => 'thirds/third', :object => @subcontractor, :locals => {:form => form} %>
+    <%= form.error_messages %>
     
-    <h3>Adresse</h3>
-    <%= render :partial => 'addresses/address_form', :object => @subcontractor.address || @subcontractor.build_address , :locals => { :address_owner => @subcontractor } %>
+    <%= render :partial => 'thirds/third', :object => @subcontractor, :locals => {:form => form} %>
     
     <h2>Contacts</h2>
     <%= display_contacts_list(@subcontractor) %>

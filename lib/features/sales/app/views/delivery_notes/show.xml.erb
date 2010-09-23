@@ -27,7 +27,7 @@
         <LastName><%= @delivery_note.order.commercial.last_name %></LastName>
         <FirstName><%= @delivery_note.order.commercial.first_name %></FirstName>
         <Email><%= @delivery_note.order.commercial.email %></Email>
-        <Phone><%= "#{@delivery_note.order.commercial.numbers.first.indicative.indicative} #{@delivery_note.order.commercial.numbers.first.number}" %></Phone>
+        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @delivery_note.order.commercial.numbers.first %></Phone>
       </Representative>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
     </Supplier>  
@@ -44,9 +44,9 @@
       <Fax/>
       <Representative>
         <Function/>
-        <LastName><%= @delivery_note.contact.last_name %></LastName>
-        <FirstName><%= @delivery_note.contact.first_name %></FirstName>
-        <Email><%= @delivery_note.contact.email %></Email>
+        <LastName><%= @delivery_note.delivery_note_contact.last_name %></LastName>
+        <FirstName><%= @delivery_note.delivery_note_contact.first_name %></FirstName>
+        <Email><%= @delivery_note.delivery_note_contact.email %></Email>
         <Phone/>
         <Fax/>      
       </Representative>

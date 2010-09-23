@@ -1,5 +1,4 @@
 <% content_for :header do %>
-  <%= javascript_include_tag 'sales/round_number' %>
   <%= javascript_include_tag 'sales/delivery_notes' %>
   <%= javascript_include_tag 'sales/sales' %>
   <%= stylesheet_link_tag_with_theme_support 'sales/delivery_note' %>
@@ -28,7 +27,7 @@ delivery_note_errors  = { :delivery_note_header         => delivery_note.errors.
   
   <% action = delivery_note.new_record? ? :create : :update %>
   <% method = delivery_note.new_record? ? :put : :post %>
-  <% form_for delivery_note, :url => { :controller => 'delivery_notes', :action => action, :order_id => @order.id }, :method => method do |form| %>
+  <% form_for delivery_note, :url => { :controller => 'delivery_notes', :action => action, :order_id => @order.id }, :method => method, :html => { :multipart => true } do |form| %>
   
     <h2 class="delivery_note_header section_nav"><%= delivery_note_headers[:delivery_note_header] %></h2>
     <div class="delivery_note_header section_nav selected">

@@ -6,7 +6,7 @@ class Number < ActiveRecord::Base
   validates_presence_of :has_number_type, :indicative_id
   validates_presence_of :indicative, :if => :indicative_id
   
-  validates_length_of :number, :is => 9, :unless => :should_destroy?
+  validates_length_of :number, :minimum => 7, :unless => :should_destroy? #TODO validate format of number according to the choosen indicative
   
   attr_accessor :should_destroy
   
@@ -18,12 +18,21 @@ class Number < ActiveRecord::Base
                     :additional_attributes => {:formatted => :string},
                     :only_relationships => [:number_type, :indicative]
   
-  def formatted
-    return nil unless number
-    # OPTIMIZE see the helper method in NumberHelper called 'to_phone' to format the phone number
-    "#{self.number[0..2]} #{self.number[3..4]} #{self.number[5..6]} #{self.number[7..8]}"
+  alias_method :formatted, :number
+  #DEPRECATED formatted is deprecated, don't use it #TODO inform deprecation when using it
+  
+  # display formatted number when we want to display it after the indicative (with "(0)")
+  # OPTIMIZE see the helper method in NumberHelper called 'to_phone' to format the phone number
+  def formatted_with_indicative
+    return unless number
+    if number.starts_with?("0")
+      "(#{number.chars.first.to_s})#{number[1..number.size]}"
+    else
+      number
+    end
   end
   
+  # remove spaces
   def number=(number)
     super( number.is_a?(String) ? number.gsub(" ", "") : number )
   end

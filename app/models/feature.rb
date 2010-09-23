@@ -1,6 +1,4 @@
 class Feature < ActiveRecord::Base
-  has_permissions :as_business_object
-  
   serialize :dependencies
   serialize :conflicts
   
@@ -43,37 +41,48 @@ class Feature < ActiveRecord::Base
   attr_reader :uninstall_log
 
   def installed?
-    self.installed
+    installed
   end
 
   def activated?
-    self.activated
+    activated
   end
 
   def has_dependencies?
-    self.dependencies != nil and self.dependencies.size > 0 ? true : false
+    dependencies and dependencies.any?
+  end
+  
+  def all_dependencies
+    return [] unless has_dependencies?
+    
+    @all_dependencies = dependencies
+    dependencies.each do |dependence|
+      dep_feature = Feature.find_by_name(dependence[:name])
+      dep_feature.all_dependencies.reverse.each do |d|
+        @all_dependencies.unshift(d) unless @all_dependencies.include?(d)
+      end
+    end
+    @all_dependencies
   end
 
   def child_dependencies
-    dependencies = []
-    Feature.find(:all).each do |feature|
-      if feature.has_dependencies?
-        feature.dependencies.each do |dependence|
-          if dependence[:name] == self.name and dependence[:version].to_s.include?(self.version)
-            dependencies << {:name => feature.name, :version => feature.version}
-          end
+    @child_dependencies = []
+    Feature.all.select(&:has_dependencies?).each do |feature|
+      feature.all_dependencies.each do |dependence|
+        if dependence[:name] == name and dependence[:version].to_s.include?(version)
+          @child_dependencies << {:name => feature.name, :version => feature.version}
         end
       end
     end
-    dependencies
+    @child_dependencies
   end
 
   def has_child_dependencies?
-    child_dependencies.size > 0
+    child_dependencies.any?
   end
 
   def has_conflicts?
-    self.conflicts != nil and self.conflicts.size > 0 ? true : false
+    conflicts and conflicts.any?
   end
 
   def able_to_install?
@@ -84,7 +93,7 @@ class Feature < ActiveRecord::Base
     @able_to_install_conflicts = []
     if has_conflicts?
       conflicts.each do |conflicts|
-        if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", conflicts[:name], conflicts[:version]]).size > 0
+        if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", conflicts[:name], conflicts[:version]]).any?
           feature = Feature.find_by_name(conflicts[:name])
           features_in_conflicts = { :name => feature.name, :version => feature.version }
           @able_to_install_conflicts << features_in_conflicts
@@ -96,7 +105,7 @@ class Feature < ActiveRecord::Base
     Feature.find(:all, :conditions => ["installed = 1"]).each do |feature|
       if feature.has_conflicts?
           feature.conflicts.each do |conflicts|
-            if conflicts[:name] == self.name and conflicts[:version].include?(self.version)
+            if conflicts[:name] == name and conflicts[:version].include?(version)
               @able_to_install_conflicts <<  conflicts
             end
           end
@@ -106,71 +115,68 @@ class Feature < ActiveRecord::Base
     # Test if the current feature's dependencies are installed
     @able_to_install_dependencies = []
     if has_dependencies?
-      dependencies.each do |dependence|
-        if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", dependence[:name], dependence[:version]]).size == 0
+      all_dependencies.each do |dependence|
+        if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", dependence[:name], dependence[:version]]).empty?
           @able_to_install_dependencies << dependence
         end     
       end
     end
     @able_to_install_conflicts = @able_to_install_conflicts.uniq
     @able_to_install_dependencies = @able_to_install_dependencies.uniq
-    @able_to_install_dependencies.size > 0 || @able_to_install_conflicts.size > 0 ? false : true
+    @able_to_install_dependencies.any? || @able_to_install_conflicts.any? ? false : true
   end
 
   def able_to_uninstall?
     @able_to_uninstall_children = []
-    if !self.activated? and self.installed? and !self.child_dependencies.nil?
-      self.child_dependencies.each  do |child|
-        if Feature.find(:all, :conditions =>["name = ? and version in (?) and (activated = 1 or installed = 1)", child[:name], child[:version]]).size > 0
-          feature = Feature.find_by_name_and_version(child[:name], child[:version])
-          deactivated_feature = {:name => feature.name, :version => feature.version}
-          @able_to_uninstall_children << deactivated_feature
-        end
+    return false if !installed or activated?
+    
+    child_dependencies.each do |child|
+      if feature = Feature.first(:conditions => ["name = ? and version in (?) and (activated = 1 or installed = 1)", child[:name], child[:version]])
+        deactivated_feature = {:name => feature.name, :version => feature.version}
+        @able_to_uninstall_children << deactivated_feature
       end
-    else
-      return false
     end
+    
     @able_to_uninstall_children = @able_to_uninstall_children.uniq
-    @able_to_uninstall_children.size > 0 ? false : true
+    @able_to_uninstall_children.empty?
   end
 
   def able_to_activate?
     @activate_dependencies = []
-    return false if !self.installed? or self.activated? 
-    unless self.dependencies.nil?
-      self.dependencies.each do |dependence|
-        if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 0", dependence[:name], dependence[:version]]).size > 0
+    return false if !installed? or activated? 
+    if has_dependencies?
+      all_dependencies.each do |dependence|
+        if Feature.all(:conditions => ["name = ? and version in (?) and activated = 0", dependence[:name], dependence[:version]]).any?
           @activate_dependencies << dependence
         end
       end
     end
     @activate_dependencies = @activate_dependencies.uniq
-    @activate_dependencies.size > 0 ? false : true
+    @activate_dependencies.empty?
   end
   
   def able_to_deactivate?
     @deactivate_children = []
-    return false if !self.activated?
-    unless self.child_dependencies.nil?
-      self.child_dependencies.each do |child|
-        if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 1", child[:name], child[:version]]).size > 0
-          feature = Feature.find_by_name_and_version(child[:name], child[:version])
-          deactivated_feature = {:name => feature.name, :version => feature.version}
-          @deactivate_children << deactivated_feature
-        end
+    return false if !activated?
+    
+    child_dependencies.each do |child|
+      if feature = Feature.first(:conditions => ["name = ? and version in (?) and activated = 1", child[:name], child[:version]])
+        deactivated_feature = {:name => feature.name, :version => feature.version}
+        @deactivate_children << deactivated_feature
       end
     end
+    
     @deactivate_children = @deactivate_children.uniq
-    @deactivate_children.size > 0 ? false : true
+    @deactivate_children.empty?
   end
 
   # Method to verify if the feature belongs to the features that cannot be deactivated 
   def kernel_feature?
-    KERNEL_FEATURES.include?(self.name)
+    KERNEL_FEATURES.include?(name)
   end
   
   def activate_by_default?
-    (KERNEL_FEATURES + FEATURES_TO_ACTIVATE_BY_DEFAULT).uniq.include?(self.name)
+    (KERNEL_FEATURES + FEATURES_TO_ACTIVATE_BY_DEFAULT).uniq.include?(name)
   end
   
   def enable
@@ -214,11 +220,11 @@ class Feature < ActiveRecord::Base
 
   def install
     @install_log = []
-    return false unless self.able_to_install?
-    if File.exist?(File.join(DIR_BASE_FEATURES, self.name, 'install.rb'))
-      require File.join(DIR_BASE_FEATURES, self.name, 'install.rb')
+    return false unless able_to_install?
+    if File.exist?(File.join(DIR_BASE_FEATURES, name, 'install.rb'))
+      require File.join(DIR_BASE_FEATURES, name, 'install.rb')
     else
-      require File.join(DIR_VENDOR_FEATURES, self.name, 'install.rb')
+      require File.join(DIR_VENDOR_FEATURES, name, 'install.rb')
     end
     if feature_install
       self.installed = true
@@ -233,11 +239,11 @@ class Feature < ActiveRecord::Base
 
   def uninstall
     @uninstall_log = []
-    return false unless self.able_to_uninstall?
-    if File.exist?(File.join(DIR_BASE_FEATURES, self.name, 'uninstall.rb'))
-      require File.join(DIR_BASE_FEATURES, self.name, 'uninstall.rb')
+    return false unless able_to_uninstall?
+    if File.exist?(File.join(DIR_BASE_FEATURES, name, 'uninstall.rb'))
+      require File.join(DIR_BASE_FEATURES, name, 'uninstall.rb')
     else
-      require File.join(DIR_VENDOR_FEATURES, self.name, 'uninstall.rb')
+      require File.join(DIR_VENDOR_FEATURES, name, 'uninstall.rb')
     end
     if feature_uninstall
       self.installed = false
@@ -258,7 +264,7 @@ class Feature < ActiveRecord::Base
         begin
           yaml_file = File.open(File.join('lib', 'features', dir, 'config.yml'))
           feature_yaml = YAML.load(yaml_file)
-          return true if feature_yaml['name'] == self.name
+          return true if feature_yaml['name'] == name
         rescue Exception => exc
           puts exc
         end
@@ -333,8 +339,8 @@ class Feature < ActiveRecord::Base
 
   # Method to remove a feature
   def remove
-    return false unless self.able_to_remove?
-    FileManager.delete_file(File.join('vendor', 'features', self.name)) if self.name.grep(/\//).empty? and self.name.grep(/\.\./).empty?
+    return false unless able_to_remove?
+    FileManager.delete_file(File.join('vendor', 'features', name)) if name.grep(/\//).empty? and name.grep(/\.\./).empty?
     self.destroy
   end
 

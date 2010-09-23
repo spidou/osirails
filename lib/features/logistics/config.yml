@@ -1,9 +1,7 @@
-name: "logistics"
-title: "Gestion de la logistique"
+name: logistics
+title: Gestion de la logistique
 version: 0.1
 dependencies:
-  admin:
-    - 0.1
   thirds:
     - 0.1
   rh:

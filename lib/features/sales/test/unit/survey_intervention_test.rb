@@ -68,4 +68,25 @@ class SurveyInterventionTest < ActiveSupport::TestCase
       end
     end
   end
+  
+  context "Thanks to 'has_contact', a survey_intervention" do
+    setup do
+      @contact_owner = create_default_survey_intervention
+      @contact_keys = [ :survey_intervention_contact ]
+    end
+    
+    subject { @contact_owner }
+          
+    should_belong_to :survey_intervention_contact
+    
+    include HasContactTest
+  end
+  
+  private
+    def create_default_survey_intervention
+      s = SurveyIntervention.new( :internal_actor_id  => employees(:john_doe).id,
+                                  :start_date         => Date.today)
+      s.save!
+      return s
+    end
 end

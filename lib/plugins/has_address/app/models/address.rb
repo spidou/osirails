@@ -17,6 +17,6 @@ class Address < ActiveRecord::Base
                    :additional_attributes => {:formatted => :string }
   
   def formatted
-    [street_name, zip_code, city_name, country_name].join(" ")
+    @formatted ||= [street_name, zip_code, city_name, country_name].join(" ")
   end
 end

@@ -5,27 +5,23 @@ module HasReferenceTest
   # this module should be implemented into the calling classe's test suite
   #
   # ==== Example
-  # into "quote_test.rb"
+  #  context "Thanks to 'has_reference', an order" do
+  #    setup do
+  #      @reference_owner       = Order.first
+  #      @other_reference_owner = Order.last
+  #    end
+  #    
+  #    include HasReferenceTest
+  #  end
   #
-  #   context "generate a reference" do
-  #     setup do
-  #       @reference_owner       = create_default_quote  # the method 'create_default_quote' return a valid instance of Quote 
-  #       @other_reference_owner = create_default_quote
-  #     end
-  #     
-  #     include HasReferenceTest
-  #   end
-  #
-  #  
-  #  @reference_owner and @other_reference_owner should: 
-  #  - be the only one variable depending on the calling class
-  #  - retrun a valid instance of the calling class
+  #  @reference_owner and @other_reference_owner should be valid instances of a
+  #   same class which call 'has_reference'
   #
   class << self
     def included base
       base.class_eval do
         
-        context "for @reference_owner" do # this is just for declare specific setup and teardown
+        context "which generate a reference" do
           setup do
             flunk "@reference_owner and @other_reference_owner should exist" unless @reference_owner and @other_reference_owner
           end
@@ -33,9 +29,6 @@ module HasReferenceTest
           teardown do
             unset_pattern
           end
-          
-          #TODO find another way to test this plugin, because the method set_pattern change de configuration for all the following tests, and this is very embarassing
-          # the method +reset_pattern+ should restore the original pattern, but it doesn't work. we have to find a way to restore the original value of the configuration before uncomment all these tests
           
           context "with pattern containing only strftime symbols" do
             

@@ -20,13 +20,18 @@ module ProductBase
     end
     
     def total
-      return 0.0 if unit_price_with_prizegiving.zero? or quantity.nil? or quantity.zero?
+      return 0.0 if unit_price.nil? or quantity.nil?
+      unit_price * quantity
+    end
+    
+    def total_with_prizegiving
+      return 0.0 if quantity.nil?
       unit_price_with_prizegiving * quantity
     end
     
     def total_with_taxes
-      return total if vat.nil? or vat.zero?
-      total * ( 1 + ( vat / 100 ) ) # TODO test that modification
+      return total_with_prizegiving if vat.nil? or vat.zero?
+      total_with_prizegiving * ( 1 + ( vat / 100 ) ) # TODO test that modification
     end
   end
   

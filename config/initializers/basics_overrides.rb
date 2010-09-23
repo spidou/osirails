@@ -130,6 +130,10 @@ class String
         return nil 
     end 
   end
+  
+  def numeric?
+    return true if Float(self) rescue false
+  end
 end
 
 class Hash

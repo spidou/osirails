@@ -13,7 +13,7 @@ class EmployeesController < ApplicationController
     @employee = Employee.find(params[:id])
 
     url     = @employee.avatar.path(:thumb)
-    options = {:filename => @employee.avatar_file_name, :type => @employee.avatar_content_type, :disposition => 'inline'}
+    options = { :filename => @employee.avatar_file_name, :type => @employee.avatar_content_type, :disposition => 'inline' }
     
     respond_to do |format|
       format.html

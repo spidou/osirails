@@ -1,5 +1,7 @@
 <% content_for :header do %>
-  <%= stylesheet_link_tag_with_theme_support "rh/employee_summary.css" %>
+  <%= stylesheet_link_tag_with_theme_support "rh/employee_summary" %>
+  <%= stylesheet_link_tag_with_theme_support "core/has_resources/has_resources" %>
+  <%= javascript_include_tag 'core/has_resources/has_resources' %>
 <% end %>
 
 <div class="presentation_medium">
@@ -72,6 +74,7 @@
     <%="<p>#{label_tag( "Entreprise :" )} #{strong(employee.intranet_email)}</p>" if !is_form_view?%>
 
     <!--########### Numbers #################-->
+    <h3>Num&eacute;ro(s) de t&eacute;l&eacute;phone(s)</h3>
     <%= display_numbers(@employee)%>
 
     <!--########### Jobs ####################-->

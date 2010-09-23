@@ -1,7 +1,7 @@
 class CreateQuotes < ActiveRecord::Migration
   def self.up
     create_table :quotes do |t|
-      t.references :order, :creator, :send_quote_method, :order_form_type
+      t.references :order, :creator, :send_quote_method, :order_form_type, :quote_contact
       t.string  :status, :reference
       t.float   :carriage_costs, :prizegiving, :deposit, :discount, :default => 0
       t.text    :sales_terms

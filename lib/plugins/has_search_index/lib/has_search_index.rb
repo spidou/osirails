@@ -40,9 +40,35 @@ module HasSearchIndex
     AUTHORIZED_OPTIONS = [ :except_attributes, :only_attributes, :additional_attributes, :identifier,
                            :except_relationships, :only_relationships ]
     
-    # Method called into all models that implement the plugin 
+    # Method called into all models that implement the plugin,
     # it define search_index class variable based on passed options hash
-    # and give access to some methods to use the plugin.
+    #
+    # Look above at AUTHORIZED_OPTIONS to view all possible options.
+    #
+    ##  except_*              => Means all except specified.
+    #
+    ##  only_*                => Means only specified.
+    #
+    ##  *_attributes          => Permit to define (database) attributes that can be criteria.
+    #                            It must be an Array of Symbols or Strings:
+    #                            - [:attribut1, 'attribut2']
+    #
+    #   *_relationships       => Permit to define (database) relationship to use nested attribute as criteria.
+    #                            It must be an Array of Symbols or Strings:
+    #                            - [:relationship_1, :relationship2]
+    #                            - ['relationship', :relationship]
+    #
+    ##  additional_attributes => Permit to define attributes that are not table columns, like accessors or even methods (if they return something).
+    #                            PS: be carrefull with that kind of attributes because the search's treatments is performed by ruby and it 's not
+    #                                as efficient as sql engine.
+    #                            It must be an Hash:
+    #                            - {:ATTRIBUTE => TYPE}  ATTRIBUTE should return a TYPE object (look at ACTIONS above to see the available types).
+    #                            - {:full_name => string}
+    #
+    #   identifier            => permit to define how to display the object.
+    #                         example ===
+    #                            Employees.has_search_index(:identifier => :last_name)
+    #                            Employee.last will be displayed like Employee.last.send(:last_name)
     #
     def has_search_index( options = {} )
       error_prefix = "(has_search_index) model: #{self} >"
@@ -65,7 +91,7 @@ module HasSearchIndex
       # Check & prepare relationshsips
       options[:relationships] = get_relationships_from_options(options, error_prefix)
       options.delete(:except_relationships)
-#      options.delete(:only_relationships)                                           # Do not delete that option because it is used into +reflect_relationship+ method
+#      options.delete(:only_relationships)                                              # Do not delete that option because it is used into +reflect_relationship+ method
       
       # Check & prepare attributes
       options[:attributes] = get_attributes_from_options(options, error_prefix)
@@ -92,7 +118,7 @@ module HasSearchIndex
         self.extend RestrictedMethods                                                    # Class method that are defined for Models that implement the plugin
       end
     end
-    
+   
   end
   
 end

@@ -1,0 +1,15 @@
+<% require_locals quote %>
+
+<tr class="new_quote_item">
+  <td colspan="11">
+    <%= hidden_field_tag 'add_this_product_reference_id' %>
+    <%= custom_text_field_with_auto_complete( :product_reference, :reference,
+                                              { :value      => "Cherchez un produit référence dans la base",
+                                                :size       => 50,
+                                                :onkeydown  => "if (event.keyCode == 13) { return false; }" },
+                                              { :update_id  => 'add_this_product_reference_id' } ) %>
+    
+    <%= button_to_function "Ajouter", "add_product_reference_to_quote('#{order_commercial_step_quote_step_new_quote_item_path}', '#{form_authenticity_token}')" %>
+    <%= display_add_free_quote_item_for(quote) %>
+  </td>
+</tr>

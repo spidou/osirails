@@ -1,8 +1,23 @@
 ENV["RAILS_ENV"] = "test"
+
+def detect_feature_from_caller(caller)
+  dirs = caller.first.split("/")
+  feature_name = dirs.include?("features") ? dirs[dirs.index("features")+1] : ''
+end
+
+TESTING_FEATURE = detect_feature_from_caller(caller) unless defined? TESTING_FEATURE
+
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 require 'shoulda'
+require 'mocha'
+
+# Plugin has_reference
 require File.dirname(__FILE__) + '/../lib/plugins/has_reference/test/unit/has_reference_test'
+
+# Plugin has_contacts
+require File.dirname(__FILE__) + '/../lib/plugins/has_contacts/test/unit/has_contacts_test'
+require File.dirname(__FILE__) + '/../lib/plugins/has_contacts/test/unit/has_contact_test'
 
 class Test::Unit::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method
@@ -51,6 +66,16 @@ class Test::Unit::TestCase
   
   def self.assert_valid_permissions(*actions)
     #TODO faire les assertions qui permettent de tester facilement les permissions sur tous les controlleurs
+  end
+  
+  def assert_empty(array, message = nil)
+    full_message = build_message(message, "array expected to be empty, but has <?> items.\n", array.size)
+    assert_block(full_message) { array.empty? }
+  end
+  
+  def assert_not_empty(array, message = nil)
+    full_message = build_message(message, "array expected to not be empty, but has <0> items.\n")
+    assert_block(full_message) { array.any? }
   end
 end
 

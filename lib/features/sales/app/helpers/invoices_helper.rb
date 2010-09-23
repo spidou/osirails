@@ -21,7 +21,7 @@ module InvoicesHelper
   
   def display_transform_quote_in_invoice(quote)
     return unless Invoice.can_add?(current_user) and quote.order.invoices.build.can_create_deposit_invoice?
-    img = image_tag( "next_24x24.png", :title => title = "Transformer en facture d'acompte", :alt => title )
+    img = image_tag( "next_16x16.png", :title => title = "Transformer en facture d'acompte", :alt => title )
     link_to( img, new_order_invoicing_step_invoice_step_invoice_path(:invoice_type => 'deposit') )
   end
   
@@ -35,7 +35,7 @@ module InvoicesHelper
       invoice_type = 'status'
       invoice_type_title = "de situation"
       
-      img = image_tag( "next_24x24.png", :title => title = "Transformer en facture #{invoice_type_title}", :alt => title )
+      img = image_tag( "next_16x16.png", :title => title = "Transformer en facture #{invoice_type_title}", :alt => title )
       html << link_to( img, new_order_invoicing_step_invoice_step_invoice_path(order, :invoice_type => invoice_type, :delivery_note_ids => delivery_note.id) )
     end
     
@@ -43,7 +43,7 @@ module InvoicesHelper
       invoice_type = 'balance'
       invoice_type_title = "de solde"
       
-      img = image_tag( "next_24x24.png", :title => title = "Transformer en facture #{invoice_type_title}", :alt => title )
+      img = image_tag( "next_16x16.png", :title => title = "Transformer en facture #{invoice_type_title}", :alt => title )
       html << link_to( img, new_order_invoicing_step_invoice_step_invoice_path(order, :invoice_type => invoice_type) )
     end
     

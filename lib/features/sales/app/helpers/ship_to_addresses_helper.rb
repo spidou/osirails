@@ -18,7 +18,7 @@ module ShipToAddressesHelper
     return unless Establishment.can_add?(current_user)
     content_tag( :p, link_to_function "Ajouter un établissement comme adresse de livraison" do |page|
       page.insert_html :bottom, :new_establishments, :partial => 'establishments/establishment', :object => order.customer.build_establishment, :locals => { :establishments_owner => order }
-      last_element = page['new_establishments'].select('.resource').last
+      last_element = page['new_establishments'].show.select('.resource').last
       last_element.visual_effect :highlight
     end )
   end

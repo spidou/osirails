@@ -14,13 +14,13 @@ class Third < ActiveRecord::Base
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:name]                      = "Raison Sociale :"
-  @@form_labels[:legal_form]                = "Forme juridique :"
-  @@form_labels[:website]                   = "Site Internet :"
-  @@form_labels[:created_at]                = "Créé le :"
-  @@form_labels[:creator]                   = "Créé par :"
+  @@form_labels[:name]        = "Raison Sociale :"
+  @@form_labels[:legal_form]  = "Forme juridique :"
+  @@form_labels[:website]     = "Site Internet :"
+  @@form_labels[:created_at]  = "Créé le :"
+  @@form_labels[:creator]     = "Créé par :"
   
   def website_url
-    "http://#{website}" unless website.blank?
+    @website_url ||= "http://#{website}" unless website.blank?
   end
 end
