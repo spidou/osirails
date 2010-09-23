@@ -35,6 +35,14 @@ menus:
         title: Dossiers Archivés
         description: Afficher la liste des dossiers déjà archivés
         position: 6
+      quote_managements:
+        title: Gestion des devis
+        description: Afficher la liste complète des devis
+        position: 7
+      invoice_managements:
+        title: Gestion des factures
+        description: Afficher la liste complète des factures
+        position: 8
       orders:
         title: Dossier
         description: Dossier de vente

@@ -173,4 +173,26 @@ module QuotesHelper
     end
   end
   
+  def display_remaining_days_for(quote)
+    delay = Date.today - quote.validity_date.to_date
+    if delay < 0
+      return "<br />(J-#{delay * -1})"  
+    elsif delay > 0
+      return "<br />(J+#{delay })"
+    elsif delay == 0
+      return "<br />(Jours J)"
+    end  
+  end
+  
+  def set_tr_class_name_for(quote)
+    actual_date = Time.now.to_datetime
+    date_limite = quote.validity_date  ? quote.validity_date.to_datetime : 0
+    middle_date = (quote.validity_delay && quote.validity_date) ? (date_limite - (quote.validity_delay / 2).days).to_datetime : 0
+    
+    return ""  if (!quote.validity_delay || !quote.validity_date) 
+    return "low_priority"  if (actual_date <= middle_date) 
+    return "medium_priority"  if ((actual_date > middle_date) && (actual_date < date_limite))
+    return "high_priority"     if (actual_date >= date_limite)
+  end
+  
 end

@@ -284,6 +284,10 @@ ActionController::Routing::Routes.add_routes do |map|
   map.pre_invoicing_orders  'pre_invoicing_orders',  :controller => 'pre_invoicing_orders'
   map.invoicing_orders      'invoicing_orders',      :controller => 'invoicing_orders'
   
+  map.invoice_managements       'invoice_managements',      :controller => 'invoice_managements'
+  map.quote_managements         'quote_managements',      :controller => 'quote_managements'
+  
+  
   map.auto_complete_for_customer_name 'auto_complete_for_customer_name', :controller  => 'customers', 
                                                                          :action      => 'auto_complete_for_customer_name',
                                                                          :method      => :get

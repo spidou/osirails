@@ -1,0 +1,56 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+<% end %>
+
+<div>
+  <% if @quotes.empty? %>
+    <p>Aucun devis</p>
+  <% else %>
+    <div class="autoscroll">
+      <table class="quote_list no_nth" id="quotes">
+        <thead>
+          <tr>
+            <th>N° Dossier</th>
+            <th>Nom projet</th>
+            <th>Contact commercial</th>
+            <th>Raison sociale</th>
+            <th>Commercial</th>
+            <th>Date butoir d'envoi du Devis</th>
+            <th>Date D'&eacute;mission</th>
+            <th>R&eacute;f&eacute;rence</th>
+            <th>Dur&eacute;e de Validit&eacute;</th>
+            <th>Date limite</th>
+            <th>Envoy&eacute; le</th>
+            <th>% D'acompte</th>
+            <th>% de Remise Globale</th>
+            <th>Total TTC</th>
+            <th>Derni&egrave;re relance Effectu&eacute;e le</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for quote in @quotes %>
+            <tr class="<%= set_tr_class_name_for(quote) %>">
+              <td><%= quote.order.reference%></td>
+              <td><%= link_to(quote.order.title, quote.order, :title => "Voir ce dossier", :class => "no_style") %></td>
+              <td><%= quote.quote_contact.fullname%></td>
+              <td><%= link_to(quote.order.customer.name, quote.order.customer, :title => "Voir fiche client", :class => "no_style") %></td>
+              <td><%= link_to(quote.order.commercial.fullname, quote.order.commercial, :title => "Voir fiche employé", :class => "no_style") %></td>
+              <td><%= quote.order.quotation_deadline.to_date.humanize if quote.validity_date%></td>
+              <td><%= quote.confirmed_on.humanize if quote.confirmed_on %></td>
+              <td><%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(quote.order, quote), :title => "Voir ce devis", :class => "no_style") if quote.reference %></td>
+              <td><%= "#{quote.validity_delay}  #{quote.validity_delay_unit}" if quote.validity_delay && quote.validity_delay_unit%></td>
+              <td><%= quote.validity_date.to_date.humanize + display_remaining_days_for(quote) if quote.validity_date %></td>
+              <td><%= "#{quote.sended_on.humanize} (#{quote.send_quote_method.name})" if quote.sended_on && quote.send_quote_method.name%></td>
+              <td><%= quote.deposit.to_f.round(2).to_s + "%"%></td>
+              <td><%= quote.discount.to_f.round(2).to_s + "%"%></td>
+              <td><%= quote.total_with_taxes.to_f.round(2).to_s + "&euro;"%></td>
+              <td>#</td>
+              <td><%= display_quote_action_buttons(quote.order, quote) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

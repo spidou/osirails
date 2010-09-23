@@ -81,4 +81,8 @@ module OrdersHelper
     content_tag( :p, message + ( edit_order || "" ), :class => "order_deadline #{status}" )
   end
   
+  def display_interventions_town_for(order)
+    order.ship_to_addresses.collect{|s|s.address.city_name}.join('<br />')
+  end
+  
 end

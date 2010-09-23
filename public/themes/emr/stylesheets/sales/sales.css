@@ -475,3 +475,22 @@ ul#graphic_items li p {
 	width:530px;
 	padding:10px;
 }
+
+/* table_color */
+
+.low_priority{
+   background-color: #F4FE64;      
+}
+
+.medium_priority{
+   background-color: #FEAC64; 
+}
+
+.high_priority{ 
+   background-color: #FE6464;
+}
+
+.no_style{
+   color: #1A1A1A;  
+}
+

@@ -142,6 +142,14 @@ class Order < ActiveRecord::Base
     invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
   end
   
+  def unpaid_amount
+    signed_quote.total_with_taxes - invoices.collect(&:already_paid_amount).flatten.sum
+  end
+  
+  def unbill_amount
+    signed_quote.total_with_taxes - invoices.collect(&:net_to_paid).sum
+  end
+  
   def build_delivery_note_with_remaining_end_products_to_deliver
     return if all_is_delivered_or_scheduled?
     

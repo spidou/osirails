@@ -17,9 +17,10 @@
             <th>Commercial</th>
             <th>Raison sociale</th>
             <th>Ville(s) d'intervention</th>
-            <th>Date butoire du devis</th>
-            <th>Devis sign&eacute; le</th>
-            <th>Avancement</th>
+            <th>R&eacute;f&eacute;rence devis</th>
+            <th>Montant TTC</th>
+            <th>Nombre d'interventions</th>
+            <th>Quantit&eacute; Produit (livr&eacute;/total devis)</th>
             <th>Date prév. de livraison</th>
             <th>Actions</th>
           </tr>
@@ -33,10 +34,12 @@
               <td><%= link_to(order.title, order, :title => "Voir ce dossier") %></td>
               <td><%= link_to(order.commercial.fullname, order.commercial, :title => "Voir fiche employé") %></td>
               <td><%= link_to("#{order.customer.name}", order.customer, :title => "Voir fiche client") %></td>
-              <td><%= display_interventions_town_for(order)%></td>
-              <td><%= order.quotation_deadline.humanize %></td>
-              <td><%= order.signed_quote ? order.signed_quote.signed_on.humanize : "&nbsp;"%></td>
-              <td><object data="<%= formatted_order_path(order, 'svg', {:for => 'understep'}) %>" type="image/svg+xml" style="width: 32px; height: 32px;"></object></td>
+              <td><%= display_interventions_town_for(order) %></td>
+              <td><%= link_to(order.signed_quote.reference, order_commercial_step_quote_step_quote_path(order, order.signed_quote), :title => "Voir ce devis") %></td>
+              <td><%= order.signed_quote.total_with_taxes.to_f.round_to(2).to_s(2) + " &euro;" %></td>
+              <td><%= order.delivery_notes.collect{|n| n.delivery_interventions.collect(&:delivered?).count}.sum %></td>
+              <td><%= order.delivery_notes.collect(&:number_of_delivered_pieces).sum.to_i.to_s + " / " + order.signed_quote.number_of_pieces.to_i.to_s %></td>
+              
               <td><%= order.previsional_delivery.humanize %></td>
               <td><%= order_link(order, :link_text => "") %></td>
             </tr>
