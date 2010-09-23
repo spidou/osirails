@@ -1,5 +1,6 @@
 class AdvancedSearchController < ApplicationController
-  helper :advanced_search 
+  helper :advanced_search
+  
   def index
     @page_names = HasSearchIndex::HTML_PAGES_OPTIONS.keys.select {|key| key.to_s =~ /^advanced_/ }
     

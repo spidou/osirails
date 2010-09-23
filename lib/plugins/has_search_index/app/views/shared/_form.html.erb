@@ -9,4 +9,9 @@
   <%= render(:partial => "shared/options_form", :locals => {:query => query, :page_config => page_config}) %>
   <%= links(query) %>
 </div>
-<%= toggle_form_link(visible) unless @page_name =~ /^advanced_/ %>
+<div class="integrated_search_form_footer">
+  <%= toggle_form_link(visible) unless @page_name =~ /^advanced_/ %>
+  <%= reset_query_link(query) %>
+</div>
+
+

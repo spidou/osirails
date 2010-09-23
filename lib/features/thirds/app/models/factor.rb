@@ -11,8 +11,7 @@ class Factor < ActiveRecord::Base
   FACTORS_PER_PAGE = 15
   
   has_search_index :only_attributes => [:name, :fullname],
-                   :only_relationships => [:customers],
-                   :main_model => true
+                   :only_relationships => [:customers]
   
   cattr_reader :form_labels
   @@form_labels = Hash.new

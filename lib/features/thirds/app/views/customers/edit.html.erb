@@ -2,8 +2,6 @@
   <%= javascript_include_tag "thirds/thirds" %>
 <% end %>
 
-<% contextual_search_for_customer %>
-
 <% add_contextual_menu_item :possible_actions do %>
   <%= new_customer_link(:link_text => "Nouveau client") %>
   <%= customer_link(@customer, :link_text => "Voir le client") %>

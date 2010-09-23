@@ -30,18 +30,19 @@ class HasSearchIndexTest < ActiveRecordTestCase
         
         
         @yml_path = "#{ File.dirname(__FILE__) }/fixtures/person.yml"
-        @options = {'person' => {'columns' => ['*'],
-                                 'order' => ['name'],
-                                 'per_page' => [10, 20],
-                                 'group' => ['age'],
-                                 'filters' => ['name', {'phone_number' => 'numbers.value'}, {'phone_type' => 'numbers.number_type.name'}] }}
+        @options = {'person' => {'columns' => ['name'],
+                                 'order' => [],
+                                 'per_page' => [],
+                                 'group' => [],
+                                 'filters' => [] }}
         @expected = {:default_query => nil,
                      :columns => ['name', 'age'],
                      :order => ['name'],
                      :per_page => [10, 20],
                      :group => ['age'],
-                     :filters => ['name', {'phone_number' => 'numbers.value'}, {'phone_type' => 'numbers.number_type.name'}],
-                     :model => 'Person' }
+                     :filters => ['name', 'age', {'phone_number' => 'numbers.value'}, {'phone_type' => 'numbers.number_type.name'}],
+                     :model => 'Person',
+                     :quick_search => []}
       end
       
       teardown do
@@ -93,7 +94,6 @@ class HasSearchIndexTest < ActiveRecordTestCase
       
       context "without mandatory OPTION (:columns)" do
         setup do
-          
           @options['person'].delete('columns')
         end
         
@@ -112,31 +112,35 @@ class HasSearchIndexTest < ActiveRecordTestCase
         end
       end
       
-      context "with any OPTION that contains *to_many* relationship for the plugin" do
-        setup do
-          Person.has_search_index :only_relationships => [:summer_jobs]
-          SummerJob.has_search_index
-          @options['person']['columns'] = ['summer_jobs.id']
-        end
-        
-        should 'raise an ArgumentError' do
-          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
-        end
-      end
-        
-      context "with :filters OPTION that contains *to_many* relationship for the plugin" do
-        setup do
-          Person.has_search_index :only_relationships => [:summer_jobs]
-          SummerJob.has_search_index
-          @options['person']['filters'] = ['summer_jobs.id']
-        end
-        
-        should 'raise nothing' do
-          assert_nothing_raised { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+      [:group, :order].each do |option|
+        context "with :#{ option } OPTION that contains *to_many* relationship for the plugin" do
+          setup do
+            Person.has_search_index :only_relationships => [:summer_jobs]
+            SummerJob.has_search_index :only_attributes => [:id]
+            @options['person'][option.to_s] = ['summer_jobs.id']
+          end
+          
+          should 'raise an ArgumentError' do
+            assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options) }
+          end
         end
       end
       
-      context "with any ATTRIBUTE_PATH that contains undefined attribute for the model" do
+      [:filters, :columns, :quick_search].each do |option|
+        context "with :#{ option } OPTION that contains a *to_many* relationship for the plugin" do
+          setup do
+            Person.has_search_index :only_relationships => [:summer_jobs]
+            SummerJob.has_search_index
+            @options['person'][option.to_s] = ['summer_jobs.id']
+          end
+          
+          should 'raise nothing' do
+            assert_nothing_raised { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+          end
+        end
+      end
+      
+      context "with any ATTRIBUTE_PATH in :columns that contains undefined attribute for the model" do
         setup do
           @options['person']['columns'] = ['undefined_attribute']
         end
@@ -145,19 +149,8 @@ class HasSearchIndexTest < ActiveRecordTestCase
           assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
         end
       end
-      
-      context "with any ATTRIBUTE_PATH that contains undefined attribute for the plugin" do
-        setup do
-          Person.has_search_index :except_attributes => [:id]
-          @options['person']['columns'] = ['id']
-        end
         
-        should 'raise an ArgumentError' do
-          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
-        end
-      end
-      
-      context "with any ATTRIBUTE_PATH that contains undefined relationship for the model" do
+      context "with any ATTRIBUTE_PATH in :columns that contains undefined relationship for the model" do
         setup do
           @options['person']['columns'] = ['undefined_relationship.id']
         end
@@ -166,18 +159,50 @@ class HasSearchIndexTest < ActiveRecordTestCase
           assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
         end
       end
-      
-      context "with any ATTRIBUTE_PATH that contains undefined relationship for the plugin" do
-        setup do
-          Person.has_search_index :except_relationships => [:dog]
-          @options['person']['columns'] = ['dog.id']
+        
+      [:order, :group, :filters].each do |option|
+        context "with any ATTRIBUTE_PATH in :#{ option } that contains undefined attribute for the model" do
+          setup do
+            @options['person'][option.to_s] = ['undefined_attribute']
+          end
+          
+          should 'raise an ArgumentError' do
+            assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+          end
         end
         
-        should 'raise an ArgumentError' do
-          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        context "with any ATTRIBUTE_PATH in :#{ option } that contains undefined attribute for the plugin" do
+          setup do
+            Person.has_search_index :except_attributes => [:id]
+            @options['person'][option.to_s] = ['id']
+          end
+          
+          should 'raise an ArgumentError' do
+            assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+          end
+        end
+        
+        context "with any ATTRIBUTE_PATH in :#{ option } that contains undefined relationship for the model" do
+          setup do
+            @options['person'][option.to_s] = ['undefined_relationship.id']
+          end
+          
+          should 'raise an ArgumentError' do
+            assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+          end
+        end
+        
+        context "with any ATTRIBUTE_PATH in :#{ option } that contains undefined relationship for the plugin" do
+          setup do
+            Person.has_search_index :except_relationships => [:dog]
+            @options['person'][option.to_s] = ['dog.id']
+          end
+          
+          should 'raise an ArgumentError' do
+            assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+          end
         end
       end
-      
       
       context "with any ATTRIBUTE_PATH, (for :filters OPTION), using both 'alias' and 'globbing' feature" do
         setup do
@@ -186,6 +211,18 @@ class HasSearchIndexTest < ActiveRecordTestCase
         
         should 'raise an ArgumentError' do
           assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      context "with any ATTRIBUTE_PATH, (for :filters OPTION), containing value with and without 'alias'" do
+        setup do
+          @options['person']['filters'] = [{'alias' => "numbers.id"}, 'numbers.id']
+          HasSearchIndex.load_page_options_from(@yml_path, @options)
+          @expected = [{'alias' => "numbers.id"}]
+        end
+        
+        should 'keep only value with alias configuration' do
+          assert_equal(@expected, HasSearchIndex::HTML_PAGES_OPTIONS[:person][:filters])
         end
       end
       
@@ -478,30 +515,6 @@ class HasSearchIndexTest < ActiveRecordTestCase
         end
       end
     
-      context "with implicit displayed attributes definition" do
-
-        should "not have any displayed attributes defined for the plugin" do
-          assert_equal 0, Person.search_index[:displayed_attributes].size
-        end
-      end
-
-      context "with valid :displayed_attributes" do
-        setup do
-          Person.has_search_index :displayed_attributes => [:name]
-        end
-
-        should "have only these displayed attributes defined for the plugin" do
-          assert_equal 1, Person.search_index[:displayed_attributes].size
-        end
-      end
-      
-      context "with invalid :displayed_attributes" do
-        
-        should "raise an ArgumentError" do
-          assert_raise(ArgumentError) { Person.has_search_index :displayed_attributes => "bad arg" }
-        end
-      end
-      
       ### check sql option support
       context "with a relationship having :order and :macro in (:has_many, :has_and_belongs_to_many)" do
         setup do
@@ -992,12 +1005,29 @@ class HasSearchIndexTest < ActiveRecordTestCase
           end
         end
         
-        context "with value is blank" do
+        context "with attribute_type is string and value is blank" do
           setup do
             person = Person.new(Person.first.attributes)
             person.name = nil
             flunk "should create person" unless person.save
-            @expected = [ person ]
+            @expected = Person.all(:conditions => ["name = '' or name is null"])
+          end
+          
+          should "match with search for value is null" do
+            assert_equal @expected, Person.search_with('name' => nil)
+          end
+          
+          should "match with search for value is empty" do
+            assert_equal @expected, Person.search_with('name' => '')
+          end
+        end
+        
+        context "with value is null" do
+          setup do
+            person = Person.new(Person.first.attributes)
+            person.name = nil
+            flunk "should create person" unless person.save
+            @expected = Person.all(:conditions => ['name is null'])
           end
           
           should "match with search for value is null" do
@@ -1177,15 +1207,15 @@ class HasSearchIndexTest < ActiveRecordTestCase
           integer = {'=' => exp, '>='   => exp, '<=' => exp, '!=' => [], '>' => [], '<' => []}
           boolean = {'=' => exp, '!='   => []}
           
-          @types = {:string =>   {:value => DataType.first.a_string,   :actions => string },
-                    :binary =>   {:value => DataType.first.a_binary,   :actions => string },
-                    :text =>     {:value => DataType.first.a_text,     :actions => string },
-                    :integer =>  {:value => DataType.first.a_integer,  :actions => integer },
-                    :float =>    {:value => DataType.first.a_float,    :actions => integer },
-                    :decimal =>  {:value => DataType.first.a_decimal,  :actions => integer },
+          @types = {:string   => {:value => DataType.first.a_string,   :actions => string },
+                    :binary   => {:value => DataType.first.a_binary,   :actions => string },
+                    :text     => {:value => DataType.first.a_text,     :actions => string },
+                    :integer  => {:value => DataType.first.a_integer,  :actions => integer },
+                    :float    => {:value => DataType.first.a_float,    :actions => integer },
+                    :decimal  => {:value => DataType.first.a_decimal,  :actions => integer },
                     :datetime => {:value => DataType.first.a_datetime, :actions => integer },
-                    :date =>     {:value => DataType.first.a_date,     :actions => integer },
-                    :boolean =>  {:value => DataType.first.a_boolean,  :actions => boolean }}
+                    :date     => {:value => DataType.first.a_date,     :actions => integer },
+                    :boolean  => {:value => DataType.first.a_boolean,  :actions => boolean }}
         
           @types.each do |type, criterion|
             context "with criterion's :value is a #{ type.to_s.capitalize }" do
@@ -1393,7 +1423,106 @@ class HasSearchIndexTest < ActiveRecordTestCase
           end
         end
       end
+      
+      ### Quick (quick_search)
+      context "with quick option" do
+        setup do
+          
+        end
         
+        context "that is not a hash" do
+          
+          should "raise an ArgumentError" do
+            assert_raise(ArgumentError) { Person.search_with(:quick => ['attribute', 'another_attribute']) }
+          end
+        end
+        
+        context "that is a hash wihout value" do
+        
+          should "raise an ArgumentError" do
+            assert_raise(ArgumentError) { Person.search_with(:quick => {:attributes => ['attribute']}) }
+          end
+        end
+        
+        context "that is a hash wihout attributes" do
+          should "raise an ArgumentError" do
+            assert_raise(ArgumentError) { Person.search_with(:quick => {:value => 'val ue'}) }
+          end
+        end
+        
+        context "that contains wrong attributes" do
+          
+          should "raise an ArgumentError" do
+            assert_raise(ArgumentError) { Person.search_with(:quick => {:value => 'good', :attributes => ['undefined_attribute']}) }
+          end
+        end
+        
+        context "that contains database_attributes" do
+          setup do
+            Person.has_search_index(:only_attributes => [:name])
+            flunk "person should be created" unless Person.create(:name => 'good', :age => 10)
+            
+            @expected = Person.all(:conditions => ['name like?', "%good%"])
+          end
+          
+          should "return as expected" do
+            assert_equal @expected, Person.search_with(:quick => {:value => 'good', :attributes => ['name']})
+          end
+        end
+        
+        context "that contains additional_attributes" do
+          setup do
+            Person.has_search_index(:additional_attributes => {:name => :string})
+            flunk "person should be created" unless Person.create(:name => 'good', :age => 10)
+            
+            @expected = Person.all.select {|n| n.name =~ /good/ }
+          end
+          
+          should "return as expected" do
+            assert_equal @expected, Person.search_with(:quick => {:value => 'good', :attributes => ['name']})
+          end
+        end
+        
+        context "that contains both additional and database attributes" do
+          setup do
+            Person.has_search_index(:only_attributes => [:age], :additional_attributes => {:name => :string})
+            flunk "person should be created" unless Person.create(:name => '10', :age => 10)
+            flunk "person should be created" unless Person.create(:name => '11', :age => 10)
+            flunk "person should be created" unless Person.create(:name => '12', :age => 12)
+          end
+          
+          context "with search_type is 'and'" do
+            setup do
+              @expected = Person.all(:conditions => ['age = ?', "10"]).select {|n| n.name =~ /10/ }
+            end
+            
+            should "return as expected" do
+              assert_equal @expected, Person.search_with(:quick => {:attributes => ['name', 'age'], :value => '10'})
+            end
+          end
+          
+          context "with search_type is 'or'" do
+            setup do
+              @expected = Person.all(:conditions => ['age = ?', "10"]) | Person.all.select {|n| n.name =~ /10/ }
+            end
+            
+            should "return as expected" do
+              assert_equal @expected, Person.search_with(:quick => {:attributes => ['name', 'age'], :value => '10'}, :search_type => 'or')
+            end
+          end
+          
+          context "with search_type is 'not'" do
+            setup do
+              @expected = Person.all(:conditions => ['age != ?', "10"]).reject {|n| n.name =~ /10/ }
+            end
+            
+            should "return as expected" do
+              assert_equal @expected, Person.search_with(:quick => {:attributes => ['name', 'age'], :value => '10'}, :search_type => 'not')
+            end
+          end
+        end
+      end
+      
     end
     ###########################################
     ### Test simple Search (search_with method)
@@ -1779,22 +1908,21 @@ class HasSearchIndexTest < ActiveRecordTestCase
         Person.has_search_index :only_attributes => [:name, :age], :only_relationships => [:numbers]
         @filters = [
           'name',
-          'age',
           'numbers.value',
-          'numbers.number_type.name'
+          'numbers.number_type.name',
+          'age'
         ]
-        @expected = [ 
-                      [nil, ['name', 'age'] ],
-                      ['numbers', 
-                        [
-                          [nil, ['numbers.value'] ],
-                          ['number_type', 
-                            [
-                              [nil, ['numbers.number_type.name']]
+        @expected = [
+                      'name',
+                      ['numbers', [ 
+                          'numbers.value',
+                          ['numbers.number_type', [
+                              'numbers.number_type.name'
                             ]
                           ]
                         ],
-                      ]
+                      ],
+                      'age'
                     ]
       end
       

@@ -22,8 +22,7 @@ class Supplier < Third
   after_save :save_iban
   
   has_search_index :only_attributes    => [:name, :siret_number],
-                   :only_relationships => [:legal_form, :iban, :contacts, :activity_sector_reference],
-                   :main_model         => true
+                   :only_relationships => [:legal_form, :iban, :contacts, :activity_sector_reference]
   
   @@form_labels[:activity_sector_reference] = "Code NAF :"
   

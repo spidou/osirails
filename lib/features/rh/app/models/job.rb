@@ -10,7 +10,8 @@ class Job < ActiveRecord::Base
   
   validates_uniqueness_of :name
   
-  has_search_index :only_attributes => [:name]
+  has_search_index :only_attributes => [:name, :id],
+                   :identifier => :name
   
   cattr_reader :form_labels
   @@form_labels = Hash.new

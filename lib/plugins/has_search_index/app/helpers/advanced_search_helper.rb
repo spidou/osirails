@@ -8,4 +8,5 @@ module AdvancedSearchHelper
     select_tag('p', options, :onchange => "$('page_select_form').submit()")
   end
   
+  include EmployeesHelper
 end

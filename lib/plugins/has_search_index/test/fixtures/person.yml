@@ -1,6 +1,7 @@
 person:
   columns:
-    - *
+    - name
+    - age
   order:
     - name
   per_page:
@@ -9,6 +10,6 @@ person:
   group:
     - age
   filters:
-    - name
+    - *
     - phone_number: numbers.value
     - phone_type: numbers.number_type.name

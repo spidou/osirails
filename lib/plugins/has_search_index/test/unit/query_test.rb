@@ -215,7 +215,6 @@ class QueryTest < ActiveSupport::TestCase
     context "A query" do
       setup do
         @query = create_query
-        
       end
       
       teardown do
@@ -283,6 +282,34 @@ class QueryTest < ActiveSupport::TestCase
         
         should "return expected result" do
           assert_equal @expected_result, @query.search
+        end
+      end
+      
+      context "with a quick_search_value and with quick_search_attributes" do
+        setup do
+          @query.quick_search_value = "some text"
+          HasSearchIndex::HTML_PAGES_OPTIONS[:employee][:quick_search] = ['id']
+        end
+        
+        should "have a quick_search_option" do
+          assert_not_nil @query.quick_search_option
+        end
+      end
+      
+      context "with a quick_search_value and without quick_search_attributes" do
+        setup do
+          @query.quick_search_value = "some text"
+        end
+        
+        should "not have a quick_search_option" do
+          assert_nil @query.quick_search_option
+        end
+      end
+      
+      context "without a quick_search_value" do
+      
+        should "not have a quick_search_option" do
+          assert_nil @query.quick_search_option
         end
       end
     end

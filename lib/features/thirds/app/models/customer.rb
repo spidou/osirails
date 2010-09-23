@@ -39,8 +39,7 @@ class Customer < Third
   named_scope :activates, :conditions => {:activated => true}
   
   has_search_index :only_attributes    => [:name, :siret_number, :website],
-                   :only_relationships => [:legal_form, :establishments, :head_office, :customer_grade, :customer_solvency, :bill_to_address, :factor],
-                   :main_model         => true
+                   :only_relationships => [:legal_form, :establishments, :head_office, :customer_grade, :customer_solvency, :bill_to_address, :factor]
   
   @@form_labels[:factor]            = "Compagnie d'affacturage :"
   @@form_labels[:customer_solvency] = "Degré de solvabilité :"

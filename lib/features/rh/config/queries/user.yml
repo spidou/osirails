@@ -1,7 +1,6 @@
 advanced_user:
   user_index:
   filters:
-    - employee.fullname
     - username
     - enabled
     - last_connection

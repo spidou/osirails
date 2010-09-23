@@ -1,3 +1,4 @@
+
 module HasSearchIndex
   require 'yaml'
   
@@ -14,10 +15,8 @@ module HasSearchIndex
       page_options[:default_query].columns = page_options[:columns] if (page_options[:default_query].columns || []).empty?
     end
     
-    
-    
     # Manage here default values permit to merge keeping old values (keys that are not overriden have nil value)
-    [:filters, :group, :order, :per_page, :columns].each do |option|
+    [:filters, :group, :order, :per_page, :columns, :quick_search].each do |option|
       page_options[option] ||= []
     end
     
@@ -32,10 +31,10 @@ module HasSearchIndex
   # +options+ permit to pass options loaded by your self and to skip yml_path loading (that mean that you perfom the load before calling that method)
   #                 
   def self.load_page_options_from(yml_path, options = nil)
-    error_prefix   = "(has_search_index) in (#{ yml_path }) >"
-    model          = yml_path.split('/').last.gsub('.yml','').camelize
+    prefix = "(has_search_index) in (#{ yml_path })"
+    model  = yml_path.split('/').last.gsub('.yml','').camelize
     
-    message  = "#{ error_prefix } Wrong filename '#{ model.to_s.downcase }.yml'. '#{ model }' should be a valid model"
+    message  = "#{ prefix } Wrong filename '#{ model.to_s.downcase }.yml'. '#{ model }' should be a valid model"
     message += " and should implement 'has_search_index' plugin "
     raise ArgumentError, message unless MODELS.include?(model)
     
@@ -43,7 +42,7 @@ module HasSearchIndex
     model     = model.constantize
     
     options.each_pair do |page_name, page_options|
-      error_prefix = "#{ error_prefix } #{ page_name }:"
+      error_prefix = "#{ prefix } >> #{ page_name }"
       page         = { :default_query => nil }
       
       # Check :per_page (pagination option)
@@ -55,13 +54,17 @@ module HasSearchIndex
       
       # Check default_query
       if page_options.include?('default_query') && page_options['default_query']
-        error_prefix = "#{ error_prefix } > default_query:"
+        default_query_err =  "#{ error_prefix } >> default_query:"
         page[:default_query] = Query.new(:public_access => true, :criteria => {}, :page_name => page_name)
-        [:columns, :group].each do |key|
-          page[:default_query].send("#{ key }=", check_page_option(key.to_s, page_options['default_query'], model, error_prefix))
+        page[:default_query].group    = check_page_option('group', page_options['default_query'], model, default_query_err)
+        page[:default_query].columns  = check_page_option_columns(page_options['default_query'], model, default_query_err)
+        page[:default_query].order    = check_page_option_order(page_options['default_query'], model, default_query_err)
+        page[:default_query].per_page = page_options['default_query']['per_page'].to_i if page_options['default_query']['per_page']
+        
+        # Check :name
+        if page_options['default_query']['name']
+          page[:default_query].name = page_options['default_query']['name']
         end
-        page[:default_query].order    = check_page_option_order(page_options['default_query'], model, error_prefix)
-        page[:default_query].per_page = page_options['default_query']['per_page'].to_i if page_options['default_query']['per_page']  # TODO test that line
         
         # Check default_query's criteria
         unless (criteria = model.check_criteria(page_options['default_query']['criteria'])).nil?
@@ -74,9 +77,10 @@ module HasSearchIndex
       end
       
       # Check ATTRIBUTE_PATHs of Keys [:columns, :group, :order]
-      [:columns, :group, :order].each do |key|
+      [:group, :order, :quick_search].each do |key|
         page[key] = check_page_option(key.to_s, page_options, model, error_prefix)
       end
+      page[:columns] = check_page_option_columns(page_options, model, error_prefix)
       page[:filters] = check_page_option_filters(page_options, model, error_prefix)
       
       # Save the model where the search will be performed
@@ -94,12 +98,21 @@ module HasSearchIndex
     (element.to_s.split(':').at(1) || 'asc').strip.downcase   # use at(1) instead of .last because without ':' the first will also be the last
   end  
   
-  # Method to get a hierachical collection of attributes and relationships from configured filters
+  # Method to get a hierarchical collection of attributes and relationships from configured filters
   #
   def self.organized_filters(elements, model, group = '')
     elements.group_by do |n|
       n.rchomp(group).split('.').first if !n.is_a?(Hash) && n.rchomp(group).include?('.')
-    end.map {|n| n.first.nil? ? n : [n.first, organized_filters(n.last, model, "#{ group }#{ n.first }.")]}
+      if n.is_a?(Hash)
+        "##{ n.keys.first }"
+      elsif !n.rchomp(group).include?('.')
+        "##{ n.rchomp(group) }"
+      else
+        n.rchomp(group).split('.').first
+      end
+    end.map do |n|
+      n.first.at(0) == '#' ? n.last : [["#{ group }#{ n.first }", organized_filters(n.last, model, "#{ group }#{ n.first }.")]]
+    end.flatten(1)
   end
   
   # Method to get attribute type even if it is nested
@@ -130,32 +143,58 @@ module HasSearchIndex
     #
     def self.check_page_option(key, page_options, model, error_prefix)
       return nil unless page_options.keys.include?(key)
+      error_prefix += " > #{ key }:"
+      
       page_options[key] ||= []
       check_value_is_an_array(page_options[key], error_prefix + "Wrong key ':#{ key }'.")
-      page_options[key].map do |attribute|
-        check_page_attribute(attribute.to_s, model, error_prefix, allow_collection = false)
-      end.flatten
+      options = page_options[key].map do |attribute|
+        check_page_attribute(attribute.to_s, model, error_prefix, allow_collection = !['group','order'].include?(key))
+      end.flatten # flatten is for 'check_page_attribute' results
+      
+      return options.uniq
+    end
+    
+    ## Method to check a page option in (:columns, :group)
+    #
+    def self.check_page_option_columns(page_options, model, error_prefix)
+      return nil unless page_options.keys.include?('columns')
+      error_prefix += " > columns:"
+      
+      page_options['columns'] ||= []
+      check_value_is_an_array(page_options['columns'], error_prefix + "Wrong key ':columns'.")
+      columns = page_options['columns'].map do |column|
+        check_page_column(column, model.new, error_prefix)
+      end
+      
+      return columns.uniq
     end
     
     # Method to check filters
     #
     def self.check_page_option_filters(page_options, model, error_prefix)
       return nil unless page_options.keys.include?('filters')
+      error_prefix += " > filters:"
+      
       page_options['filters'] ||= []
+      attributes_with_alias     = []
       check_value_is_an_array(page_options['filters'], error_prefix + "Wrong key ':filters'.")
-      page_options['filters'].map do |attribute|
+      filters = page_options['filters'].map do |attribute|
         message = "#{ error_prefix } Wrong attribute '#{ attribute.inspect }'. Expected to be a Hash or a String but was sort of #{ attribute.class }"
         raise(ArgumentError, message) unless attribute.is_a?(String) || attribute.is_a?(Hash)
-        
+        attributes_with_alias << attribute.values.first if attribute.is_a?(Hash)
         check_page_attribute(attribute, model, error_prefix)
-      end.flatten
+      end.flatten # flatten is for 'check_page_attribute' results
+      
+      return filters.uniq.reject {|attribute| attributes_with_alias.include?(attribute) } # uniq with priority for alias
     end
     
     def self.check_page_option_order(page_options, model, error_prefix)
       return nil unless page_options.keys.include?('order')
+      error_prefix += " > order:"
+      
       page_options['order'] ||= []
       check_value_is_an_array(page_options['order'], error_prefix + "Wrong key ':order'.")
-      page_options['order'].map do |option|
+      orders = page_options['order'].map do |option|
         direction = get_order_direction(option)
         message   = "#{ error_prefix } Wrong direction '#{ direction }'. Expected to be in ('Desc', 'Asc', nil)"
         raise(ArgumentError, message) unless ['desc', 'asc'].include?(direction)
@@ -163,7 +202,9 @@ module HasSearchIndex
         check_page_attribute(get_order_attribute(option), model, error_prefix, allow_collection = false).map do |attribute|
           "#{ attribute }:#{ direction }"
         end
-      end.flatten
+      end.flatten # flatten is for 'check_page_attribute' results
+      
+      return orders.uniq
     end
     
     ## Method to check page attribute
@@ -203,5 +244,15 @@ module HasSearchIndex
       
       return [attribute]
     end
-
+    
+    def self.check_page_column(attribute, instance, error_prefix)
+      splitted_attribute = attribute.split('.')
+      splitted_attribute.each do |part|
+        message = "#{ error_prefix } Undefined attribute path '#{ attribute }' for #{ instance.class }"
+        raise(ArgumentError, message) unless instance.respond_to?(part) 
+        instance = instance.class.reflect_on_association(part.to_sym).class_name.constantize.new unless part == splitted_attribute.last
+      end
+        
+      return attribute
+    end
 end

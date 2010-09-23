@@ -11,14 +11,14 @@
     <%= select_tag('', options_for_select( prepared_all ), :multiple => true, :size => 5, :id => all_id)%>
   </div>
   <div class='selection_actions'>
-    <%= button_to_function('→', "move_selected_options('#{ all_id }','#{ selected_id }')")%>
-    <%= button_to_function('←', "move_selected_options('#{ selected_id }','#{ all_id }')")%>
+    <%= button_to_function('→', "moveSelectedOptions('#{ all_id }','#{ selected_id }')")%>
+    <%= button_to_function('←', "moveSelectedOptions('#{ selected_id }','#{ all_id }')")%>
   </div>
   <div class='list_of_selected'>
     <%= select_tag("query[#{ suffix }][]", options_for_select( prepared_selected ), :multiple => true, :size => 5, :id => selected_id)%>
   </div>
   <div class='sort_actions'>
-    <%= button_to_function('↑', "move_option_up('#{ selected_id }')")%>
-    <%= button_to_function('↓', "move_option_down('#{ selected_id }')")%>
+    <%= button_to_function('↑', "moveOptionUp('#{ selected_id }')")%>
+    <%= button_to_function('↓', "moveOptionDown('#{ selected_id }')")%>
   </div>
 </div>

@@ -54,9 +54,7 @@ class User < ActiveRecord::Base
  
   # Search Plugin
   has_search_index  :additional_attributes => { :expired? => :boolean },
-                    :only_attributes       => [ :username, :enabled, :last_connection, :last_activity ],
-                    :displayed_attributes  => [ :id, :username, :enabled, :expired?, :last_activity ],
-                    :main_model            => true
+                    :only_attributes       => [ :username, :enabled, :last_connection, :last_activity ]
   
   # Method to verify if the password pass by argument is the same as the password in the database
   def compare_password(password)

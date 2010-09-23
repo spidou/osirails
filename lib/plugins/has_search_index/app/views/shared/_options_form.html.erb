@@ -4,8 +4,8 @@
   visible = cookies["#{ @page_name }_options"] == 'true' ? true : false
   collapse = visible ? 'not-collapsed' : 'collapsed'
 %>
-<fieldset class='options_field'>
-  <legend class="<%= collapse %>" onclick="toggle_fieldset('<%= @page_name %>', this);">Options</legend>
+<fieldset>
+  <legend class="<%= collapse %>" onclick="toggleOptionsFieldset('<%= @page_name %>', this);">Options</legend>
   
   <div class="presentation_medium" style="<%= 'display:none;' unless visible %>">
     <% if page_config[:group].any? %>

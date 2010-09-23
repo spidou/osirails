@@ -175,26 +175,28 @@ module ApplicationHelper
   # You can override this behaviour by passing true in second argument
   #
   # Examples :
-  #   add_contextual_menu_item(:section_name, true, item)
+  #   add_contextual_menu_item(:section_name, :force_not_list => true, item)
   #
-  #   add_contextual_menu_item(:section_name, true) do
+  #   add_contextual_menu_item(:section_name, :force_not_list => true) do
   #     item
   #   end
   #
-  def add_contextual_menu_item(*args, &block)
-    if block_given?
-      section = args.first
-      force_not_list = args.last.instance_of?(TrueClass)
-      items = capture(&block).split("\n")
-    else
-      section = args.shift
-      force_not_list = args.first.instance_of?(TrueClass)
-      args.shift if force_not_list
-      items = [args].flatten
-    end
+  # You can manage to insert your item at a given position
+  #
+  # Examples :
+  #   add_contextual_menu_item(:section_name, :position => :first, :item)
+  #   add_contextual_menu_item(:section_name, :position => :first) do
+  #     item
+  #   end
+  #   add_contextual_menu_item(:section_name, :position => :last, :item) 
+  #   add_contextual_menu_item(:section_name, :position => 2, :item)
+  #
+  def add_contextual_menu_item(section, *args, &block)
+    options = (args.first.is_a?(Hash) ? args.shift : {:force_not_list => false, :position => :last})
+    items   = block_given? ? capture(&block).split("\n") : args.dup
     
     items.each do |item|
-      @contextual_menu.add_item(section, force_not_list, item)
+      @contextual_menu.add_item(section, options[:force_not_list], options[:position], item)
     end
   end
   

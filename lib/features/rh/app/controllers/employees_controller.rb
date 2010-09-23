@@ -5,8 +5,7 @@ class EmployeesController < ApplicationController
   
   # GET /employees
   def index
-#    @employees = params['all_employees'] || false ? Employee.all.paginate(paginate_options) : Employee.actives.paginate(paginate_options)
-    build_query_for(:employee_index)# do |format|
+    build_query_for(:employee_index)
   end
   
   # GET /employees/:id

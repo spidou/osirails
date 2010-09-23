@@ -57,14 +57,22 @@ class Array
   # [2,3,4].same_elements?([2,3,4,5]) == false
   #
   def same_elements?(array)
-    size == array.size && include_all_values?(array)
+    size == array.size && include_all?(array)
   end
   
-  # [1,2,3].include_all_values?([1,2]) == true
-  # [1,2,3].include_all_values?([1,6]) == false
+  # [1,2,3].include_all?([1,2]) == true
+  # [1,2,3].include_all?([1,6]) == false
   #
-  def include_all_values?(array)
+  def include_all?(array)
     (self & array).size == array.size
+  end
+  
+  # [1,2,3].include_any?([1,2]) == true
+  # [1,2,3].include_any?([1,6]) == true
+  # [1,2,3].include_any?([5,6]) == false
+  #
+  def include_any?(array)
+    (self & array).size >= 1
   end
 end
 
@@ -116,8 +124,10 @@ class String
     case self.strip             # avoid spaces
       when "true", "1"
         return true
+      when "false", "0"
+        return false
       else
-        return false 
+        return nil 
     end 
   end
 end

@@ -37,8 +37,8 @@ module HasSearchIndex
     include PrivateClassMethods
     include ImplementationValidation
     
-    AUTHORIZED_OPTIONS = [ :except_attributes, :only_attributes, :additional_attributes, :displayed_attributes,
-                           :except_relationships, :only_relationships, :main_model ]
+    AUTHORIZED_OPTIONS = [ :except_attributes, :only_attributes, :additional_attributes, :identifier,
+                           :except_relationships, :only_relationships ]
     
     # Method called into all models that implement the plugin 
     # it define search_index class variable based on passed options hash
@@ -56,8 +56,6 @@ module HasSearchIndex
       options[:except_attributes]     ||=[]
       options[:except_relationships]  ||=[]
       options[:only_relationships]    ||=[]
-      options[:displayed_attributes]  ||=[]
-      options[:main_model]            ||= false
 
       # Check options arg for some errors
       options.keys.each do |key|
@@ -74,11 +72,10 @@ module HasSearchIndex
       options.delete(:except_attributes)
       options.delete(:only_attributes)
       
-      # Prepare displayed_attributes
-      message  = "#{error_prefix} :displayed_attributes is wrong. "
-      message += "Expected Array but was '#{options[:displayed_attributes].inspect}':#{options[:displayed_attributes].class.to_s}"
-      raise ArgumentError, message unless options[:displayed_attributes].is_a?(Array)
-      options[:displayed_attributes].collect!(&:to_s)
+      # Check identifer # TODO test
+      message  = "#{ error_prefix } :indentifier is wrong: "
+      message += "expected to be a valid method or attribute"
+      raise ArgumentError, message unless self.respond_to?(options[:identifier]) if options[:identifier]
       
       # Prepare additional_attributes
       message  = "#{error_prefix} :additional_attributes is wrong: "

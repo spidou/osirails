@@ -1,10 +1,10 @@
 <%
   search_type_config = [['tous les critères','and'],['Au moins un critère','or'],['Aucun critère','not']]
-  visible = cookies["#{ @page_name }_criteria"] == 'false' ? false : true
-  collapse = visible ? 'not-collapsed' : 'collapsed'
+  visible            = cookies["#{ @page_name }_criteria"] == 'false' ? false : true
+  collapse           = visible ? 'not-collapsed' : 'collapsed'
 %>
-<fieldset class='criteria_field'>
-    <legend class="<%= collapse %>" onclick="toggle_fieldset('<%= @page_name %>', this);">Filtres</legend>
+<fieldset>
+    <legend class="<%= collapse %>" onclick="toggleCriteriaFieldset('<%= @page_name %>', this);">Filtres</legend>
     
     <div id="<%= query.subject_model.downcase %>_criteria" class="criteria" style="<%= 'display:none;' unless visible %>">
       <div class='search_type'>
@@ -16,7 +16,6 @@
         <%= render :partial => 'queries/criteria', :object => @query.criteria, :locals => { :model => @query.subject_model } %>
         <%= generate_attribute_chooser %>
       </table>
-      
     </div>
 </fieldset>
 

@@ -5,8 +5,6 @@ class Query < ActiveRecord::Base
   serialize :group
   serialize :per_page
   
-#  has_permissions :as_business_object
-  
   before_validation :prepare_attributes
   
   belongs_to :creator, :class_name => 'User'
@@ -42,15 +40,27 @@ class Query < ActiveRecord::Base
   end
   
   def is_public?
-    public_access == true 
+    public_access
   end
   
   def should_validate?(key)
     !page_configuration(key).nil? && page_configuration(key).any?
   end
   
+  def quick_search_attributes
+    attributes = page_configuration[:quick_search]
+    attributes ? attributes.map {|n| n.is_a?(Hash) ? n.values.first : n } : nil
+  end
+  
+  def quick_search_option
+    if quick_search_value && quick_search_attributes
+      {:attributes => quick_search_attributes, :value => quick_search_value} 
+    end
+  end
+  
   def search
-    options = (criteria || {}).merge!(:order => order || [], :group => group || [], :search_type => search_type)
+    options = {}
+    options.merge!(criteria || {}).merge!(:quick => quick_search_option, :order => order || [], :group => group || [], :search_type => search_type)
     subject_model.constantize.search_with(options) unless subject_model.nil?
   end
   
@@ -72,11 +82,11 @@ class Query < ActiveRecord::Base
     def validates_serialized_attributes
       if self.page_name
         [:columns, :group].each do |option| 
-          next unless should_validate?(option)
+          next unless self.send(option) && should_validate?(option)
           unless self.send(option).is_a?(Array)
             errors.add(option, "n'est pas au bon format")    
           else
-            errors.add(option, "ne correspond pas à la configuration") unless page_configuration(option).include_all_values?(self.send(option))
+            errors.add(option, "ne correspond pas à la configuration") unless page_configuration(option).include_all?(self.send(option))
           end
         end
       end
@@ -99,11 +109,11 @@ class Query < ActiveRecord::Base
     def validates_order
       if self.page_name && should_validate?(:order)
         
-        unless self.send(:order).is_a?(Array)
+        unless self.send(:order) && self.send(:order).is_a?(Array)
           errors.add(:order, "n'est pas au bon format")    
         else
           order_attributes = self.send(:order).map {|n| n.split(':').first}
-          errors.add(:order, "ne correspond pas à la configuration") unless page_configuration(:order).include_all_values?(order_attributes)
+          errors.add(:order, "ne correspond pas à la configuration") unless page_configuration(:order).include_all?(order_attributes)
         end
         errors.add(:order, "contient des erreurs") if self.send(:order).reject {|option| option.split(':').last =~ /(desc|asc)$/ }.any?
       end
@@ -111,13 +121,15 @@ class Query < ActiveRecord::Base
     
     def validates_criteria
       if self.page_name && should_validate?(:filters)
-        unless self.criteria.is_a?(Hash)
+        unless self.criteria && self.criteria.is_a?(Hash)
           errors.add(:criteria, "n'est pas au bon format")
         else
           self.criteria.each_value do |options|
             errors.add(:criteria, "est invalide") unless is_valid?(options)
           end
-          errors.add(:criteria, "ne correspond pas à la configuration") unless page_configuration(:filters).include_all_values?(self.criteria.keys)
+          unless page_configuration(:filters).map {|n| n.is_a?(Hash) ? n.values.first : n}.include_all?(self.criteria.keys)
+            errors.add(:criteria, "ne correspond pas à la configuration")
+          end
         end
       end
     end

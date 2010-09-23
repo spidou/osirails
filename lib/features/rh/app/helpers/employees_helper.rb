@@ -72,9 +72,9 @@ module EmployeesHelper
     return html
   end
   
-  def contextual_search_for_employee
-    contextual_search("Employee", ["*", "user.*", "service.name", "jobs.name"])
-  end
+#  def contextual_search_for_employee
+#    contextual_search("Employee", ["*", "user.*", "service.name", "jobs.name"])
+#  end
   
   ################################
   ##  integrated search helpers ##
@@ -96,8 +96,10 @@ module EmployeesHelper
     content_tag(:td, content, :class => 'actions') 
   end
   
-  def query_group_td_content_in_employee_index(group_by)
-     group_by.map {|n| "#{ translate(@query.group.at(group_by.index(n))) } #{ content_tag(:span, n, :class => 'group_subject') }"}.join(' et ') + " " + link_to_function(image_tag('more_16x16.png'), "toggle_group(this);")
+  def query_group_td_content_in_employee(group_by)
+    content_tag(:span, :class => 'not-collapsed', :onclick => "toggleGroup(this);") do   
+      group_by.map {|n| "#{ translate(@query.group.at(group_by.index(n))) } #{ content_tag(:span, n, :style => 'color:#555;') }"}.join(' et ')
+    end
   end
   
   def translate(attr)

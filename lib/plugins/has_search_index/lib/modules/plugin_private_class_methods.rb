@@ -86,11 +86,23 @@ private
     return [] if group.nil?
     
     message = "#{self::ERROR_PREFIX} Wrong group clause '#{ group.inspect }'. Expected to be an Array"
-    raise(ArgumentError, message)unless group.is_a?(Array)
+    raise(ArgumentError, message) unless group.is_a?(Array)
     group.each do |element|
       check_criterion_attribute(element)
     end
     group
+  end
+  
+  def get_valid_criteria_from_quick_search(quick)
+    result = {}
+    return result unless quick
+    message = "#{self::ERROR_PREFIX} Wrong quick clause '#{ quick.inspect }'. Expected to be a Hash"
+    raise(ArgumentError, message) unless quick.is_a?(Hash)
+    message = "#{self::ERROR_PREFIX} Wrong quick clause '#{ quick.inspect }'. Expected to be like {:attributes => Array, :value => String}"
+    raise(ArgumentError, message) unless quick.keys.include_all?([:value, :attributes])
+    
+    quick[:attributes].each {|attribute| result[attribute] = quick[:value]}
+    result
   end
   
   # Method to match a simple regexp with a data string
@@ -262,7 +274,6 @@ private
     return positive[negative.index(action)] if negative.include?(action)
   end
   
-  
   # Method to check attribute part of a criterion
   #
   def check_criterion_attribute(attribute_with_prefix)
@@ -291,8 +302,9 @@ private
     message = "#{self::ERROR_PREFIX} Wrong value '#{ values.inspect }:#{ values.class }'"
     if values.is_a?(Array)
       values.each do |value|
-        raise(ArgumentError, "#{ message } complex values collection should contain only Hashes") unless value.is_a?(Hash)
-        raise(ArgumentError, "#{ message } each complex value should contain (:action, :value)") unless value.symbolize_keys.keys.same_elements?([:value, :action])
+        if value.is_a?(Hash)
+          raise(ArgumentError, "#{ message } each complex value should contain (:action, :value)") unless value.symbolize_keys.keys.same_elements?([:value, :action])
+        end
       end
     elsif values.is_a?(Hash)
       raise(ArgumentError, "#{ message } complex value Hash should contain (:action, :value)") unless values.symbolize_keys.keys.same_elements?([:value, :action])
@@ -338,16 +350,23 @@ private
   # Method to search into database for attributes
   # look for search_with() public method for examples
   #
-  def search_with_database_attributes(criteria, search_type, order = [], group = [])
+  def search_with_database_attributes(criteria, search_type, order, group, quick)
     return [] if only_additional_attributes?(criteria) 
     
-    include_option    = generate_include_option(criteria, group, order)
+    include_option    = generate_include_option(criteria.merge(quick), group, order)
     conditions_option = generate_conditions_option(criteria, include_option, search_type)
+    if quick.any?
+      quick_conditions = generate_conditions_option(quick, include_option, (search_type == 'not' ? 'not' : 'or'))
+      if quick_conditions != ['']
+        conditions_option[0] += " #{ (search_type == 'not' ? 'not' : search_type) unless conditions_option[0].blank? } (#{ quick_conditions.shift })"
+        conditions_option    += quick_conditions
+      end
+    end
     order_option      = generate_order_option(group, order, include_option)
     arguments         = { :include => include_option, :conditions => conditions_option }
     arguments[:order] = order_option.join(' ,') unless order_option.empty?
     
-    logger.debug "[#{DateTime.now}](has_search_index.rb l.#{__LINE__}) : #{ self }.all(#{ arguments.inspect })"
+    logger.debug "[#{DateTime.now}](#{ File.dirname(__FILE__) }/plugin_private_class_methods.rb l.#{__LINE__}) : #{ self }.all(#{ arguments.inspect })"
     return self.all(arguments)
   end
   
@@ -450,14 +469,16 @@ private
   #
   def sql_condition(attribute_with_prefix, action, value, model)
     attribute = attribute_with_prefix.split('.').last
+    condition_end = ['not like','!='].include?(action) ? "AND #{ attribute_with_prefix } IS NOT NULL" : "OR #{ attribute_with_prefix } IS NULL"
     if model.search_index_attribute_type(attribute) == 'boolean' && ['false', '0'].include?(value.to_s)
-      "(#{ attribute_with_prefix } #{ action }? OR #{ attribute_with_prefix } #{ action == "=" ? 'IS NULL' : 'IS NOT NULL' })"
+      "(#{ attribute_with_prefix } #{ action }? #{ condition_end })"
     elsif value.blank?
-      "#{ attribute_with_prefix } IS #{ 'NOT' if ['not like','!='].include?(action) } NULL"
+      "(#{ attribute_with_prefix } #{ action } '' #{ condition_end })"
     else
       "#{ attribute_with_prefix } #{ action }?"
     end
   end
+  
   
   # Method that return the conditions_array to be passed to the find call.
   #
@@ -631,11 +652,11 @@ private
 
     case model.search_index_attribute_type(attribute)
       when 'boolean'
-        return values.collect(&:to_b)
-      when 'integer'
-        return values.collect(&:to_i)
-      when 'float', 'decimal'
-        return values.collect(&:to_f)
+        return values.map {|n| n.to_b.nil? ? n : n.to_b}           # | Avoid getting value returned for convertion failure,
+      when 'integer'                                          # | to preserve search consistency.
+        return values.map {|n| n.to_i.to_s == n ? n.to_i : n} # | ex: 'tre'.to_i == 0 --> the user may want to search for 'tre' not for 0
+      when 'float', 'decimal'                                 # |
+        return values.map {|n| n.to_f.to_s == n ? n.to_f : n} # |
       when 'datetime'
         return value.to_s.gsub('"','').to_a
       else

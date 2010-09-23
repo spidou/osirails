@@ -6,10 +6,13 @@ conf_pagination: &pagination
     
 advanced_employee:
   columns:
-    - *
-  filters:
     - last_name
     - first_name
+    - fullname
+    - jobs.name
+    - civility.name
+  filters:
+    - *
     - user_name: user.username
     - service.name
     - user.*
@@ -28,8 +31,8 @@ advanced_employee:
     - numbers.number_type.*
     - numbers.indicative.*
     - numbers.indicative.country.*
-    - civility.name
-    - jobs.name
+    - civility.*
+    - jobs.*
     - jobs.service.name
   group:
     - last_name
@@ -45,13 +48,22 @@ employee_index:
     - first_name
     - user_name: user.username
     - service_name: service.name
-    - civility_name: civility.name
+    - civility: civility.id
     - contract_end: job_contract.departure
-  columns:
+    - contract_type: job_contract.job_contract_type.id
+  quick_search:
     - *
+    - user.username
     - service.name
-    - civility.*
-    - job_contract.job_contract_type.*
+    - civility.name
+    - job_contract.job_contract_type.name
+  columns:
+    - last_name
+    - first_name
+    - fullname
+    - service.name
+    - civility.name
+    - job_contract.job_contract_type.name
   group:
     - last_name
     - service.name
@@ -59,17 +71,18 @@ employee_index:
     - last_name
     - first_name
   <<: *pagination
-  
   default_query:
+    name: all employees
     criteria:
       job_contract.departure: 
         action: '='
         value:
     columns:
-      - first_name
+      - civility.name
       - last_name
+      - first_name
       - service.name
-      - email
+      - job_contract.job_contract_type.name
     group:
       - last_name
     order:

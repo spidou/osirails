@@ -15,12 +15,10 @@ class QueriesController < ApplicationController
     @query = Query.find(params[:id])
     @query.order = get_order(params[:query].delete(:order)) 
     
-    
     if @query.update_attributes(params[:query])
       flash[:notice] = "La requête a été modifiée avec succés"
       redirect_to params[:return_uri] + "?query_id=#{ @query.id }"
     else
-    raise @query.errors.inspect
       @return_uri = params[:return_uri]
       render :action => 'edit'
     end
@@ -62,10 +60,11 @@ class QueriesController < ApplicationController
     def prepare_params
       criteria = {}
       if params[:criteria]
-        params[:criteria].dup.each do |key, value|
-          attribute = value.delete(:attribute)
-          criteria[attribute] ||= []
-          criteria[attribute] << value.symbolize_keys
+        params[:criteria].each do |attribute, options|
+          options[:value].each_with_index do |value, index|
+            criteria[attribute] ||= []
+            criteria[attribute] << {:action => options[:action].at(index), :value => value}
+          end
         end
       end
       params[:query][:criteria] = criteria
@@ -74,13 +73,13 @@ class QueriesController < ApplicationController
     def prepare_variables
       return unless params[:query]
       @page_name = params[:query][:page_name].to_s
-      page_configuration  = HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym]
-      @organized_filters ||= HasSearchIndex.organized_filters(page_configuration[:filters], page_configuration[:model])
+      @page_configuration  = HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym]
+      @organized_filters ||= HasSearchIndex.organized_filters(@page_configuration[:filters], @page_configuration[:model])
       
       @data_types = {@page_name => {}}
-      page_configuration[:filters].each do |filter|
+      @page_configuration[:filters].each do |filter|
         attribute = filter.is_a?(Hash) ? filter.values.first : filter
-        @data_types[@page_name][attribute] = HasSearchIndex.get_nested_attribute_type(page_configuration[:model], filter)
+        @data_types[@page_name][attribute] = HasSearchIndex.get_nested_attribute_type(@page_configuration[:model], filter)
       end
     end
 end

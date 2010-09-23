@@ -34,7 +34,7 @@ div.inline_div label{
   vertical-align: middle;
 }
 
-/* results */
+/* RESULTS */
 .search_no_result {
   border: solid #E99727 2px;
   background: #ECC48B;
@@ -45,7 +45,8 @@ div.inline_div label{
   margin-top: 5px;
 }
 
-/* actions */
+/* ACTIONS */
+
 div.public_links {
   margin-top: 5px;
   margin-bottom: 0px;
@@ -53,11 +54,12 @@ div.public_links {
   margin-right: -5px;
   background-color: #E99727;
   padding: 10px;
+  padding-left: 5px;
 }
 
 
-div.public_links a{
-  color: black;
+div.public_links a {
+  color: #000;
   text-decoration: none;
   background-color: #ecc48b;
   font-weight: bold;
@@ -66,60 +68,102 @@ div.public_links a{
   margin-right: 10px;
 }
 
-div.public_links a:hover{
-  -moz-box-shadow: inset 0 0px 5px rgba(0,0,0,0.8);
+div.public_links a.apply {
+  margin-right: 20px;
 }
 
-div.toggle_link{
+div.public_links a:hover {
+  -moz-box-shadow: inset 1px 1px 5px rgba(0,0,0,0.8);
+}
+
+div.integrated_search_form_footer {
+  position: relative;
   border: none;
   border-top: solid 5px #E99727;
+  text-align: center;
   margin-left: -5px;
   margin-right: -5px;
   margin-top: -5px;
-  padding-left:5px;
+  padding-top: 4px;
+  height: 30px;
 }
 
-span.toggle_form_link_text {
-  display:none;
+    /* toggle form link */
+div.integrated_search_form_footer div.toggle_link {
+  position: absolute;
+  border: none;
+  top: 0px;
+  left: 5px;
 }
 
-div.toggle_link span {
-  -moz-border-radius:0px 0px 10px 10px;
-  display: block;
-  padding: 6px;
-  color: black;
-  cursor: pointer;
-  width: 12px;
-  height: 12px;
-  padding-left: 14px;
+div.toggle_link span.quick_search {
+  -moz-border-radius: 0px 0px 10px 10px;
+  text-align: left;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  padding-right: 0px;
+  background: #E99727
 }
 
-div.toggle_link span span {
-  display: none;
-}
-
-div.toggle_link span:hover {
-  width: 95px;
-}
-
-div.toggle_link span:hover span {
+div.toggle_link span.quick_search input {
+  margin: 0px;
   display: inline;
-  position:relative;
-  top:-2px;
 }
 
-div.toggle_link span.toggle_show {
-  background: url('/themes/emr/images/search/show_16x16.png') no-repeat 8px center #E99727;
+div.toggle_link span.quick_search a {
+  background: url('/themes/emr/images/view_12x12.png') no-repeat center bottom;
+  position: relative;
+  left: -15px;
+  padding: 6px;
+  padding-bottom: 0px;
 }
 
-div.toggle_link span.toggle_hide {
-  background: url('/themes/emr/images/search/hide_16x16.png') no-repeat 8px center #E99727;
+div.toggle_link span.quick_search .toggle_integrated_form {
+  padding: 8px;
+  margin: 10px;
+  cursor: pointer;
+  background: url('/themes/emr/images/search/advanced_16x16.png') no-repeat center center;
+}
+
+   /* cancel link */
+div.integrated_search_form_footer div.cancel_link {
+  border: none;
+  display: inline-block;
+  text-align: center;
+  border: 1px black;
+}
+
+div.cancel_link a.reset_query_link {
+  margin: 0px;
+  padding: 4px;
+  padding-left: 25px;
+  padding-right: 25px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  text-decoration: none;
+  color: gray;
+  font-weight: bold;
+  background: #DFDFDF;
+}
+
+div.cancel_link a.reset_query_link:hover {
+  color: #000;
 }
 
 /* group styles*/
 
-span.group_subject{
+.group span{
   color: gray;
+  cursor: pointer;
+}
+
+.group .collapsed {
+  background: url('/themes/emr/images/search/toggle_plus_16x16.png') no-repeat 2px center #fff;
+  padding-left: 18px;
+}
+
+.group .not-collapsed {
+  background: url('/themes/emr/images/search/toggle_minus_16x16.png') no-repeat 2px center #fff;
+  padding-left: 18px;
 }
 
 /* pagination per_page options*/
@@ -140,9 +184,8 @@ div.pagination {
 
 .integrated_search_form legend {
   -moz-border-radius: 5px;
-  border: solid 0.5px  #D0D0D0;
+  border: solid 0.5px #D0D0D0;
   cursor: pointer;
-  padding-left:18px;
 }
 
 .integrated_search_form fieldset {
@@ -152,33 +195,23 @@ div.pagination {
   padding: 0.3em 0.7em;
 }
 
-.integrated_search_form .collapsed {
-  background: url('/themes/emr/images/search/collapse_off_16x16.png') no-repeat 2% #fff;
+.integrated_search_form legend:hover {
+  -moz-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.8);
 }
 
-.integrated_search_form .not-collapsed {
-  background: url('/themes/emr/images/search/collapse_on_16x16.png') no-repeat 2% #fff;
+.collapsed {
+  background: url('/themes/emr/images/search/collapsed_16x16.png') no-repeat 2px #fff;
+  padding-left: 18px;
+}
+
+.not-collapsed {
+  background: url('/themes/emr/images/search/not-collapsed_16x16.png') no-repeat 2px #fff;
+  padding-left: 18px;
 }
 
 /* criterion */
-
-div.public_links a.hide_integrated_search {
-  text-align: center;
-  position: relative;
-  top: -8px;
-  margin-right: 20px;
-  padding: 6px;
-  padding-bottom: 1px;
-  -moz-border-radius: 0px 0px 7px 7px;
-  -moz-box-shadow: inset 0 0px 8px rgba(0,0,0,0.4);
-  color: black;
-  font-weight: bold;
-  text-decoration: none;
-  
-}
-
-div.public_links  a.hide_integrated_search:hover {
-  -moz-box-shadow: inset 0 -2px 12px rgba(0,0,0,0.8);
+.criterion {
+  margin: 1em;
 }
 
 .criterion a {
@@ -187,13 +220,24 @@ div.public_links  a.hide_integrated_search:hover {
   color: #E0E0E0;
 }
 
-.criterion {
-  margin: 1em;
+.criterion a.not_active {
+  color: #505050;
+  cursor: default;
 }
 
 .criterion a.delete_link {
   display: inline;
-  margin-left:10px;;
+  margin-left:10px;
+}
+
+.criterion a.toggle_multiple_link {
+  display: inline;
+  padding: 8px;
+  background: url('/themes/emr/images/search/toggle_plus_16x16.png') no-repeat center #fff;
+}
+
+.criterion a.toggle_multiple_link.multiple {
+  background: url('/themes/emr/images/search/toggle_minus_16x16.png') no-repeat center #fff;
 }
 
 .criterion ul.attribute_chooser a {
@@ -246,12 +290,13 @@ div.public_links  a.hide_integrated_search:hover {
 }
 
 .criterion div.attribute span:hover {
-  -moz-box-shadow: inset 0 0px 8px rgba(0,0,0,0.4);
+  -moz-box-shadow: inset 1px 1px 4px rgba(0,0,0,0.7);
   cursor: pointer;
 }
 
-.criterion div.inputs {
-  display:block;
+.criterion span.inputs select, input{
+  vertical-align: middle;
+  max-height: 175px; /* limit for the select with multiple: equivalent to 10 rows*/
 }
 
 .criterion ul {
@@ -297,6 +342,7 @@ div.public_links  a.hide_integrated_search:hover {
   background: orange;
 }
 
+ /* hidden table used to oragnize criteria*/
 .integrated_search_form table.no_nth {
   background: none;
   border: none;

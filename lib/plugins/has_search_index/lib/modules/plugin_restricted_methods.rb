@@ -68,11 +68,23 @@ module RestrictedMethods
     order       = get_valid_order_clause(criteria.delete(:order))
     group       = get_valid_group_clause(criteria.delete(:group))
     search_type = get_valid_search_type(criteria.delete(:search_type))
+    quick       = get_valid_criteria_from_quick_search(criteria.delete(:quick))
     
+    check_criteria(quick)
     check_criteria(criteria)
     
-    database_result   = search_with_database_attributes(criteria, search_type, order, group)
+    database_result   = search_with_database_attributes(criteria, search_type, order, group, quick)
     additional_result = search_with_additional_attributes(criteria, search_type)
+    if quick.any?
+      additional_result = case search_type
+        when 'and'
+          then additional_result && search_with_additional_attributes(quick, 'or')
+        when 'or'
+          then additional_result || search_with_additional_attributes(quick, 'or')
+        when 'not'
+          then additional_result && search_with_additional_attributes(quick, 'not')
+      end
+    end
     
     result = if database_result.empty?
       additional_result

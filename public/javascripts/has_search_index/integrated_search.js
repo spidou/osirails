@@ -1,4 +1,4 @@
-function move_selected_options(from, to)
+function moveSelectedOptions(from, to)
 {
   while ($(from).selectedIndex != -1)
   {
@@ -9,21 +9,21 @@ function move_selected_options(from, to)
 }
 
 
-function move_option_up(select)
+function moveOptionUp(select)
 {
   if($(select) == null || $(select).selectedIndex <= 0)  return null
   
-  selected_indexes(select).reverse().each(function(index){
+  selectedIndexes(select).reverse().each(function(index){
     option = $(select).options[index] 
     option.previous().insert( {before: option} )
   })
 }
 
-function move_option_down(select)
+function moveOptionDown(select)
 {
   if($(select) == null || $(select).selectedIndex == -1 || $(select).selectedIndex == $(select).options.length - 1 )  return null
   
-  selected_indexes(select).each(function(index){
+  selectedIndexes(select).each(function(index){
     option = $(select).options[index] 
     option.next().insert( {after: option} )
   })
@@ -43,7 +43,7 @@ function unSelectAll(select)
   })
 }
 
-function selected_indexes(select)
+function selectedIndexes(select)
 {
   indexes = new Array
   
@@ -60,7 +60,7 @@ function selected_indexes(select)
   return indexes.reverse() // keep selection order
 }
 
-function valid_select_options(ids)
+function validSelectOptions(ids)
 {
   suffixes = ids.split(' ')
   suffixes.each(function(suffix){
@@ -70,42 +70,64 @@ function valid_select_options(ids)
   })
 }
 
-function submit_form_for(action)
+function isNumber(element)
 {
-  valid_select_options('group columns')
+  value = element.value.split(" ");
+  for (var i = 0; i < value.length; i++){ 
+    if (isFinite(value[i]) == 0 && value[i] != ""){
+		  alert ("Vous devez entrer un nombre");
+		  $(element.id).value ="";
+	  }
+	}
+}
+
+function submitFormFor(action)
+{
+  validSelectOptions('group columns')
   $('query_form').setAttribute('action', '/queries/' + action)
   $('query_form').submit()
 }
 
 // Method used to toggle group of rows
 //
-function toggle_group(link)
+function toggleGroup(link)
 {
+  link.className = (link.className == 'collapsed' ? 'not-collapsed' : 'collapsed')
   link.up('TR').siblings().each(function(group){
     group.toggle();
   })
 }
 
-function toggle_fieldset(page_name, legend)
+function toggleCriteriaFieldset(page_name, legend)
 {
-  cookie_name      = page_name + (legend.up('FIELDSET').className == 'options_field' ? '_options' : '_criteria')
+  toggleFieldset(page_name, 'criteria', legend)
+}
+
+function toggleOptionsFieldset(page_name, legend)
+{
+  toggleFieldset(page_name, 'options', legend)
+}
+
+function toggleFieldset(page_name, category, legend)
+{
+  cookie_name      = [page_name, category].join('_')
   legend.className = (legend.next().visible() ? 'collapsed' : 'not-collapsed')
   exp_date         = new Date( 2038 , 1, 1 ); // the year is set to 2038 to simule never expire behavior FIXME
   setCookie(cookie_name, !legend.next().visible(), exp_date, '/')
   
   Effect.toggle(legend.next(), 'blind', {duration:0.2});
-  
 }
 
-function toggle_integrated_form(page_name, link)
+function toggleIntegratedForm(page_name, link)
 {
-  main_form_visibility = link.up().previous('.integrated_search_form').visible()
+  main_div = link.up('.integrated_search_form_footer')
+  main_form_visibility = main_div.previous('.integrated_search_form').visible()
   
-  link.className = (main_form_visibility ? 'toggle_show' : 'toggle_hide')
+  if(main_div.down('.quick_search_inputs') != null) { main_div.down('.quick_search_inputs').toggle(); }
   exp_date       = new Date( 2038 , 1, 1 ); // the year is set to 2038 to simule never expire behavior FIXME
   setCookie(page_name + '_form', !main_form_visibility, exp_date, '/')
   
-  Effect.toggle(link.up().previous('.integrated_search_form'), 'blind', {duration:0.3})
+  Effect.toggle(main_div.previous('.integrated_search_form'), 'blind', {duration:0.3})
 }
 
 //-------------------------------------------- dynamique attribute chooser methods------------------------------ 
@@ -169,7 +191,7 @@ function replaceAttribute(element, content)
 function footPrint(element)
 {
   // forget the old selectipon
-  var li = element.up('.criterion').down('.selected')
+  var li = element.up('.attribute_chooser').down('.selected')
   while(li != null) {
     li.removeClassName('selected')
     li = li.down('.selected')
@@ -195,4 +217,32 @@ function insertAttributeChooser(element)
 function insertInputs(element, content)
 {
   element.up('.criterion').down('.inputs').innerHTML = content
+}
+
+function toggleMultiple(span)
+{
+  select = span.previous('SELECT')
+  if(select.multiple){
+    select.multiple = false
+    span.removeClassName('multiple')
+  }
+  else{
+    select.multiple = true
+    span.addClassName('multiple')
+  }
+}
+
+
+function applySelection(select, hidden)
+{
+  value = new Array
+  if(select.multiple){
+    selectedIndexes(select).each(function(i){
+      value.push(select.options[i].value)
+    })
+  }
+  else{
+    value.push(select.options[select.selectedIndex].value)
+  }
+  hidden.value = value.join(' ')
 }

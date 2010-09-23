@@ -1,0 +1,100 @@
+##
+# Integrated search configuration using yaml files:
+#
+# A Yaml file should:
+# - have a path like **/config/queries/*.yml
+# - Be named as a model implementing has_search_index plugin (use the downcased class_name).
+# - Use only configured attributes and relationship (for the plugin in the model implementation or sub resource's implementation).
+# - Contain a page_name named like +advanced_MODEL+ (MODEL == downcased class_name) to configure advanced search.
+# - Contain at least one item for Columns
+# - Respect following instruction about each option's content and constraints :
+#
+#  OPTIONS:
+#
+## per_page -> Store numbers to represente numbers of elements to see by page.
+#           -> nil to avoid pagination
+#
+## filters  -> Store attributes paths like search_with method ([relationship.][relationship.]attribute).
+#           -> nil to avoid filtering
+#
+## columns  -> Store columns inthe order that they will be displayed (can contain attributes or methods not configured into has_search_index).
+#           -> At least one item to be displayed 
+#
+## group    -> Store attributes path to group results
+#           -> nil to avoid grouping
+#
+## order    -> Store attributes path to sort results
+#           -> nil to avoid sorting
+#
+## default_query             -> inclued all listed options above excepted +filters+
+#
+## default_query:criteria    -> criteria from +search_with+ attributes (see criteria example below)
+#                            -> nil to use no default criteria (aka model.all)
+#
+## default_query:name        -> title for default query search
+#                            -> nil to use +page_name+ as title
+#
+## default_query:per_page    -> selected per_page option (must be included into +per_page+)
+#                            -> nil to view all elements in the same page by default
+#
+## default_query:search_type -> search_type to be used when calling +search_with+
+#                            -> nil to use default value ('and')
+#
+#
+# NB: Gloggbing (*) can be used only for :
+# - filters (unless when using alias)
+# - group
+# - default_query:group
+# - order
+#
+# ==== Example
+##############
+conf_pagination: &pagination                                                 # All page_name like "conf_*" will not be considered as page_configuration key,
+  per_page:                                                                  #  you can it use as the example to respect DRY and use one configuration for many pages
+    - 5
+    - 10
+    - 15
+
+employee_index:                                                              # Use advanced_employee to define advanced search for Employee
+  filters:                                                                   
+    - *                                                                      # All attributes configured for Employee's has_search_index implementation
+    - service.*                                                              # All attributes configured for Service's has_search_idnex implementation
+    - user_name: user.username                                               # Alias a nested attribute, to display it to user as an normal attribute
+    - user.username                                                          # Regardless to his position, that item is useless because the path is overrided by an alias
+  columns:
+    - first_name
+    - last_name
+    - email
+    - service.name
+    - civility.name
+    - job_contract.job_contract_type.*
+  group:
+    - last_name
+    - service.name
+  order:
+    - last_name
+    - first_name
+  <<: *pagination                                                            # use cofiguration defined with 'conf_*' named like option
+  default_query:
+    name: all employees
+    criteria:
+      job_contract.departure:                                                # generate 'job_contract.departure' => {:action => '=', :value => nil}
+        action: '='
+        value:
+      user.username:                                                         # generate 'user.username' => [{:action => '!=', :value => nil},
+        - action: '!='                                                       #                              {:action => 'like', :value => 'admin'}]
+          value:
+        - action: 'like'
+          value: 'admin'
+    columns:
+      - last_name
+      - service.name
+      - email
+    group:
+      - last_name
+    order:
+      - "last_name:Asc"                                                      # [:default_query][:order] must have order direction in (Asc, Desc)
+      - "first_name:Asc"
+    search_type: and                                                         # [:default_query][:search_type] option to be used with search_with method (if nil use 'and')
+    per_page: 10                                                             # [:default_query][:per_page] must have only one number include in per_page
+

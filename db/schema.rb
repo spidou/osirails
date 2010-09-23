@@ -1071,16 +1071,17 @@ ActiveRecord::Schema.define(:version => 20100723061531) do
   end
 
   create_table "queries", :force => true do |t|
-    t.integer  "creator_id",    :limit => 11
+    t.integer  "creator_id",         :limit => 11
     t.string   "name"
     t.string   "page_name"
     t.string   "search_type"
+    t.string   "quick_search_value"
     t.text     "criteria"
     t.text     "columns"
     t.text     "order"
     t.text     "group"
     t.boolean  "public_access"
-    t.integer  "per_page",      :limit => 11
+    t.integer  "per_page",           :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

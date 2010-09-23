@@ -9,18 +9,18 @@
 <% form_for(query) do |form| %>
   <%= form.error_messages %>
   <p>
-    <%= form.label :name %>
+    <%= form.label(:name) %>
     <%= form.text_field(:name) %>
   </p>
   <p>
-    <%= form.label :public_access %>
-    <%= form.check_box(:public_access , {}, true, false) %>
+    <%= form.label(:public_access) %>
+    <%= form.check_box(:public_access) %>
   </p>
   
-  <%= render(:partial => "has_search_index/criteria_form", :locals => {:query => query})%>
+  <%= render(:partial => "shared/criteria_form", :locals => {:query => query})%>
   
   <fieldset>
-    <legend class='not-collapsed' onclick="toggle_fieldset('<%= query.page_name %>', this);">Options</legend>
+    <legend class='not-collapsed' onclick="toggleOptionsFieldset('<%= query.page_name %>', this);">Options</legend>
     <div>
     <% unless page_config[:group].empty? %>
       <div class='inline_div'> 
@@ -62,6 +62,6 @@
   <%= hidden_field_tag('return_uri', @return_uri)%>
   <%= hidden_field_tag('query[page_name]', query.page_name)%>
   
-  <%= form.form_buttons(:onclick => "valid_select_options('group columns');") %>
+  <%= form.form_buttons(:onclick => "validSelectOptions('group columns');") %>
 <% end %>
 </div>

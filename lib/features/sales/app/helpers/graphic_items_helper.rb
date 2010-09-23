@@ -174,7 +174,7 @@ module GraphicItemsHelper
   end
   
   def display_user_spool_in_contextual_menu
-    add_contextual_menu_item(:spool_items, true) { display_user_spool }
+    add_contextual_menu_item(:spool_items, :force_not_list => true) { display_user_spool }
   end
   
   def display_empty_spool_link
