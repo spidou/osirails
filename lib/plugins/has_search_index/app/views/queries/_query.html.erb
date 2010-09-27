@@ -34,7 +34,7 @@
       <div class='inline_div'>
         <%= form.label :columns %>
         <%= render :partial => 'shared/sortable_selects',
-                   :locals => {:selected => query.columns, :all => page_config[:columns], :suffix => 'columns'}%>
+                   :locals => {:selected => query.columns || [], :all => page_config[:columns], :suffix => 'columns'}%>
       </div>
     <% end %>
     

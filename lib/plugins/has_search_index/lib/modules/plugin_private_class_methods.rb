@@ -178,7 +178,7 @@ private
 
       splited_values.each do |value|
         value        = value.to_s.downcase                                             # downcase value to make the match method case insensitive
-        is_string    = ["string", "text"].include?(object.search_index[:attributes][attribute])
+        is_string    = ["string", "text"].include?(object.class.search_index_attribute_type(attribute))
         is_match ||= is_string ? data.match(Regexp.new(value)) : data == value
       end
       return (search_type == 'not')? !is_match : is_match
@@ -536,7 +536,12 @@ private
     relationship     = attribute_prefix.split(".")[-2]
     sub_relationship = attribute_prefix.split(".")[-1]
     
-    prefix_array     = get_prefix_order(self.table_name, include_array, sub_relationship)
+    model     = relationship_class_name(attribute_prefix, relationship).constantize
+    sub_model = relationship_class_name(attribute_prefix, sub_relationship).constantize
+    table     = model.table_name
+    sub_table = sub_model.table_name
+    
+    prefix_array = get_prefix_order(self.table_name, include_array, sub_table)
     
     # filter the prefix table to get only the redundant prefixes according to the current prefix
     redundant_prefixes = prefix_array.reject {|n| !(n.split(".")[-2..-1] == attribute_prefix.split(".")[-2..-1]) or n == prefix_array.first}
@@ -556,23 +561,16 @@ private
     #        children is a service belonging to another service that's why there is a redundancy but the fact is that we need to add one 's'
     #        to 'chidren' to make it work properly.
     
-    # manage the custom relationships name
-
-    model     = relationship_class_name(attribute_prefix, relationship).constantize.table_name
-    sub_model = relationship_class_name(attribute_prefix, sub_relationship).constantize.table_name
+    basic_prefix = (table == sub_table && model == sub_model) ? "#{ sub_relationship.pluralize }_#{ relationship.pluralize }" : "#{ sub_table }_#{ table }"
     
-    if relationship_class_name(attribute_prefix, relationship) == relationship_class_name(attribute_prefix, sub_relationship)    # manage the self reference
-      return "#{ sub_relationship.pluralize }_#{ relationship.pluralize }"
-    end
-    
-    return "#{ sub_model }" if prefix_array.first == attribute_prefix
+    return sub_table if prefix_array.first == attribute_prefix
     case prefix_index
       when nil
-        raise "#{self::ERROR_PREFIX} AttributPrefixError: #{ attribute_prefix } do not match with the plugin definition into the model"
+        raise "#{self::ERROR_PREFIX} AttributePrefixError: '#{ attribute_prefix }' do not match with the plugin definition into the model"
       when 0
-        return "#{ sub_model }_#{ model }"
+        return basic_prefix
       else
-        return "#{ sub_model }_#{ model }_#{ prefix_index+1 }"
+        return "#{ basic_prefix }_#{ prefix_index + 1 }"
     end
   end
   
@@ -580,19 +578,21 @@ private
   # It return an array of all prefixes usable according to the include array
   # permit to the calling method, to manage the prefix redundancy and to add indexes
   #
-  def get_prefix_order(parent_model_tablename, include_array, sub_model, path="")
+  def get_prefix_order(parent_model_table_name, include_array, sub_model_table_name, path="")
     prefix_array = []
-    path        += "#{parent_model_tablename}."
+    path        += "#{parent_model_table_name}."
     include_array.each do |element|
-      if element.is_a?(Hash)
-        current_model = element.keys[0].to_s
-        prefix_array += get_prefix_order(current_model, element.values[0], sub_model, path)
-      else
-        current_model = element.to_s
-      end    
-      prefix_array << "#{path}#{current_model}" if sub_model == current_model
+      relationship  = element.is_a?(Hash) ? element.keys[0].to_s : element.to_s
+      
+      prefix_array  = complete_prefix(relationship, prefix_array, sub_model_table_name, path)
+      prefix_array += get_prefix_order(relationship, element.values[0], sub_model_table_name, path) if element.is_a?(Hash)
     end
-    prefix_array
+    return prefix_array
+  end
+  
+  def complete_prefix(relationship, prefix_array, sub_table, path)
+    table = relationship_class_name("#{ path }#{ relationship }", relationship).constantize.table_name
+    return (sub_table == table ? prefix_array + ["#{ path }#{ relationship }"] : prefix_array)
   end
   
   # Method to permit model retrievement from a +relationship+

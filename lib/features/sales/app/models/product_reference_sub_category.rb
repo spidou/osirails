@@ -8,8 +8,8 @@ class ProductReferenceSubCategory < ProductReferenceCategory
   has_many :disabled_product_references, :class_name => "ProductReference", :conditions => [ "cancelled_at IS NOT NULL" ]
   has_many :all_product_references, :class_name => "ProductReference"
   
-  #has_search_index  :only_attributes      => [ :reference, :name ],
-  #                  :only_relationships   => [ :product_reference_category ]
+  has_search_index  :only_attributes      => [ :reference, :name ],
+                    :only_relationships   => [ :product_reference_category ]
   
   validates_persistence_of :product_reference_category_id, :unless => :can_update_product_reference_category_id?
   

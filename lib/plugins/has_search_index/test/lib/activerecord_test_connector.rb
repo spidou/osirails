@@ -29,7 +29,6 @@ class ActiveRecordTestConnector
   def self.add_load_path(path)
     dep = defined?(ActiveSupport::Dependencies) ? ActiveSupport::Dependencies : ::Dependencies
     dep.load_paths.unshift path
-    dep.load_paths.unshift File.dirname(__FILE__) + '/../../app/models'
   end
 
   def self.setup_connection

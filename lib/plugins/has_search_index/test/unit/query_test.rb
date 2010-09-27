@@ -1,6 +1,6 @@
-require 'test/test_helper'
+require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
-class QueryTest < ActiveSupport::TestCase
+class QueryTest < ActiveRecordTestCase
   fixtures :users
   
   should_belong_to(:creator)
@@ -11,12 +11,7 @@ class QueryTest < ActiveSupport::TestCase
   
   context "" do # context to setup some constant for testing purposes
     setup do
-      @temp = HasSearchIndex::HTML_PAGES_OPTIONS.clone
-      silence_warnings { HasSearchIndex::HTML_PAGES_OPTIONS = { :employee => {:columns => ['name'], :model => 'Employee'} } }
-    end
-    
-    teardown do
-      silence_warnings { HasSearchIndex::HTML_PAGES_OPTIONS = @temp unless @temp.nil? }
+      silence_warnings { HasSearchIndex::HTML_PAGES_OPTIONS = { :person => {:columns => ['name'], :model => 'Person'} } }
     end
     
     context "A new query" do
@@ -30,7 +25,7 @@ class QueryTest < ActiveSupport::TestCase
       
       context "with a page_configuration for :criteria" do
         setup do
-          HasSearchIndex::HTML_PAGES_OPTIONS[:employee][:filters] = ['id']
+          HasSearchIndex::HTML_PAGES_OPTIONS[:person][:filters] = ['id']
         end
 
         should "validate :filters" do
@@ -70,7 +65,7 @@ class QueryTest < ActiveSupport::TestCase
       
       context "with a page_configuration for :order" do
         setup do
-          HasSearchIndex::HTML_PAGES_OPTIONS[:employee][:order] = ['id']
+          HasSearchIndex::HTML_PAGES_OPTIONS[:person][:order] = ['id']
         end
         
         context "that has valid valid content" do
@@ -116,7 +111,7 @@ class QueryTest < ActiveSupport::TestCase
       
       context "with a page_configuration for :group" do
         setup do
-          HasSearchIndex::HTML_PAGES_OPTIONS[:employee][:group] = ['id']
+          HasSearchIndex::HTML_PAGES_OPTIONS[:person][:group] = ['id']
         end
         
         context "that has valid valid content" do
@@ -143,7 +138,7 @@ class QueryTest < ActiveSupport::TestCase
       [:group, :order].each do |option|
         context "with a page_configuration for :#{ option }" do
           setup do
-            HasSearchIndex::HTML_PAGES_OPTIONS[:employee][option] = ['id']
+            HasSearchIndex::HTML_PAGES_OPTIONS[:person][option] = ['id']
           end
           
           should "validate :#{ option }" do
@@ -164,7 +159,7 @@ class QueryTest < ActiveSupport::TestCase
       
       context "with a page_configuration for :per_page" do
         setup do
-          HasSearchIndex::HTML_PAGES_OPTIONS[:employee][:per_page] = [10, 20, 30]
+          HasSearchIndex::HTML_PAGES_OPTIONS[:person][:per_page] = [10, 20, 30]
         end
         
         should "validate :per_page" do
@@ -276,8 +271,11 @@ class QueryTest < ActiveSupport::TestCase
       
       context "performing a search" do
         setup do
-          @expected_result = Employee.search_with("last_name" => {:action => "like", :value => "e"})
-          @query.criteria = {"last_name" => {:action => "like", :value => "e"}}
+          Person.has_search_index :only_attributes => ['name']
+          flunk "Person should be created" unless Person.create(:name => 'ernesta', :age => 30)
+          
+          @expected_result = Person.search_with("name" => {:action => "like", :value => "e"})
+          @query.criteria = {"name" => {:action => "like", :value => "e"}}
         end
         
         should "return expected result" do
@@ -288,7 +286,7 @@ class QueryTest < ActiveSupport::TestCase
       context "with a quick_search_value and with quick_search_attributes" do
         setup do
           @query.quick_search_value = "some text"
-          HasSearchIndex::HTML_PAGES_OPTIONS[:employee][:quick_search] = ['id']
+          HasSearchIndex::HTML_PAGES_OPTIONS[:person][:quick_search] = ['id']
         end
         
         should "have a quick_search_option" do
@@ -321,9 +319,9 @@ class QueryTest < ActiveSupport::TestCase
     def build_query(options = {})
       raise(ArgumentError, "See build_query method's definition for more informations") if options.keys.size > 8 
       query = Query.new(
-        :creator     => User.first,
+        :creator     => users(:creator),
         :name        => options[:name]        || "new query",
-        :page_name   => options[:page_name]   || "employee",
+        :page_name   => options[:page_name]   || "person",
         :search_type => options[:search_type] || "and",
         :columns     => options[:columns]     || ['name'],
         :criteria    => options[:criteria]    || {},

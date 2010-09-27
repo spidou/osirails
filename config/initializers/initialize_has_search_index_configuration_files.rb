@@ -1,9 +1,13 @@
 # Load application configuration
-
-$activated_features_path.each do |feature_path| # FeatureManager.ordered_feature_paths.each do |feature_path| # TODO replace by the comment
-  Dir.glob(File.join(feature_path, "**", "config", "queries", "*.yml")).each do |yml_path|
-    HasSearchIndex.load_page_options_from(yml_path)
+begin
+  FeatureManager.loaded_feature_paths.each do |feature_path|
+    Dir.glob(File.join(feature_path, "**", "config", "queries", "*.yml")).each do |yml_path|
+      HasSearchIndex.load_page_options_from(yml_path)
+    end
   end
-end
 
-require 'has_search_index_initializer'
+  require 'has_search_index_initializer'
+rescue ActiveRecord::StatementInvalid, Mysql::Error, NameError, Exception => e
+  error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
+  RAKE_TASK ? puts(error) : raise(e)
+end

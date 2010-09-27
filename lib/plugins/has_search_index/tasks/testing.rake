@@ -1,3 +1,15 @@
+# Permit to define env variables with :env accessor at call time (origin will_paginate)
+#
+class EnvTestTask < Rake::TestTask
+  attr_accessor :env
+
+  def ruby(*args)
+    env.each { |key, value| ENV[key] = value } if env
+    super
+    env.keys.each { |key| ENV.delete key } if env
+  end
+end
+
 namespace :osirails do
   namespace :has_search_index do
     desc "Run all unit, functional, integration and library tests for has_search_index feature"
@@ -14,29 +26,33 @@ namespace :osirails do
     end
     
     namespace :test do
-      desc "Run the has_search_index library tests"
-      task :library do
-        FileUtils.cd(File.dirname(__FILE__) + '/../test')
-        exec('rake test')
-      end
+      EnvTestTask.new(:library) do |t|
+        t.pattern = "#{File.dirname(__FILE__)}/../test/library/*_test.rb"
+        t.verbose = true
+        t.env = { 'DB' => 'mysql' }
+        t.libs << 'test'
+      end                             
       
-      Rake::TestTask.new(:units => :environment) do |t|
+      EnvTestTask.new(:units) do |t|
         t.libs << "test"
         t.pattern = "#{File.dirname(__FILE__)}/../test/unit/*_test.rb"
+        t.env = { 'DB' => 'mysql' }
         t.verbose = true
       end
       Rake::Task['osirails:has_search_index:test:units'].comment = "Run the has_search_index unit tests"
       
-      Rake::TestTask.new(:functionals => :environment) do |t|
+      EnvTestTask.new(:functionals) do |t|
         t.libs << "test"
         t.pattern = "#{File.dirname(__FILE__)}/../test/functional/*_test.rb"
+        t.env = { 'DB' => 'mysql' }
         t.verbose = true
       end
       Rake::Task['osirails:has_search_index:test:functionals'].comment = "Run the has_search_index functional tests"
       
-      Rake::TestTask.new(:integration => :environment) do |t|
+      EnvTestTask.new(:integration) do |t|
         t.libs << "test"
         t.pattern = "#{File.dirname(__FILE__)}/../test/integration/*_test.rb"
+        t.env = { 'DB' => 'mysql' }
         t.verbose = true
       end
       Rake::Task['osirails:has_search_index:test:integration'].comment = "Run the has_search_index integration tests"

@@ -12,7 +12,7 @@ class Query < ActiveRecord::Base
   validates_presence_of     :name, :creator_id, :page_name, :columns
   validates_presence_of     :creator,        :if => :creator_id
   validates_numericality_of :per_page,       :if => :per_page
-  validates_length_of       :columns,        :minimum => 1 
+  validates_length_of       :columns,        :minimum => 1 , :too_short => "n'a pas assez d'éléments (%d minimum)"#"({{count}} minimum)"
   validates_inclusion_of    :public_access,  :in => [true, false]
   validates_inclusion_of    :search_type, :in => ['and', 'or', 'not']
   

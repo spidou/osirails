@@ -15,8 +15,8 @@ class ProductReferenceCategory < ActiveRecord::Base
   
   validates_persistence_of :reference, :unless => :can_update_reference?
   
-  #has_search_index  :only_attributes    => [ :reference, :name ],
-  #                  :only_relationships => [ :product_reference_sub_categories ]
+  has_search_index  :only_attributes    => [ :reference, :name ],
+                    :only_relationships => [ :product_reference_sub_categories ]
   
   before_destroy :can_be_destroyed?
   

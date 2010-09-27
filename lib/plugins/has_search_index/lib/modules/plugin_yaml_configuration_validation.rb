@@ -31,12 +31,12 @@ module HasSearchIndex
   # +options+ permit to pass options loaded by your self and to skip yml_path loading (that mean that you perfom the load before calling that method)
   #                 
   def self.load_page_options_from(yml_path, options = nil)
-    prefix = "(has_search_index) in (#{ yml_path })"
-    model  = yml_path.split('/').last.gsub('.yml','').camelize
+    prefix   = "(has_search_index) in (#{ yml_path })"
+    model    = yml_path.split('/').last.gsub('.yml','').camelize
+    message  = "#{ prefix } Wrong filename '#{ model.to_s.downcase }.yml'. '#{ model }'"
     
-    message  = "#{ prefix } Wrong filename '#{ model.to_s.downcase }.yml'. '#{ model }' should be a valid model"
-    message += " and should implement 'has_search_index' plugin "
-    raise ArgumentError, message unless MODELS.include?(model)
+    model.constantize rescue raise(ArgumentError, "#{ message } should be a valid model" ) 
+    raise(ArgumentError, "#{ message } should implement 'has_search_index' plugin") unless MODELS.include?(model)
     
     options ||= YAML.load_file(yml_path).reject {|page_name, v| page_name =~ /^conf_/ } ## load options from yaml unless options are passed as argument
     model     = model.constantize

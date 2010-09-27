@@ -1,5 +1,4 @@
-require 'helper'
-require 'lib/activerecord_test_case'
+require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
 class HasSearchIndexTest < ActiveRecordTestCase
   
@@ -29,7 +28,7 @@ class HasSearchIndexTest < ActiveRecordTestCase
         Person.has_search_index :only_relationships => [:numbers], :only_attributes => [:name, :age]
         
         
-        @yml_path = "#{ File.dirname(__FILE__) }/fixtures/person.yml"
+        @yml_path = File.join(File.dirname(__FILE__), '..', 'fixtures', 'person.yml')
         @options = {'person' => {'columns' => ['name'],
                                  'order' => [],
                                  'per_page' => [],
@@ -1565,7 +1564,7 @@ class HasSearchIndexTest < ActiveRecordTestCase
         end
         
         should "return redundant paths ordered as expected" do
-          assert_equal @expected_redundant_paths, Person.send(:get_prefix_order, 'people', @include_array, 'number_type')
+          assert_equal @expected_redundant_paths, Person.send(:get_prefix_order, Person.table_name, @include_array, 'number_types')
         end
         
         context "and with a path that is the first to end with 'number_type'" do

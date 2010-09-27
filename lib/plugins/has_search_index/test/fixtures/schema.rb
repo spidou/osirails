@@ -132,10 +132,17 @@ ActiveRecord::Schema.define do
     t.column "a_binary",       :binary
   end
   
+  create_table "users", :force => true do |t|
+    t.string "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+  
   create_table "queries", :force => true do |t|
     t.integer  "creator_id",    :limit => 11
     t.string   "name"
     t.string   "page_name"
+    t.string   "quick_search_value" 
     t.string   "search_type"
     t.text     "criteria"
     t.text     "columns"

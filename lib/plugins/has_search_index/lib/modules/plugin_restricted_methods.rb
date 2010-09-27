@@ -138,7 +138,7 @@ module RestrictedMethods
   end
   
   # Method to return all USABLE relationships and
-  # raise an error if a mandatory relationship (define with :only_relationhips) do not implement the plugin
+  # raise an error if a mandatory relationship (define with :only_relationships) does not implement the plugin
   #
   def search_index_relationships
     relationships = []

@@ -41,8 +41,7 @@ class Establishment < ActiveRecord::Base
                     :url    => "/establishments/:id.:extension"
   
   has_search_index :only_attributes    => [ :name, :activated ],
-                   :only_relationships => [ :customer, :activity_sector_reference, :establishment_type, :contacts, :address, :phone, :fax ],
-                   :main_model         => true
+                   :only_relationships => [ :customer, :activity_sector_reference, :establishment_type, :contacts, :address, :phone, :fax ]
   
   @@form_labels[:name]                      = "Nom de l'enseigne :"
   @@form_labels[:establishment_type]        = "Type d'établissement :"

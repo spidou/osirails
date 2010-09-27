@@ -114,8 +114,12 @@ module HasSearchIndex
       # Create class var to permit to access to search option from te model
       class_eval do
         cattr_accessor :search_index
-        self.search_index = {}.merge(options)                                            # get all attributes and relationships configured into the plugin
+        silence_warnings { const_set( 'SEARCH_INDEX', {}.merge(options)) }                # get all attributes and relationships configured into the plugin
         self.extend RestrictedMethods                                                    # Class method that are defined for Models that implement the plugin
+      end
+      
+      def self.search_index
+        self::SEARCH_INDEX
       end
     end
    
