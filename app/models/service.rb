@@ -7,6 +7,8 @@ class Service < ActiveRecord::Base
   
   named_scope :mains, :conditions => {:service_parent_id => nil}
   
+  journalize :identifier_method => :name
+  
   validates_presence_of :name
   
   has_search_index :only_attributes       => [:name],
@@ -14,11 +16,6 @@ class Service < ActiveRecord::Base
   
   # Store the ancient services_parent_id before update_service_parent
   attr_accessor :old_service_parent_id, :update_service_parent
-  
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]           = "Nom :"
-  @@form_labels[:service_parent] = "Service parent :"
   
   # This method permit to check if a service can be a parent
   def before_update

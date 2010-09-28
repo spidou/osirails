@@ -12,11 +12,6 @@ class Factor < ActiveRecord::Base
   has_search_index :only_attributes => [:name, :fullname],
                    :only_relationships => [:customers]
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]      = "Nom :"
-  @@form_labels[:fullname]  = "Nom complet :"
-  
   def name_and_fullname
     "#{name} (#{fullname})"
   end

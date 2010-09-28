@@ -30,11 +30,6 @@ class StockFlow < ActiveRecord::Base
   
   attr_accessor :from_inventory
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:supply]    = "Fourniture :"
-  @@form_labels[:quantity]  = "Quantité :"
-  
   def validates_enabled_supply
     errors.add(:supply, "est désactivé") if supply and !supply.enabled?
   end

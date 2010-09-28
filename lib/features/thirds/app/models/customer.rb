@@ -42,11 +42,6 @@ class Customer < Third
   has_search_index :only_attributes    => [:name, :siret_number, :website],
                    :only_relationships => [:legal_form, :establishments, :head_office, :customer_grade, :customer_solvency, :bill_to_address, :factor]
   
-  @@form_labels[:factor]            = "Compagnie d'affacturage :"
-  @@form_labels[:customer_solvency] = "Degré de solvabilité :"
-  @@form_labels[:customer_grade]    = "Note relation client :"
-  @@form_labels[:logo]              = "Logo :"
-  
   def payment_time_limit
     customer_grade && customer_grade.payment_time_limit
   end

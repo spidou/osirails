@@ -79,6 +79,14 @@ module ValidatesTimeliness
           restriction = self.class.type_cast_value(restriction, restriction_type, configuration[:ignore_usec])
 
           unless evaluate_restriction(restriction, value, method)
+            ##### Hack by Ronnie Heritiana RABENANDRASANA
+            # Permits to pass a method to a custom validation message
+            configuration_message = "#{option}_message".to_sym
+            parameter_is_a_method = configuration[configuration_message].is_a?(Symbol) && record.respond_to?(configuration[configuration_message])
+            
+            configuration[configuration_message] = record.send(configuration[configuration_message]) if parameter_is_a_method
+            ##### end hack
+            
             add_error(record, attr_name, option, interpolation_values(option, restriction))
           end
         rescue
@@ -110,7 +118,7 @@ module ValidatesTimeliness
       case comparator
       when Symbol
         value.send(comparator, restriction)
-      when Proc
+    when Proc
         comparator.call(value, restriction)
       end
     end

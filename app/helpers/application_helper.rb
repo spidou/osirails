@@ -18,8 +18,8 @@ module ApplicationHelper
   end
   
   def display_version
-    if RAILS_ENV != 'production' or params[:debug]
-      "<span class=\"version\">v#{Osirails::VERSION}<br/>#{RAILS_ENV}</span>"
+    if !Rails.env.production? or params[:debug]
+      "<span class=\"version\">v#{Osirails::VERSION}<br/>#{Rails.env}</span>"
     end
   end
   
@@ -36,7 +36,7 @@ module ApplicationHelper
   end
   
   def display_welcome_message
-    "Bienvenue, " + current_user.username
+    "#{t 'welcome'}, #{current_user.username}"
   end
       
   def include_calendar_headers_tags(language = "en")
@@ -54,19 +54,19 @@ module ApplicationHelper
       html = "<script type=\"text/javascript\">"
       html << "var rubyDayNames = new Array();"
       0.upto(6){|day|
-        html << "rubyDayNames["+day.to_s+"] = \""+Date::DAYNAMES[day]+"\";"
+        html << "rubyDayNames[" + day.to_s + "] = \"" + t('date.day_names')[day] + "\";"
       }
       html << "</script>"
       
       html << "<script type=\"text/javascript\">"
       html << "var rubyMonthNames = new Array();"
       0.upto(11){|month|
-        html << "rubyMonthNames["+month.to_s+"] = \""+Date::MONTHNAMES[month+1]+"\";"
+        html << "rubyMonthNames[" + month.to_s + "] = \"" + t('date.month_names')[month + 1] + "\";"
       }
       html << "</script>"
       
       html << "<script type=\"text/javascript\">"
-      html << "var rubyTime = \""+Time.zone.now.strftime("%Y %m %d %H:%M:%S")+"\" ;"
+      html << "var rubyTime = \"" + Time.zone.now.strftime("%Y %m %d %H:%M:%S") + "\" ;"
       html << "</script>"
   end
   
@@ -74,11 +74,11 @@ module ApplicationHelper
     now = Time.zone.now
     html =  "Nous sommes le "
     html << "<span id='banner_date'>"
-    html << now.to_date.strftime("%A %d %B %Y")
+    html << l(now.to_date, :format => :long_ordinal)
     html << "</span>"
     html << ", il est "
     html << "<span id='banner_time'>"
-    html << now.strftime("%H:%M")
+    html << l(now, :format => :time)
     html << "</span>"
   end
   
@@ -231,117 +231,126 @@ module ApplicationHelper
     chars = ['A'..'Z', 'a'..'z', '0'..'9'].map{|r|r.to_a}.flatten
     Array.new(length).map{chars[rand(chars.size)]}.join
   end
-
-  private
-    # Creates dynamic helpers to generate standard links in all page
-    # These dynamic helpers are based on RESTful path methods generated from routes
-    # 
-    # Methods must start end by "_link"
-    # 
-    # ==== Examples
-    #   users_link                          # model => user        | action => list   | method called => users_path
-    #   new_group_link                      # model => group       | action => add    | method called => new_group_path
-    #   user_link(@user)                    # model => user        | action => view   | method called => user_path(@user)
-    #   edit_user_link(@user)               # model => user        | action => edit   | method called => edit_user(@user)
-    #   delete_geat_model_link(@geat_model) # model => geat_model  | action => delete | method called => link_to("Delete", @user, { :method => :delete, :confirm => "Are you sure?"})
-	  #
-	  # ==== Arguments
-	  # For the actions +list+ and +add+, only one parameter is allowed
-	  # 
-	  # For the actions +view+, +edit+, +delete+, the first parameter (+object+) is required, and a second parameter is allowed
-	  # 
-	  # The first parameter (for +list+ and +add+) and the second parameter (for +view+, +edit+ and +delete+) must be a Hash
-	  # 
-	  # <tt>:image_tag</tt> permits to define a custom image tag for the link
-    #   <%= user_link(@user, :image_tag => image_tag("view.png") ) %>
-    # 
-    # <tt>:link_text</tt> permits to define a custom value for the link label
-    #   <%= new_user_link( :link_text => "Add a user" ) %>
-    # 
-    def method_missing(method, *args)
-      # did somebody tried to use a dynamic link helper?
-      return super(method, *args) unless method.to_s.match(/_link$/)
-      
-      # retrieve objects and options hash into args array
-			args_objects = []
-      options = {}
-			args.each do |arg|
-			  if arg.is_a?(Hash)
-  				options.merge!(arg)
-				elsif arg.class.ancestors.include?(ActiveRecord::Base)
-          args_objects << arg
-        else
-          raise ArgumentError, "#{method} expected 'hash' or 'ActiveRecord object' parameter but received #{arg}:#{arg.class}"
-        end
-			end
-      
-      # retrieve infos about model and path from the given method
-      method_infos              = dynamic_link_catcher_retrieve_method_infos(method.to_s, args_objects)
-      path_name                 = method_infos[:path_name]
-      model_name                = method_infos[:model_name]
-      expected_objects          = method_infos[:expected_objects]
-      
-      # check if the method called is well-formed
-      dynamic_link_catcher_check_arguments_objects(expected_objects, args_objects)
-
-      # define what is the permission method name according to the given method
-      if model_name != model_name.singularize       # users
-        permission_name = :list
-        model_name = model_name.singularize
-      
-      elsif path_name.match(/^(formatted_)?new_/)   # new_user    | formatted_new_user
-        permission_name = :add
-      
-      elsif path_name.match(/^(formatted_)?edit_/)  # edit_user   | formatted_edit_user
-        permission_name = :edit
-      
-      elsif path_name.match(/^delete_/)             # delete_user
-        permission_name = :delete
-        path_name = path_name.gsub("delete_","")    # the prefix "delete_" is removed because it doesn't match to any path method name
   
-      elsif path_name.match(/^(formatted_)?/)       # user       | formatted_user  | great_model |  formatted_great_model
-        permission_name = :view
-      
+  METHOD_MATCH = /_link$/
+  # Creates dynamic helpers to generate standard links in all page
+  # These dynamic helpers are based on RESTful path methods generated from routes
+  # 
+  # Methods must end by "_link"
+  # 
+  # ==== Examples
+  #   users_link                          # model => user        | action => list   | method called => users_path
+  #   new_group_link                      # model => group       | action => add    | method called => new_group_path
+  #   user_link(@user)                    # model => user        | action => view   | method called => user_path(@user)
+  #   edit_user_link(@user)               # model => user        | action => edit   | method called => edit_user(@user)
+  #   delete_geat_model_link(@geat_model) # model => geat_model  | action => delete | method called => link_to("Delete", @user, { :method => :delete, :confirm => "Are you sure?"})
+  #
+  # ==== Arguments
+  # For the actions +list+ and +add+, only one parameter is allowed
+  # 
+  # For the actions +view+, +edit+, +delete+, the first parameter (+object+) is required, and a second parameter is allowed
+  # 
+  # The first parameter (for +list+ and +add+) and the second parameter (for +view+, +edit+ and +delete+) must be a Hash
+  # 
+  # <tt>:image_tag</tt> permits to define a custom image tag for the link
+  #   <%= user_link(@user, :image_tag => image_tag("view.png") ) %>
+  # 
+  # <tt>:link_text</tt> permits to define a custom value for the link label
+  #   <%= new_user_link( :link_text => "Add a user" ) %>
+  # 
+  def method_missing(method, *args)
+    # did somebody tried to use a dynamic link helper?
+    return super(method, *args) unless method.to_s =~ METHOD_MATCH
+    
+    # retrieve objects and options hash into args array
+		args_objects = []
+    options = {}
+		args.each do |arg|
+		  if arg.is_a?(Hash)
+				options.merge!(arg)
+			elsif arg.class.ancestors.include?(ActiveRecord::Base)
+        args_objects << arg
       else
-        raise NameError, "'#{method}' seems to be a dynamic helper link, but it has an unexpected form. Maybe you misspelled it? "
+        raise ArgumentError, "#{method} expected 'hash' or 'ActiveRecord object' parameter but received #{arg}:#{arg.class}"
       end
-      
-      # define the corresponding model, and check the permissions
-      model                     = model_name.camelize.constantize # this will raise a NameError Exception if the constant is not defined
-		  has_model_permission      = model.respond_to?("business_object?") ? model.send("can_#{permission_name}?", current_user) : true
-		  has_controller_permission = controller.current_menu.send("can_access?", current_user)
-      
-      # default options
-		  options = { :link_text    => default_title = dynamic_link_catcher_default_link_text(permission_name, model_name.tableize),
-		              :image_tag    => image_tag( "#{permission_name}_16x16.png",
-		                                          :title => default_title,
-		                                          :alt => default_title ),
-                  :options      => {},
-                  :html_options => {}
-	              }.merge(options)
-	    
-	    # return the correspondong link_to tag if permissions are allowing that!
-      if has_controller_permission and has_model_permission
-			  link_content = "#{options[:image_tag]} #{options[:link_text]}"
-        
-        # eval url-genrator method : user_path(1) => '/users/1' , edit_user_group_path(1,1) => '/users/1/groups/1/edit'
-        complete_path_method = "#{path_name}_path("
-        args_objects.each_index do |i|
-          complete_path_method << ", " unless i == 0
-          complete_path_method << "args_objects[#{i}]"
-        end
-        complete_path_method << "#{"," unless args_objects.empty?} options[:options]" unless options[:options].empty?
-        complete_path_method << ")"
-        link_url = eval(complete_path_method)
-        
-        options[:html_options] = options[:html_options].merge({ :method => :delete, :confirm => "Are you sure?" }) if permission_name == :delete
-        
-        return link_to( link_content, link_url, options[:html_options] )
-      else
-        return nil
-      end
+		end
+    
+    # retrieve infos about model and path from the given method
+    method_infos              = dynamic_link_catcher_retrieve_method_infos(method.to_s, args_objects)
+    path_name                 = method_infos[:path_name]
+    model_name                = method_infos[:model_name]
+    expected_objects          = method_infos[:expected_objects]
+    
+    # check if the method called is well-formed
+    dynamic_link_catcher_check_arguments_objects(expected_objects, args_objects)
+
+    # define what is the permission method name according to the given method
+    if model_name != model_name.singularize       # users
+      permission_name = :list
+      model_name = model_name.singularize
+    
+    elsif path_name.match(/^(formatted_)?new_/)   # new_user    | formatted_new_user
+      permission_name = :add
+    
+    elsif path_name.match(/^(formatted_)?edit_/)  # edit_user   | formatted_edit_user
+      permission_name = :edit
+    
+    elsif path_name.match(/^delete_/)             # delete_user
+      permission_name = :delete
+      path_name = path_name.gsub("delete_","")    # the prefix "delete_" is removed because it doesn't match to any path method name
+
+    elsif path_name.match(/^(formatted_)?/)       # user       | formatted_user  | great_model |  formatted_great_model
+      permission_name = :view
+    
+    else
+      raise NameError, "'#{method}' seems to be a dynamic helper link, but it has an unexpected form. Maybe you misspelled it? "
     end
     
+    # define the corresponding model, and check the permissions
+    model                     = model_name.camelize.constantize # this will raise a NameError Exception if the constant is not defined
+	  has_model_permission      = model.respond_to?("business_object?") ? model.send("can_#{permission_name}?", current_user) : true
+	  has_controller_permission = controller.current_menu.send("can_access?", current_user)
+    
+    # default options
+	  options = { :link_text    => default_title = dynamic_link_catcher_default_link_text(permission_name, model_name.tableize),
+	              :image_tag    => image_tag( "#{permission_name}_16x16.png",
+	                                          :title => default_title,
+	                                          :alt => default_title ),
+                :options      => {},
+                :html_options => {}
+              }.merge(options)
+    
+    # return the correspondong link_to tag if permissions are allowing that!
+    if has_controller_permission and has_model_permission
+		  link_content = "#{options[:image_tag]} #{options[:link_text]}"
+      
+      # eval url-genrator method : user_path(1) => '/users/1' , edit_user_group_path(1,1) => '/users/1/groups/1/edit'
+      complete_path_method = "#{path_name}_path("
+      args_objects.each_index do |i|
+        complete_path_method << ", " unless i == 0
+        complete_path_method << "args_objects[#{i}]"
+      end
+      complete_path_method << "#{"," unless args_objects.empty?} options[:options]" unless options[:options].empty?
+      complete_path_method << ")"
+      link_url = eval(complete_path_method)
+      
+      options[:html_options] = options[:html_options].merge({ :method => :delete, :confirm => "Are you sure?" }) if permission_name == :delete
+      
+      return link_to( link_content, link_url, options[:html_options] )
+    else
+      return nil
+    end
+  end
+  
+  def respond_to?(method, include_private = false)
+    if method.to_s =~ METHOD_MATCH
+      return true
+    else
+      return super(method)
+    end
+  end
+  
+  private    
     # check if all objects passed into args correspond to the helper name
     #
     # ==== Examples

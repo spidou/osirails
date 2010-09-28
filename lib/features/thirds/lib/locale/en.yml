@@ -1,0 +1,12 @@
+en:     
+  activerecord:
+    attributes: 
+      third:
+        name: "Corporate name"
+        creator: "Created by"
+      customer:
+        factor: "Factor company"
+        customer_solvency: "Credit standing"
+        customer_grade: "Client relation grade"
+      establishment:
+        name: "Establishment name"

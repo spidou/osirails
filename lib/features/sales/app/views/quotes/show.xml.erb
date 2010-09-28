@@ -4,7 +4,7 @@
     <BackgroundImage><%= "#{RAILS_ROOT}/public/fo/images/background.png" %></BackgroundImage>
     <Type>DEVIS</Type>
     <Reference><%= @quote.reference %></Reference>
-    <Date><%= Date.today.strftime("%d %B %Y")%></Date>
+    <Date><%= l(Date.today)%></Date>
     <Currency>EUROS (€)</Currency>  
     <FileName><%= @quote.order.title%></FileName>
     <Supplier>

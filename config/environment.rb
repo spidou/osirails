@@ -5,7 +5,8 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
+# -- commented line since Rails freeze
+# RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
 
 # Specifies if the application is launch from a rake task or not (set at TRUE in Rakefile)
 RAKE_TASK = false unless defined? RAKE_TASK
@@ -20,6 +21,7 @@ SEEDING_FEATURE = false unless defined? SEEDING_FEATURE
 require File.join(File.dirname(__FILE__), 'boot')
 require 'rails_hacks'
 require 'contextual_menu'
+require 'mysql'
 require 'feature_manager'
 
 Rails::Initializer.run do |config|
@@ -41,10 +43,10 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
-                    :tiny_mce, :validates_persistence_of, :paperclip, :auto_complete, :local_auto_complete,
-                    :has_permissions, :has_search_index, :has_documents, :has_address, :has_numbers,
-                    :has_contacts, :has_reference, :acts_as_step, :pdf_generator, :validates_timeliness, :all]
+  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned, :tiny_mce,
+                    :validates_persistence_of, :paperclip, :journalization, :auto_complete, :local_auto_complete,
+                    :has_permissions, :has_search_index, :has_documents, :has_address, :has_numbers, :has_contacts,
+                    :has_reference, :acts_as_step, :pdf_generator, :validates_timeliness, :all]
   
   FeatureManager.update_config_plugins(config)
   
@@ -73,6 +75,9 @@ Rails::Initializer.run do |config|
     :session_key => '_Osirails_session',
     :secret      => '75a9a52b2fb9337d3dbbb3939d1b054c73aef5adf24b0d8e197b2de8dc169f0ff8147d3ac3b725ba82b545146d49618bfffefb6657897fdf52a325db77bc4f9e',
   }
+  
+  # Rails default value is false
+  config.active_record.timestamped_migrations = true
 
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
@@ -88,14 +93,15 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
   config.gem 'json'
   config.gem 'RedCloth'
-  config.gem 'htmlentities' #TODO freeze all gem dependencies
+  config.gem 'htmlentities'
+  config.gem 'mysql'
 end
 
 require 'version'
 
 # ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment
 # to be sure to remove old references to unexistant methods (after disabling a feature for example)
-load 'application_helper.rb' if RAILS_ENV == "development" # only with development mode, because in production mode this load cancel all feature's overrides (in lib/features/[feature]/overrides.rb) and there are not loaded again
+load 'application_helper.rb' if Rails.env.development? # only with development mode, because in production mode this load cancel all feature's overrides (in lib/features/[feature]/overrides.rb) and there are not loaded again
 
 require 'json'
 require 'htmlentities'

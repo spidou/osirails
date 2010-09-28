@@ -17,6 +17,8 @@ class Number < ActiveRecord::Base
   has_search_index  :only_attributes    => [:number],
                     :additional_attributes => {:formatted => :string},
                     :only_relationships => [:number_type, :indicative]
+                    
+  journalize :attributes => :number, :identifier_method => :formatted
   
   alias_method :formatted, :number
   #DEPRECATED formatted is deprecated, don't use it #TODO inform deprecation when using it
@@ -26,7 +28,7 @@ class Number < ActiveRecord::Base
   def formatted_with_indicative
     return unless number
     if number.starts_with?("0")
-      "(#{number.chars.first.to_s})#{number[1..number.size]}"
+      "(#{number.mb_chars.first.to_s})#{number[1..number.size]}"
     else
       number
     end

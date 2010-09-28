@@ -14,7 +14,7 @@
       <% for leave_request in in_progress_leave_requests %>
         <tr>
           <td><%= leave_request.formatted %></td>
-          <td><%= leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+          <td><%= l(leave_request.submitted_at.to_datetime) %></td>
           <td><%= view_status(leave_request) %></td>
           <td>
             <%= leave_request_link(leave_request, :link_text => "") %>

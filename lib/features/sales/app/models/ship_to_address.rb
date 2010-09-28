@@ -13,11 +13,6 @@ class ShipToAddress < ActiveRecord::Base
   attr_accessor :should_destroy
   #attr_accessor :parallel_creation
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  #@@form_labels[:establishment]       = "Établissement associé :"
-  @@form_labels[:establishment_name]  = "Nom de l'enseigne :" # same as Establishment#name
-  
   def should_create?
     should_create.to_i == 1
   end

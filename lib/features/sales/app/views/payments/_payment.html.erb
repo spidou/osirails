@@ -1,73 +1,73 @@
 <% require_locals due_date %>
 
 <div class="payment">
-  <span class="payment_header"><%= payment.new_record? ? "Nouveau règlement" : "Règlement n° #{payment_counter}" %></span>
+  <span class="payment_header"><%= payment.new_record? ? "Nouveau règlement" : "Règlement n° #{payment_counter+1}" %></span>
   
-<% if payment.new_record? %>
-  
-  <% fields_for 'invoice[due_date_to_pay][payment_attributes][]', payment, :index => nil do |form| %>
-    <%= form.error_messages %>
-    <p>
-      <%= form.label :paid_on %>
-      <%= form.text_field :paid_on %>
-    </p>
-    <p>
-      <%= form.label :amount %>
-      <%= form.text_field :amount, :size => 8 %>
-    </p>
-    <p>
-      <%= form.label :payment_method_id %>
-      <%= form.collection_select :payment_method_id, PaymentMethod.all, :id, :name %>
-    </p>
-    <p>
-      <%= form.label :bank_name %>
-      <%= form.text_field :bank_name %>
-    </p>
-    <p>
-      <%= form.label :payment_identifier %>
-      <%= form.text_field :payment_identifier %> <span class="help_text">(n° de chèque, n° de virement, etc)</span>
-    </p>
-    <p>
-      <%= form.label :attachment %>
-      <%= form.file_field :attachment %>
-    </p>
-  <% end %>
-  
-  <%= display_payment_remove_link %>
-
-<% else %>
-  
-  <% fields_for payment do |form| %>
-    <p>
-      <%= form.label :paid_on %>
-      <%= strong(payment.paid_on.humanize) %>
-    </p>
-    <p>
-      <%= form.label :amount %>
-      <%= strong(payment.amount.to_f.round_to(2).to_s(2)) %>
-    </p>
-    <div class="payment_details" style="display:none">
+  <% if payment.new_record? %>
+    
+    <% fields_for 'invoice[due_date_to_pay][payment_attributes][]', payment, :index => nil do |form| %>
+      <%= form.error_messages %>
+      <p>
+        <%= form.label :paid_on %>
+        <%= form.text_field :paid_on %>
+      </p>
+      <p>
+        <%= form.label :amount %>
+        <%= form.text_field :amount, :size => 8 %>
+      </p>
       <p>
         <%= form.label :payment_method_id %>
-        <%= strong(payment.payment_method.name) if payment.payment_method %>
+        <%= form.collection_select :payment_method_id, PaymentMethod.all, :id, :name %>
       </p>
       <p>
         <%= form.label :bank_name %>
-        <%= strong(payment.bank_name) %>
+        <%= form.text_field :bank_name %>
       </p>
       <p>
         <%= form.label :payment_identifier %>
-        <%= strong(payment.payment_identifier) %>
+        <%= form.text_field :payment_identifier %> <span class="help_text">(n° de chèque, n° de virement, etc)</span>
       </p>
       <p>
         <%= form.label :attachment %>
-        <%= payment.attachment_file_name ? link_to("Télécharger", payment.attachment.url) : "Aucun fichier" %>
+        <%= form.file_field :attachment %>
       </p>
-    </div>
-    <p>
-      <%= link_to_function "Détails", "toggle_payment_details(this)" %>
-    </p>
+    <% end %>
+    
+    <%= display_payment_remove_link %>
+
+  <% else %>
+    
+    <% fields_for payment do |form| %>
+      <p>
+        <%= form.label :paid_on %>
+        <%= strong(payment.paid_on.humanize) %>
+      </p>
+      <p>
+        <%= form.label :amount %>
+        <%= strong(payment.amount.to_f.round_to(2).to_s(2)) %>
+      </p>
+      <div class="payment_details" style="display:none">
+        <p>
+          <%= form.label :payment_method_id %>
+          <%= strong(payment.payment_method.name) if payment.payment_method %>
+        </p>
+        <p>
+          <%= form.label :bank_name %>
+          <%= strong(payment.bank_name) %>
+        </p>
+        <p>
+          <%= form.label :payment_identifier %>
+          <%= strong(payment.payment_identifier) %>
+        </p>
+        <p>
+          <%= form.label :attachment %>
+          <%= payment.attachment_file_name ? link_to("Télécharger", payment.attachment.url) : "Aucun fichier" %>
+        </p>
+      </div>
+      <p>
+        <%= link_to_function "Détails", "toggle_payment_details(this)" %>
+      </p>
+    <% end %>
+    
   <% end %>
-  
-<% end %>
 </div>

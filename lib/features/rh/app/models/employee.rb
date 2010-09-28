@@ -48,6 +48,11 @@ class Employee < ActiveRecord::Base
                                         :conditions => ["status = ?", LeaveRequest::STATUS_CANCELLED],
                                         :order      => "cancelled_at DESC, start_date DESC"
   
+  journalize :attributes          => [ :first_name, :last_name, :birth_date, :civility_id, :social_security_number, :family_situation_id, :service_id, :email, :society_email ], 
+             :attachments         =>   :avatar, 
+             :subresources        => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
+             :identifier_method   =>   :fullname
+  
   validates_presence_of :last_name, :first_name
   validates_presence_of :family_situation_id, :civility_id, :service_id
   validates_presence_of :family_situation,     :if => :family_situation_id
@@ -55,13 +60,10 @@ class Employee < ActiveRecord::Base
   validates_presence_of :service,              :if => :service_id
   
   validates_format_of :social_security_number,  :with         => /^[0-9]{13}\x20[0-9]{2}$/,
-                                                :message      => "Le numéro de sécurité sociale doit comporter 15 chiffres",
                                                 :allow_blank  => false
   validates_format_of :email,                   :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
-                                                :message      => "L'adresse e-mail est incorrecte",
                                                 :allow_blank  => true
   validates_format_of :society_email,           :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
-                                                :message      => "L'adresse e-mail entreprise est incorrecte",
                                                 :allow_blank  => true
   
   validates_associated :iban, :address, :job_contract#, :contacts
@@ -77,23 +79,11 @@ class Employee < ActiveRecord::Base
   end
   
   before_validation_on_create :build_associated_resources
-  before_save :case_managment
+  before_save :case_management
   after_update :save_iban
   
-  cattr_accessor :pattern_error, :form_labels
+  cattr_accessor :pattern_error
   @@pattern_error = false
-  
-  @@form_labels = Hash.new
-  @@form_labels[:civility]                = "Civilité :"
-  @@form_labels[:last_name]               = "Nom :"
-  @@form_labels[:first_name]              = "Prénom :"
-  @@form_labels[:birth_date]              = "Date de naissance :"
-  @@form_labels[:family_situation]        = "Situation familiale :"
-  @@form_labels[:social_security_number]  = "N° de sécurité sociale :"
-  @@form_labels[:email]                   = "Email personnel :"
-  @@form_labels[:society_email]           = "Email entreprise :"
-  @@form_labels[:service]                 = "Service :"
-  @@form_labels[:avatar]                  = "Photo :"
   
   # Method to manage that there's no more than 2 responsible jobs by service
   def validates_responsible_job_limit
@@ -211,13 +201,6 @@ class Employee < ActiveRecord::Base
     leaves.max_by(&:end_date)
   end
   
-  # Method to change the case of the first_name and the last_name at the employee's creation
-  #
-  def case_managment
-    self.first_name.capitalize!
-    self.last_name.upcase!
-  end
-  
   # Method to generate the intranet email
   def intranet_email
     self.user.username + "@" + ConfigurationManager.admin_society_identity_configuration_domain
@@ -282,7 +265,7 @@ class Employee < ActiveRecord::Base
         elsif tmp.size == val[i].count(",")
           self.pattern_error = true
           return "Erreur modèle de création de comptes utilisateurs : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que pour ajouter l'Option "
-        elsif tmp.size>1
+        elsif tmp.many?
           tmp[1].size > 15 ? option = tmp[1][0..15] + "..." : option = tmp[1]
           if /^([0-9]){0,15}$/.match(tmp[1].to_s).nil?
             self.pattern_error = true
@@ -359,8 +342,8 @@ class Employee < ActiveRecord::Base
   
     # Method to change the case of the first_name and the last_name at the employee's creation
     def case_management
-      self.first_name = self.first_name.chars.capitalize
-      self.last_name = self.last_name.chars.upcase
+      self.first_name = self.first_name.mb_chars.capitalize
+      self.last_name = self.last_name.mb_chars.upcase
     end
 
     def save_iban

@@ -1,6 +1,6 @@
-normal:
+normal_order_type:
   title: Normal
-sav:
-  title: SAV
+ass:
+  title: After sales service
 maintenance:
   title: Maintenance

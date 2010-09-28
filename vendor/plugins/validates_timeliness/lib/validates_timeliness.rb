@@ -21,7 +21,7 @@ module ValidatesTimeliness
   self.use_time_zones = false
 
   LOCALE_PATH = File.expand_path(File.dirname(__FILE__) + '/validates_timeliness/locale/en.yml')
-
+  
   class << self
 
     def enable_datetime_select_extension!
@@ -31,7 +31,7 @@ module ValidatesTimeliness
 
     def load_error_messages
       if defined?(I18n)
-        I18n.load_path += [ LOCALE_PATH ]
+        I18n.load_path += Dir[ File.join(File.dirname(__FILE__),'validates_timeliness', 'locale', '*.{rb,yml}') ]
         I18n.reload!
       else
         defaults = YAML::load(IO.read(LOCALE_PATH))['en']

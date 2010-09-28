@@ -1,4 +1,5 @@
-<% collection_length ||= 1 %>
+<% collection_length    ||= 1 %>
+<% invoice_item_counter ||= 1 %>
 
 <% fields_for 'invoice[invoice_item_attributes][]', invoice_item, :index => nil do |form| %>
   <% form.force_form_view = (params[:action] == "ajax_request_for_invoice_items") %>

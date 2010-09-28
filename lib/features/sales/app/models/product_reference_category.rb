@@ -22,11 +22,6 @@ class ProductReferenceCategory < ActiveRecord::Base
   
   attr_protected :cancelled_at
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:reference] = "Référence :"
-  @@form_labels[:name]      = "Nom :"
-  
   #TODO test that method
   def enabled?
     !cancelled_at

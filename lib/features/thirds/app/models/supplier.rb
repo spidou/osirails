@@ -25,10 +25,6 @@ class Supplier < Third
   has_search_index :only_attributes    => [:name, :siret_number],
                    :only_relationships => [:legal_form, :iban, :contacts, :activity_sector_reference]
   
-  @@form_labels[:activity_sector_reference] = "Code NAF :"
-  @@form_labels[:phone]                     = "Tél :"
-  @@form_labels[:fax]                       = "Fax :"
-  
   def iban_attributes=(iban_attributes)
     if iban_attributes[:id].blank?
       self.iban = build_iban(iban_attributes)

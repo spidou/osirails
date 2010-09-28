@@ -1,8 +1,4 @@
 class Establishment < ActiveRecord::Base
-  #OPTIMIZE we should think about putting instanciation of 'form_labels' in ActiveRecord::Base instead of in each class
-  cattr_reader :form_labels # declaration must be before including SiretNumber because it define a form_label
-  @@form_labels = Hash.new
-  
   include SiretNumber
   
   has_permissions :as_business_object, :additional_class_methods => [ :hide ]
@@ -42,13 +38,6 @@ class Establishment < ActiveRecord::Base
   
   has_search_index :only_attributes    => [ :name, :activated ],
                    :only_relationships => [ :customer, :activity_sector_reference, :establishment_type, :contacts, :address, :phone, :fax ]
-  
-  @@form_labels[:name]                      = "Nom de l'enseigne :"
-  @@form_labels[:establishment_type]        = "Type d'établissement :"
-  @@form_labels[:activity_sector_reference] = "Code NAF :"
-  @@form_labels[:phone]                     = "Tél :"
-  @@form_labels[:fax]                       = "Fax :"
-  @@form_labels[:logo]                      = "Logo :"
   
   def errors_on_attributes_except_on_contacts?
     [:address, :establishment_type_id, :establishment_type, :siret_number].each do |attribute|

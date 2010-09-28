@@ -3,7 +3,7 @@ require_locals fields, keywords
 entry = search_product_reference_auto_complete_entry
 
 text = fields.map{ |field| entry.send(field) }.join(" - ")
-description = entry.description ? entry.description.chars[0..60].lines.map(&:strip).to_a.join(". ") + (entry.description.chars.size > 60 ? '...' : '') : ''
+description = entry.description ? entry.description.mb_chars[0..60].lines.map(&:strip).to_a.join(". ") + (entry.description.mb_chars.size > 60 ? '...' : '') : ''
 %>
 
 <li>
