@@ -1,14 +1,18 @@
 <%
-  search_type_config = [['tous les critères','and'],['Au moins un critère','or'],['Aucun critère','not']]
+  search_type_config = [
+    [I18n.t('view.search_type.and'),'and'],
+    [I18n.t('view.search_type.or'),'or'],
+    [I18n.t('view.search_type.not'),'not']
+  ]
   visible            = cookies["#{ @page_name }_criteria"] == 'false' ? false : true
   collapse           = visible ? 'not-collapsed' : 'collapsed'
 %>
 <fieldset>
-    <legend class="<%= collapse %>" onclick="toggleCriteriaFieldset('<%= @page_name %>', this);">Filtres</legend>
+    <%= toggle_criteria_legend(collapse) %>
     
     <div id="<%= query.subject_model.downcase %>_criteria" class="criteria" style="<%= 'display:none;' unless visible %>">
       <div class='search_type'>
-        <span>Rechercher pour :</span>
+        <%= content_tag(:span, I18n.t("view.search_for")) %>
         <%= select_tag("query[search_type]", options_for_select(search_type_config, query.search_type))%>
       </div>
       

@@ -1,5 +1,5 @@
 RAILS_ROOT = File.dirname(__FILE__) + '/../../../..'  unless defined?(RAILS_ROOT)
-RAILS_ENV = 'test'
+RAILS_ENV  = 'test'
 $LOAD_PATH << File.dirname(__FILE__)
 
 require 'test/unit'

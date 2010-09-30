@@ -8,7 +8,7 @@ fr:
       family_situation: "Situation familiale"
       job: "Poste"
       job_contract: "Contrat de travail"
-      job_contract_typ: "Type de contrat de travail"
+      job_contract_type: "Type de contrat de travail"
       leave: "Congé"
       leave_request: "Demande de congés"
       leave_type: "Type de congé"
@@ -100,3 +100,36 @@ fr:
               invalid: "L'adresse e-mail est incorrecte"
             society_email:
               invalid: "L'adresse e-mail entreprise est incorrecte"
+  integrated_search:
+    attributes:
+      employee:
+        user_name: "Nom d'utilisateur"
+        service_name: "Nom de Service"
+        contract_end: "Fin du contrat"
+        contract_type: "Type de contrat"
+        job_contract_type: "Type de contrat"
+        civility: "Civilité"
+        service: "Service"
+        fullname: "Nom complet"
+      job_contract_type:
+        name: "Type de contrat"
+      job:
+        name: "Poste"
+      service:
+        name: "Service"
+        id: "Service"
+      civility:
+        name: "Civilité"
+        id: "Civilité"
+    page_names:      
+      employee:
+        employee_index: "Tous les employés"
+    filters:
+      civility:
+        name: "Nom"
+      job_contract_type:
+        name: "Nom"
+      service:
+        name: "Nom"
+      job:
+        name: "Nom"

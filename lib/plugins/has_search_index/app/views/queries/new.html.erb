@@ -1,7 +1,7 @@
 <% add_contextual_menu_item :useful_links do %>
-  <%= link_to("#{ image_tag('cancel_16x16.png') } Annuler la création de la requête", @return_uri)%>
+  <%= link_to("#{ image_tag('cancel_16x16.png') } #{ I18n.t("form.query.new.cancel_link") }", @return_uri)%>
 <% end %>
 
-<h1>Sauvegarder la requ&ecirc;te</h1>
+<h1><%= I18n.t("form.query.new.h1") %></h1>
 
 <%= render :partial => 'query', :object => @query %>

@@ -10,3 +10,10 @@ en:
         customer_grade: "Client relation grade"
       establishment:
         name: "Establishment name"
+  integrated_search:
+    attributes:
+      customer:
+        bill_to_address:
+          formatted: "Bill to address"
+      activity_sector_reference:
+        get_activity_sector_name: "Activity sector name"

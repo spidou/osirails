@@ -5,8 +5,7 @@ module IntegratedSearchApplicationController
   def build_query_for(page_name, page_params = params, *types, &block)
     @page_name           = page_name.to_s
     @page_configuration  = HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym].clone
-    default_query      ||= @page_configuration[:default_query]
-    @default_query_name  = default_query && default_query.name ? default_query.name : @page_name
+    default_query        = @page_configuration[:default_query]
     @organized_filters ||= HasSearchIndex.organized_filters(@page_configuration[:filters], @page_configuration[:model])
     @can_be_cancelled    = page_params.keys.include_any?(['query', 'per_page', 'order_column', 'criteria'])
     @can_quick_search    = @page_configuration[:quick_search].any?
@@ -17,7 +16,7 @@ module IntegratedSearchApplicationController
       @data_types[@page_name][attribute] = HasSearchIndex.get_nested_attribute_type(@page_configuration[:model], filter)
     end
     
-    @query = Query.find(page_params[:query_id]) unless page_params[:query_id].blank?
+    @query = Query.find(page_params[:query_id]) unless page_params[:query_id].blank? rescue nil
     @query ||= Query.new( default_query ? default_query.attributes.reject {|k,v| k =~ /(_at|_id)$/ } : nil )
     
     if page_params[:query]

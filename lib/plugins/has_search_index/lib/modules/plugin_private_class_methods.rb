@@ -400,7 +400,7 @@ private
       
       if attribute_with_path.include?('.')
         relationship = attribute_with_path.split('.').at(-2)
-        model = relationship_class_name(attribute_with_path, relationship).constantize
+        model = relationship_class_name_from(attribute_with_path, relationship).constantize
       else
         model = self
       end
@@ -536,8 +536,8 @@ private
     relationship     = attribute_prefix.split(".")[-2]
     sub_relationship = attribute_prefix.split(".")[-1]
     
-    model     = relationship_class_name(attribute_prefix, relationship).constantize
-    sub_model = relationship_class_name(attribute_prefix, sub_relationship).constantize
+    model     = relationship_class_name_from(attribute_prefix, relationship).constantize
+    sub_model = relationship_class_name_from(attribute_prefix, sub_relationship).constantize
     table     = model.table_name
     sub_table = sub_model.table_name
     
@@ -591,31 +591,31 @@ private
   end
   
   def complete_prefix(relationship, prefix_array, sub_table, path)
-    table = relationship_class_name("#{ path }#{ relationship }", relationship).constantize.table_name
+    table = relationship_class_name_from("#{ path }#{ relationship }", relationship).constantize.table_name
     return (sub_table == table ? prefix_array + ["#{ path }#{ relationship }"] : prefix_array)
   end
   
   # Method to permit model retrievement from a +relationship+
   # according to a +path+ ex :
-  # # => Employee.relationship_class_name("employees.numbers.number_type", "numbers") -> 'Number'
+  # # => Employee.relationship_class_name_from("employees.numbers.number_type", "numbers") -> 'Number'
   #
-  # # => Employee.relationship_class_name("employees.numbers.number_type", "employees") -> 'Employee'
+  # # => Employee.relationship_class_name_from("employees.numbers.number_type", "employees") -> 'Employee'
   #
-  # # => Employee.relationship_class_name("employees.numbers.number_type", :employees) -> 'Employee'
+  # # => Employee.relationship_class_name_from("employees.numbers.number_type", :employees) -> 'Employee'
   #
   # the +path+ must begin by main model table_name (Employee -> 'employees') or a direct relationship (Employee has_many :numbers --> 'numbers')
   # # => Employee.retrieve_relationship_class("numbers.number_type", "numbers") -> 'Number'
   #
-  def relationship_class_name(path, relationship)
+  def relationship_class_name_from(path, relationship)
     model = self
     return self.to_s if relationship == self.table_name
-    path.gsub("#{self.table_name}.","").split(".").each do |r|
-      if model.reflect_on_association(r.to_sym).nil?
-        raise(ArgumentError, "#{self::ERROR_PREFIX} Association '#{ r }' undefined for '#{self}' model")
+    path.gsub("#{self.table_name}.","").split(".").each do |part|
+      if model.reflect_on_association(part.to_sym).nil?
+        raise(ArgumentError, "#{self::ERROR_PREFIX} Association '#{ part }' undefined for '#{self}' model")
       end
-      class_name = model.reflect_on_association(r.to_sym).class_name
+      class_name = model.reflect_on_association(part.to_sym).class_name
       model      = class_name.constantize
-      return class_name if relationship.to_s == r
+      return class_name if part == relationship.to_s
     end
     nil
   end

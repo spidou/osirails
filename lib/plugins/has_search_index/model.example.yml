@@ -31,17 +31,18 @@
 ## default_query:criteria    -> criteria from +search_with+ attributes (see criteria example below)
 #                            -> nil to use no default criteria (aka model.all)
 #
-## default_query:name        -> title for default query search
-#                            -> nil to use +page_name+ as title
-#
 ## default_query:per_page    -> selected per_page option (must be included into +per_page+)
 #                            -> nil to view all elements in the same page by default
 #
 ## default_query:search_type -> search_type to be used when calling +search_with+
 #                            -> nil to use default value ('and')
 #
+## You may add default_query's page_name in model's translation yaml file, to be used as a name, like: (if not it will display PAGE_NAME.humanize)
+# integrated_search:
+#   page_names:
+#     PAGE_NAME: "Translated default query name"
 #
-# NB: Gloggbing (*) can be used only for :
+## NB: Gloggbing (*) can be used only for :
 # - filters (unless when using alias)
 # - group
 # - default_query:group
@@ -49,18 +50,18 @@
 #
 # ==== Example
 ##############
-conf_pagination: &pagination                                                 # All page_name like "conf_*" will not be considered as page_configuration key,
-  per_page:                                                                  #  you can it use as the example to respect DRY and use one configuration for many pages
+conf_pagination: &pagination                                              # All page_name like "conf_*" will not be considered as page_configuration key,
+  per_page:                                                               #  you can it use as the example to respect DRY and use one configuration for many pages
     - 5
     - 10
     - 15
 
-employee_index:                                                              # Use advanced_employee to define advanced search for Employee
+employee_index:                                                           # Use advanced_employee to define advanced search for Employee
   filters:                                                                   
-    - *                                                                      # All attributes configured for Employee's has_search_index implementation
-    - service.*                                                              # All attributes configured for Service's has_search_idnex implementation
-    - user_name: user.username                                               # Alias a nested attribute, to display it to user as an normal attribute
-    - user.username                                                          # Regardless to his position, that item is useless because the path is overrided by an alias
+    - *                                                                   # All attributes configured for Employee's has_search_index implementation
+    - service.*                                                           # All attributes configured for Service's has_search_idnex implementation
+    - user_name: user.username                                            # Alias a nested attribute, to display it to user as an normal attribute
+    - user.username                                                       # Regardless to his position, that item is useless because the path is overrided by an alias
   columns:
     - first_name
     - last_name
@@ -74,15 +75,15 @@ employee_index:                                                              # U
   order:
     - last_name
     - first_name
-  <<: *pagination                                                            # use cofiguration defined with 'conf_*' named like option
+  <<: *pagination                                                         # use cofiguration defined with 'conf_*' named like option
   default_query:
     name: all employees
     criteria:
-      job_contract.departure:                                                # generate 'job_contract.departure' => {:action => '=', :value => nil}
+      job_contract.departure:                                             # generate 'job_contract.departure' => {:action => '=', :value => nil}
         action: '='
         value:
-      user.username:                                                         # generate 'user.username' => [{:action => '!=', :value => nil},
-        - action: '!='                                                       #                              {:action => 'like', :value => 'admin'}]
+      user.username:                                                      # generate 'user.username' => [{:action => '!=', :value => nil},
+        - action: '!='                                                    #                              {:action => 'like', :value => 'admin'}]
           value:
         - action: 'like'
           value: 'admin'
@@ -93,8 +94,8 @@ employee_index:                                                              # U
     group:
       - last_name
     order:
-      - "last_name:Asc"                                                      # [:default_query][:order] must have order direction in (Asc, Desc)
+      - "last_name:Asc"                                                   # [:default_query][:order] must have order direction in (Asc, Desc)
       - "first_name:Asc"
-    search_type: and                                                         # [:default_query][:search_type] option to be used with search_with method (if nil use 'and')
-    per_page: 10                                                             # [:default_query][:per_page] must have only one number include in per_page
+    search_type: and                                                      # [:default_query][:search_type] option to be used with search_with method (if nil use 'and')
+    per_page: 10                                                          # [:default_query][:per_page] must have only one number include in per_page
 

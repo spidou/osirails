@@ -12,23 +12,11 @@ class Query < ActiveRecord::Base
   validates_presence_of     :name, :creator_id, :page_name, :columns
   validates_presence_of     :creator,        :if => :creator_id
   validates_numericality_of :per_page,       :if => :per_page
-  validates_length_of       :columns,        :minimum => 1 , :too_short => "n'a pas assez d'éléments (%d minimum)"#"({{count}} minimum)"
+  validates_length_of       :columns,        :minimum => 1 , :too_short => "n'a pas assez d'éléments ({{count}} minimum)"
   validates_inclusion_of    :public_access,  :in => [true, false]
   validates_inclusion_of    :search_type, :in => ['and', 'or', 'not']
   
   validate :validates_criteria, :validates_order, :validates_serialized_attributes, :validates_page_name, :validates_persistence_of_page_name
-  
-  cattr_accessor :form_labels
-  
-  @@form_labels = Hash.new
-  @@form_labels[:name]          = "Nom :"
-  @@form_labels[:public_access] = "Public :"
-  @@form_labels[:per_page]      = "Par Page :"
-  @@form_labels[:search_type]   = "Le résultat doit correspondre à :"
-  @@form_labels[:criteria]      = "Critères :"
-  @@form_labels[:columns]       = "Colonnes :"
-  @@form_labels[:group]         = "Grouper par :"
-  @@form_labels[:order]         = "Ordonner par :"
   
   def page_configuration(key = nil)
     hash = HasSearchIndex::HTML_PAGES_OPTIONS[self.page_name.to_sym]
@@ -84,9 +72,9 @@ class Query < ActiveRecord::Base
         [:columns, :group].each do |option| 
           next unless self.send(option) && should_validate?(option)
           unless self.send(option).is_a?(Array)
-            errors.add(option, "n'est pas au bon format")    
+            errors.add(option, message_for_validates_custom(option, :bad_type))    
           else
-            errors.add(option, "ne correspond pas à la configuration") unless page_configuration(option).include_all?(self.send(option))
+            errors.add(option, message_for_validates_custom(option, :different_form_configuration)) unless page_configuration(option).include_all?(self.send(option))
           end
         end
       end
@@ -94,15 +82,15 @@ class Query < ActiveRecord::Base
     
     def validates_page_name
       unless self.page_name && self.page_name.is_a?(String)
-        errors.add(:page_name, "est invalide")
+        errors.add(:page_name, message_for_validates_custom(:page_name, :bad_type))
       else
-        errors.add(:page_name, "n'existe pas") if HasSearchIndex::HTML_PAGES_OPTIONS.keys.include?(self.page_name)
+        errors.add(:page_name, message_for_validates_custom(:page_name, :do_not_exist)) if HasSearchIndex::HTML_PAGES_OPTIONS.keys.include?(self.page_name)
       end
     end
     
     def validates_persistence_of_page_name
       unless new_record?
-        errors.add(:page_name, "a été modifié") if self.page_name != self.page_name_was
+        errors.add(:page_name, message_for_validates_custom(:page_name, :modified)) if self.page_name != self.page_name_was
       end
     end
     
@@ -110,25 +98,25 @@ class Query < ActiveRecord::Base
       if self.page_name && should_validate?(:order)
         
         unless self.send(:order) && self.send(:order).is_a?(Array)
-          errors.add(:order, "n'est pas au bon format")    
+          errors.add(:order, message_for_validates_custom(:order, :bad_type))    
         else
           order_attributes = self.send(:order).map {|n| n.split(':').first}
-          errors.add(:order, "ne correspond pas à la configuration") unless page_configuration(:order).include_all?(order_attributes)
+          errors.add(:order, message_for_validates_custom(:order, :different_form_configuration)) unless page_configuration(:order).include_all?(order_attributes)
         end
-        errors.add(:order, "contient des erreurs") if self.send(:order).reject {|option| option.split(':').last =~ /(desc|asc)$/ }.any?
+        errors.add(:order, message_for_validates_custom(:order, :bad_syntax)) if self.send(:order).reject {|option| option.split(':').last =~ /(desc|asc)$/ }.any?
       end
     end
     
     def validates_criteria
       if self.page_name && should_validate?(:filters)
         unless self.criteria && self.criteria.is_a?(Hash)
-          errors.add(:criteria, "n'est pas au bon format")
+          errors.add(:criteria, message_for_validates_custom(:criteria, :bad_type))
         else
           self.criteria.each_value do |options|
-            errors.add(:criteria, "est invalide") unless is_valid?(options)
+            errors.add(:criteria, message_for_validates_custom(:criteria, :bad_syntax)) unless is_valid?(options)
           end
           unless page_configuration(:filters).map {|n| n.is_a?(Hash) ? n.values.first : n}.include_all?(self.criteria.keys)
-            errors.add(:criteria, "ne correspond pas à la configuration")
+            errors.add(:criteria, message_for_validates_custom(:criteria, :different_form_configuration))
           end
         end
       end
@@ -142,5 +130,11 @@ class Query < ActiveRecord::Base
       end
       return true
     end
+
+    def message_for_validates_custom(attribute, context)
+      I18n.t("activerecord.errors.models.query.attributes.#{ attribute.to_s }.#{ context.to_s }")
+    end
+    
+    
 
 end    

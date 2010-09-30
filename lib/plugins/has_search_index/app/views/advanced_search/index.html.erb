@@ -1,5 +1,5 @@
 <div>
-  <%= content_tag(:h2, 'Que recherchez Vous ?') %>
+  <%= content_tag(:h2, I18n.t('view.advanced_search.model_select.h2')) %>
   <% form_tag({:controller => 'advanced_search', :action => :index}, :method => :get, :id => "page_select_form", :class => 'skip_prevent_close') do %>
     <p>
       <%= page_select(@page_names, @page_name) %>
@@ -7,7 +7,7 @@
   <% end %>
   
   <% if @query %>
-    <%= content_tag(:h2, "Quels sont les critères ?  #{ "- #{title_for_search}" if @query.name }")%>
+    <%= content_tag(:h2, "#{I18n.t('view.advanced_search.criteria_h2')} #{ "- #{title_for_search}" if @query.name }")%>
     <%= table_for_search %>
   <% end %>
 </div>

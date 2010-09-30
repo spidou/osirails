@@ -137,6 +137,37 @@ module RestrictedMethods
     return include_array
   end
   
+  # Method to check relationship's plugin implementation
+  # Return the model corresponding to the relationship,
+  #  after testing if the explicit configured relationships (configured with :only_relationships) implement the plugin.
+  # Return nil if the model doesn't implement the plugin and is not configured explicitly.
+  #
+  def reflect_relationship(relationship, check_implicit = false)
+    class_name         = search_index_relationship_class_name("#{ self.table_name }.#{ relationship }", relationship)
+    model              = class_name.constantize
+    need_to_be_checked = (check_implicit ? true : self.search_index[:only_relationships].include?(relationship.to_sym) )
+    unless HasSearchIndex::MODELS.include?(class_name)
+      message = "#{self::ERROR_PREFIX} Association '#{ relationship }' needs the '#{ class_name }' model to implement has_search_index plugin"
+      need_to_be_checked ? raise(ArgumentError, message) : (model = nil)
+    end
+    model
+  end
+  
+  # Method to permit model retrievement from a +relationship+
+  # according to a +path+ ex :
+  # # => Employee.search_index_relationship_class_name("employees.numbers.number_type", "numbers") -> 'Number'
+  #
+  # # => Employee.search_index_relationship_class_name("employees.numbers.number_type", "employees") -> 'Employee'
+  #
+  # # => Employee.search_index_relationship_class_name("employees.numbers.number_type", :employees) -> 'Employee'
+  #
+  # the +path+ must begin by main model table_name (Employee -> 'employees') or a direct relationship (Employee has_many :numbers --> 'numbers')
+  # # => Employee.retrieve_relationship_class("numbers.number_type", "numbers") -> 'Number'
+  #
+  def search_index_relationship_class_name(path, relationship)
+    relationship_class_name_from(path, relationship)
+  end
+  
   # Method to return all USABLE relationships and
   # raise an error if a mandatory relationship (define with :only_relationships) does not implement the plugin
   #
@@ -147,22 +178,6 @@ module RestrictedMethods
       relationships << relationship if HasSearchIndex::MODELS.include?(model)
     end
     return relationships
-  end
-  
-  # Method to check relationship's plugin implementation
-  # Return the model corresponding to the relationship,
-  #  after testing if the explicit configured relationships (configured with :only_relationships) implement the plugin.
-  # Return nil if the model doesn't implement the plugin and is not configured explicitly.
-  #
-  def reflect_relationship(relationship, check_implicit = false)
-    class_name         = relationship_class_name("#{ self.table_name }.#{ relationship }", relationship)
-    model              = class_name.constantize
-    need_to_be_checked = (check_implicit ? true : self.search_index[:only_relationships].include?(relationship.to_sym) )
-    unless HasSearchIndex::MODELS.include?(class_name)
-      message = "#{self::ERROR_PREFIX} Association '#{ relationship }' needs the '#{ class_name }' model to implement has_search_index plugin"
-      need_to_be_checked ? raise(ArgumentError, message) : (model = nil)
-    end
-    model
   end
   
   # Method to return all attributes including additionals

@@ -57,3 +57,35 @@ en:
               invalid: "Email is incorrect"
             society_email:
               invalid: "Society email is incorrect"
+  integrated_search:
+    relationships:
+      employee:
+        contacts: "Contacts"
+    attributes:
+      employee:
+        user_name: "User name"
+        service_name: "Service name"
+        civility: "Civility"
+        contract_end: "Contrat end"
+        contract_type: "Contrat type"
+        fullname: "Full name"
+      job_contract_type:
+        name: "Contrat type"
+      service:
+        name: "Service name"
+        id: "Service"
+      civility:
+        name: "Civility"
+        id: "Civility"
+    page_names:      
+      employee:
+        employee_index: "All employees"
+    filters:
+      civility:
+        name: "Name"
+      job_contract_type:
+        name: "Name"
+      service:
+        name: "Name"
+      job:
+        name: "Name"

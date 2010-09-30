@@ -7,7 +7,7 @@ class QueriesController < ApplicationController
   def edit
     @query = Query.find(params[:id])
     params[:query].each {|k,v| @query.send("#{ k }=",v)} if params[:query] 
-    @return_uri = params[:return_uri]
+    @return_uri = params[:return_uri] + "?query_id=#{ @query.id }"
   end
   
   # PUT /queries/:id

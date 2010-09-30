@@ -61,10 +61,10 @@ module HasSearchIndex
         page[:default_query].order    = check_page_option_order(page_options['default_query'], model, default_query_err)
         page[:default_query].per_page = page_options['default_query']['per_page'].to_i if page_options['default_query']['per_page']
         
-        # Check :name
-        if page_options['default_query']['name']
-          page[:default_query].name = page_options['default_query']['name']
-        end
+#        # Check :name
+#        if page_options['default_query']['name']
+#          page[:default_query].name = page_options['default_query']['name']
+#        end
         
         # Check default_query's criteria
         unless (criteria = model.check_criteria(page_options['default_query']['criteria'])).nil?

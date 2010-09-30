@@ -40,3 +40,11 @@ fr:
       factor:
         name: "Nom"
         fullname: "Nom complet"
+  integrated_search:
+    attributes:
+      customer:
+        name: "Nom du client"
+        bill_to_address:
+          formatted: "Adresse de facturation"
+      activity_sector_reference:
+        get_activity_sector_name: "Secteur d'activité" 

@@ -1,50 +1,39 @@
 module IntegratedSearchHelper
 
-  # TODO manage here Globalization I18n
-  #
   def apply_query_link
-    link_to_remote("Appliquer",
-                   { :url => url_for,
-                     :method => :get,
-                     :before => "validSelectOptions('group columns');",
-                     :update => @class_for_ajax_update,
-                     :with => "Form.serialize('query_form')"
-                   },
-                     :title => 'Appliquer la nouvelle configuration',
-                     :class => 'apply')
+    options = {
+      :url => url_for,
+      :method => :get,
+      :before => "validSelectOptions('group columns');",
+      :update => @class_for_ajax_update,
+      :with => "Form.serialize('query_form')"
+    }
+    link_to_remote(I18n.t('link.apply.name'),
+      options,
+      :title => I18n.t('link.apply.title'),
+      :class => 'apply')
   end
   
-  # TODO manage here Globalization I18n
-  #
-  def reset_query_link
-    link_to("Restaurer", {:p => @page_name}, :title => 'Restaurer la configuration par défaut')
+  def new_query_link
+    link_to(I18n.t('link.new.name'), {},
+      :title   => I18n.t('link.new.title'),
+      :onclick => "submitFormFor('new'); return false;")
   end
   
-  # TODO manage here Globalization I18n
-  #
-  def new_query_link(text = "Sauvegarder")
-    link_to("Créer", {}, :title => 'Sauvegarder en tant que nouvelle requête',
-                         :onclick => "submitFormFor('new'); return false;")
-  end
-  
-  # TODO manage here Globalization I18n
-  #
   def edit_query_link(query)
-    link_to("Modifier", {}, :title => 'Sauvegarder en modifiant la requête',
-                            :onclick => "submitFormFor('#{ query.id }/edit'); return false;")
+    link_to(I18n.t('link.edit.name'), {},
+      :title => I18n.t('link.edit.title'),
+      :onclick => "submitFormFor('#{ query.id }/edit'); return false;")
   end
   
-  # TODO manage here Globalization I18n
-  #
   def delete_query_link(query)
-    link_to("Supprimer", query_path(query, :return_uri => url_for),
-            :title => 'Supprimer la requête définitivement',
-            :method => :delete,
-            :confirm => 'Êtes vous sûr?')
+    link_to(I18n.t('link.delete.name'),
+      query_path(query, :return_uri => url_for),
+      :title => I18n.t('link.delete.title'),
+      :method => :delete,
+      :confirm => 'Êtes vous sûr?')
   end
   
-  # TODO manage here Globalization I18n
-  #
   def reset_query_link(query)
     page_name  = (params[:query] && params[:query][:page_name]) || params[:p]
     parameters = []
@@ -58,32 +47,28 @@ module IntegratedSearchHelper
     }
     
     content_tag(:div, :class => 'cancel_link') do
-      link_to_remote('Annuler X',
+      link_to_remote("#{ I18n.t('link.reset.name') } X",
         remote_options,
-        :title => 'Annuler les modifications effectuées',
+        :title => I18n.t('link.reset.title'),
         :class => 'reset_query_link',
         :style => "#{ 'display:none' unless @can_be_cancelled }"
       )
     end
   end
   
-  # TODO manage here Globalization I18n
-  #
   def toggle_form_link(visible = true)
     link = content_tag(
       :span, nil,
       :onclick => "toggleIntegratedForm('#{ @page_name }', this)",
       :class   => "toggle_integrated_form",
-      :title   => 'Personnaliser le rapport'
+      :title   => I18n.t('link.toggle.title')
     )
                        
     content_tag(:div, :class => 'toggle_link') do
-      content_tag(:span, :class   => "quick_search") { [link, quick_search(!visible)] }
+      content_tag(:span, :class => "quick_search") { [link, quick_search(!visible)] }
     end
   end
   
-  # TODO manage here Globalization I18n
-  #
   def quick_search(visible = true)
     return if @page_name =~ /^advanced/ || !@can_quick_search
     
@@ -95,23 +80,19 @@ module IntegratedSearchHelper
     })
   
     content  = text_field_tag(nil, @query.quick_search_value, :onkeypress => "if(event.which == Event.KEY_RETURN){ #{ submit_function }; return false }")
-    content += link_to_function(nil, submit_function, :title => 'Rechercher')
+    content += link_to_function(nil, submit_function, :title => I18n.t('view.quick_search.title'))
     
     content_tag(:span, content, :class => 'quick_search_inputs', :style => ("display:none;" unless visible))
   end
   
-  # TODO manage here Globalization I18n
-  #
   def links(query)
     links  = [apply_query_link, new_query_link]
     links += [edit_query_link(query), delete_query_link(query)] if (!query.new_record? && query.creator == current_user)
     content_tag(:div, links.join, :class => "public_links")
   end
   
-  # TODO manage here Globalization I18n
-  #
   def add_order_link(page_config)
-    message = "Ajouter une attribut pour le tri"
+    message = I18n.t('link.add_order.title')
     link_to_function(image_tag("add_16x16.png", :alt => message, :title => message)) do |page|
       partial = escape_javascript(render(:partial => "shared/order_option",
                                          :locals => {:page_config => page_config} ))
@@ -123,49 +104,63 @@ module IntegratedSearchHelper
     per_pages = HasSearchIndex::HTML_PAGES_OPTIONS[query.page_name.to_sym][:per_page] + [ nil ]
     
     content_tag(:div, :class => 'pagination per_pages') do
-      [content_tag(:span, 'Per page : ')] + per_pages.map do |per_page|
+      [content_tag(:span, "#{ I18n.t('view.paginate_per_page') } : ")] + per_pages.map do |per_page|
         query.per_page == per_page ? content_tag(:span, paginate_text(per_page), :class => 'current') : content_tag(:span, paginate_link(per_page))
       end
     end
   end
 
   
-  # Method to prepare collection to be used with 'options_for_select'# TODO manage here Globalization I18n
+  # Method to prepare collection to be used with 'options_for_select'
   # 
   def prepare_for_options(collection)
-    collection.map {|n| n && [n.split('.').last(2).join(' '), n] }
+    collection.map {|n| n && [humanize(n), n] }
   end
   
   # Method to create a link permitting to modify pagination option with Ajax
   #
   def paginate_link(per_page)
-    link_to_remote(paginate_text(per_page), :update => @class_for_ajax_update, :method => :get, :url => params.merge(:per_page => per_page || 'all'))
+    link_to_remote(paginate_text(per_page),
+      :update => @class_for_ajax_update,
+      :method => :get,
+      :url => params.merge(:per_page => per_page || 'all'))
   end
   
-  # TODO manage here Globalization I18n
-  #
   def paginate_text(per_page)
-    per_page ? per_page.to_s : 'all'
+    per_page ? per_page.to_s : I18n.t("view.paginate_all")
   end
   
-  # TODO manage here Globalization I18n
-  #
+  def toggle_options_legend(collapse = true)
+    content_tag(:legend, 
+      I18n.t("link.toggle_options.name"),
+      :title => I18n.t("link.toggle_options.title"),
+      :class => collapse,
+      :onclick => "toggleOptionsFieldset('#{ @page_name }', this);")
+  end
+  
+  def toggle_criteria_legend(collapse = false)
+    content_tag(:legend, 
+      I18n.t("link.toggle_criteria.name"),
+      :title => I18n.t("link.toggle_criteria.title"),
+      :class => collapse,
+      :onclick => "toggleCriteriaFieldset('#{ @page_name }', this);")
+  end
+  
+  def page_default_name
+    I18n.t("integrated_search.page_names.#{ @query.subject_model.downcase }.#{ @page_name }", :default => @page_name.humanize)
+  end
+  
   def title_for_search
-    (@query.name||@page_name).titleize #t(@page_name.to_sym)
+    (@query.name||page_default_name).titleize
   end
   
-  #################################################################
-  ################## Methods to generate table ####################
-  
-  # # TODO manage here Globalization I18
-  # 
   def table_for_search
     saved_queries = Query.all(:conditions => ["page_name = ? and name != ? and (creator_id = ? or public_access = ?)",
                                               @page_name, @query.name||'', current_user.id, true])
     
-    if @query.name && @query.name != @default_query_name 
+    if @query.name
       add_contextual_menu_item(:personalized_queries) do 
-        link_to("#{ image_tag('view_16x16.png') } #{ @default_query_name }", :p => @page_name)
+        link_to("#{ image_tag('view_16x16.png') } #{ page_default_name }", :p => @page_name)
       end
     end
     
@@ -178,8 +173,10 @@ module IntegratedSearchHelper
     render(@query_render_options)
   end
   
+  #################################################################
+  ################## Methods to generate table ####################
+  
   # Method to generate table form query
-  # # TODO manage here Globalization I18
   #
   def generate_table(query, page)
     @helper_end_with_page_name = "_in_#{ query.page_name }"
@@ -190,7 +187,7 @@ module IntegratedSearchHelper
     table   = query_table("#{ header }#{ body }")
     pagination = generate_pagination(records, query)
     
-    records.empty? ? content_tag(:div, "Aucun résultat correspondant à la recherche", :class => 'search_no_result') : "#{ table }#{ pagination }"
+    records.empty? ? content_tag(:div, I18n.t("view.no_result"), :class => 'search_no_result') : "#{ table }#{ pagination }"
   end
   
   # Method to generate pagination links
@@ -263,8 +260,6 @@ module IntegratedSearchHelper
     content_tag(:li, content, options.merge(:onmouseover => "showSubMenu(this);"))
   end
   
-  # # TODO manage here Globalization I18n
-  #
   def generate_menu(elements, selected = nil)
     unless elements.is_a?(Array)
       menu_li(apply_attribute_link(elements), :class => "#{ 'selected' if get_attribute(elements) == selected }") unless elements.is_a?(String) && elements.match(/id$/)
@@ -280,38 +275,36 @@ module IntegratedSearchHelper
   # # TODO manage here Globalization I18n
   #
   def apply_attribute_link(path)
-    link_name  = path.is_a?(Hash) ? path.keys.first : path.split('.').last
+    attribute_alias = get_alias(path)
     attribute  = get_attribute(path)
-    label_name = path.is_a?(Hash) ? link_name      : attribute
     
-    link_to_choose_attribute(link_name, label_name, attribute)
+    link_to_choose_attribute(attribute_alias, attribute)
   end
   
   def apply_group_link(path, active)
     group = path.split('.').last
-    active ? link_to_choose_attribute(group, path, "#{ path }.id") : content_tag(:a, humanize(group), :class => 'not_active') 
+    active ? link_to_choose_attribute(path, "#{ path }.id") : content_tag(:a, humanize_as_filter(path), :class => 'not_active') 
   end
   
-  def link_to_choose_attribute(link_name, label_name, attribute)
-    link_to_function("#{ humanize(link_name) }") do |page|
+  def link_to_choose_attribute(attribute_alias, attribute)
+    link_to_function("#{ humanize_as_filter(attribute_alias) }") do |page|
       page << h("insertAttributeChooser(this)")
-      page << h("replaceAttribute(this, '#{ escape_javascript(display_menu_link_for(label_name)) }')")
+      page << h("replaceAttribute(this, '#{ escape_javascript(display_menu_link_for(attribute_alias)) }')")
       page << h("footPrint(this)")
       page << h("insertInputs(this, '#{ escape_javascript(generate_inputs_for(attribute)) }')")
     end
   end
   
-  # # TODO manage here Globalization I18n
-  #
   def display_menu_link
-    content_tag(:span, 'Ajouter un critère', :class => 'new_criterion', :onclick => "showAttributeChooser(this)")
+    content_tag(:span, I18n.t('link.add_criterion.name'), :class => 'new_criterion', :onclick => "showAttributeChooser(this)")
   end
   
-  def display_menu_link_for(text)
-    return nil unless text
+  def display_menu_link_for(attribute)
+    return nil unless attribute
     content = []
-    text.split('.').reverse.each_with_index do |part, i|
-      content.unshift(content_tag(:span, humanize(part), :class => ( i==0 ? 'attribute' : 'relationship' )))
+    parts   = attribute.split('.')
+    parts.each_index do |i|
+      content << content_tag(:span, humanize_as_filter(parts[0..i].join('.')), :class => ( i==(parts.size - 1) ? 'attribute' : 'relationship' ))
     end
     content_tag(:div, content.join, :onclick => "showAttributeChooser(this)")
   end
@@ -364,7 +357,7 @@ module IntegratedSearchHelper
     }
     
     collection = model.all(options).map {|n| [n.send(identifier), "#{ n.id }"]}
-    multiple   = value && value.split(' ').size > 1
+    multiple   = value && value.split(' ').many?
     input      = select_tag(nil, options_for_select(collection.sort, value ? value.split(' ') : value),
                         :multiple => multiple,
                         :onchange => 'applySelection(this, this.next("INPUT"))')
@@ -372,14 +365,11 @@ module IntegratedSearchHelper
     input     += link_to_function(nil, 'toggleMultiple(this)', :class => "toggle_multiple_link #{ 'multiple' if multiple }")
   end
   
-  # # TODO manage here Globalization I18n
-  #
   def delete_link
-    link_to_function(image_tag('delete_16x16.png', :alt => 'delete', :title => 'delete'), "this.up('.criterion').remove()", :class => 'delete_link')
+    title = I18n.t('link.delete_criterion.title')
+    link_to_function(image_tag('delete_16x16.png', :alt => title, :title => title), "this.up('.criterion').remove()", :class => 'delete_link')
   end
   
-  # # TODO manage here Globalization I18n
-  #
   def generate_inputs_for(attribute, options = {})
     attribute_type = data_type(attribute)
     if options.is_a?(Hash)
@@ -404,13 +394,89 @@ module IntegratedSearchHelper
   ###################### Private methods ########################
   
   private
-  
+    
+    # Methods to get attribute translation respecting a translate sources priority
+    # +absolute+ means it use the page subject_model and the attribute full path
+    # +relative+ means it use the model determined from the attribute full path like:
+    #            -> attribute = last attribute part
+    #            -> model     = model corresponding to last relationship
+    # 
+    # ==== example
+    # subject_model = Employee
+    # attribute_with_path = 'numbers.number_type.name'
+    #
+    # # absolute:
+    # attribute = 'numbers.number_type.name'
+    # model     = Employee
+    #
+    # # relative:
+    # attirbute = 'name'
+    # model     = NumberType
+    #
+    # You can add a level to add the ability to use absolute path and relationship at the same time
+    # === example
+    # You want to add an +absolute+ translation for 'civility.name' but you want to add a translation for 'civility' to.
+    # With the current priority sources it is impossible because both the +absolute+ and relationship translations will be at the same place
+    # So you can add a key in the Yaml at the same level of attributes and name it as 'relationships' to give a dedicated place to define relationships transaltions
+    # Then add a line like lvl1 but replacing 'attributes' by 'relationships'.
+    #
+    def translate_with_priority(attribute_with_path, attribute, model)
+      relative = "#{ model.to_s.tableize.singularize }.#{ attribute }"
+      absolute = "#{ @query.subject_model.tableize.singularize }.#{ attribute_with_path }"
+      
+      lvl3 = attribute_with_path.split('.').last(2).join(' ').humanize
+      lvl2 = I18n.t("activerecord.attributes.#{ relative }",         :default => lvl3)
+      lvl1 = I18n.t("integrated_search.attributes.#{ relative }",    :default => lvl2)
+      return I18n.t("integrated_search.attributes.#{ absolute }",    :default => lvl1)
+    end
+    
+    def translate_filters_with_priority(attribute_with_path, attribute, model)
+      absolute = "#{ @query.subject_model.tableize.singularize }.#{ attribute_with_path }"
+      relative = "#{ model.to_s.tableize.singularize }.#{ attribute }"
+      
+      lvl2 = translate_with_priority(attribute_with_path, attribute, model)
+      lvl1 = I18n.t("integrated_search.filters.#{ relative }", :default => lvl2)
+      return I18n.t("integrated_search.filters.#{ absolute }", :default => lvl1)
+    end
+    
+    # get a translation from a relative path
+    # where the first relationshi will be used as model 
+    #
+    def translate_from(attribute_with_path, for_filters = false)
+      model = @query.subject_model.constantize
+      if attribute_with_path.include?('.') && attribute_with_path.split('.').last != 'id'
+        parts        = attribute_with_path.split('.')
+        relationship = parts.at(-2)
+        attribute    = parts.last
+        model        = model.search_index_relationship_class_name(attribute_with_path, relationship).constantize
+      else
+        attribute    = attribute_with_path
+      end
+      unless for_filters
+        translate_with_priority(attribute_with_path, attribute, model)
+      else
+        translate_filters_with_priority(attribute_with_path, attribute, model)
+      end
+    end
+    
+    # Method to make an attribute human readable using i18n and humanize method
+    # do not use html undividable space "&nbsp;"
+    #
+    def humanize(attribute)
+      translate_from(attribute)
+    end
+      
+    # Method to make an attribute human readable using i18n and humanize method
+    #
+    def humanize_as_filter(attribute)
+      translate_from(attribute, for_filters = true).gsub(' ', '&nbsp;')
+    end
+    
     # Method to get header content with or without sort feature
     # according to +column+ & +order+
-    # # TODO manage here Globalization I18n
     #
     def header_with_or_without_sort(column, order)
-      content = column.split('.').last(2).join(' ').humanize
+      content = humanize(column)
       if with_sort?(column, order)
         link_to_remote("#{ content } #{ get_direction_img(column, order)}",
           :update => 'integrated_search',
@@ -422,19 +488,19 @@ module IntegratedSearchHelper
       end
     end
     
-    # # TODO manage here Globalization I18n
+    # Methods to reverse order 
     #
     def get_direction_img(column, order)
       main      = order.at(0) == column_with_direction(column, order) ? 'main_' : ''
       direction = HasSearchIndex.get_order_direction(column_with_direction(column, order))
-      alt       = direction == 'desc' ? 'Ascendant' : 'Descendant'
+      alt       = I18n.t("link.reverse_order.#{direction}")
       image_tag("search/#{ main }#{ direction }_arrow.png",  :alt => alt, :title => alt)
     end
-    
+    #
     def column_with_direction(column, order)
       order.detect { |n| n =~ Regexp.new("^#{ column }:(desc|asc)$")}
     end
-    
+    #
     def reverse_direction_for(column, order)
       column = column_with_direction(column, order)
       return column =~ /desc$/ ? column.gsub('desc','asc') : column.gsub('asc','desc')
@@ -444,8 +510,6 @@ module IntegratedSearchHelper
       order.map {|n| HasSearchIndex.get_order_attribute(n) }.include?(column)
     end
       
-    # Methods to get pagination support
-    #
     def records_with_or_without_paginate(query, page)
       if with_paginate?(query)
         query.search.paginate(:page => page, :per_page => query.per_page)
@@ -462,6 +526,20 @@ module IntegratedSearchHelper
       records.group_by {|record| group_list.map {|column| get_nested(record, column)} }
     end
     
+    # get nested object, from an object and following an attribute path
+    #
+    # ==== example
+    #
+    # object = Employee.first
+    # attribute = numbers.number_type.name
+    # get_nestet(object, attirbute)
+    # ##=> nil
+    #
+    # object = Employee.first
+    # attribute = user.username
+    # get_nestet(object, attirbute)
+    # ##=> Employee.first.user.username
+    #
     def get_nested(object, attribute)
       attribute.split('.').each do |element|
         object = (object.respond_to?(element) && !object.is_a?(Array) ? object.send(element) : nil)
@@ -476,7 +554,6 @@ module IntegratedSearchHelper
     end
     
     # Method to get filter alias from an attribute if it exist, return the attribute if not
-    # # TODO manage here Globalization I18nreset
     #
     def get_alias(attribute)
       filter = if attribute.is_a?(Hash)
@@ -491,14 +568,6 @@ module IntegratedSearchHelper
       arg.is_a?(Hash) ? arg.values.first : arg
     end
     
-    # Method to format properly the attribute
-    # # TODO manage here Globalization I18n
-    #
-    def humanize(attribute)
-      attribute.humanize.gsub(' ', '&nbsp;')
-    end
-    
-  
   ##########################################################################################
   ##########################################################################################
   # 

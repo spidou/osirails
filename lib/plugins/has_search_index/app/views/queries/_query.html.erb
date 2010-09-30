@@ -20,9 +20,9 @@
   <%= render(:partial => "shared/criteria_form", :locals => {:query => query})%>
   
   <fieldset>
-    <legend class='not-collapsed' onclick="toggleOptionsFieldset('<%= query.page_name %>', this);">Options</legend>
+    <%= toggle_options_legend %>
     <div>
-    <% unless page_config[:group].empty? %>
+    <% if page_config[:group].any? %>
       <div class='inline_div'> 
         <%= form.label :group %>
         <%= render :partial => 'shared/sortable_selects',
@@ -30,7 +30,7 @@
       </div>
     <% end %>
     
-    <% unless page_config[:columns].empty? %>
+    <% if page_config[:columns].any? %>
       <div class='inline_div'>
         <%= form.label :columns %>
         <%= render :partial => 'shared/sortable_selects',
@@ -38,7 +38,7 @@
       </div>
     <% end %>
     
-    <% unless page_config[:order].empty? %>
+    <% if page_config[:order].any? %>
       <div class='inline_div'>
         <%= form.label :order %>
         <div>
@@ -50,7 +50,7 @@
       </div>
     <% end %>
     
-    <% unless page_config[:per_page].empty? %>
+    <% if page_config[:per_page].any? %>
       <p>
         <%= form.label :per_page %>
         <%= form.form_or_view(select_tag("query[per_page]", options_for_select(per_page_config, query.per_page)), :per_page) %>

@@ -168,11 +168,11 @@ class QueryTest < ActiveRecordTestCase
 
         context "and :per_page has valid content" do
           setup do
-            @query.per_page = [10]
+            @query.per_page = 10
           end
           
           should "be valid" do
-            assert @query.valid?
+            flunk @query.errors.inspect unless @query.valid?
           end 
         end
         
