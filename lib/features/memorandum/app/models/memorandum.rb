@@ -13,13 +13,6 @@ class Memorandum < ActiveRecord::Base
   # Name Scope
   named_scope :not_published, lambda { |current_user| {:conditions => ["published_at is null and user_id = ?", current_user]} }
   named_scope :published, lambda { |current_user| {:conditions => ["published_at is not null and user_id = ?", current_user]} }
-
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:title] = "Titre :"
-  @@form_labels[:subject] = "Objet :"
-  @@form_labels[:text] = "Votre texte :"
-  @@form_labels[:signature] = "Signature :"
   
   def published?
     published_at != nil

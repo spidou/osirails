@@ -24,14 +24,6 @@ class Document < ActiveRecord::Base
   cattr_accessor :documents_owners
   @@documents_owners = []
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]          = "Nom :"
-  @@form_labels[:description]   = "Description :"
-  @@form_labels[:document_type] = "Type de document :"
-  @@form_labels[:tag_list]      = "Mots-clés :"
-  @@form_labels[:attachment]    = "Fichier :"
-  
   has_attached_file :attachment,
                     :styles => { :thumb   => "100x100#",
                                  :medium  => "640x480>",

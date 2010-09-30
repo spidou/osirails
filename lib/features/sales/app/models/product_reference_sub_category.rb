@@ -15,8 +15,6 @@ class ProductReferenceSubCategory < ProductReferenceCategory
   
   before_validation_on_create :update_reference
   
-  @@form_labels[:product_reference_category] = "Famille parente :"
-  
   #TODO test that method
   def can_update_reference?
     all_product_references.empty?

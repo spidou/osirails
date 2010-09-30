@@ -26,9 +26,6 @@ class ProductReference < Product
   attr_accessor  :product_reference_category_id # correspond to the parent of the product_reference_sub_category associated to the product_reference
   attr_protected :product_reference_category_id # permit to skip the given value from the form
   
-  @@form_labels[:product_reference_category]      = "Famille :"
-  @@form_labels[:product_reference_sub_category]  = "Sous-famille :"
-  
   def product_reference_category
     @product_reference_category ||= product_reference_sub_category.product_reference_category if product_reference_sub_category
   end

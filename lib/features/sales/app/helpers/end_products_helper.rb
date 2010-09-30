@@ -1,14 +1,15 @@
 module EndProductsHelper
   
   def display_end_products_list_in_survey_step(order)
-    html = render(:partial => 'survey_step/end_product', :collection => order.end_products.select{ |p| !p.new_record? })
+    saved_end_products = order.end_products.select{ |p| !p.new_record? }
+    html = render(:partial => 'survey_step/end_product', :collection => saved_end_products) unless saved_end_products.empty?
     html << render_new_end_products_list(order)
   end
   
   def render_new_end_products_list(order)
     new_end_products = order.end_products.select(&:new_record?)
     html =  "<div class=\"new_records\" id=\"new_end_products\" #{"style=\"display:none\"" if new_end_products.empty?}>"
-    html << render(:partial => 'survey_step/end_product', :collection => new_end_products)
+    html << render(:partial => 'survey_step/end_product', :collection => new_end_products) unless new_end_products.empty?
     html << "</div>"
   end
   

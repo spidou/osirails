@@ -19,10 +19,10 @@
             <% response = ChecklistResponse.find_by_checklist_option_id_and_end_product_id(checklist_option.id, end_product.id) || ChecklistResponse.new(:checklist_option_id => checklist_option.id, :end_product_id => end_product.id) %>
             <td class="checkpoint"><%= checklist_option.title %></td>
             <td class="response">
-              <% fields_for "end_product[#{end_product.id}][checklist_responses_attributes][]", response do |form| %>
+              <% fields_for "end_product[#{end_product.id}][checklist_responses_attributes][]", response, :index => nil do |form| %>
                 <%= form.text_area_autoresize :answer, :rows => 2, :cols => 80, :index => nil %>
-                <%= form.hidden_field :checklist_option_id, :index => nil %>
-                <%= form.hidden_field :id, :index => nil %>
+                <%= form.hidden_field :checklist_option_id %>
+                <%= form.hidden_field :id %>
               <% end %>
             </td>
           </tr>

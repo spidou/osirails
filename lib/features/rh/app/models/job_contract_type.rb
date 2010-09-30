@@ -1,4 +1,6 @@
 class JobContractType < ActiveRecord::Base
+  journalize :identifier_method => :name
+
   validates_presence_of :name
   validates_inclusion_of :limited, :in => [true, false]
   

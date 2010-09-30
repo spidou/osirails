@@ -1,0 +1,4 @@
+test/assets
+test/database.yml
+test/debug.log
+test/test.log

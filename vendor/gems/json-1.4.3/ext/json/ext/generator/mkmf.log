@@ -1,0 +1,33 @@
+have_header: checking for ruby/re.h... -------------------- no
+
+"cc -E -I. -I/usr/lib/ruby/1.8/i486-linux -I.  -D_FILE_OFFSET_BITS=64  -fno-strict-aliasing -g -g -O3  -fPIC    conftest.c -o conftest.i"
+/usr/lib/ruby/1.8/mkmf.rb:266: warning: Insecure world writable dir /home/ronnie/Bureau//fop in PATH, mode 040777
+conftest.c:1:21: erreur: ruby/re.h : Aucun fichier ou dossier de ce type
+checked program was:
+/* begin */
+1: #include <ruby/re.h>
+/* end */
+
+--------------------
+
+have_header: checking for re.h... -------------------- yes
+
+"cc -E -I. -I/usr/lib/ruby/1.8/i486-linux -I.  -D_FILE_OFFSET_BITS=64  -fno-strict-aliasing -g -g -O3  -fPIC    conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include <re.h>
+/* end */
+
+--------------------
+
+have_header: checking for ruby/encoding.h... -------------------- no
+
+"cc -E -I. -I/usr/lib/ruby/1.8/i486-linux -I.  -D_FILE_OFFSET_BITS=64  -fno-strict-aliasing -g -g -O3  -fPIC    conftest.c -o conftest.i"
+conftest.c:1:27: erreur: ruby/encoding.h : Aucun fichier ou dossier de ce type
+checked program was:
+/* begin */
+1: #include <ruby/encoding.h>
+/* end */
+
+--------------------
+

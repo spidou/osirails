@@ -7,6 +7,8 @@ class QuoteItem < ActiveRecord::Base
   has_many :delivery_note_items, :dependent => :nullify
   has_many :delivery_notes,      :through   => :delivery_note_items
   
+  journalize :identifier_method => :name, :attributes => [:name, :description, :end_product_id, :dimensions, :quantity, :unit_price, :vat, :prizegiving]
+  
   validates_presence_of :name
   
   validates_numericality_of :unit_price, :vat, :quantity, :unless => :free_item?
@@ -33,7 +35,7 @@ class QuoteItem < ActiveRecord::Base
   end
 
   def after_find
-    self.order_id = quote.order_id
+    self.order_id = quote.order_id if quote # `if quote` added to avoid raise on quote_item_ids call, see next link for further explanations: http://github.com/rails/rails/commit/b163d83b8bab9103dc0e73b86212c2629cb45ca2
     self.product_reference_id = end_product.product_reference_id if product_reference_id.blank? and end_product
   end
   

@@ -16,10 +16,7 @@ class Dunning < ActiveRecord::Base
   validates_presence_of :has_dunning,            :if => :has_dunning_id
   
   validates_date :date, :on_or_after          => Proc.new {|n| n.has_dunning.sended_on if n.has_dunning},
-                        :on_or_after_message  => "ne doit pas être AVANT la date d'envoi au client&#160;(%s)",
-                        :on_or_before         => Proc.new { Date.today },
-                        :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
-  
+                        :on_or_before         => Proc.new { Date.today }
 
   
   validates_persistence_of :date, :creator_id, :dunning_sending_method_id, :comment, :has_dunning_id, :unless => :new_record?
@@ -29,12 +26,6 @@ class Dunning < ActiveRecord::Base
   before_destroy :can_be_destroyed?
   
   attr_protected :cancelled_at, :cancelled_by, :has_dunning_type, :has_dunning_id
-  
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:date]                   = "Effectuée le :"
-  @@form_labels[:dunning_sending_method] = "Par :"
-  @@form_labels[:comment]                = "Commentaire :"
   
   def can_be_added?
     return false unless has_dunning

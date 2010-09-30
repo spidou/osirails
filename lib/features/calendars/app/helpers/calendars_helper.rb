@@ -73,7 +73,7 @@ module CalendarsHelper
     tmp_date = date.beginning_of_week
   	7.times do |i|
   	  div_class = "day"
-  	  div_class += " today" if tmp_date == Date.today
+  	  div_class += " today" if tmp_date.today?
   	  div_class += " last_day_of_week" if i == 6
   	  div_class += " first_day_of_week" if i == 0
       return_html += "<div id=\"#{tmp_date.to_s.gsub('-','')}fullday\" class=\"#{div_class}\"><span>#{$day_fr[tmp_date.wday]} #{tmp_date.day.to_s}</span><ul></ul></div>"
@@ -84,7 +84,7 @@ module CalendarsHelper
   
   def group_day_for_one_day(date)
 	  div_class = "day day_fullday"
-	  div_class += " today" if date == Date.today
+	  div_class += " today" if date.today?
     "<div id=\"#{date.to_s.gsub('-','')}fullday\" class=\"#{div_class}\"><span>#{$day_fr[date.wday]} #{date.day.to_s}</span><ul></ul></div>"
   end
   

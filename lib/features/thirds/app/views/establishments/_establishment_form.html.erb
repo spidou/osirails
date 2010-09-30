@@ -1,7 +1,7 @@
 <% require_locals establishments_owner %>
 <% owner_type = establishments_owner.class.singularized_table_name %>
 
-<% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_form do |form| %>
+<% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_form, :index => nil do |form| %>
   <div class="presentation_in_columns resource_form<%= ' new_record' if establishment.new_record? %>" id="establishment_<%=establishment.id%>_form" <%= "style=\"display:none\"" unless establishment.new_record? or !establishment.errors.empty? or establishment.should_update? %> >
     <%= form.error_messages %>
     <%= render :partial => "establishments/establishment_fields", :object => establishment, :locals => {:form => form} %>
@@ -16,10 +16,10 @@
       <% end %>
 
       <% if !establishment.new_record? and is_form_view? %>
-        <%= form.hidden_field :id, :index => nil %>
-        <%= form.hidden_field :should_destroy, :index => nil, :class => :should_destroy %>
-        <%= form.hidden_field :should_hide, :index => nil, :class => :should_hide %>
-        <%= form.hidden_field :should_update, :index => nil, :class => :should_update %>
+        <%= form.hidden_field :id %>
+        <%= form.hidden_field :should_destroy, :class => :should_destroy %>
+        <%= form.hidden_field :should_hide, :class => :should_hide %>
+        <%= form.hidden_field :should_update, :class => :should_update %>
       <% end %>
     </p>
   </div>

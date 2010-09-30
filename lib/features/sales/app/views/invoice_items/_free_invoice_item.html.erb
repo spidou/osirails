@@ -16,7 +16,7 @@ tr_style = invoice_item.should_destroy? ? 'display:none' : ''
   <td class="designation">
     <span class="name">
       <% if form.form_view? %>
-        <%= form.text_field :name, :index => nil %>
+        <%= form.text_field :name %>
       <% else %>
         <%= invoice_item.name %>
       <% end %>
@@ -32,7 +32,7 @@ tr_style = invoice_item.should_destroy? ? 'display:none' : ''
   </td>
   <td class="unit_price amount">
     <% if form.form_view? %>
-      <%= form.text_field :unit_price, :value => invoice_item.unit_price.to_f.round_to(2).to_s(2), :size => 7, :onkeyup => "calculate(this.up('.invoice_item'))", :class => :input_unit_price, :index => nil %>
+      <%= form.text_field :unit_price, :value => invoice_item.unit_price.to_f.round_to(2).to_s(2), :size => 7, :onkeyup => "calculate(this.up('.invoice_item'))", :class => :input_unit_price %>
     <% else %>
       <%= invoice_item.unit_price.to_f.round_to(2).to_s(2) %>
     <% end %>
@@ -40,7 +40,7 @@ tr_style = invoice_item.should_destroy? ? 'display:none' : ''
   <td class="from_quote" colspan="4">-</td>
   <td class="quantity">
     <% if form.form_view? %>
-      <%= form.text_field :quantity, :size => 4, :onkeyup => "calculate(this.up('.invoice_item'))", :class => :input_quantity, :index => nil %>
+      <%= form.text_field :quantity, :size => 4, :onkeyup => "calculate(this.up('.invoice_item'))", :class => :input_quantity %>
     <% else %>
       <%= invoice_item.quantity.to_f.round_to(2).to_s(2) %>
     <% end %>
@@ -48,7 +48,7 @@ tr_style = invoice_item.should_destroy? ? 'display:none' : ''
   <td class="total amount"><%= invoice_item.total.to_f.round_to(2).to_s(2) %></td>
   <td class="vat">
     <% if form.form_view? %>
-      <%= form.collection_select :vat, Vat.all, :rate, :name, { :include_blank => true }, :class => :input_vat, :onchange => "calculate(this.up('.invoice_item'))", :index => nil %>
+      <%= form.collection_select :vat, Vat.all, :rate, :name, { :include_blank => true }, :class => :input_vat, :onchange => "calculate(this.up('.invoice_item'))" %>
     <% else %>
       <%= invoice_item.vat %>
     <% end %>
@@ -61,10 +61,10 @@ tr_style = invoice_item.should_destroy? ? 'display:none' : ''
       <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down(this);" ) %>
       <%= link_to( image_tag( "cross_16x16.png", :alt => text_delete = "Supprimer la ligne", :title  => text_delete), "#remove", :onclick => "if (confirm(\"Êtes-vous sûr ? Les modifications seront appliquées à la soumission du formulaire.\")) remove_free_item(this)" ) %>
       
-      <%= form.hidden_field :id, :class => :invoice_item_id, :index => nil %>
-      <%= form.hidden_field :end_product_id, :index => nil %>
-      <%= form.hidden_field :position, :class => :position, :value => position, :index => nil %>
-      <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
+      <%= form.hidden_field :id, :class => :invoice_item_id %>
+      <%= form.hidden_field :end_product_id%>
+      <%= form.hidden_field :position, :class => :position, :value => position %>
+      <%= form.hidden_field :should_destroy, :class => :should_destroy %>
     </td>
   <% end %>
 </tr>

@@ -7,11 +7,20 @@ class Permission < ActiveRecord::Base
   
   validates_presence_of :has_permissions_id, :has_permissions_type, :role_id
   
-  def method_missing(method, *args)
-    accepted_methods = permissions_permission_methods.collect{|m|m.permission_method.name} # for getters
-    accepted_methods += accepted_methods.collect{|m|m + "="} # for setters
+  def accepted_method?(method)
+    #OPTIMIZE find a way to store that array somewhere to avoid to generate it each time
+    accepted_methods = permissions_permission_methods.collect{ |m| m.permission_method.p_name } # for getters
+    accepted_methods += permissions_permission_methods.collect{ |m| "#{m.permission_method.name}=" } # for setters
     
-    return super(method, *args) unless accepted_methods.include?(method.to_s)
+    accepted_methods.include?(method.to_s)
+  end
+  
+  def respond_to?(method, include_private = false)
+    accepted_method?(method) ? true : super(method)
+  end  
+  
+  def method_missing(method, *args)
+    return super(method, *args) unless accepted_method?(method)
     
     if method.to_s.ends_with?("=")
       # dynamic setter
@@ -25,10 +34,9 @@ class Permission < ActiveRecord::Base
     else
       # dynamic getter
       permissions_permission_methods.each do |m|
-        return m.active if m.permission_method.name == method.to_s
+        return m.active if m.permission_method.p_name == method.to_s
       end
     end
     false
   end
-  
 end

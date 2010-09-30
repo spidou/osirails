@@ -53,7 +53,7 @@ module ToolsHelper
     return '' if tool_events.empty?
     html = "#{header}"
     html += "<div class='presentation_small events'>"
-    html += render :partial => 'tool_events/tool_event_minimal', :collection => tool_events , :locals => {:tool => tool}
+    html += render :partial => 'tool_events/tool_event_minimal', :collection => tool_events , :locals => {:tool => tool} unless tool_events.empty?
     html += "<p>#{link}</p>" unless link.nil?
     html += "</div>"
     html
@@ -66,7 +66,7 @@ module ToolsHelper
   end
   
   def get_end_date(tool_event)
-    return tool_event.end_date.strftime('%A %d %B %Y') unless tool_event.end_date.nil?
+    return l(tool_event.end_date, :format => :long_ordinal) unless tool_event.end_date.nil?
   end
   
   def effectives_image(tool_event, currents_tools, effectives_tools)
