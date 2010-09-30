@@ -16,9 +16,12 @@ steps:
     title: SAS de facturation
     position: 2
     children:
+      production:
+        title: Production
+        position: 1
       delivery:
         title: Livraison
-        position: 1
+        position: 2
   invoicing:
     title: Facturation
     position: 3

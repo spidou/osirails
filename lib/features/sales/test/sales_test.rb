@@ -57,6 +57,27 @@ class Test::Unit::TestCase
                                        :prizegiving           => 0 )
   end
   
+  def build_default_end_product_for(step, params = {})
+    end_product_attributes = { :product_reference_id => ProductReference.first.id,
+                               :name                 => "Name",
+                               :description          => "Description",
+                               :dimensions           => "Dimensions",
+                               :quantity             => 1 }.merge(params)
+    step.end_product_attributes=( [end_product_attributes] )
+    
+    end_product_attributes.each do |key, value|
+      flunk "<#{value}> expected but was \n<#{step.order.end_products.last.send(key)}>\nThese two values should be equal" unless step.order.end_products.last.send(key) == value
+    end
+    return step.order.end_products.last
+  end
+    
+  def create_default_end_product_for(step, params = {})
+    build_default_end_product_for(step, params)
+    step.save!
+    flunk "order should have 1 end_product" unless step.order.end_products.count == 1
+    return step.order.end_products.first
+  end
+  
   ## QUOTE METHODS
   def create_quote_for(order)
     x = 4 # number of end_products and quote_items

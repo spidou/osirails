@@ -18,31 +18,35 @@ menus:
         title: Dossiers en Étude Commerciale
         description: "Afficher la liste des dossiers actuellement en phase d'étude commerciale"
         position: 2
+      production_orders:
+        title: Dossiers en Prodution
+        description: Afficher la liste des dossiers actuellement en phase de Production
+        position: 3
       pre_invoicing_orders:
         title: Dossiers en SAS de Facturation
         description: Afficher la liste des dossiers actuellement en phase de SAS de facturation
-        position: 3
+        position: 4
       invoicing_orders:
         title: Dossiers en Facturation
         description: Afficher la liste des dossiers actuellement en phase de facturation
-        position: 4
+        position: 5
         separator: after
       closed_orders:
         title: Dossiers Cloturés
         description: Afficher la liste des dossiers déjà cloturés
-        position: 5
+        position: 6
       archived_orders:
         title: Dossiers Archivés
         description: Afficher la liste des dossiers déjà archivés
-        position: 6
+        position: 7
       quote_managements:
         title: Gestion des devis
         description: Afficher la liste complète des devis
-        position: 7
+        position: 8
       invoice_managements:
         title: Gestion des factures
         description: Afficher la liste complète des factures
-        position: 8
+        position: 9
       orders:
         title: Dossier
         description: Dossier de vente
@@ -94,9 +98,13 @@ menus:
             description: Phase du SAS de Facturation
             position: 3
             children:
+              production_step:
+                title: Production
+                position: 1
               delivery_step:
                 title: Livraison
                 description: Étape de la livraison
+                position: 2
                 children:
                   delivery_notes:
                     title: Bon de livraison

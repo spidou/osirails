@@ -10,7 +10,7 @@ class Order < ActiveRecord::Base
   belongs_to :commercial, :class_name => 'Employee'
   belongs_to :creator,    :class_name => 'User', :foreign_key => 'user_id'
   belongs_to :approaching
-  
+
   # steps
   has_one :commercial_step,    :dependent => :nullify
   has_one :pre_invoicing_step, :dependent => :nullify
@@ -400,7 +400,6 @@ class Order < ActiveRecord::Base
           begin
             step_model = step.name.camelize.constantize                # eg: SurveyStep
             parent_step_model = step.parent.name.camelize.constantize  # eg: CommercialStep
-            
             step_model.send("find_or_create_by_#{parent_step_model.table_name.singularize}_id", self.send(step.parent.name).id)
           rescue NameError => e
             error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"

@@ -102,3 +102,57 @@ function restore_original_value(element, value) {
     }
   }
 }
+
+function update_building_quantity_select(element){
+    var quantity = element.down('.quantity').innerHTML;
+    var building_quantity = element.down('.building_quantity');
+    var selected_value = parseInt(element.down('.building_quantity').value)
+    var limit = parseInt(quantity) - parseInt(element.down('.built_quantity').value);
+    var i;
+    var options = ""
+    for (i = 0; i <= limit; i++){
+        options += "<option value='"+ i +"'>" + i + "</option>";
+    }
+    building_quantity.innerHTML = options;
+    if(selected_value <= limit){
+        building_quantity.options[selected_value].selected = true;
+    }
+    update_available_quantity_select(element);
+}
+
+function update_built_quantity_select(element){
+    var quantity = element.down('.quantity').innerHTML;
+    var built_quantity = element.down('.built_quantity');
+    var selected_value = parseInt(element.down('.built_quantity').value)
+    var limit = parseInt(quantity) - parseInt(element.down('.building_quantity').value);
+    var i;
+    var options = ""
+    for (i = 0; i <= limit; i++){
+        options += "<option value='"+ i +"'>" + i + "</option>";
+    }
+    built_quantity.innerHTML = options; 
+    if(selected_value <= limit){
+        built_quantity.options[selected_value].selected = true;
+    } 
+}
+
+function update_available_quantity_select(element){
+    var available_quantity = element.down('.available_to_deliver_quantity');
+    var selected_value = parseInt(element.down('.available_to_deliver_quantity').value)
+    var limit = parseInt(element.down('.built_quantity').value);
+    var i;
+    var options = ""
+    for (i = 0; i <= limit; i++){
+        options += "<option value='"+ i +"'>" + i + "</option>";
+    }
+    available_quantity.innerHTML = options;
+    if(selected_value <= limit){
+        available_quantity.options[selected_value].selected = true;
+    }
+    else{
+        new Effect.Highlight(available_quantity.up("td"));
+    }
+}
+
+
+

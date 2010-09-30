@@ -92,6 +92,8 @@ ActionController::Routing::Routes.add_routes do |map|
     order.pre_invoicing_step 'pre_invoicing', :controller => 'pre_invoicing_step'
     
     order.with_options :name_prefix => 'order_pre_invoicing_step_' do |pre_invoicing|
+      pre_invoicing.resource :production_step, :as => 'production_step', :controller => 'production_step' do |production_step|
+      end
       pre_invoicing.resource :delivery_step, :as => 'delivery', :controller => 'delivery_step' do |delivery_step|
         delivery_step.resources :delivery_notes do |delivery_note|
           delivery_note.confirm       'confirm',        :controller => 'delivery_notes',
@@ -281,6 +283,7 @@ ActionController::Routing::Routes.add_routes do |map|
   map.archived_orders       'archived_orders',       :controller => 'archived_orders'
   map.in_progress_orders    'in_progress_orders',    :controller => 'in_progress_orders'
   map.commercial_orders     'commercial_orders',     :controller => 'commercial_orders'
+  map.production_orders  'production_orders',  :controller => 'production_orders'
   map.pre_invoicing_orders  'pre_invoicing_orders',  :controller => 'pre_invoicing_orders'
   map.invoicing_orders      'invoicing_orders',      :controller => 'invoicing_orders'
   

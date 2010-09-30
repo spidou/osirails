@@ -1,0 +1,7 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+  <%= javascript_include_tag 'sales/sales'%>
+<% end -%>
+
+<%= render :partial => 'production_step', :locals => {:order => @order}%>
+
