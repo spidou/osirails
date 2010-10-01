@@ -1071,18 +1071,18 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
   add_index "product_reference_categories", ["reference"], :name => "index_product_reference_categories_on_reference", :unique => true
 
   create_table "production_progresses", :force => true do |t|
-    t.integer  "production_step_id",            :limit => 11
-    t.integer  "product_id",                    :limit => 11
-    t.integer  "progression",                   :limit => 11
-    t.integer  "building_quantity",             :limit => 11
-    t.integer  "built_quantity",                :limit => 11
-    t.integer  "available_to_deliver_quantity", :limit => 11
+    t.integer  "production_step_id"
+    t.integer  "product_id"
+    t.integer  "progression"
+    t.integer  "building_quantity"
+    t.integer  "built_quantity"
+    t.integer  "available_to_deliver_quantity"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "production_steps", :force => true do |t|
-    t.integer  "pre_invoicing_step_id",  :limit => 11
+    t.integer  "pre_invoicing_step_id"
     t.string   "status"
     t.datetime "started_at"
     t.datetime "finished_at"

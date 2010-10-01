@@ -32,7 +32,7 @@
             <tr class="<%= order.critical_status %>">
               <td><%= link_to(order.reference, order, :title => "Voir ce dossier") %></td>
               <td><%= order.order_type.title %></td>
-              <td><%= order.created_at.humanize %></td>
+              <td><%= l(order.created_at, :format => :short) %></td>
               <td><%= link_to(order.title, order, :title => "Voir ce dossier") %></td>
               <td><%= link_to(order.commercial.fullname, order.commercial, :title => "Voir fiche employé") %></td>
               <td><%= link_to("#{order.customer.name}", order.customer, :title => "Voir fiche client") %></td>

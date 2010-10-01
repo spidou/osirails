@@ -20,7 +20,7 @@ fr:
     formats:
       default: "%A %d %B %Y à %Hh%M"
       time: "%Hh%M"
-      short: "%d %B %Y à %Hh%M"
+      short: "%d %b %Y %Hh%M"
       long: "%A %d %B %Y à %Hh%M"
       long_ordinal: "%A %d %B %Y à %Hh%M"
       only_second: "%S"

@@ -92,6 +92,14 @@ en:
         product_reference_sub_category: "Subcategory"
       product_reference_sub_category:
         product_reference_category: "Parent category"
+      production_step:
+        begining_production_on: "Production begining on"
+        ending_production_on: "Production ending on"
+      production_progress:
+        progression: "Progression"
+        building_quantity: "Building quantity"
+        built_quantity: "Built quantity"
+        available_to_deliver_quantity: "Available to deliver quantity"
       quote:
         sended_on: "Quote sended to customer on"
         send_quote_method: "By"
@@ -166,6 +174,22 @@ en:
             signed_on:
               on_or_after: "must not be BEFORE the press proof send date&#160;({{restriction}})"
               on_or_before: "must not be AFTER today&#160;({{restriction}})"
+        production_step:
+          attributes:
+            begining_production_on:
+              blank: "is required if there are ending_production"
+            ending_production_on:
+              blank: "is not required while global progression different to 100%"
+        production_progress:
+          attributes:
+            progression:
+              inclusion: "should not be to 100% si quantity of ({{restriction}}) is different of product total quantity"
+            building_quantity:
+              inclusion: "should be between 0 and ({{restriction}})"
+            built_quantity:
+              inclusion: "should be between 0 and ({{restriction}})"
+            available_to_deliver_quantity:
+              inclusion: "should be between 0 and ({{restriction}})"
         quote:
           attributes:
             cancelled_on:

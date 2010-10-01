@@ -112,7 +112,7 @@ class ProductionProgressTest < ActiveSupport::TestCase
         end
         
         should "Have an error on building_quantity" do
-          assert_match /building quantity should be between 0 and/, @production_progress.errors.on(:building_quantity)
+          assert_match /doit etre compris entre 0 et/, @production_progress.errors.on(:building_quantity)
         end
       end
       
@@ -134,7 +134,7 @@ class ProductionProgressTest < ActiveSupport::TestCase
         end
         
         should "Have an error on built_quantity" do
-          assert_match /built quantity should be between/, @production_progress.errors.on(:built_quantity)
+          assert_match /doit etre compris entre 0 et/, @production_progress.errors.on(:built_quantity)
         end
       end
       
@@ -146,7 +146,7 @@ class ProductionProgressTest < ActiveSupport::TestCase
         end
         
         should "Have an error on building_quantity" do
-          assert_match /built quantity should be between/, @production_progress.errors.on(:built_quantity)
+          assert_match /doit etre compris entre 0 et/, @production_progress.errors.on(:built_quantity)
         end
       end
       
@@ -170,7 +170,7 @@ class ProductionProgressTest < ActiveSupport::TestCase
         end
         
         should "Have an error on available_to_deliver_quantity" do
-          assert_match /available_to_deliver_quantity should be between 0 and/, @production_progress.errors.on(:available_to_deliver_quantity)
+          assert_match /doit etre compris entre 0 et/, @production_progress.errors.on(:available_to_deliver_quantity)
         end
       end
     end

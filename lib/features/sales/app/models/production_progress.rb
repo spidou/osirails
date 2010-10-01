@@ -12,20 +12,20 @@ class ProductionProgress < ActiveRecord::Base
   validate :validates_progression
   
   def validates_progression
-    self.errors.add(:progression, "ne doit pas etre a 100% si la quantit&eautee; de produit termin&eacute; est differente de la quantit&eacute;e de produit total") if (self.progression.to_i == 100 && (self.built_quantity.to_i != self.product.quantity.to_i))
-    self.errors.add(:progression, "ne doit pas etre a 100% si la quantit&eautee; de produit livrables est differente de la quantit&eacute;e de produit total") if (self.progression.to_i == 100 && (self.available_to_deliver_quantity.to_i != self.product.quantity.to_i))
+    self.errors.add(:progression, I18n.t("activerecord.errors.models.production_progress.attributes.progression.inclusion", :restriction => "produit termin&eacute;")) if (self.progression.to_i == 100 && (self.built_quantity.to_i != self.product.quantity.to_i))
+    self.errors.add(:progression, I18n.t("activerecord.errors.models.production_progress.attributes.progression.inclusion", :restriction => "produit livrables")) if (self.progression.to_i == 100 && (self.available_to_deliver_quantity.to_i != self.product.quantity.to_i))
   end
   
   def validates_building_quantity
-    self.errors.add(:building_quantity, "building quantity should be between 0 and #{product.quantity.to_i  - self.built_quantity.to_i}") unless (self.building_quantity.to_i >= 0 && self.building_quantity.to_i <= (product.quantity.to_i - self.built_quantity.to_i))
+    self.errors.add(:building_quantity, I18n.t("activerecord.errors.models.production_progress.attributes.building_quantity.inclusion", :restriction => "#{product.quantity.to_i  - self.built_quantity.to_i}")) unless (self.building_quantity.to_i >= 0 && self.building_quantity.to_i <= (product.quantity.to_i - self.built_quantity.to_i))
   end
   
   def validates_built_quantity
-    self.errors.add(:built_quantity, "built quantity should be between 0 and #{product.quantity.to_i - self.building_quantity.to_i}") if ((self.building_quantity.to_i + self.built_quantity.to_i > product.quantity.to_i) || (self.building_quantity.to_i < 0))
+    self.errors.add(:built_quantity, I18n.t("activerecord.errors.models.production_progress.attributes.built_quantity.inclusion", :restriction => "#{product.quantity.to_i - self.building_quantity.to_i}")) if ((self.building_quantity.to_i + self.built_quantity.to_i > product.quantity.to_i) || (self.building_quantity.to_i < 0))
   end
   
   def validates_available_quantity
-    self.errors.add(:available_to_deliver_quantity, "available_to_deliver_quantity should be between 0 and #{self.built_quantity.to_i}") if ((self.available_to_deliver_quantity.to_i > self.built_quantity.to_i ) || (self.available_to_deliver_quantity.to_i < 0))
+    self.errors.add(:available_to_deliver_quantity, I18n.t("activerecord.errors.models.production_progress.attributes.available_to_deliver_quantity.inclusion", :restriction => "#{self.built_quantity.to_i}")) if ((self.available_to_deliver_quantity.to_i > self.built_quantity.to_i ) || (self.available_to_deliver_quantity.to_i < 0))
   end
   
   def range_of_building_quantity

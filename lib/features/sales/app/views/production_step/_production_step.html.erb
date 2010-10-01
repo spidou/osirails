@@ -28,7 +28,7 @@
         </tr>
       </thead>
       <tbody>
-        <%= render :partial => 'production_step/production_progress',:collection => production_step.production_progresses, :locals => {:order => order, :production_step => production_step}%>
+        <%= render (:partial => 'production_step/production_progress',:collection => production_step.production_progresses, :locals => {:order => order, :production_step => production_step}) if production_step.production_progresses.any? %>
       </tbody>
   </table>
   <%= f.form_buttons%>

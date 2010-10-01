@@ -21,14 +21,9 @@ class ProductionStep < ActiveRecord::Base
   
   after_save :save_production_progresses
   
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:begining_production_on]             = "Entr&eacute;e en production le :"
-  @@form_labels[:ending_production_on]               = "Sortie en production le :"
-  
   def validates_ending_production_date
-   self.errors.add(:begining_production_on, "requis si ending_production_on est present") if self.ending_production_on && !self.begining_production_on
-   self.errors.add(:ending_production_on, "Progression doit etre a 100 % avant de definir la date de fin de production") if self.ending_production_on && self.begining_production_on && self.global_progression.to_i != 100
+   self.errors.add(:begining_production_on, I18n.t("activerecord.errors.models.production_step.attributes.begining_production_on.blank")) if self.ending_production_on && !self.begining_production_on
+   self.errors.add(:ending_production_on, I18n.t("activerecord.errors.models.production_step.attributes.ending_production_on.blank")) if self.ending_production_on && self.begining_production_on && self.global_progression.to_i != 100
   end
   
   def save_production_progresses

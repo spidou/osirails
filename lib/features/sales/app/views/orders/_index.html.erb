@@ -29,13 +29,13 @@
             <tr class="<%= order.critical_status %>">
               <td><%= link_to(order.reference, order, :title => "Voir ce dossier") %></td>
               <td><%= order.order_type.title %></td>
-              <td><%= order.created_at.humanize %></td>
+              <td><%= l(order.created_at, :format => :short) %></td>
               <td><%= link_to(order.title, order, :title => "Voir ce dossier") %></td>
               <td><%= link_to(order.commercial.fullname, order.commercial, :title => "Voir fiche employé") %></td>
               <td><%= link_to("#{order.customer.name}", order.customer, :title => "Voir fiche client") %></td>
               <td><%= display_interventions_town_for(order)%></td>
-              <td><%= order.quotation_deadline.humanize %></td>
-              <td><%= order.signed_quote ? order.signed_quote.signed_on.humanize : "&nbsp;"%></td>
+              <td><%= l(order.quotation_deadline, :format => :short) %></td>
+              <td><%= order.signed_quote ? l(order.signed_quote.signed_on, :format => :short) : "&nbsp;"%></td>
               <td><object data="<%= formatted_order_path(order, 'svg', {:for => 'understep'}) %>" type="image/svg+xml" style="width: 32px; height: 32px;"></object></td>
               <td><%= l(order.previsional_delivery, :format => :short) %></td>
               <td><%= order_link(order, :link_text => "") %></td>

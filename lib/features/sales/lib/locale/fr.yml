@@ -160,6 +160,14 @@ fr:
         reference: "Référence"
       product_reference_sub_category:
         product_reference_category: "Famille parente"
+      production_step:
+        begining_production_on: "Entrée en production le"
+        ending_production_on: "Sortie en production le"
+      production_progress:
+        progression: "Progression"
+        building_quantity: "Quantitée produits en production"
+        built_quantity: "Quantitée produits terminées"
+        available_to_deliver_quantity: "Quantitée produits livrables"
       quote:
         validity_delay: "Période de validité"
         validity_delay_unit: "Unité de période de validité"
@@ -267,6 +275,22 @@ fr:
             signed_on:
               on_or_after: "ne doit pas être AVANT la date d'envoi du Bon à tirer&#160;({{restriction}})"
               on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+        production_step:
+          attributes:
+            begining_production_on:
+              blank: "est requis si ending_production_on est present"
+            ending_production_on:
+              blank: "n'est pas requis tant que progression total different de 100%"
+        production_progress:
+          attributes:
+            progression:
+              inclusion: "ne doit pas etre a 100% si la quantit&eautee; de ({{restriction}}) est differente de la quantit&eacute;e de produit total"
+            building_quantity:
+              inclusion: "doit etre compris entre 0 et ({{restriction}})"
+            built_quantity:
+              inclusion: "doit etre compris entre 0 et ({{restriction}})"
+            available_to_deliver_quantity:
+              inclusion: "doit etre compris entre 0 et ({{restriction}})"
         quote:
           attributes:
             cancelled_on:
