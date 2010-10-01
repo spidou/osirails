@@ -213,7 +213,7 @@ class Feature < ActiveRecord::Base
       error_message = "(#{e.class}) #{e.message}\n" +
                       "An error occured during the reloading of the environment after trying to enable/disable/install/uninstall a feature.\n" +
                       "You should restart the server if you want the application works properly."
-      RAILS_ENV == "production" ? RAILS_DEFAULT_LOGGER.error(error_message) : raise(error_message)
+      Rails.env.production? ? RAILS_DEFAULT_LOGGER.error(error_message) : raise(error_message)
       return false
     end
   end

@@ -1,8 +1,10 @@
 require File.dirname(__FILE__) + '/../rh_test'
 
 class JobContractTest < ActiveSupport::TestCase
+  should_journalize :attributes => [:job_contract_type_id, :start_date, :end_date, :departure]
+                    
   def setup
-    @job_contract = job_contracts(:john_doe_job_contract)
+    @job_contract = job_contracts(:normal_job_contract)
   end
 
   #TODO active this test once job_contract_type is required (with validates_presence_of)
@@ -15,24 +17,24 @@ class JobContractTest < ActiveSupport::TestCase
 #    jc.valid?
 #    assert jc.errors.invalid?(:job_contract_type), "job_contract_type should NOT be valid because job_contract_type_id is bad"
 #    
-#    jc.job_contract_type_id = job_contract_types(:cdi).id
+#    jc.job_contract_type_id = job_contract_types(:rolling_contract).id
 #    jc.valid?
 #    assert !jc.errors.invalid?(:job_contract_type_id), "job_contract_type_id should be valid"
 #    assert !jc.errors.invalid?(:job_contract_type), "job_contract_type should be valid"
 #    
-#    jc.job_contract_type = job_contract_types(:cdi)
+#    jc.job_contract_type = job_contract_types(:rolling_contract)
 #    jc.valid?
 #    assert !jc.errors.invalid?(:job_contract_type_id), "job_contract_type_id should be valid"
 #    assert !jc.errors.invalid?(:job_contract_type), "job_contract_type should be valid"
 #  end
 
   def test_actual_salary
-    assert_equal @job_contract.actual_salary, salaries(:john_doe_salary),
+    assert_equal @job_contract.actual_salary, salaries(:normal_salary),
       "This JobContract should have this actual salary as Salary"
   end
 
   def test_salary
-    assert_equal @job_contract.salary, salaries(:john_doe_salary).gross_amount,
+    assert_equal @job_contract.salary, salaries(:normal_salary).gross_amount,
       "This JobContract should have this actual salary as Salary"
   end
   

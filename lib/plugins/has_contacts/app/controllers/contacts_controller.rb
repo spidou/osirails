@@ -9,7 +9,7 @@ class ContactsController < ApplicationController
   def index
     hash = params.select{ |key, value| key.end_with?("_id") }
     raise "An error has occured. The ContactsController should receive at least 1 param which ends with '_id'" if hash.size < 1
-    raise "An error has occured. The ContactsController shouldn't receive more than 1 params which ends with '_id'" if hash.size > 1
+    raise "An error has occured. The ContactsController shouldn't receive more than 1 params which ends with '_id'" if hash.many?
     
     owner_class = hash.first.first.chomp("_id").camelize.constantize
     owner_id = hash.first.last

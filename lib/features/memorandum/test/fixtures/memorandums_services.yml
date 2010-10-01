@@ -1,4 +1,4 @@
-first_memorandum_direction_general:
+normal_memorandums_service:
   service: direction_general
-  memorandum: first_memorandum
+  memorandum: normal_memorandum
   recursive: 0

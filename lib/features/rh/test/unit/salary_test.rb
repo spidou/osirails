@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../rh_test'
 
 class SalaryTest < ActiveSupport::TestCase
   def setup
-    @salary = salaries(:john_doe_salary)
+    @salary = salaries(:normal_salary)
   end
 
   def test_presence_of_gross_amount

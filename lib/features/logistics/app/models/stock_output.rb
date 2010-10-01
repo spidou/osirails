@@ -3,8 +3,6 @@ class StockOutput < StockFlow
   
   validate :validates_stock_availability
   
-  @@form_labels[:identifier] = "Numéro de dossier :"
-  
   def validates_stock_availability
     return unless supply and quantity
     supply = Supply.find(supply_id)

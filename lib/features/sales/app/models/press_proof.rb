@@ -57,16 +57,14 @@ class PressProof < ActiveRecord::Base
   
   # Validations for send
   with_options :if => :sended? do |v|
-    v.validates_date :sended_on, :on_or_after => :confirmed_on, :on_or_after_message => "ne doit pas être AVANT la date de validation du Bon à tirer&#160;(%s)",
-                                 :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    v.validates_date :sended_on, :on_or_after => :confirmed_on, :on_or_before => Proc.new { Date.today }
     v.validates_presence_of :document_sending_method_id
     v.validates_presence_of :document_sending_method, :if => :document_sending_method_id
   end
   
   # Validations for sign
   with_options :if => :signed? do |v|
-    v.validates_date :signed_on, :on_or_after => :sended_on, :on_or_after_message => "ne doit pas être AVANT la date de d'envoi du Bon à tirer&#160;(%s)",
-                                 :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    v.validates_date :signed_on, :on_or_after => :sended_on, :on_or_before => Proc.new { Date.today }
     v.validate :validates_presence_of_signed_press_proof, :validates_with_a_end_product_not_already_referenced
     v.validates_attachment_content_type :signed_press_proof, :content_type => [ 'application/pdf', 'application/x-pdf' ]
 #    v.validates_attachment_size         :signed_press_proof, :less_than    => 2.megabytes
@@ -94,25 +92,6 @@ class PressProof < ActiveRecord::Base
   
   attr_protected :status, :cancelled_on, :confirmed_on
     
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:reference]               = "Référence :"
-  @@form_labels[:internal_actor]          = "Contact Graphique :"
-  @@form_labels[:creator]                 = "Créateur :"
-  @@form_labels[:end_product]             = "Produit :"
-  @@form_labels[:end_product_description] = "Description :"
-  @@form_labels[:unit_measure]            = "Unité de mesures :"
-  @@form_labels[:sended_on]               = "BAT envoyé au client le :"
-  @@form_labels[:document_sending_method] = "Par :"
-  @@form_labels[:signed_on]               = "BAT signé par le client le :"
-  @@form_labels[:signed_press_proof]      = "Fichier (BAT signé) :"
-  @@form_labels[:revoked_comment]         = "Motif de l'annulation :"
-  @@form_labels[:revoked_by]              = "BAT annulé par :"
-  @@form_labels[:revoked_at]              = "BAT annulé le :"
-  @@form_labels[:cancelled_at]            = "BAT annulé le :"
-  @@form_labels[:created_at]              = "Date de création :"
-  @@form_labels[:status]                  = "État actuel :"
-  
   def sorted_press_proof_items
     press_proof_items.sort_by(&:position)
   end

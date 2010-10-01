@@ -1,0 +1,41 @@
+en:
+  label_separator: ":"
+  
+  welcome: "Welcome"
+  
+  date:
+    formats:
+      default: "%Y-%m-%d"
+      short: "%b %d, %Y"
+      long: "%B %d, %Y"
+      long_ordinal: "%A, %B %d, %Y"
+      only_day: "%d"
+  time:
+    formats:
+      default: "%A, %B %d, %Y at %H:%M"
+      time: "%H:%M"
+      short: "%B %d, %Y at %H:%M"
+      long: "%A, %B %d, %Y at %H:%M"
+      long_ordinal: "%A, %B %d, %Y at %H:%M"
+      only_second: "%S"
+    am: 'am'
+    pm: 'pm'
+    
+  number:
+    format:
+      precision: 3
+      separator: '.'
+      delimiter: ','
+    currency:
+      format:
+        unit: '€'
+        precision: 2
+        format: '%n %u'
+        
+  activerecord:
+    errors:
+      template:
+        header:
+          one: "{{count}} error raised at save"
+          other: "{{count}} errors raised at save"
+        body: "The following fields are not valid :"

@@ -22,7 +22,7 @@
             <td><%= link_to permission.role.name, edit_role_permission_path(permission.role.id) %></td>
             <% fields_for "permissions[]", permission do |form| %>
               <% for method in permission.permission_methods %>
-                <td><%= form.check_box method.name %></td>
+                <td><%= form.check_box method.p_name %></td>
               <% end %>
             <% end %>
 		        <td><input type="checkbox" class="checkbox_permission"></td>

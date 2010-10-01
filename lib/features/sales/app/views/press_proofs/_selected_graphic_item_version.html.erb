@@ -2,8 +2,9 @@
 press_proof        ||= nil
 unselected_mockups ||= []
 
-graphic_item_version  = selected_graphic_item_version
-counter               = selected_graphic_item_version_counter
+selected_graphic_item_version_counter ||= 1
+graphic_item_version                    = selected_graphic_item_version
+counter                                 = selected_graphic_item_version_counter
 
 is_unselected_mockup = unselected_mockups.include?(graphic_item_version.graphic_item.id) # when dropping a mockup unselected_mockups is nil
 style   = is_unselected_mockup ? "display:none" : ""

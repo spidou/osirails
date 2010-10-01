@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../calendars_test'
 
 class EventTest < ActiveSupport::TestCase
   def setup
-    @event = events(:normal)
+    @event = events(:two_hours_ago)
   end
 
   def test_presence_of_title
@@ -27,7 +27,7 @@ class EventTest < ActiveSupport::TestCase
   end
 
   def test_belongs_to_calendar
-    assert_equal @event.calendar, calendars(:normal),
+    assert_equal @event.calendar, calendars(:normal_calendar),
       "This Event should belongs to this Calendar"
   end
 
@@ -63,17 +63,17 @@ class EventTest < ActiveSupport::TestCase
 #  end
 
   def test_has_many_alarms
-    assert_equal @event.alarms, [alarms(:normal)],
+    assert_equal @event.alarms, [alarms(:normal_alarm)],
       "This Event should have this Alarm"
   end
 
   def test_has_many_participants
-    assert_equal @event.participants, [participants(:normal)],
+    assert_equal @event.participants, [participants(:normal_participant)],
       "This Event should have this Participant"
   end
 
   def test_has_many_exception_dates
-    assert_equal @event.exception_dates, [exception_dates(:normal)],
+    assert_equal @event.exception_dates, [exception_dates(:normal_exception_date)],
       "This Event should have this ExceptionDate"
   end
 end

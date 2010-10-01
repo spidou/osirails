@@ -41,6 +41,8 @@ class Order < ActiveRecord::Base
   has_many :order_logs
   has_many :mockups
   has_many :graphic_documents
+  
+  journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"}
 
   validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id
@@ -73,20 +75,6 @@ class Order < ActiveRecord::Base
   TODAY     = 'today'
   SOON      = 'soon'
   FAR       = 'far'
-  
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:title]                   = "Nom du projet :"
-  @@form_labels[:customer_needs]          = "Besoins du client :"
-  @@form_labels[:society_activity_sector] = "Secteur d'activité :"
-  @@form_labels[:order_type]              = "Type de dossier :"
-  @@form_labels[:commercial]              = "Commercial :"
-  @@form_labels[:ship_to_address]         = "Adresse(s) de livraison :"
-  @@form_labels[:approaching]             = "Type d'approche :"
-  @@form_labels[:order_contact]           = "Contact commercial :"
-  @@form_labels[:created_at]              = "Date de création :"
-  @@form_labels[:previsional_delivery]    = "Livraison prévue le :"
-  @@form_labels[:quotation_deadline]      = "Envoyer le devis avant le :"
   
   # return all delivery_notes with an active invoice
   # delivery_notes_with_invoice
@@ -380,7 +368,7 @@ class Order < ActiveRecord::Base
     # Create all orders_steps after create order
     def validates_order_type_validity
       if order_type and society_activity_sector
-        errors.add(:order_type_id, ActiveRecord::Errors.default_error_messages[:inclusion]) unless society_activity_sector.order_types.include?(order_type)
+        errors.add(:order_type_id, I18n.t('activerecord.errors.messages.inclusion')) unless society_activity_sector.order_types.include?(order_type)
       end
     end
     

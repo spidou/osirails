@@ -73,7 +73,7 @@ class Test::Unit::TestCase
     supplies = supplies_quantities.keys
     
     supply_types = supplies.collect{ |s| s.class.name }.uniq
-    flunk "all supplies should be of the same type\nbut was #{supply_types.inspect}" if supply_types.size > 1
+    flunk "all supplies should be of the same type\nbut was #{supply_types.inspect}" if supply_types.many?
     inventory = Inventory.new(:supply_type => supply_types.first, :created_at => datetime)
     
     attributes = []

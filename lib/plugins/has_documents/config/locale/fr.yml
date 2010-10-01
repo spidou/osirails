@@ -1,0 +1,9 @@
+fr:     
+  activerecord:
+    attributes: 
+      document:
+        name: "Nom"
+        description: "Description"
+        document_type: "Type de document"
+        tag_list: "Mots-clés"
+        attachment: "Fichier"

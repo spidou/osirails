@@ -16,9 +16,9 @@
     <% for leave_request in refused_leave_requests %>
       <tr>
         <td><%=h leave_request.formatted %></td>
-        <td><%=h leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+        <td><%=h l(leave_request.submitted_at.to_datetime) %></td>
         <td><%=h view_status(leave_request) %></td>
-        <td><%=h leave_request.updated_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+        <td><%=h l(leave_request.updated_at.to_datetime) %></td>
         <td><%= leave_request_link(leave_request, :link_text => "") %></td>
       </tr>
     <% end %>

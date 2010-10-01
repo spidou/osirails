@@ -1,0 +1,15 @@
+= 0.1.2 [2010-09-20]
+- Casts values returned by old_value and new_value JournalLine methods, fixed bug when journal line
+was generated for subresource whereas it was just changing its identifier.
+- Fixed some bugs on subresources display in journals and on journal lines of observed subresources
+- Optimization on the loop detecting the belongs_to attributes
+
+= 0.1.1 [2010-08-27]
+- Fixed bug on actor journal identifiers
+- Rails 2.2.3 support
+  - I18n management of journalization terms with french and english locales
+  - I18n management of journalized attributes and subresources
+- Optimizations on the helper and on partials
+
+= 0.1.0 [2010-08-18]
+- First release

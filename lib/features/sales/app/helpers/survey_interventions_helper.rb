@@ -23,7 +23,7 @@ module SurveyInterventionsHelper
     
     collection_with_errors = collection.reject{ |s| !s.should_create? and s.errors.empty? }
     html =  "<div class=\"new_records\" id=\"new_survey_interventions\" #{"style=\"display:none\"" if collection_with_errors.empty?}>"# if collection.empty?}>"
-    html << render(:partial => 'survey_interventions/survey_intervention', :collection => collection)
+    html << render(:partial => 'survey_interventions/survey_intervention', :collection => collection) unless collection.empty?
     html << "</div>"
   end
   

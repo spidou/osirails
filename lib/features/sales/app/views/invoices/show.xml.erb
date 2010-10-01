@@ -5,7 +5,7 @@
     <Type>FACTURE</Type>
     <Type2><%= @invoice.invoice_type.title.upcase %></Type2>
     <Reference><%= @invoice.reference %></Reference>
-    <Date><%= Date.today.strftime("%d %B %Y") %></Date>
+    <Date><%= l(Date.today) %></Date>
     <Currency>EUROS (€)</Currency>  
     <FileName><%= @invoice.order.title%></FileName>
     <Supplier>
@@ -108,7 +108,7 @@
     <DueDates>
       <% @invoice.due_dates.each do |due_date| %>
         <DueDate>
-          <Date><%= due_date.date.strftime("%d/%m/%Y") %></Date>
+          <Date><%= l(due_date.date) %></Date>
           <Total><%= due_date.net_to_paid.to_f.round_to(2).to_s(2) %></Total>
         </DueDate>
       <% end %>
@@ -154,7 +154,7 @@
     <DueDatesDate>Date</DueDatesDate>
     <DueDatesReference>Réf.</DueDatesReference>
     <DueDatesTotal>Montant TTC</DueDatesTotal>
-    <FormToCut><%= @invoice.due_dates.size > 1 ? "Coupons à retourner avec chaque règlement" : "Coupon à retourner avec le règlement" %></FormToCut>
+    <FormToCut><%= @invoice.due_dates.many? ? "Coupons à retourner avec chaque règlement" : "Coupon à retourner avec le règlement" %></FormToCut>
     <Subtotal>Report :</Subtotal>
     <Page>Page</Page>  
   </Labels>

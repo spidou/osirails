@@ -16,15 +16,6 @@ class Payment < ActiveRecord::Base
   
   validate :validates_amount_not_equal_to_zero
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:paid_on]             = 'Règlement reçu le :'
-  @@form_labels[:amount]              = 'Montant :'
-  @@form_labels[:bank_name]           = 'Établissement bancaire :'
-  @@form_labels[:payment_method]      = 'Moyen de paiement :'
-  @@form_labels[:payment_identifier]  = 'Identifiant du règlement :'
-  @@form_labels[:attachment]          = 'Pièce jointe :'
-  
   def validates_amount_not_equal_to_zero
     errors.add(:amount, "ne doit pas être égal à 0 (zéro)") if amount == 0
   end

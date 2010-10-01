@@ -31,10 +31,10 @@ position     = invoice_item.position.zero? ? counter : invoice_item.position
       <%= form.hidden_field :quantity %>
       <%= form.hidden_field :vat %>
       
-      <%= form.hidden_field :id, :class => :invoice_item_id, :index => nil %>
-      <%= form.hidden_field :end_product_id, :index => nil %>
-      <%= form.hidden_field :position, :class => :position, :value => position, :index => nil %>
-      <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
+      <%= form.hidden_field :id, :class => :invoice_item_id %>
+      <%= form.hidden_field :end_product_id %>
+      <%= form.hidden_field :position, :class => :position, :value => position %>
+      <%= form.hidden_field :should_destroy, :class => :should_destroy %>
     </td>
   <% end %>
 </tr>
