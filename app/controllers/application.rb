@@ -57,7 +57,7 @@ class ApplicationController < ActionController::Base
     object_id                 = class_name_and_object_ids.last.first
     controller_folder_name    = self.class.name.gsub("Controller","").underscore
     @ids                      = class_name_and_object_ids.last
-    choice                    = @ids.size > 1 ? "multiple" : "single"
+    choice                    = @ids.many? ? "multiple" : "single"
     
     controller_template = "#{controller_folder_name}/#{underscored_class_name}_context_menu_#{choice}_selection"
     model_template      = "shared/#{underscored_class_name}_context_menu_#{choice}_selection"
