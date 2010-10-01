@@ -1,5 +1,5 @@
 class SuppliersController < ApplicationController
-  helper :thirds, :contacts, :documents, :numbers
+  helper :thirds, :contacts, :documents, :numbers, :address
   
   before_filter :hack_params_for_contacts_nested_resources, :only => [ :create, :update ]
   

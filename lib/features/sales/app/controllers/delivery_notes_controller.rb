@@ -1,6 +1,6 @@
 class DeliveryNotesController < ApplicationController
   include AdjustPdf
-  helper :orders, :contacts, :delivery_interventions, :numbers
+  helper :orders, :contacts, :delivery_interventions, :numbers, :address
   
   acts_as_step_controller :step_name => :delivery_step, :skip_edit_redirection => true
   
@@ -13,12 +13,19 @@ class DeliveryNotesController < ApplicationController
   # GET /orders/:order_id/:step/delivery_notes/:id.pdf
   def show
     respond_to do |format|
+      pdf_path = "assets/sales/delivery_notes/generated_pdf/#{@delivery_note.reference.nil? ? 'tmp' : @delivery_note.id}.pdf"
+      
+      unless File.exist?(pdf_path)
+        fake_quote_item = QuoteItem.new(:name => "Pièce d'origine : Devis n°#{@delivery_note.associated_quote.reference}")
+        @delivery_note.delivery_note_items.unshift DeliveryNoteItem.new(:quote_item => fake_quote_item)
+      end
+      
       format.xml {
         render :layout => false
       }
       format.pdf {
         pdf_filename = "bon_livraison_#{@delivery_note.can_be_downloaded? ? @delivery_note.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
-        render_pdf(pdf_filename, "delivery_notes/show.xml.erb", "delivery_notes/show.xsl.erb", "assets/sales/delivery_notes/generated_pdf/#{@delivery_note.reference.nil? ? 'tmp' : @delivery_note.id}.pdf", @delivery_note.reference.nil?)
+        render_pdf(pdf_filename, "delivery_notes/show.xml.erb", "delivery_notes/show.xsl.erb", pdf_path, @delivery_note.reference.nil?)
       }
       format.html { }
     end

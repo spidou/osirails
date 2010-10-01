@@ -1,4 +1,5 @@
 class EstablishmentsController < ApplicationController
+  helper :address
 
   def show
     @establishment = Establishment.find(params[:id])

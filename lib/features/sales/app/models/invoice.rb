@@ -29,9 +29,10 @@ class Invoice < ActiveRecord::Base
   belongs_to :factor
   belongs_to :invoice_type
   belongs_to :send_invoice_method
-  belongs_to :creator,      :class_name => 'User'
-  belongs_to :cancelled_by, :class_name => "User"
-  belongs_to :abandoned_by, :class_name => "User"
+  belongs_to :invoicing_actor, :class_name => 'Employee'
+  belongs_to :creator,         :class_name => 'User'
+  belongs_to :cancelled_by,    :class_name => 'User'
+  belongs_to :abandoned_by,    :class_name => 'User'
   
   has_many :invoice_items,  :dependent  => :destroy,        :order => 'position'
   has_many :end_products,   :through    => :invoice_items,  :order => 'invoice_items.position'
@@ -60,9 +61,10 @@ class Invoice < ActiveRecord::Base
   
   # when invoice is UNSAVED or UNCOMPLETE
   with_options :if => Proc.new{ |invoice| invoice.new_record? or invoice.was_uncomplete? } do |x|
-    x.validates_presence_of :bill_to_address, :published_on, :invoice_type_id, :creator_id, :invoice_contact_id
+    x.validates_presence_of :bill_to_address, :published_on, :invoice_type_id, :creator_id, :invoicing_actor_id, :invoice_contact_id
     x.validates_presence_of :invoice_type,    :if => :invoice_type_id
     x.validates_presence_of :creator,         :if => :creator_id
+    x.validates_presence_of :invoicing_actor, :if => :invoicing_actor_id
     x.validates_presence_of :invoice_contact, :if => :invoice_contact_id
     
     x.validate :validates_presence_of_at_least_one_due_date
@@ -90,7 +92,7 @@ class Invoice < ActiveRecord::Base
   
   # when invoice is CONFIRMED and above
   with_options :if => :confirmed_at_was do |x|
-    x.validates_persistence_of :confirmed_at, :published_on, :factor_id, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :invoice_contact_id
+    x.validates_persistence_of :confirmed_at, :published_on, :factor_id, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :invoicing_actor_id, :invoice_contact_id
   end
   
   ### while invoice CANCELLATION
@@ -493,7 +495,19 @@ class Invoice < ActiveRecord::Base
     product_items_sum = {}
     product_items.each{ |i| product_items_sum[i.end_product_id] = i.quantity if i.quantity > 0 }
     
-    errors.add(:invoice_items, "La liste des produits qui composent la facture est incorrecte. Elle ne correspond pas aux produits livrés dans le(s) 'Bon de Livraison' associé(s) (#{product_items_sum.inspect} - #{delivery_note_items_sum.inspect} = #{product_items_sum.diff(delivery_note_items_sum).inspect})") if product_items_sum != delivery_note_items_sum
+    
+    if product_items_sum != delivery_note_items_sum
+      contents = ""
+      product_items_sum.diff(delivery_note_items_sum).keys.each do |key|
+        end_product                  = EndProduct.find(key)
+        product_item_quantity        = product_items_sum[key]       || 0
+        delivery_note_items_quantity = delivery_note_items_sum[key] || 0
+        #TODO replace this view logic by a new tag system
+        contents                    += "<br/>- #{end_product.name} (x#{product_item_quantity} ≠ x#{delivery_note_items_quantity})"
+      end
+      message = contents
+      errors.add(:invoice_items, "La liste des produits qui composent la facture est incorrecte. Elle ne correspond pas aux produits livrés dans le(s) 'Bon de Livraison' associé(s) : #{message}") 
+    end
   end
   
   def unpaid_due_dates
@@ -542,12 +556,12 @@ class Invoice < ActiveRecord::Base
   
   # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def total
-    invoice_items.reject(&:should_destroy?).collect(&:total).sum
+    invoice_items.reject(&:should_destroy?).collect(&:total).compact.sum
   end
   
   # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def total_with_taxes
-    invoice_items.reject(&:should_destroy?).collect(&:total_with_taxes).sum
+    invoice_items.reject(&:should_destroy?).collect(&:total_with_taxes).compact.sum
   end
   
   alias_method :net_to_paid, :total_with_taxes
@@ -559,17 +573,17 @@ class Invoice < ActiveRecord::Base
   
   # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def tax_coefficients
-    invoice_items.reject(&:should_destroy?).collect(&:vat).uniq
+    invoice_items.reject(&:should_destroy?).collect(&:vat).compact.uniq
   end
   
   # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def total_taxes_for(coefficient)
-    invoice_items.reject(&:should_destroy?).select{ |i| i.vat == coefficient }.collect(&:total).sum
+    invoice_items.reject(&:should_destroy?).select{ |i| i.vat == coefficient }.collect(&:total).compact.sum
   end
   
   # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def number_of_pieces
-    invoice_items.reject(&:should_destroy?).collect(&:quantity).sum
+    invoice_items.reject(&:should_destroy?).collect(&:quantity).compact.sum
   end
   
   def number_of_products

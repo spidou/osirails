@@ -1,6 +1,8 @@
 require_dependency 'lib/features/thirds/app/controllers/customers_controller'
 
 class CustomersController
+  helper :address
+  
   after_filter :detect_request_for_order_creation, :only => :new
   after_filter :redirect_to_new_order, :only => :create
   

@@ -59,9 +59,35 @@
  *  pass none of "inputField", "displayArea" or "button" you'll get a warning
  *  saying "nothing to setup".
  */
+ 
+// HACK by Ronnie Heritiana RABENANDRASANA - adds support of calendar select system with textfield using HTML classes 
+ 
+// http://paulschreiber.com/blog/2008/09/20/javascript-how-to-unescape-html-entities/
+String.prototype.entityDecode = function() {
+    var t = document.createElement( 'div' );
+    t.innerHTML = this;
+    return t.firstChild.nodeValue;
+//  }
+};
+
+Array.prototype = {
+  include: function (value) {
+    for (var i = 0; i < this.length; i++) {
+      if (this[i] === value) return true;
+    }
+    return false;
+  }
+};
+
+var currentTextField;
+var currentCalendarIndex;
+var currentCalendar;
+
+// END HACK
+
 Calendar.setup = function (params) {
 	function param_default(pname, def) { if (typeof params[pname] == "undefined") { params[pname] = def; } };
-
+  
 	param_default("inputField",     null);
 	param_default("displayArea",    null);
 	param_default("button",         null);
@@ -97,29 +123,53 @@ Calendar.setup = function (params) {
 			params[tmp[i]] = document.getElementById(params[tmp[i]]);
 		}
 	}
-	if (!(params.flat || params.multiple || params.inputField || params.displayArea || params.button)) {
+	// HACK by Ronnie Heritiana RABENANDRASANA - adds support of calendar select system with textfield using HTML classes
+	if (!(params.flat || params.multiple || params.inputField || params.displayArea || params.button || ($$('.calendar-trigger').any() && $$('.calendar-field').any() && $$('.calendar-displayed-field').any() && $$('.calendar-container').any()) )){
+  // end HACK
 		alert("Calendar.setup:\n  Nothing to setup (no fields found).  Please check your code");
 		return false;
 	}
 
 	function onSelect(cal) {
-		var p = cal.params;
-		var update = (cal.dateClicked || p.electric);
-		if (update && p.inputField) {
-			p.inputField.value = cal.date.print(p.ifFormat);
-			if (typeof p.inputField.onchange == "function")
-				p.inputField.onchange();
+    // HACK by Ronnie Heritiana RABENANDRASANA - adds support of calendar select system with textfield using HTML classes
+	  if (params.flat || params.multiple || params.inputField || params.displayArea || params.button){ 
+	  // end HACK
+		  var p = cal.params;
+		  var update = (cal.dateClicked || p.electric);
+		  if (update && p.inputField) {
+			  p.inputField.value = cal.date.print(p.ifFormat);
+			  if (typeof p.inputField.onchange == "function")
+				  p.inputField.onchange();
+		  }
+		  if (update && p.displayArea)
+			  p.displayArea.innerHTML = cal.date.print(p.daFormat);
+		  if (update && typeof p.onUpdate == "function")
+			  p.onUpdate(cal);
+		  if (update && p.flat) {
+			  if (typeof p.flatCallback == "function")
+				  p.flatCallback(cal);
+		  }
+		  if (update && p.singleClick && cal.dateClicked)
+			  cal.callCloseHandler();
+	    // HACK by Ronnie Heritiana RABENANDRASANA - adds support of calendar select system with textfield using HTML classes
+		} else { 
+		  var p = currentCalendar.params;
+		  var update = (currentCalendar.dateClicked || p.electric);
+		  if (update && currentTextField && !p.disabledIf) {
+			  currentTextField.value = currentCalendar.date.print(p.ifFormat).entityDecode();
+			  displayedTextField = currentTextField.up('.calendar-container').down('.calendar-displayed-field');
+			  displayedTextField.value = currentCalendar.date.print(p.altIfFormat).entityDecode();
+			  if (typeof currentTextField.onchange == "function")
+				  currentTextField.onchange();
+        if (typeof displayedTextField.onchange == "function")
+				  displayedTextField.onchange();
+		  }
+		  if (update && typeof p.onUpdate == "function")
+			  p.onUpdate(cal);
+		  if (update && p.singleClick && cal.dateClicked)
+			  cal.callCloseHandler();
+	    // end HACK
 		}
-		if (update && p.displayArea)
-			p.displayArea.innerHTML = cal.date.print(p.daFormat);
-		if (update && typeof p.onUpdate == "function")
-			p.onUpdate(cal);
-		if (update && p.flat) {
-			if (typeof p.flatCallback == "function")
-				p.flatCallback(cal);
-		}
-		if (update && p.singleClick && cal.dateClicked)
-			cal.callCloseHandler();
 	};
 
 	if (params.flat != null) {
@@ -149,52 +199,101 @@ Calendar.setup = function (params) {
 		return false;
 	}
 
-	var triggerEl = params.button || params.displayArea || params.inputField;
-	triggerEl["on" + params.eventName] = function() {
-		var dateEl = params.inputField || params.displayArea;
-		var dateFmt = params.inputField ? params.ifFormat : params.daFormat;
-		var mustCreate = false;
-		var cal = window.calendar;
-		if (dateEl)
-			params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
-		if (!(cal && params.cache)) {
-			window.calendar = cal = new Calendar(params.firstDay,
-							     params.date,
-							     params.onSelect || onSelect,
-							     params.onClose || function(cal) { cal.hide(); });
-			cal.showsTime = params.showsTime;
-			cal.time24 = (params.timeFormat == "24");
-			cal.weekNumbers = params.weekNumbers;
-			mustCreate = true;
-		} else {
-			if (params.date)
-				cal.setDate(params.date);
-			cal.hide();
-		}
-		if (params.multiple) {
-			cal.multiple = {};
-			for (var i = params.multiple.length; --i >= 0;) {
-				var d = params.multiple[i];
-				var ds = d.print("%Y%m%d");
-				cal.multiple[ds] = d;
-			}
-		}
-		cal.showsOtherMonths = params.showOthers;
-		cal.yearStep = params.step;
-		cal.setRange(params.range[0], params.range[1]);
-		cal.params = params;
-		cal.setDateStatusHandler(params.dateStatusFunc);
-		cal.getDateText = params.dateText;
-		cal.setDateFormat(dateFmt);
-		if (mustCreate)
-			cal.create();
-		cal.refresh();
-		if (!params.position)
-			cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
-		else
-			cal.showAt(params.position[0], params.position[1]);
-		return false;
-	};
+  // HACK by Ronnie Heritiana RABENANDRASANA - adds support of calendar select system with textfield using HTML classes
+  if(params.button || params.displayArea || params.inputField){
+  // end HACK
+    var triggerEl = params.button || params.displayArea || params.inputField;
+	  triggerEl["on" + params.eventName] = function() {
+		  var dateEl = params.inputField || params.displayArea;
+		  var dateFmt = params.inputField ? params.ifFormat : params.daFormat;
+		  var mustCreate = false;
+		  var cal = window.calendar;
+		  if (dateEl)
+			  params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
+		  if (!(cal && params.cache)) {
+			  window.calendar = cal = new Calendar(params.firstDay,
+							       params.date,
+							       params.onSelect || onSelect,
+							       params.onClose || function(cal) { cal.hide(); });
+			  cal.showsTime = params.showsTime;
+			  cal.time24 = (params.timeFormat == "24");
+			  cal.weekNumbers = params.weekNumbers;
+			  mustCreate = true;
+		  } else {
+			  if (params.date)
+				  cal.setDate(params.date);
+			  cal.hide();
+		  }
+		  if (params.multiple) {
+			  cal.multiple = {};
+			  for (var i = params.multiple.length; --i >= 0;) {
+				  var d = params.multiple[i];
+				  var ds = d.print("%Y%m%d");
+				  cal.multiple[ds] = d;
+			  }
+		  }
+		  cal.showsOtherMonths = params.showOthers;
+		  cal.yearStep = params.step;
+		  cal.setRange(params.range[0], params.range[1]);
+		  cal.params = params;
+		  cal.setDateStatusHandler(params.dateStatusFunc);
+		  cal.getDateText = params.dateText;
+		  cal.setDateFormat(dateFmt);
+		  if (mustCreate)
+			  cal.create();
+		  cal.refresh();
+		  if (!params.position)
+			  cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
+		  else
+			  cal.showAt(params.position[0], params.position[1]);
+		  return false;
+	  };
+    // HACK by Ronnie Heritiana RABENANDRASANA - adds support of calendar select system with textfield using HTML classes
+  } else {
+    if (currentCalendarIndex == null) currentCalendarIndex = 0;
+    var trigger = $$('.calendar-trigger')[currentCalendarIndex];
+    trigger["on" + params.eventName] = function() {
+      currentTextField = trigger.up('.calendar-container').down('.calendar-field');
+      var textField = currentTextField;
+      var dateFmt = params.ifFormat;
+      var mustCreate = false;
+      if (textField)
+	      params.date = Date.parseDate(textField.value, dateFmt);
+      if (!(cal)) {
+	      cal = new Calendar(params.firstDay, params.date, params.onSelect || onSelect, params.onClose || function(cal) { cal.hide(); });
+	      cal.showsTime = params.showsTime;
+	      cal.time24 = (params.timeFormat == "24");
+	      cal.weekNumbers = params.weekNumbers;
+	      mustCreate = true;
+      } else {
+	      if (params.date) cal.setDate(params.date);
+	      cal.hide();
+      }
+      cal.showsOtherMonths = params.showOthers;
+      cal.yearStep = params.step;
+      cal.setRange(params.range[0], params.range[1]);
+      cal.params = params;
+      cal.setDateStatusHandler(params.dateStatusFunc);
+      cal.getDateText = params.dateText;
+      cal.setDateFormat(dateFmt);
+      currentCalendar = cal;
+      if (mustCreate) cal.create();
+      cal.refresh();
+      if (!params.position)
+	      cal.showAtElement(textField.up('.calendar-container').down('.calendar-displayed-field'), params.align);
+      else
+	      cal.showAt(params.position[0], params.position[1]);
+      return false;
+    };
+    
+    var displayedTextField = $$('.calendar-trigger')[currentCalendarIndex].up('.calendar-container').down('.calendar-displayed-field');
+    displayedTextField["on" + params.eventName] = function() {
+      var action = "trigger.on" + params.eventName + "()";
+      eval(action);
+    };
+    currentCalendarIndex = currentCalendarIndex + 1;
+    // end HACK
+  }
 
 	return cal;
 };

@@ -4,7 +4,7 @@ class CreateAddresses < ActiveRecord::Migration
       t.references :has_address, :polymorphic => true
       t.string  :has_address_key
       t.text    :street_name
-      t.string  :country_name, :city_name, :zip_code
+      t.string  :country_name, :region_name, :city_name, :zip_code
       
       t.timestamps
     end

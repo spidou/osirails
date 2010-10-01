@@ -92,8 +92,10 @@ class Employee < ActiveRecord::Base
     unless jobs.empty?
       jobs.with_responsibility.group_by(&:service).to_hash.each_pair do |service, jobs_collection|
         max_responsible_jobs = (2 - service.responsibles.reject {|n| id==n.id}.size)
+        #TODO replace this view logic by a new tag system
         jobs_names = jobs_collection.collect(&:name).join("<br/>- ")
         p = "poste#{"s" if max_responsible_jobs>1}"
+        #TODO replace this view logic by a new tag system
         errors.add(:jobs, "Vous devez choisir #{max_responsible_jobs} #{p} parmi les postes suivants :<br/>- #{jobs_names}") if jobs_collection.size > max_responsible_jobs
       end
     end

@@ -176,28 +176,27 @@ module ActionView
       end
       
       def autoresize_text_area(object_name, method, options = {})
-        options[:rows] ||= 2
-        options[:cols] ||= 60
         options[:class] = "#{options[:class]}#{options[:class].blank? ? '' : ' '}autoresize_text_area";
-        options[:style] = "#{options[:style]}#{options[:style].blank? ? '' : ';'}overflow: hidden";
         InstanceTag.new(object_name, method, self, options.delete(:object)).to_text_area_tag(options)
       end
       
       alias_method :text_area_autoresize, :autoresize_text_area
       
       def calendar_date_field_tag(object_name, method_name, options = {}, text_field_options = {})
-        options[:output_format]   ||= "%Y-%m-%d"
-        text_field_options[:size] ||= 10
+        options[:database_format]  ||= "%Y-%m-%d"
+        options[:displayed_format] ||= I18n.t('date.formats')[:long]
+        text_field_options[:size]  ||= 18
         
-        InstanceTag.new(object_name, method_name, self, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
+        InstanceTag.new(object_name, method_name, self, options.delete(:object)).to_calendar_select_tag(object_name, options, text_field_options)
       end
       
       def calendar_datetime_field_tag(object_name, method_name, options = {}, text_field_options = {})
-        options[:time_select]       = true
-        options[:output_format]   ||= "%Y-%m-%d %H:%M:%S"
-        text_field_options[:size] ||= 17
+        options[:time_select]        = true
+        options[:database_format]  ||= "%Y-%m-%d %H:%M:%S"
+        options[:displayed_format] ||= I18n.t('time.formats')[:long]
+        text_field_options[:size]  ||= 30
         
-        InstanceTag.new(object_name, method_name, self, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
+        InstanceTag.new(object_name, method_name, self, options.delete(:object)).to_calendar_select_tag(object_name, options, text_field_options)
       end
       
       private
@@ -235,7 +234,7 @@ module ActionView
         )
       end
       
-      def to_calendar_select_tag(options = {}, text_field_options = {})
+      def to_calendar_select_tag(object_name, options = {}, text_field_options = {})
         options[:default]                 ||= object.send(@method_name)
         options[:start_year]              ||= 1900
         options[:end_year]                ||= 2999
@@ -243,24 +242,40 @@ module ActionView
         options[:time_format]             ||= 24
         options[:disabled]                ||= false
         
-        options[:default] = options[:default].strftime(options[:output_format]) rescue options[:default]
+        textfield_value      = I18n.l(options[:default], :format => options[:displayed_format]) rescue options[:default]
         
-        disabled_textfield                  = options[:disabled] || text_field_options[:disabled]
-        formatted_textfield_id              = "#{@object_name.gsub("]","").gsub("[","_")}#{options[:index]}_#{@method_name}"
-        text_field_options                  = text_field_options.merge(:id => formatted_textfield_id, :disabled => disabled_textfield, :value => options[:default])
-        targetted_textfield_id              = "#{formatted_textfield_id}#{options[:disabled] ? '_for_disabled_calendar' : ''}"
-        hidden_field_for_disabled_calendar  = options[:disabled] ? hidden_field_tag("#{formatted_textfield_id}_for_disabled_calendar", nil, :disabled => true) : ''
+        hidden_field_value   = I18n.l(options[:default], :format => options[:database_format]) rescue options[:default]
         
-        InstanceTag.new(@object_name, @method_name, self, options.delete(:object)).to_input_field_tag("text", text_field_options) +
-          image_tag("calendar.png", {:id => "#{@object_name}_#{@method_name}_#{options[:index]}_trigger", :class => "calendar-trigger"}) +
-          javascript_tag("Calendar.setup({range       : [#{options[:start_year]},#{options[:end_year]}],
-                                          ifFormat    : '#{options[:output_format]}', 
-                                          showsTime   : #{options[:time_select]}, 
-                                          timeFormat  : #{options[:time_format]}, 
-                                          showOthers  : true, 
-                                          inputField  : '#{targetted_textfield_id}', 
-                                          button      : '#{@object_name}_#{@method_name}_#{options[:index]}_trigger' });") +
-          hidden_field_for_disabled_calendar
+        button_action        = "this.up('.calendar-container').down('.calendar-field').value = ''; this.up('.calendar-container').down('.calendar-displayed-field').value = ''"
+        
+        text_field_options   = { :readonly => true, 
+                                 :class    => "calendar-displayed-field",
+                                 :value    => textfield_value }.merge(text_field_options)
+                                 
+        button_options       = { :class    => "calendar-cleaner"}
+        
+        hidden_field_options = { :name     => object_name + "[#{@method_name}]", 
+                                 :class    => "calendar-field", 
+                                 :disabled => options[:disabled], 
+                                 :value    => hidden_field_value }
+                                 
+        trigger_options      = { :class => "calendar-trigger" }
+        
+        calendar_options     = "{range       : [#{options[:start_year]},#{options[:end_year]}],
+                                 showsTime   : #{options[:time_select]}, 
+                                 timeFormat  : #{options[:time_format]},
+                                 ifFormat    : '#{options[:database_format]}',
+                                 altIfFormat : '#{options[:displayed_format]}',
+                                 disabledIf  : #{options[:disabled]},
+                                 showOthers  : true }"
+                                 
+        text_field     = text_field_tag("#{@object_name}_displayed_#{@method_name}_for_calendar", nil, text_field_options)
+        button         = button_to_function "", button_action, button_options
+        hidden_field   = InstanceTag.new(@object_name, @method_name, self, options.delete(:object)).to_input_field_tag("hidden", hidden_field_options)
+        trigger        = image_tag("calendar.png", trigger_options)
+        calendar_setup = javascript_tag("Calendar.setup(#{calendar_options});") 
+
+        content_tag(:span, text_field + button + hidden_field + trigger + calendar_setup, :class => "calendar-container")          
       end
       
       def to_collection_select_tag_with_custom_choice(choice_method_name, collection, value_method, text_method, options, select_options, text_field_options, link_options)

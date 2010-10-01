@@ -1,6 +1,6 @@
 class QuotesController < ApplicationController
   include AdjustPdf
-  helper :orders, :contacts, :numbers
+  helper :orders, :contacts, :numbers, :address
   # method_permission :edit => ['enable', 'disable']
   
   before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]

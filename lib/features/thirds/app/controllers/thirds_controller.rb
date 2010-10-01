@@ -1,4 +1,5 @@
 class ThirdsController < ApplicationController
+  helper :address
 #  def create
 #    @third = Third.new(params[:third])
 #    if @third.save

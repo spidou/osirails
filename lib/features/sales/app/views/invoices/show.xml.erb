@@ -28,12 +28,12 @@
         <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @invoice.order.commercial.numbers.first %></Phone>
         <Email><%= @invoice.order.commercial.email %></Email>
       </CommercialRepresentative>
-      <AdministrativeRepresentative>
-        <LastName></LastName>
-        <FirstName></FirstName>
-        <Phone></Phone>
-        <Email></Email>
-      </AdministrativeRepresentative>
+      <InvoicingActor>
+        <LastName><%= @invoice.invoicing_actor.last_name %></LastName>
+        <FirstName><%= @invoice.invoicing_actor.first_name %></FirstName>
+        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @invoice.invoicing_actor.numbers.first %></Phone>
+        <Email><%= @invoice.invoicing_actor.email %></Email>
+      </InvoicingActor>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
     </Supplier>  
     <Customer>
@@ -51,12 +51,13 @@
     </Customer>
     <Lines>
       <% @invoice.invoice_items.each do |item| %>
+        <% item_id = item.id || generate_random_id %>
         <Line>
           <Id><%= item.id %></Id>
           <% if @footlines_adjustments %>
-            <% @adjust_bottom = @footlines_adjustments.include?(("item_"+item.id.to_s).to_sym) %>
+            <% @adjust_bottom = @footlines_adjustments.include?(("item_#{item_id}").to_sym) %>
             <% if @adjust_bottom %>
-              <% @padding_bottom = @footlines_adjustments[("item_"+item.id.to_s).to_sym].round_to(2).to_s(2) %>
+              <% @padding_bottom = @footlines_adjustments[("item_#{item_id}").to_sym].round_to(2).to_s(2) %>
             <% else %>
               <% @padding_bottom = "0.3" %>
             <% end %>
@@ -65,9 +66,9 @@
           <% end %>
           <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>  
           <% if @report_adjustment %>
-            <% @adjust_report = @report_adjustment.include?(("item_"+item.id.to_s).to_sym) %>
+            <% @adjust_report = @report_adjustment.include?(("item_#{item_id}").to_sym) %>
             <% if @adjust_report %>
-              <% @is_page_first_element = @report_adjustment[("item_"+item.id.to_s).to_sym].to_s %>
+              <% @is_page_first_element = @report_adjustment[("item_#{item_id}").to_sym].to_s %>
             <% else %>
               <% @is_page_first_element = "false" %>
             <% end %>
@@ -75,14 +76,14 @@
             <% @is_page_first_element = "false" %>
           <% end %>
           <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %> 
-          <Reference><%= item.end_product.product_reference.reference if item.end_product and item.end_product.product_reference %></Reference>
+          <Reference><%= item.end_product && item.end_product.product_reference ? item.end_product.product_reference.reference : nil %></Reference>
           <Name><%= item.name %></Name>
           <Description><%= item.description %></Description>
           <Quantity><%= item.quantity %></Quantity>
-          <UnitPrice><%= item.unit_price.to_f.round_to(2).to_s(2) %></UnitPrice>
-          <Prizegiving><%= item.prizegiving.to_f.round_to(2).to_s(2) %></Prizegiving>
-          <TotalPrice><%= item.total.to_f.round_to(2).to_s(2) %></TotalPrice>
-          <VAT><%= @invoice.tax_coefficients.index(item.vat)+1 %></VAT>
+          <UnitPrice><%= item.unit_price.to_f.round_to(2).to_s(2) if item.unit_price %></UnitPrice>
+          <Prizegiving><%= item.prizegiving.to_f.round_to(2).to_s(2) if item.prizegiving  %></Prizegiving>
+          <TotalPrice><%= item.total.to_f.round_to(2).to_s(2) if item.quantity %></TotalPrice>
+          <VAT><%= @invoice.tax_coefficients.index(item.vat)+1 if item.vat %></VAT>
         </Line>
       <% end %>
     </Lines>
@@ -124,7 +125,7 @@
     <Prefix>N°</Prefix>
     <FileName></FileName>
     <SupplierCommercialPrefix>Suivi commercial</SupplierCommercialPrefix>
-    <SupplierAdministrativePrefix>Suivi administratif</SupplierAdministrativePrefix>
+    <SupplierInvoicingActorPrefix>Suivi facturation</SupplierInvoicingActorPrefix>
     <SupplierRepresentativePhone>tél</SupplierRepresentativePhone>
     <SupplierRepresentativeEmail>e-mail</SupplierRepresentativeEmail>
     <CustomerPrefix>A l'attention de</CustomerPrefix>

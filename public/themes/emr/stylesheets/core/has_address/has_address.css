@@ -1,0 +1,16 @@
+div.address label.city_label {
+  width: auto;
+  margin-left: 20px;
+}
+
+div.address input.city_name {
+  width: 150px;
+}
+
+div.address input.zip_code {
+  width: 50px;
+}
+
+div.address input.region_name, input.country_name {
+  width: 150px;
+}

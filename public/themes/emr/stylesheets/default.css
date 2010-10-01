@@ -187,6 +187,12 @@ fieldset:not(no-style) > legend {
 	font-weight: bold;
 }
 
+textarea.autoresize_text_area {
+  height: 40px;
+  width: 275px;
+  overflow: hidden;
+}
+
 /*/////////////END OF GENERICS TAGS////////////////////*/
 /*/////////////////////////////////////////////////////
 					BANNER
@@ -1099,8 +1105,23 @@ div label.skip_presentation {
   margin: 10px -13px -5px -13px;
 }
 
+.calendar-displayed-field {
+	padding-right: 18px;
+}
+
+.calendar-cleaner {
+	background:url("/themes/emr/images/eraser_12x12.png") ;
+  cursor: pointer;
+  vertical-align: middle;
+	position:relative;
+	right:18px;
+	border:none;
+	width:12px;
+	height:12px;
+}
+
 .calendar-trigger {
-  margin-left: 3px;
+  margin-left: -12px;
   vertical-align: middle;
   cursor: pointer;
 }
@@ -1291,7 +1312,7 @@ div label.skip_presentation {
 					AUTOCOMPLETE FIELD
 ////////////////////////////////////////////////////*/
 div.auto_complete {
-  width: 350px;
+  width: 350px !important;
   max-height: 300px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -1312,6 +1333,7 @@ div.auto_complete ul li {
   margin:0;
   padding:3px;
   cursor: pointer;
+  font-size: 0.9em;
 }
 
 div.auto_complete ul li:nth-child(even) {
@@ -1338,6 +1360,11 @@ div.auto_complete_container {
   display: inline;
 }
 
+p.with_auto_complete_container {
+  position: relative;
+  display: inline;
+}
+
 div.auto_complete_container div.auto_complete_indicator {
   position: absolute;
   float: left;
@@ -1347,7 +1374,6 @@ div.auto_complete_container div.auto_complete_indicator {
   height: 16px;
   background: url('/themes/emr/images/loading_16x16.gif') no-repeat;
 }
-
 
 /*/////////////////////////////////////////////////////
 					AUTOCOMPLETE FIELD

@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  helper :contacts, :ship_to_addresses, :numbers
+  helper :contacts, :ship_to_addresses, :numbers, :address
   
   before_filter :load_collections
   before_filter :hack_params_for_ship_to_address_addresses, :only => [ :create, :update ]

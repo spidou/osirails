@@ -20,7 +20,7 @@
     <%= javascript_include_tag "text_area_autoresize" %>
     <%= javascript_include_tag "strftime" %>
     <%= javascript_include_tag "lightbox/lightbox" %>
-    <%= include_calendar_headers_tags("fr") %>
+    <%= include_calendar_headers_tags(I18n.default_locale) %>
     <%= daynames_and_monthnames_retrieval %>   
     
     <%= yield :header %>

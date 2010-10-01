@@ -84,6 +84,15 @@
     <xsl:attribute name="border-right-width">1px</xsl:attribute>
   </xsl:attribute-set>
   
+  <xsl:attribute-set name="specimen-block-container">
+    <xsl:attribute name="text-align">center</xsl:attribute>
+    <xsl:attribute name="absolute-position">absolute</xsl:attribute>
+  </xsl:attribute-set>
+  
+  <xsl:attribute-set name="specimen-block">
+    <xsl:attribute name="margin-top">3.5cm</xsl:attribute>
+  </xsl:attribute-set>
+  
   <xsl:attribute-set name="header-with-supplier-infos-table">
     <xsl:attribute name="background-color">rgb(0, 0, 0)</xsl:attribute>
     <xsl:attribute name="color">rgb(255,255,255)</xsl:attribute>
@@ -264,7 +273,7 @@
     <xsl:attribute name="font-size">9px</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="administrative-representative-block-container" use-attribute-sets="default-representative-block-container">
+  <xsl:attribute-set name="invoicing-actor-block-container" use-attribute-sets="default-representative-block-container">
     <xsl:attribute name="margin-bottom">1mm</xsl:attribute>
   </xsl:attribute-set>
   
@@ -793,6 +802,15 @@
       </fo:layout-master-set>
       <fo:page-sequence format="1" master-reference="unnamed" initial-page-number="1">     
         <fo:static-content flow-name="xsl-region-before">
+          <xsl:choose>
+            <xsl:when test="Reference = ''">
+              <fo:block-container xsl:use-attribute-sets="specimen-block-container">
+                <fo:block xsl:use-attribute-sets="specimen-block">
+                  <fo:external-graphic src="url('../images/specimen.png')"/>
+                </fo:block>
+              </fo:block-container>
+            </xsl:when>
+          </xsl:choose>
           <fo:table xsl:use-attribute-sets="header-with-supplier-infos-table">
             <fo:table-body>
               <fo:table-row page-break-inside="avoid">
@@ -986,20 +1004,20 @@
                           <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>&#160;:&#160;<xsl:value-of select="Supplier/CommercialRepresentative/Email"/>
                         </fo:block>
                       </fo:block-container>
-                      <fo:block-container xsl:use-attribute-sets="administrative-representative-block-container">
+                      <fo:block-container xsl:use-attribute-sets="invoicing-actor-block-container">
                         <fo:block>
                           <fo:inline xsl:use-attribute-sets="representative-inline">
-                            <xsl:value-of select="../Labels/SupplierAdministrativePrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>&#160;:
+                            <xsl:value-of select="../Labels/SupplierInvoicingActorPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>&#160;:
                           </fo:inline>
                           <fo:inline>
-                            <xsl:value-of select="Supplier/AdministrativeRepresentative/FirstName"/>&#160;<xsl:value-of select="Supplier/AdministrativeRepresentative/LastName"/>
+                            <xsl:value-of select="Supplier/InvoicingActor/FirstName"/>&#160;<xsl:value-of select="Supplier/InvoicingActor/LastName"/>
                           </fo:inline>
                         </fo:block>
                         <fo:block>
-                          <xsl:value-of select="../Labels/SupplierRepresentativePhone"/>&#160;:&#160;<xsl:value-of select="Supplier/AdministrativeRepresentative/Phone"/>
+                          <xsl:value-of select="../Labels/SupplierRepresentativePhone"/>&#160;:&#160;<xsl:value-of select="Supplier/InvoicingActor/Phone"/>
                         </fo:block>
                         <fo:block>
-                          <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>&#160;:&#160;<xsl:value-of select="Supplier/AdministrativeRepresentative/Email"/>
+                          <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>&#160;:&#160;<xsl:value-of select="Supplier/InvoicingActor/Email"/>
                         </fo:block>
                       </fo:block-container>
                     </fo:block-container> 

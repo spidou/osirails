@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100917082131) do
+ActiveRecord::Schema.define(:version => 20100921125817) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
     t.string   "has_address_key"
     t.text     "street_name"
     t.string   "country_name"
+    t.string   "region_name"
     t.string   "city_name"
     t.string   "zip_code"
     t.datetime "created_at"
@@ -133,6 +134,7 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
 
   create_table "cities", :force => true do |t|
     t.integer "country_id"
+    t.integer "region_id"
     t.string  "name"
     t.string  "zip_code"
   end
@@ -665,6 +667,7 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
     t.integer  "creator_id"
     t.integer  "cancelled_by_id"
     t.integer  "abandoned_by_id"
+    t.integer  "invoicing_actor_id"
     t.integer  "invoice_contact_id"
     t.string   "reference"
     t.string   "status"
@@ -1141,6 +1144,11 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
   end
 
   add_index "quotes", ["reference"], :name => "index_quotes_on_reference", :unique => true
+
+  create_table "regions", :force => true do |t|
+    t.integer "country_id"
+    t.string  "name"
+  end
 
   create_table "remarks", :force => true do |t|
     t.integer  "has_remark_id"

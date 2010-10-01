@@ -207,7 +207,9 @@
   
   <xsl:attribute-set name="header2-table-product-cell" use-attribute-sets="header2-table-default-cell">
     <xsl:attribute name="width">14.7cm</xsl:attribute>
-  </xsl:attribute-set>  <xsl:attribute-set name="header2-table-representative-cell" use-attribute-sets="header2-table-default-cell">
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="header2-table-representative-cell" use-attribute-sets="header2-table-default-cell">
     <xsl:attribute name="width">15cm</xsl:attribute>
   </xsl:attribute-set>
   
@@ -375,6 +377,11 @@
   
   <xsl:attribute-set name="mockup-image-block">
     <xsl:attribute name="text-align">center</xsl:attribute>
+  </xsl:attribute-set>
+  
+  <xsl:attribute-set name="specimen-block-container">
+    <xsl:attribute name="text-align">center</xsl:attribute>
+    <xsl:attribute name="absolute-position">absolute</xsl:attribute>
   </xsl:attribute-set>
   <!-- END -->
   <xsl:template match="Document">
@@ -715,6 +722,15 @@
                     </xsl:otherwise>                   
                   </xsl:choose>
                 </fo:external-graphic>
+                <xsl:choose>
+                  <xsl:when test="../../Reference = ''">
+                    <fo:block-container xsl:use-attribute-sets="specimen-block-container">
+                      <fo:block>
+                        <fo:external-graphic src="url('../images/specimen.png')"/>
+                      </fo:block>
+                    </fo:block-container>
+                  </xsl:when>
+                </xsl:choose>
               </fo:block>
             </fo:table-cell>
           </fo:table-row>

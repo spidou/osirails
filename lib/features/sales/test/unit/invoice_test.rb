@@ -5,7 +5,7 @@ class InvoiceTest < ActiveSupport::TestCase
   #TODO test has_address     :bill_to_address
   #TODO test has_contact     :accept_from => :customer_contacts
   
-  should_belong_to :order, :factor, :invoice_type, :creator, :cancelled_by, :abandoned_by
+  should_belong_to :order, :factor, :invoice_type, :invoicing_actor, :creator, :cancelled_by, :abandoned_by
   
   should_have_many :invoice_items
   should_have_many :end_products, :through => :invoice_items
@@ -1260,7 +1260,7 @@ class InvoiceTest < ActiveSupport::TestCase
       should_not_allow_values_for :status, 1, "string", Invoice::STATUS_CONFIRMED, Invoice::STATUS_CANCELLED, Invoice::STATUS_SENDED, Invoice::STATUS_ABANDONED, Invoice::STATUS_FACTORING_PAID, Invoice::STATUS_FACTORING_RECOVERED, Invoice::STATUS_FACTORING_BALANCE_PAID, Invoice::STATUS_DUE_DATE_PAID, Invoice::STATUS_TOTALLY_PAID
       
       should_validate_presence_of :bill_to_address, :published_on
-      should_validate_presence_of :invoice_type, :creator, :invoice_contact, :with_foreign_key => :default
+      should_validate_presence_of :invoice_type, :creator, :invoicing_actor, :invoice_contact, :with_foreign_key => :default
       
       should "save invoice_items after saving itself" do
         @invoice.save!
@@ -1500,7 +1500,7 @@ class InvoiceTest < ActiveSupport::TestCase
       should_allow_values_for :status, Invoice::STATUS_CANCELLED, Invoice::STATUS_SENDED
       should_not_allow_values_for :status, 1, "string", nil, Invoice::STATUS_CONFIRMED, Invoice::STATUS_ABANDONED, Invoice::STATUS_FACTORING_PAID, Invoice::STATUS_FACTORING_RECOVERED, Invoice::STATUS_FACTORING_BALANCE_PAID, Invoice::STATUS_DUE_DATE_PAID, Invoice::STATUS_TOTALLY_PAID
       
-      #TODO test validates_persistence_of :confirmed_at, :published_on, :reference, :factor_id, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :invoice_contact
+      #TODO test validates_persistence_of :confirmed_at, :published_on, :reference, :factor_id, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :invoicing_actor, :invoice_contact
       
       should "NOT be able to be edited" do
         assert !@invoice.can_be_edited?
@@ -2768,6 +2768,7 @@ class InvoiceTest < ActiveSupport::TestCase
     def prepare_invoice(invoice, factorised = :normal)
       invoice.factor              = Factor.first if factorised == :factorised
       invoice.creator             = User.first
+      invoice.invoicing_actor_id  = employees(:john_doe).id
       invoice.invoice_contact_id  = @order.all_contacts.first.id
       invoice.bill_to_address     = @order.bill_to_address
       invoice.published_on        = Date.today

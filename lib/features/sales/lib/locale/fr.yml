@@ -90,6 +90,7 @@ fr:
         mockup_type: "Type de maquette"
       invoice:
         reference: "Référence"
+        invoicing_actor: "Suivi facturation"
         created_at: "Créée le"
         creator: "Par"
         status: "État actuel"

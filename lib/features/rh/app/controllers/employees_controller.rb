@@ -1,8 +1,8 @@
 class EmployeesController < ApplicationController
-  helper :salaries, :job_contract, :documents, :numbers
+  helper :salaries, :job_contract, :documents, :numbers, :address
   before_filter :load_collections, :only => [:new, :create, :edit, :update, :show]  
   method_permission :list => ["show"]
-  
+
   # GET /employees
   def index
     paginate_options = { :page => params[:page], :per_page => Employee::EMPLOYEES_PER_PAGE }

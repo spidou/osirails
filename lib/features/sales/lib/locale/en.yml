@@ -48,6 +48,7 @@ en:
         change_version: "Version"
       invoice:
         creator: "By"
+        invoicing_actor: "Invoicing representative"
         status: "Current status"
         published_on: "Publication date"
         sended_on: "Sended to customer on"

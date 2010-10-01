@@ -38,6 +38,29 @@ Indicative.create! :indicative => "+86",  :country_id => china.id
 Indicative.create! :indicative => "+1",   :country_id => united_states.id
 Indicative.create! :indicative => "+230", :country_id => mauritius.id
 
+# default regions
+Region.create! :name => "ALSACE",                     :country_id => france.id
+Region.create! :name => "AQUITAINE",                  :country_id => france.id
+Region.create! :name => "AUVERGNE",                   :country_id => france.id
+Region.create! :name => "BOURGOGNE",                  :country_id => france.id
+Region.create! :name => "BRETAGNE",                   :country_id => france.id
+Region.create! :name => "CENTRE",                     :country_id => france.id
+Region.create! :name => "CORSE",                      :country_id => france.id
+Region.create! :name => "FRANCHE-COMTÉ",              :country_id => france.id
+Region.create! :name => "ÎLE-DE-FRANCE",              :country_id => france.id
+Region.create! :name => "LANGUEDOC-ROUSSILLON",       :country_id => france.id
+Region.create! :name => "LIMOUSIN",                   :country_id => france.id
+Region.create! :name => "LORRAINE",                   :country_id => france.id
+Region.create! :name => "MIDI-PYRÉNÉES",              :country_id => france.id
+Region.create! :name => "NORD-PAS-DE-CALAIS",         :country_id => france.id
+Region.create! :name => "BASSE-NORMANDIE",            :country_id => france.id
+Region.create! :name => "HAUTE-NORMANDIE",            :country_id => france.id
+Region.create! :name => "PAYS DE LA LOIRE",           :country_id => france.id
+Region.create! :name => "PICARDIE",                   :country_id => france.id
+Region.create! :name => "POITOU-CHARENTES",           :country_id => france.id
+Region.create! :name => "PROVENCE-ALPES-CÔTE D'AZUR", :country_id => france.id
+Region.create! :name => "RHÔNES-ALPES",               :country_id => france.id
+
 # default cities
 City.create! :name => "BRAS PANON",               :zip_code => "97412", :country_id => reunion.id
 City.create! :name => "CILAOS",                   :zip_code => "97413", :country_id => reunion.id
@@ -77,6 +100,8 @@ City.create! :name => "SAINTE CLOTILDE",          :zip_code => "97490", :country
 City.create! :name => "SAINTE MARIE",             :zip_code => "97438", :country_id => reunion.id
 City.create! :name => "SAINTE ROSE",              :zip_code => "97439", :country_id => reunion.id
 City.create! :name => "SAINTE SUZANNE",           :zip_code => "97441", :country_id => reunion.id
+
+City.create! :name => "PARIS", :zip_code => "75000", :region_id => Region.find_by_name("ÎLE-DE-FRANCE").id, :country_id => france.id
 
 # default services
 dirg = Service.create! :name => "Direction Générale"

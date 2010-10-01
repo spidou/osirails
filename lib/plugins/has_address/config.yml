@@ -1,0 +1,13 @@
+menus:
+  cities:
+    title: "Villes"
+    description: Gestion des villes
+    hidden: true
+  regions:
+    title: "Régions"
+    description: Gestion des régions
+    hidden: true
+  countries:
+    title: "Pays"
+    description: Gestion des pays
+    hidden: true

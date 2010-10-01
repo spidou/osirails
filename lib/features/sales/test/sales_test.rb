@@ -284,6 +284,7 @@ class Test::Unit::TestCase
     
     invoice.invoice_type        = invoice_types(:deposit_invoice)
     invoice.creator             = users(:sales_user)
+    invoice.invoicing_actor_id  = employees(:john_doe).id
     invoice.invoice_contact_id  = order.all_contacts.first.id
     invoice.bill_to_address     = order.bill_to_address
     invoice.published_on        = Date.today

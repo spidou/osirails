@@ -6,5 +6,6 @@ fr:
       address:
         street_name: "Adresse"
         country_name: "Pays"
+        region_name: "Région"
         city_name: "Ville"
         zip_code: "Code postal"

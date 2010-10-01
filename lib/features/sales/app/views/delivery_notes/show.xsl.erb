@@ -84,6 +84,15 @@
     <xsl:attribute name="border-right-width">1px</xsl:attribute>
   </xsl:attribute-set>
   
+  <xsl:attribute-set name="specimen-block-container">
+    <xsl:attribute name="text-align">center</xsl:attribute>
+    <xsl:attribute name="absolute-position">absolute</xsl:attribute>
+  </xsl:attribute-set>
+  
+  <xsl:attribute-set name="specimen-block">
+    <xsl:attribute name="margin-top">3.5cm</xsl:attribute>
+  </xsl:attribute-set>
+  
   <xsl:attribute-set name="header-with-supplier-infos-table">
     <xsl:attribute name="background-color">rgb(0, 0, 0)</xsl:attribute>
     <xsl:attribute name="color">rgb(255,255,255)</xsl:attribute>
@@ -522,6 +531,15 @@
       </fo:layout-master-set>
       <fo:page-sequence format="1" master-reference="unnamed" initial-page-number="1">     
         <fo:static-content flow-name="xsl-region-before">
+          <xsl:choose>
+            <xsl:when test="Reference = ''">
+              <fo:block-container xsl:use-attribute-sets="specimen-block-container">
+                <fo:block xsl:use-attribute-sets="specimen-block">
+                  <fo:external-graphic src="url('../images/specimen.png')"/>
+                </fo:block>
+              </fo:block-container>
+            </xsl:when>
+          </xsl:choose>
           <fo:table xsl:use-attribute-sets="header-with-supplier-infos-table">
             <fo:table-body>
               <fo:table-row page-break-inside="avoid">
@@ -666,7 +684,7 @@
               <fo:block xsl:use-attribute-sets="document-type-and-reference-block">
                 <xsl:value-of select="Type"/>&#160;<xsl:value-of select="../Labels/Prefix"/>&#160;<xsl:value-of select="Reference"/>
               </fo:block> 
-            </fo:block-container>
+            </fo:block-container>  
             <fo:block xsl:use-attribute-sets="date-block">
               <fo:inline>
                 <xsl:value-of select="../Labels/Date"/>
