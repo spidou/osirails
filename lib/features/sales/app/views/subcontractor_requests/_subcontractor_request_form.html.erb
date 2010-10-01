@@ -4,32 +4,32 @@ style_attr = 'style="display:none"' unless subcontractor_request.new_record? or 
 %>
 
 <div class="subcontractor_request_form resource_form" <%= style_attr %>>
-  <% fields_for "survey_step[subcontractor_request_attributes][]", subcontractor_request do |form| %>
+  <% fields_for "survey_step[subcontractor_request_attributes][]", subcontractor_request, :index => nil do |form| %>
     <%= form.error_messages %>
     
     <p>
-      <%= form.label :job_needed, :index => nil %>
+      <%= form.label :job_needed %>
       <%= form.form_or_view(form.text_area_autoresize(:job_needed, :cols => 40, :index => nil)) %>
     </p>
     <p>
-      <%= form.label :price, :index => nil %>
-      <%= form.form_or_view(form.text_field(:price, :size => 10, :index => nil)) %>&nbsp;&euro;
+      <%= form.label :price %>
+      <%= form.form_or_view(form.text_field(:price, :size => 10)) %>&nbsp;&euro;
     </p>
     <p>
-      <%= form.label :subcontractor_id, :index => nil %>
+      <%= form.label :subcontractor_id %>
       <%= form.collection_select :subcontractor_id, Subcontractor.actives, :id, :name, ( subcontractor_request.new_record? ? { :include_blank => "Veuillez choisir un préstataire" } : {} ), :index => nil %>
     </p>
     <p>
-      <%= form.label :attachment, :index => nil %>
-      <%= form.form_or_view(form.file_field(:attachment, :index => nil, :size => 14), :name ) %>
+      <%= form.label :attachment %>
+      <%= form.form_or_view(form.file_field(:attachment, :size => 14), :name ) %>
     </p>
     <p>
       <%= display_subcontractor_request_close_form_button(subcontractor_request) %>
     </p>
     <p style="display:none">
-      <%= form.hidden_field :id, :index => nil %>
-      <%= form.hidden_field :should_update, :class => :should_update, :index => nil %>
-      <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
+      <%= form.hidden_field :id %>
+      <%= form.hidden_field :should_update, :class => :should_update %>
+      <%= form.hidden_field :should_destroy, :class => :should_destroy %>
     </p>
   <% end %>
 </div>

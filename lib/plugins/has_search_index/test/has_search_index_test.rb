@@ -689,6 +689,15 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
     
     assert_not_nil Person.reflect_on_association(:dog).options[:conditions], message1
     assert_equal dog_id, Person.first.dog.id, message2
+  end
+      
+  def test_check_relationships_options_group
+    init_plugin_in_all_models
+    
+    create_summer_jobs(@person.id)
+    create_dogs(@person.id)
+    message1 = "Conditions should have been generated properly"
+    message2 = "Collection should be the same as before the association modification"
     
     ## test :group
     Person.reflect_on_association(:summer_jobs).options[:group] = 'summer_jobs.salary'

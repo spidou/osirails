@@ -1,8 +1,10 @@
 require 'test/test_helper'
 
 class IbanTest < ActiveSupport::TestCase
+  should_journalize :attributes => [:account_name, :bank_name, :bank_code, :branch_code, :account_number, :key]
+
   def setup
-    @iban = ibans(:normal)
+    @iban = ibans(:normal_iban)
   end
 
   def test_read

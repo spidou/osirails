@@ -4,23 +4,23 @@ ship_to_address = ship_to_address_form
 id_attr = "id=\"ship_to_address_#{ship_to_address.id}\"" unless ship_to_address.new_record?
 %>
 
-<% fields_for "order[ship_to_address_attributes][]", ship_to_address do |form| %>
+<% fields_for "order[ship_to_address_attributes][]", ship_to_address, :index => nil do |form| %>
 <div class="resource_form" <%= id_attr %>>
   <%= form.error_messages %>
   <% form.force_show_view = force_show_view || false %>
   <p>
-    <%= form.label :establishment_name, :index => nil %>
-    <%= form.form_or_view(form.text_field(:establishment_name, :index => nil), :establishment_name ) %>
+    <%= form.label :establishment_name %>
+    <%= form.form_or_view(form.text_field(:establishment_name), :establishment_name ) %>
   </p>
   
   <%= render :partial => "addresses/address_form", :object => ship_to_address.address || ship_to_address.build_address , :locals => { :address_owner => ship_to_address, :force_show_view => true } %>
   
   <% if is_form_view? %>
     <p style="display:none">
-      <%= form.hidden_field :id, :index => nil %>
-      <%= form.hidden_field :establishment_id, :index => nil %>
-      <%= form.hidden_field :should_create, :index => nil, :class => 'should_create' %>
-      <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
+      <%= form.hidden_field :id %>
+      <%= form.hidden_field :establishment_id %>
+      <%= form.hidden_field :should_create, :class => 'should_create' %>
+      <%= form.hidden_field :should_destroy, :class => 'should_destroy' %>
     </p>
   <% end %>
 </div>

@@ -3,6 +3,8 @@ require 'test/test_helper'
 class UserTest < ActiveSupport::TestCase
   fixtures :users
   require "digest/sha1"
+  
+  should_act_on_journalization_with :username
 
   def setup
     @user = users(:first_user)

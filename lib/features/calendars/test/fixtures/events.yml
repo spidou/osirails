@@ -1,43 +1,43 @@
-normal:
-  calendar: normal
+two_hours_ago:
+  calendar: normal_calendar
   title: Foo
   description: Bar
   start_at: <%= (Time.now - 2.hours).to_s(:db) %>
   end_at: <%= Time.now.to_s(:db) %>
 two_days_ago:
-  calendar: normal
+  calendar: normal_calendar
   title: Foo
   description: Bar
   start_at: <%= (Time.now - 2.hours - 2.days).to_s(:db) %>
   end_at: <%= (Time.now - 2.days).to_s(:db) %>
 two_weeks_ago:
-  calendar: normal
+  calendar: normal_calendar
   title: Foo
   description: Bar
   start_at: <%= (Time.now - 2.hours - 2.week).to_s(:db) %>
   end_at: <%= (Time.now - 2.week).to_s(:db) %>
 two_months_ago:
-  calendar: normal
+  calendar: normal_calendar
   title: Foo
   description: Bar
   start_at: <%= (Time.now - 2.hours - 2.month).to_s(:db) %>
   end_at: <%= (Time.now - 2.month).to_s(:db) %>
 every_two_days:
-  calendar: normal
+  calendar: normal_calendar
   title: Foo
   start_at: <%= (Time.now - 2.hours).to_s(:db) %>
   end_at: <%= Time.now.to_s(:db) %>
   frequence: DAILY
   interval: 2
 every_two_weeks:
-  calendar: normal
+  calendar: normal_calendar
   title: Foo
   start_at: <%= (Time.now - 2.hours).to_s(:db) %>
   end_at: <%= (Time.now).to_s(:db) %>
   frequence: WEEKLY
   interval: 2
 every_monday:
-  calendar: normal
+  calendar: normal_calendar
   title: Foo
   start_at: <%= (Time.now - 2.hours).to_s(:db) %>
   end_at: <%= Time.now.to_s(:db) %>
@@ -45,14 +45,14 @@ every_monday:
   by_day:
     - "MO"
 every_two_months:
-  calendar: normal
+  calendar: normal_calendar
   title: Foo
   start_at: <%= (Time.now - 2.hours).to_s(:db) %>
   end_at: <%= Time.now.to_s(:db) %>
   frequence: MONTHLY
   interval: 2
 every_two_years:
-  calendar: normal
+  calendar: normal_calendar
   title: Foo
   start_at: <%= (Time.now - 2.hours).to_s(:db) %>
   end_at: <%= Time.now.to_s(:db) %>

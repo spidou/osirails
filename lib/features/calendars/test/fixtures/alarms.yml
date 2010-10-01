@@ -1,4 +1,4 @@
-normal:
-  event: normal
+normal_alarm:
+  event: two_hours_ago
   action: DISPLAY
   description: Don't forget !

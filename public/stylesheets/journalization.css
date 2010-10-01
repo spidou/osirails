@@ -1,0 +1,13 @@
+#journals_list div.journal_with_parent{
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #BFBFBF;
+  -moz-border-radius: 8px;
+  -moz-box-shadow: -5px 0px 10px rgba(30,30,30,0.3)
+}
+
+#journals_list li{
+  list-style: disc;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}

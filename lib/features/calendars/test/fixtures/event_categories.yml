@@ -1,5 +1,5 @@
-normal:
-  calendar: normal
+normal_event_category:
+  calendar: normal_calendar
   name: Foo
 without_calendar:
   name: Foo alone

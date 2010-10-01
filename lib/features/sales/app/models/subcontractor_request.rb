@@ -28,16 +28,6 @@ class SubcontractorRequest < ActiveRecord::Base
   
   attr_accessor :should_destroy, :should_update
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:subcontractor] = "Préstataire :"
-  @@form_labels[:name]          = "Préstataire :"
-  @@form_labels[:phone]         = "Tél :"
-  @@form_labels[:email]         = "E-mail :"
-  @@form_labels[:job_needed]    = "Prestation demandée :"
-  @@form_labels[:price]         = "Prix de la prestation :"
-  @@form_labels[:attachment]    = "Devis scanné :"
-  
   def should_destroy?
     should_destroy.to_i == 1
   end

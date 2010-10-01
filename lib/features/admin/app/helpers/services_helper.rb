@@ -60,14 +60,14 @@ module ServicesHelper
     end
     
     return "<label>Responsable hierachique :</label> \n" + responsables_list  if ids.size==1
-    return "<label>Responsables hierachiques :</label> \n" + responsables_list if ids.size>1
+    return "<label>Responsables hierachiques :</label> \n" + responsables_list if ids.many?
     return "" if ids.size==0
   end
   
   # method choose the good title for members
   def members(ids)
     return "<label>Membre :</label>" if ids.size==1
-    return "<label>Membres :</label>" if ids.size>1 
+    return "<label>Membres :</label>" if ids.many? 
     return "" if ids.size==0
   end
   
@@ -168,8 +168,8 @@ module ServicesHelper
   
   def period(chaine)
     tab = chaine.split("|")
-    if tab.size>1
-      chaine = "Du " + tab[0] + " au " + tab.last  if tab.size>1
+    if tab.many?
+      chaine = "Du " + tab[0] + " au " + tab.last  if tab.many?
     else
       chaine = "Le " + chaine
     end

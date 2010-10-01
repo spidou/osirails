@@ -2,7 +2,7 @@ module NumbersHelper
 
   def display_numbers(numbers_owner, params_name = nil)
     html = "<div class='numbers'>"    
-    html += render(:partial => 'numbers/number', :collection => numbers_owner.numbers , :locals => { :numbers_owner => numbers_owner, :params_name => params_name})
+    html += render(:partial => 'numbers/number', :collection => numbers_owner.numbers , :locals => { :numbers_owner => numbers_owner, :params_name => params_name}) if numbers_owner.numbers.any?
     html += "<p>#{ add_number_link(numbers_owner) if is_form_view? }</p>"
     html += "</div>"
   end 

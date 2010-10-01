@@ -4,7 +4,7 @@ good_checking:
   absence_hours: 1
   absence_minutes: 1
   date: <%= Date.today %>
-  absence_comment: beaucoup de retards
-  overtime_comment: beaucoup de retards
+  absence_comment: delay
+  overtime_comment: delay
   user: rh_user
   employee: john_doe

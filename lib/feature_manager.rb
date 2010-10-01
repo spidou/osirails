@@ -102,7 +102,7 @@ class FeatureManager
     @feature = Feature.find_by_name_and_version(@name, @version)
     
     if @feature
-      if RAILS_ENV == "test"
+      if Rails.env.test?
         load_plugin if @feature.name == TESTING_FEATURE or @feature.child_dependencies.collect{ |h| h[:name] }.include?(TESTING_FEATURE)
       else
         if SEEDING_FEATURE
@@ -111,7 +111,6 @@ class FeatureManager
           load_plugin
         end
       end
-      
     else
       raise "Feature '#{@name}' has not been found in the database..."
     end
@@ -234,8 +233,8 @@ class FeatureManager
         dir_path = File.join(@path, dir)
         
         $LOAD_PATH.unshift(dir_path)
-        Dependencies.load_paths.unshift(dir_path)
-        #Dependencies.load_once_paths.unshift(dir_path) unless Dependencies.load_once_paths.include?(dir_path) # I don't understand very well how the load_once_paths works for the moment
+        ActiveSupport::Dependencies.load_paths.unshift(dir_path)
+        #ActiveSupport::Dependencies.load_once_paths.unshift(dir_path) unless Dependencies.load_once_paths.include?(dir_path) # I don't understand very well how the load_once_paths works for the moment
         @config.controller_paths.unshift(dir_path) if dir.include?("controllers") and File.exists?(dir_path)
       end
 
@@ -244,6 +243,9 @@ class FeatureManager
       
       # load views for action_mailer
       ActionMailer::Base.template_root = ActionController::Base.view_paths  
+
+      # load i18n feature files
+      I18n.load_path += Dir[ File.join(@path, 'lib', 'locale', '*.{rb,yml}') ]
     end
     
     def load_libs

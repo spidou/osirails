@@ -202,3 +202,6 @@ configurations:
   society_identity_configuration_leave_duration_limit:
     description: "Durée maximale d'un congé"
     value: 24
+  society_identity_configuration_choosen_language:
+    description: "Langue de l'Intranet"
+    value: fr

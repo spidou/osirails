@@ -35,9 +35,9 @@ module LeaveBase
   def formatted
     return "" unless start_date and end_date and !two_half_for_same_date?
     if start_date == end_date
-      "Le " + start_date.strftime("%A %d %B %Y") + formatted_start_or_end_half
+      "Le " + I18n.l(start_date, :format => :long_ordinal) + formatted_start_or_end_half
     else
-      "Du " + start_date.strftime("%A %d %B %Y") + formatted_start_half + " au " + end_date.strftime("%A %d %B %Y") + formatted_end_half
+      "Du " + I18n.l(start_date, :format => :long_ordinal) + formatted_start_half + " au " + I18n.l(end_date, :format => :long_ordinal) + formatted_end_half
     end
   end
   

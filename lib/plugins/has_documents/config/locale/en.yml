@@ -1,0 +1,5 @@
+en:     
+  activerecord:
+    attributes: 
+      document:
+        tag_list: "Tags"

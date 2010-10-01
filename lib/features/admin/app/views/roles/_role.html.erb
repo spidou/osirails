@@ -11,7 +11,7 @@
     <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 70), :description) %>
   </p>
   <div class="form_multiple_entries">
-    <%= form.label :user_ids %>
+    <%= form.label :users %>
     <div class="collection">
       <% for user in (is_form_view? ? User.find(:all, :order => :username) : @role.users) %>
         <div class="object">

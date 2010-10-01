@@ -13,7 +13,7 @@
   <p>Vous n&apos;&ecirc;tes responsable d&apos;aucun employ&eacute;</p>
 <% else %>
   
-  <h2>Semaine <%= @date.monday.cweek %> (du <%= @date.monday.strftime("%A %d %B %Y") %> au <%= @date.next_week.yesterday.strftime("%A %d %B %Y") %>)</h2>
+  <h2>Semaine <%= @date.monday.cweek %> (du <%= l(@date.monday, :format => :long_ordinal) %> au <%= l(@date.next_week.yesterday, :format => :long_ordinal) %>)</h2>
   
   <p>
     <%= previous_week(@employee.id, @date, @view_cancelled) %>
@@ -36,7 +36,7 @@
       <% for checking in @checkings %>
          
         <%="<tr #{"class='disabled'" if checking.cancelled} >" %>
-          <td><%= checking.date.strftime("%A %d %B %Y") %></td>
+          <td><%= l(checking.date, :format => :long_ordinal) %></td>
           <%= generate_absence_and_overtime_td(checking) %>
           <td>
             <%= edit_checking_link(checking, :link_text => "") if checking.can_be_edited? %>

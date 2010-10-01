@@ -44,9 +44,7 @@ class DeliveryNote < ActiveRecord::Base
     dn.validates_presence_of :signed_on
     
     dn.validates_date :signed_on, :on_or_before         => Date.today,
-                                  :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)",
-                                  :on_or_after          => :published_on,
-                                  :on_or_after_message  => "ne doit pas être AVANT la date d'émission du BL&#160;(%s)"
+                                  :on_or_after          => :published_on
     
     dn.validate :validates_presence_of_attachment
   end
@@ -68,19 +66,6 @@ class DeliveryNote < ActiveRecord::Base
   before_destroy  :can_be_destroyed?
   
   attr_protected :status, :reference, :confirmed_at, :cancelled_at
-  
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:reference]           = 'Référence :'
-  @@form_labels[:created_at]          = 'Créé le :'
-  @@form_labels[:creator]             = 'Par :'
-  @@form_labels[:delivery_note_type]  = 'Mode de livraison :'
-  @@form_labels[:status]              = 'État actuel :'
-  @@form_labels[:confirmed_at]        = "Validé le :"
-  @@form_labels[:published_on]        = "Date d'émission :"
-  @@form_labels[:signed_on]           = "Signé par le client le :"
-  @@form_labels[:attachment]          = "Fichier (document signé) :"
-  @@form_labels[:cancelled_at]        = 'Annulée le :'
   
   def validates_presence_of_attachment # the method validates_attachment_presence of paperclip seems to be broken when using conditions
     if attachment.nil? or attachment.instance.attachment_file_name.blank? or attachment.instance.attachment_file_size.blank? or attachment.instance.attachment_content_type.blank?

@@ -12,43 +12,43 @@
 <div id="order_header">
   <div class="first_column">
     <p>
-      <label>Nom du projet :</label>
+      <%= simple_label :order, :title %>
       <strong><%= @order.title %></strong>
     </p>
     
     <p>
-      <label>Client :</label>
+      <%= simple_label :order, :customer %>
       <strong><%= link_to( "#{@order.customer.name}", @order.customer) %></strong>
     </p>
     
     <div class="order_header_extra">
       <% for ship_to_address in @order.ship_to_addresses %>
         <p>
-          <label>Lieu de livraison :</label>
+          <%= simple_label :order, :ship_to_address %>
           <strong><%= ship_to_address.name_and_short_address %></strong>
         </p>
       <% end %>
       
       <p>
-        <label>Date pr&eacute;visionnelle de livraison :</label>
-        <strong><%= @order.previsional_delivery.humanize %></strong>
+        <%= simple_label :order, :previsional_delivery %>
+        <strong><%= l(@order.previsional_delivery, :format => :short) %></strong>
       </p>
     </div>
   </div>
   <div class="second_column">
     <p>
-      <label>Type de dossier :</label>
+      <%= simple_label :order, :order_type %>
       <strong><%= @order.order_type.title %></strong>
     </p>
 
     <p>
-      <label>Suivi commercial :</label>
+      <%= simple_label :order, :commercial %>
       <strong><%= @order.commercial.fullname %></strong>
     </p>
     
     <div class="order_header_extra">
       <p>
-        <label>Contact :</label>
+        <%= simple_label :order, :contact %>
         <strong><%= @order.all_contacts.first.fullname + " " + link_to("(Voir plus)", order_informations_path(:anchor => 'contacts_section')) unless @order.all_contacts.empty? %></strong>
       </p>
     </div>

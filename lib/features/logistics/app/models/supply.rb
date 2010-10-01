@@ -30,30 +30,9 @@ class Supply < ActiveRecord::Base
   after_save :save_supplier_supplies, :save_supplies_supply_sizes
   
   SUPPLIES_PER_PAGE = 15
-  
+
   attr_accessor  :supply_category_id # correspond to the parent of the supply_sub_category associated to the supply
   attr_protected :supply_category_id # permit to skip the given value from the form
-  
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:supply_category]       = "Famille :"
-  @@form_labels[:supply_sub_category]   = "Sous-famille :"
-  @@form_labels[:name]                  = "Type :"
-  @@form_labels[:reference]             = "Référence :"
-  @@form_labels[:supplier]              = "Fournisseur principal :"
-  @@form_labels[:measure]               = "Grandeur/U :"
-  @@form_labels[:unit_mass]             = "Masse/U :"
-  @@form_labels[:average_unit_price]    = "PU TTC moyen :"
-  @@form_labels[:average_measure_price] = "PG TTC moyen :"
-  @@form_labels[:higher_unit_price]     = "PU TTC plus cher :"
-  @@form_labels[:higher_measure_price]  = "PG TTC plus cher :"
-  @@form_labels[:threshold]             = "Seuil d'alerte :"
-  @@form_labels[:packaging]             = "Conditionnement :"
-  @@form_labels[:stock_quantity]        = "Quantité :"
-  @@form_labels[:stock_measure]         = "Grandeur totale :"
-  @@form_labels[:stock_value]           = "Valeur totale :"
-  @@form_labels[:stock_mass]            = "Poids total :"
-  @@form_labels[:average_unit_value]    = "Valeur unitaire moyenne :"
   
   # TODO this method is based on supplies' designation, but this is not sure! find another way to check uniqueness of supply_sizes
   #
@@ -68,9 +47,9 @@ class Supply < ActiveRecord::Base
     if other_supplies_designations.include?(designation)
       errors.add(:supplies_supply_sizes, "La famille choisie contient déjà une fourniture avec le même type et les mêmes spécificités (#{designation})")
       
-      errors.add(:name, ActiveRecord::Errors::default_error_messages[:taken])
+      errors.add(:name, I18n.t('activerecord.errors.messages.taken'))
       supplies_supply_sizes.reject(&:should_destroy?).each do |size|
-        size.errors.add(:value, ActiveRecord::Errors::default_error_messages[:taken])
+        size.errors.add(:value, I18n.t('activerecord.errors.messages.taken'))
       end
     end
   end
@@ -170,7 +149,7 @@ class Supply < ActiveRecord::Base
   end
   
   def can_be_edited?
-    enabled?
+    enabled? && !new_record?
   end
   
   def can_be_destroyed?

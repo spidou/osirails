@@ -1,4 +1,7 @@
 class User < ActiveRecord::Base
+  
+  acts_on_journalization_with :username
+  
   before_save :username_unicity
   
   # Requires
@@ -41,16 +44,6 @@ class User < ActiveRecord::Base
   # this variable must be set at "1" if we want to force password expiration (by setting at nil 'password_updated_at')
   attr_accessor :force_password_expiration
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:username]                  = "Nom du compte utilisateur :"
-  @@form_labels[:password]                  = "Mot de passe :"
-  @@form_labels[:password_confirmation]     = "Confirmation du mot de passe :"
-  @@form_labels[:enabled]                   = "Compte activé ? :"
-  @@form_labels[:last_connection]           = "Dernière connexion :"
-  @@form_labels[:roles]                     = "Rôles :"
-  @@form_labels[:force_password_expiration] = "Demander à l'utilisateur un nouveau mot de passe à sa prochaine connexion :"
- 
   # Search Plugin
   has_search_index  :additional_attributes => { :expired? => :boolean },
                     :only_attributes       => [ :username, :enabled, :last_connection, :last_activity ],
@@ -88,8 +81,8 @@ class User < ActiveRecord::Base
   
   def expired?
     return true if self.password_updated_at.nil?
-    return false if ConfigurationManager.admin_password_validity == 0
-    (self.password_updated_at.to_date + ConfigurationManager.admin_password_validity.day).to_time < Time.now
+    return false if ConfigurationManager.admin_password_validity.to_i == 0
+    (self.password_updated_at.to_date + ConfigurationManager.admin_password_validity.to_i.day).to_time < Time.now
   end
   
   def username_unicity

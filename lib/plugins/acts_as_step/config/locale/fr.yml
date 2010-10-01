@@ -1,0 +1,7 @@
+fr:     
+  activerecord:
+    models:
+      remark: "Remarque"
+    attributes: 
+      remark:
+        text: "Votre commentaire"

@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../memorandum_test'
 
 class MemorandumsServiceTest < ActiveSupport::TestCase
   def setup
-    @memorandums_service = memorandums_services(:first_memorandum_direction_general)
+    @memorandums_service = memorandums_services(:normal_memorandums_service)
   end
 
   def test_presence_of_service_id
@@ -25,7 +25,7 @@ class MemorandumsServiceTest < ActiveSupport::TestCase
   end
 
   def test_belongs_to_memorandum
-    assert_equal @memorandums_service.memorandum, memorandums(:first_memorandum),
+    assert_equal @memorandums_service.memorandum, memorandums(:normal_memorandum),
       "This MemorandumsService should belongs to this Memorandum"
   end
 end

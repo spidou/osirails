@@ -13,10 +13,10 @@
     <%= employee_leaves_link(current_user.employee, :link_text => "Voir mes congés") if current_user.employee %>
   <% end %>
   
-  <%= render :partial => 'pending_leave_requests', :object => @pending_leave_requests unless @pending_leave_requests.empty? %>
-  <%= render :partial => 'in_progress_leave_requests' %>
-  <%= render :partial => 'accepted_leave_requests' %>
-  <%= render :partial => 'refused_leave_requests' %>
+  <%= render :partial => 'pending_leave_requests',     :object => @pending_leave_requests unless @pending_leave_requests.empty? %>
+  <%= render :partial => 'in_progress_leave_requests', :object => @in_progress_leave_requests %>
+  <%= render :partial => 'accepted_leave_requests',    :object => @accepted_leave_requests %>
+  <%= render :partial => 'refused_leave_requests',     :object => @refused_leave_requests %>
   
 <% else %>
   <p>Vous ne pouvez acc&eacute;der &agrave; ce menu car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</p>

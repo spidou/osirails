@@ -22,7 +22,7 @@ module LeaveValidations
       error_message = "Les dates demandées ne sont pas valides<br/>"
       for group, items in collection
         error_message += "<br/>Vous avez déjà posé #{items.size} "
-        error_message += items.size > 1 ? "#{group.pluralize} pour les dates/périodes suivantes :<br/>" : "#{group} pour la date/période suivante :<br/>"
+        error_message += items.many? ? "#{group.pluralize} pour les dates/périodes suivantes :<br/>" : "#{group} pour la date/période suivante :<br/>"
         for item in items.sort_by(&:start_date)
           error_message += "- " + item.formatted + "<br/>"
         end
