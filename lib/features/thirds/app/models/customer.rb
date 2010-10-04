@@ -39,9 +39,8 @@ class Customer < Third
   # for pagination : number of instances by index page
   CUSTOMERS_PER_PAGE = 25
   
-  has_search_index :only_attributes    => [ :name ],
-                   :only_relationships => [ :legal_form, :factor, :customer_solvency, :customer_grade ], #:head_office, :establishments ], #TODO add these relationships when bug #60 will be resolved
-                   :main_model         => true
+  has_search_index :only_attributes    => [:name, :siret_number, :website],
+                   :only_relationships => [:legal_form, :establishments, :head_office, :customer_grade, :customer_solvency, :bill_to_address, :factor]
   
   def payment_time_limit
     customer_grade && customer_grade.payment_time_limit

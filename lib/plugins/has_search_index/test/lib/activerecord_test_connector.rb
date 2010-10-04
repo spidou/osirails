@@ -1,11 +1,6 @@
 require 'active_record'
 require 'active_record/version'
 require 'active_record/fixtures'
-$LOAD_PATH << File.dirname(__FILE__) + "/../fixtures"
-# OPTIMIZE remvove dependencies to make plugin independent (Array:fusion, String:plural?, String:to_b, Hash:fusion,  some other methods like date overrides are visible in views)
-require File.dirname(__FILE__) + '/../../../../../config/initializers/basics_overrides' 
-##########################################################
-require File.dirname(__FILE__) + '/../../lib/has_search_index.rb'
 
 class ActiveRecordTestConnector
   cattr_accessor :able_to_connect
@@ -56,7 +51,7 @@ class ActiveRecordTestConnector
       Object.send :const_set, :QUOTED_TYPE, ActiveRecord::Base.connection.quote_column_name('type')
     end
   end
-
+  
   def self.load_schema
     ActiveRecord::Base.silence do
       ActiveRecord::Migration.verbose = false

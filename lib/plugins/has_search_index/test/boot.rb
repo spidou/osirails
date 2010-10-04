@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/../../../../vendor/rails/railties/lib/rails/version.rb'
 
-RAILS_ENV = 'test'
+#RAILS_ENV = 'test' unless const_defined?('RAILS_ENV')
 plugin_root = File.join(File.dirname(__FILE__), '..')
 version = ENV['RAILS_VERSION'] || Rails::VERSION::STRING
-version = nil if version and version == ""
+version = nil if version && version == ""
 
 # first look for a symlink to a copy of the framework
 if !version and framework_root = ["#{plugin_root}/rails", "#{plugin_root}/../../rails"].find { |p| File.directory? p }

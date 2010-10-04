@@ -1,17 +1,10 @@
 require_dependency 'app/helpers/users_helper'
 
 module UsersHelper
-  alias_method :get_headers_without_rh_override, :get_headers
-
-  def get_headers
-    result = ["Employ&eacute;"]
-    result += get_headers_without_rh_override
-  end
-  
-  alias_method :get_rows_without_rh_override, :get_rows
-
-  def get_rows(user)
-    result = [ (user.employee.nil? ? "" : user.employee.fullname) ]
-    result += get_rows_without_rh_override(user)
+  # Override to handle user is enabled or not
+  # in more user friendly way for the group display
+  #
+  def query_group_td_content_in_user_index(group_by)
+    group_by.last == true ? 'Sont activés' : 'Sont désactivés' 
   end
 end

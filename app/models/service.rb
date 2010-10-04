@@ -11,15 +11,8 @@ class Service < ActiveRecord::Base
   
   validates_presence_of :name
   
-  # FIXME is this comment usefull? the bug should be resolved in last rails version
-  # relationships 'parent' was commented because of a bug (when introducing relationships permitting to model to refer to them self)
-  # => there's two different behavior according to the RAISL_ENV
-  # dev : it works but it's a question of luck
-  # prod : it don't work and it permit to see a problem with this kind of relationships into :include array passed to 'find' method
-  # this difference come from the relationships order into the include array
-  # ps : the problem occur when including service to perform a find into employee for example it works if just searching from service
   has_search_index :only_attributes       => [:name],
-                   :except_relationships  => [:schedules, :parent, :children]
+                   :only_relationships  => [:schedules, :parent, :children]
   
   # Store the ancient services_parent_id before update_service_parent
   attr_accessor :old_service_parent_id, :update_service_parent

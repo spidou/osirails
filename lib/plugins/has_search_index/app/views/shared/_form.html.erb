@@ -1,0 +1,17 @@
+<%
+  require_locals page_name, query
+  page_config = HasSearchIndex::HTML_PAGES_OPTIONS[page_name.to_sym].clone
+  visible = cookies["#{ page_name }_form"] == 'false' ? false : true
+%>
+
+<div class="integrated_search_form" style="<%= 'display:none' unless visible %>">
+  <%= render(:partial => "shared/criteria_form", :locals => {:query => query}) if page_config[:filters].any? %>
+  <%= render(:partial => "shared/options_form", :locals => {:query => query, :page_config => page_config}) %>
+  <%= links(query) %>
+</div>
+<div class="integrated_search_form_footer">
+  <%= toggle_form_link(visible) unless @page_name =~ /^advanced_/ %>
+  <%= reset_query_link(query) %>
+</div>
+
+

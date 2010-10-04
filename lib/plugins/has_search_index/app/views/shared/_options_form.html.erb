@@ -1,0 +1,35 @@
+<%
+  require_locals query, page_config
+  per_page_config = page_config[:per_page] + [['all', nil]]
+  visible = cookies["#{ @page_name }_options"] == 'true' ? true : false
+  collapse = visible ? 'not-collapsed' : 'collapsed'
+%>
+<fieldset>
+  <%= toggle_options_legend(collapse) %>
+  
+  <div class="presentation_medium" style="<%= 'display:none;' unless visible %>">
+    <% if page_config[:group].any? %>
+    <div class='inline_div'>
+      <%= simple_label :query, :group %>
+      <%= render :partial => 'shared/sortable_selects',
+                 :locals => {:selected => query.group, :all => page_config[:group], :suffix => 'group'}%>
+    </div>
+    <% end %>
+
+    <% if page_config[:columns].any? %>
+    <div class='inline_div'>
+      <%= simple_label :query, :columns %>
+      <%= render :partial => 'shared/sortable_selects',
+                 :locals => {:selected => query.columns, :all => page_config[:columns], :suffix => 'columns'}%>
+    </div>
+    <% end %>
+    
+    <%= hidden_field_tag('query_id', query.id)%>
+    <%= hidden_field_tag('query[per_page]', query.per_page)%>
+    <%= hidden_field_tag('query[public_access]', query.public_access)%>
+    <%= hidden_field_tag('query[page_name]', query.page_name)%>
+    <% query.order.each do |o|%>
+      <%= hidden_field_tag('query[order][]', o)%>
+    <% end %>
+  </div>
+</fieldset>

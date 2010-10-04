@@ -12,7 +12,8 @@ class Job < ActiveRecord::Base
   
   validates_uniqueness_of :name
   
-  has_search_index :only_attributes => [:name]
+  has_search_index :only_attributes => [:name, :id],
+                   :identifier => :name
   
   # for pagination : number of instances by index page
   JOBS_PER_PAGE = 15

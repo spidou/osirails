@@ -43,7 +43,30 @@ class Array
     end
     return array
   end
-
+  
+  # Method that return true if the array passed as argument contain the same elements (same type too) regardless their order
+  #
+  # [1,2,3].same_elements?([3,1,2]) == true
+  # [2,3,4].same_elements?([2,3,4,5]) == false
+  #
+  def same_elements?(array)
+    size == array.size && include_all?(array)
+  end
+  
+  # [1,2,3].include_all?([1,2]) == true
+  # [1,2,3].include_all?([1,6]) == false
+  #
+  def include_all?(array)
+    (self & array).size == array.size
+  end
+  
+  # [1,2,3].include_any?([1,2]) == true
+  # [1,2,3].include_any?([1,6]) == true
+  # [1,2,3].include_any?([5,6]) == false
+  #
+  def include_any?(array)
+    (self & array).size >= 1
+  end
 end
 
 class String
@@ -94,8 +117,10 @@ class String
     case self.strip             # avoid spaces
       when "true", "1"
         return true
+      when "false", "0"
+        return false
       else
-        return false 
+        return nil 
     end 
   end
   
@@ -164,3 +189,26 @@ class Float
   
   alias_method_chain :to_s, :precision
 end
+
+### little hack that permit to reverse sort_by like: ( source : http://groups.google.com/group/comp.lang.ruby/msg/c6646699efca9443?dmode=source )
+#   Employee.all.sort_by {|n| [n.last_name]}     => Employee.all :order => 'last_name Asc'
+#   Employee.all.sort_by {|n| [n.last_name.rev]} => Employee.all :order => 'last_name Desc'
+# 
+class Reverser
+  attr_accessor :obj
+
+  def initialize(obj)
+    @obj = obj
+  end
+  
+  def <=>(other)
+    other.obj <=> self.obj
+  end
+end
+
+class Object
+  def rev
+    Reverser.new(self)
+  end
+end
+
