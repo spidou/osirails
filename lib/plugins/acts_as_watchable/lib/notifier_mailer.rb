@@ -13,25 +13,23 @@ class NotificationMailer < ActionMailer::Base
   end
   
   def setup! path_template
-    self.template_root = ActionMailer::Base.template_root
+    self.template_root = ActionMailer::Base.template_root = ActionController::Base.view_paths
     @body[:footer] = footer
     if path_template != ""
       self.mailer_name = path_template
-    else
-      self.mailer_name = self.class.name.underscore
     end
     
   end
   
   def notification_email(object, recipient, path_template = "")  
     self.setup! path_template
-    @recipients = "armoog_s@epitech.net"
+    @recipients = recipient
     @from = "Osirails <not-reply@mobius.re>"  
     @subject = "notification from your program"  
     @sent_on = Time.now
     @content_type = "text/html"
-    @body[:object] = object 
-    template (object.class.name.tableize + "/" + self.mailer_name) if path_template != ""
+    @body[:object] = object
+    template (object.class.name.tableize + "/" + self.mailer_name) if (self.mailer_name != "notification_mailer")
   end
   
 end

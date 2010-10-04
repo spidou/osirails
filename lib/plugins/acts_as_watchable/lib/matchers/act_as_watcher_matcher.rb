@@ -13,7 +13,7 @@ module ActsAsWatchable
 
         def matches? subject
           @subject = subject
-          responds?
+          responds? && implements?
         end
 
         def failure_message
@@ -34,7 +34,15 @@ module ActsAsWatchable
             end
             true
           end
-
+          
+          def implements?
+            unless @subject.new.respond_to?(@subject.new.watcher_email_method.to_s.to_sym)
+              @message = "\n\"#{@subject}.#{@subject.new.watcher_email_method.to_s}\" should respond but does not"
+              return false
+            end
+            true
+          end
+          
       end
     end
   end

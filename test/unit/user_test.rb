@@ -5,7 +5,8 @@ class UserTest < ActiveSupport::TestCase
   require "digest/sha1"
   
   should_act_on_journalization_with :username
-
+  should_act_as_watcher
+  
   def setup
     @user = users(:first_user)
   end

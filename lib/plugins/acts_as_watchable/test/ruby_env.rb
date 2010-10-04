@@ -15,6 +15,7 @@ require 'boot' unless defined?(ActiveRecord)
 
 require 'active_record'
 require 'active_support'
+#include I18n
 require 'action_mailer'
 
 require File.join(File.dirname(__FILE__), 'lib', 'activerecord_test_case')

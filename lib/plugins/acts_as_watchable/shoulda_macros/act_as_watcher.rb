@@ -15,5 +15,5 @@ module ActsAsWatcher
 end
 
 class Test::Unit::TestCase #:nodoc:
-  extend ActsAsWatchable::Shoulda
+  extend ActsAsWatcher::Shoulda
 end

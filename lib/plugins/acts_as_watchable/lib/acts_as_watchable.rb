@@ -38,7 +38,7 @@ module ActsAsWatchable
         ActsAsWatchable.const_set("WatcherClassName", self.name) unless ActsAsWatchable.const_defined?("WatcherClassName")
       end
       
-      raise ArgumentError, "Missing method error '#{self.watcher_email_method}' for model '#{ActsAsWatchable::WatcherClassName}'" unless  self.new.respond_to? self.watcher_email_method 
+      #raise ArgumentError, "Missing method error '#{self.watcher_email_method}' for model '#{ActsAsWatchable::WatcherClassName}'" unless  self.new.respond_to? self.watcher_email_method a supprimer
       
       Watchable.class_eval do
         belongs_to :watcher, :class_name => ActsAsWatchable::WatcherClassName
@@ -120,7 +120,7 @@ module ActsAsWatchable
     
     def deliver_email_for(function, watchable)
       if self.should_deliver_email_for?(function)
-        NotificationMailer.deliver_notification_email(self, "armoog_s@epitech.net", #watchable.watcher.watcher_email
+        NotificationMailer.deliver_notification_email(self, watchable.watcher.watcher_email, #"armoog_s@epitech.net"
                                                           function.watchable_function.function_name)
       end
     end
@@ -146,7 +146,7 @@ module ActsAsWatchable
       def notify_modification_on_object
         for watchable in all_changes_watchables
           NotificationMailer.deliver_notification_email(self, 
-                                                        "armoog_s@epitech.net", "")#watchable.watcher.watcher_email
+                                                        watchable.watcher.watcher_email, "")#"armoog_s@epitech.net"
         end
       end
       
@@ -163,5 +163,9 @@ end
 
 # Set it all up.
 if Object.const_defined?("ActiveRecord")
+  if defined?(I18n)
+    I18n.load_path += Dir[ File.join(RAILS_ROOT, 'lib', 'plugins', 'acts_as_watchable', 'config', 'locale', '*.{rb,yml}') ]
+    I18n.reload!
+  end
   ActiveRecord::Base.send(:include, ActsAsWatchable)
 end

@@ -1,0 +1,10 @@
+fr:
+  activerecord:
+    errors:
+      models:
+        watchables_watchable_function:
+          attributes:
+            on_modification:
+                is_blank: "n'est pas requis"
+            on_schedule:
+                is_blank: "n'est pas requis"

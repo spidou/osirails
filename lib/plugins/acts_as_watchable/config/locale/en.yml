@@ -1,0 +1,10 @@
+en:
+  activerecord:
+    errors:
+      models:
+        watchables_watchable_function:
+          attributes:
+            on_modification:
+                is_blank: "should be blank"
+            on_schedule:
+                is_blank: "should be blank"
