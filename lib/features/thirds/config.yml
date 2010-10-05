@@ -27,3 +27,7 @@ menus:
         title: "Factors (Sociétés d'affacturage)"
         description: "Gestion des factors (sociétés d'affacturage)"
         position: 3
+      forwarders:
+        title: Transporteurs
+        description: Gestion des transporteurs
+        position: 4

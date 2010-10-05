@@ -1,4 +1,6 @@
 class Quote < ActiveRecord::Base
+  include QuoteBase
+  
   STATUS_CONFIRMED  = 'confirmed'
   STATUS_CANCELLED  = 'cancelled'
   STATUS_SENDED     = 'sended'
@@ -202,36 +204,36 @@ class Quote < ActiveRecord::Base
     @order_end_products_to_remove.each(&:destroy)
   end
   
-  def total
-    product_quote_items.collect(&:total).sum
-  end
-  
-  def net
-    prizegiving = self.prizegiving || 0.0
-    total * ( 1 - ( prizegiving / 100 ) )
-  end
-  
-  def total_with_taxes
-    product_quote_items.collect(&:total_with_taxes).sum
-  end
-  
-  def summon_of_taxes
-    total_with_taxes - total
-  end
-  
-  def net_to_paid
-    carriage_costs = self.carriage_costs || 0.0
-    discount = self.discount || 0.0
-    net + carriage_costs + summon_of_taxes - discount
-  end
-  
-  def tax_coefficients
-    product_quote_items.collect(&:vat).uniq
-  end
-  
-  def total_taxes_for(coefficient)
-    product_quote_items.select{ |i| i.vat == coefficient }.collect(&:total).sum
-  end
+#  def total
+#    product_quote_items.collect(&:total).sum
+#  end
+#  
+#  def net
+#    prizegiving = self.prizegiving || 0.0
+#    total * ( 1 - ( prizegiving / 100 ) )
+#  end
+#  
+#  def total_with_taxes
+#    product_quote_items.collect(&:total_with_taxes).sum
+#  end
+#  
+#  def summon_of_taxes
+#    total_with_taxes - total
+#  end
+#  
+#  def net_to_paid
+#    carriage_costs = self.carriage_costs || 0.0
+#    discount = self.discount || 0.0
+#    net + carriage_costs + summon_of_taxes - discount
+#  end
+#  
+#  def tax_coefficients
+#    product_quote_items.collect(&:vat).uniq
+#  end
+#  
+#  def total_taxes_for(coefficient)
+#    product_quote_items.select{ |i| i.vat == coefficient }.collect(&:total).sum
+#  end
   
   def number_of_pieces
     product_quote_items.collect(&:quantity).compact.sum

@@ -68,3 +68,17 @@ td.disabled {
   text-decoration: line-through;
   font-style: italic;
 }
+
+
+
+/********************** quotation_request ***************************************/
+
+#quotation_request_supplies_body td.name{
+  vertical-align: top;
+  text-align: left;
+}
+
+#quotation_request_supplies_body td.description{
+  vertical-align: top;
+  text-align: left;
+}

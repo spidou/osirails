@@ -2,6 +2,10 @@ require File.dirname(__FILE__) + '/../purchases_test'
 
 class PurchaseRequestSupplyTest < ActiveSupport::TestCase
   
+  should_have_many :quotation_request_purchase_request_supplies
+  should_have_many :quotation_request_supplies
+  should_have_many :quotation_purchase_request_supplies
+  should_have_many :quotation_supplies
   should_have_many  :request_order_supplies
   should_have_many  :purchase_order_supplies, :through => :request_order_supplies
   

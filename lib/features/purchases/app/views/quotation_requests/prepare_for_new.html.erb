@@ -1,0 +1,33 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'purchases/purchases' %>
+<% end -%>
+
+<h1>Nouvelle demande de devis</h1>
+
+<% if params['supplier_id'] or params['supplier_choice'] %>
+  <%= render :partial => "supplier_choice", :object => @quotation_request, :locals => { :chosen_purchase_request_supplies => @chosen_purchase_request_supplies } %>
+<% else %>
+  <div class="presentation_medium">
+    <h2>&Agrave; partir d'une liste vide.</h2>
+    <p><%= link_to "Nouveau", prepare_for_new_quotation_request_path(:supplier_choice => true) %></p>
+    
+    <h2>&Agrave; partir du fournisseur en se basant sur les demandes d'achats existantes.</h2>
+    <div class="presentation_in_columns">
+      <% if @suppliers.empty? %>
+        <p>Il n'y a aucune demande d'achats en attente pour le moment.</p>
+      <% else %>
+        <p><%= render :partial => "purchase_request_supplies/grouped_by_supplier_purchase_request_supplies", :collection => @suppliers %></p>
+        <%= will_paginate @suppliers %>
+      <% end %>
+    </div>
+    
+    <h2>&Agrave; partir d'une liste d'articles se basant sur les demandes d'achats existantes.</h2>
+    <div class="presentation_in_columns">
+      <% if @purchase_request_supplies.empty? %>
+        <p>Il n'y a aucune demande d'achats en attente pour le moment.</p>
+      <% else %>
+        <p><%= render :partial => "purchase_request_supplies/grouped_by_purchase_request_supplies", :object => @purchase_request_supplies %></p>
+      <% end %>
+    </div>
+  </div>
+<% end %>

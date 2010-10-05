@@ -4,17 +4,18 @@
 <table>
   <thead>
     <tr>
-      <th>Date attendue</th>
       <th>Référence</th>
       <th>Désignation</th>
       <th>Grandeur /U</th>
       <th>Masse /U</th>
       <th>En stock/Seuil</th>
       <th>PU TTC</th>
-      <th>Prix au m²</th>
-      <th>Total des quantités demandées</th>
+      <th>PG TTC</th>
+      <th>Quantités demandées</th>
       <th>Prix total TTC</th>
-      <th>Délai de livraison</th>
+      <th>Délai de réappro.</th>
+      <th>Priorité</th>
+      <th>Date de livraison souhaitée</th>
       <th>Action</th>
     </tr>
   </thead>
@@ -23,12 +24,11 @@
   </tbody>
   <tfoot>
     <tr class="footer">
-      <td colspan = "9"></td>
+      <td colspan="8"></td>
       <td class="price">Total : <%= display_purchase_request_supplies_total_for_supplier(supplier) %></td>
       <td>D&eacute;lai le plus long :<%= display_longest_lead_time_for_supplier(supplier) %></td>
+      <td colspan="2"></td>
       <td></td>
     </tr>
   </tfoot>
 </table>
-
-

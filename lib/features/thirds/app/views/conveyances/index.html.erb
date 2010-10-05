@@ -1,0 +1,21 @@
+<% content_for :header do -%>
+  <%= javascript_include_tag 'thirds/thirds' %>
+  <%= stylesheet_link_tag_with_theme_support 'thirds/thirds' %>
+<% end -%>
+
+<%= generate_conveyance_contextual_menu_partial(@conveyance) %>
+
+<h1>Liste des moyens de transport</h1>
+<div>
+  <% if @conveyances.empty? %>
+    <p>Aucun moyen de transport existant</p>
+  <% else %>
+    <table>
+      <%= render :partial => "array_head" %>
+      <tbody>
+        <%= render :partial => "conveyance_in_one_line", :collection => @conveyances %>
+      </tbody>
+    </table>
+    <%= will_paginate @conveyances %>
+  <% end %>
+</div>

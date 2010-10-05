@@ -1,0 +1,21 @@
+first_commodity_category:
+  type: CommodityCategory
+  reference: 100
+  name: First Commodity Category
+first_commodity_sub_category:
+  type: CommoditySubCategory
+  supply_category: first_commodity_category
+  reference: 110
+  name: First Commodity Sub Category
+  unit_measure_id: millimeter
+
+first_consumable_category:
+  type: ConsumableCategory
+  reference: 200
+  name: First Consumable Category
+first_consumable_sub_category:
+  type: ConsumableSubCategory
+  supply_category: first_consumable_category
+  reference: 210
+  name: First Consumable Sub Category
+  unit_measure_id: millimeter

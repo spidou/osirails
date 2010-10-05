@@ -1,0 +1,8 @@
+<%
+  require_locals form
+  forwarder = forwarder_main_info
+%>
+<%
+#Keep the same file structure than customer in order to  use the same partials when forwarder will use polymorphic establihsments and so will be more similar to customer
+%>
+<%= render :partial => 'thirds/third_main_info', :object => forwarder, :locals => { :form => form } %>

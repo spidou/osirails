@@ -1,0 +1,5 @@
+<% conveyance = useful_links_contextual_menu %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= display_conveyances_list_button unless is_index_view? %>
+<% end %>

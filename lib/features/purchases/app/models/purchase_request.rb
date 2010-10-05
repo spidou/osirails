@@ -21,7 +21,7 @@ class PurchaseRequest < ActiveRecord::Base
   @@form_labels[:employee]          = "Demandeur :"
   @@form_labels[:user]              = "Créateur de la demande :"
   @@form_labels[:reference]         = "Référence :"
-  @@form_labels[:statut]            = "Status :"
+  @@form_labels[:statut]            = "Statut :"
   @@form_labels[:global_date]       = "Date de livraison souhaitée :"
   @@form_labels[:cancelled_comment] = "Raison de l'annulation :"
   
@@ -81,6 +81,10 @@ class PurchaseRequest < ActiveRecord::Base
   
   def during_treatment_purchase_request_supplies
     purchase_request_supplies.select(&:during_treatment?)
+  end
+  
+  def active?
+    untreated_purchase_request_supplies.size > 0 || during_treatment_purchase_request_supplies.size > 0
   end
   
   def treated_purchase_request_supplies

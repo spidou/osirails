@@ -1,0 +1,22 @@
+<% supplier = quotation_request.supplier %>
+
+<%= hidden_field_tag "choice", :value => 1 %>
+<%= hidden_field_tag "supplier_id", supplier.id %>
+
+<% form_for(quotation_request, :html => {:multipart => true, :choice => 1}) do |f| %>
+  <%= f.error_messages %>
+    <div class="presentation_in_columns">
+      <h2>Informations</h2>
+      <%= hidden_field_tag 'add_this_supplier_id', supplier.id %>
+      <%= f.hidden_field :supplier_id, :value => supplier.id %>
+      <div>
+        <p>Fournisseur: <strong><%= supplier.name%></strong></p><br>
+      </div>
+    </div>
+  
+    <div>
+      <h2>Listes des fournitures</h2>
+      <%= render :partial => 'quotation_request_supplies/quotation_request_supplies', :locals => { :quotation_request => quotation_request }  %>
+    </div>
+  <%= f.form_buttons %>
+<% end %>

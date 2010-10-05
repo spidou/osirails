@@ -26,9 +26,9 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       context "with 'purchase_request_supply_attributes=' " do
         setup do
           flunk "purchase request should not have purchase request supplies" if @purchase_request.purchase_request_supplies.any?
-          @purchase_request.purchase_request_supply_attributes = [{:supply_id => supplies("first_commodity").id, 
-                                                              :expected_delivery_date => Date.today + 1.week, 
-                                                              :expected_quantity => 200}]
+          @purchase_request.purchase_request_supply_attributes = [{ :supply_id => supplies("first_commodity").id,
+                                                                    :expected_delivery_date => Date.today + 1.week,
+                                                                    :expected_quantity => 200}]
            flunk "purchase request should  have purchase request supplies" unless (@purchase_request_supply  = @purchase_request.purchase_request_supplies.first)
         end
         
@@ -40,7 +40,7 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       context "when saving purchase request" do
         
         setup do
-          @purchase_request.purchase_request_supplies.build({:supply_id => supplies("second_commodity").id,
+          @purchase_request.purchase_request_supplies.build({ :supply_id => supplies("second_commodity").id,
                                                               :expected_delivery_date => nil, 
                                                               :expected_quantity => 200})
           @purchase_request.global_date = Date.today + 1.day
@@ -61,7 +61,9 @@ class PurchaseRequestTest < ActiveSupport::TestCase
     context "with at least one purchase request supply" do 
       
       setup do
-        @purchase_request = build_purchase_request_supplies_for(@purchase_request, 1)
+        build_purchase_request_supplies_for(@purchase_request, [ { :supply_id => supplies("second_commodity").id,
+                                                                   :expected_quantity => 30,
+                                                                   :expected_delivery_date => Date.today + 1.week } ] )
       end
       
       should "have purchase_request_supplies valid" do
@@ -75,7 +77,7 @@ class PurchaseRequestTest < ActiveSupport::TestCase
   context "A valid purchase request" do
     setup do
       @purchase_request = PurchaseRequest.new()
-      @purchase_request = build_purchase_request_supplies_for(@purchase_request, 2)
+      build_purchase_request_supplies_for(@purchase_request)
       @purchase_request.user_id = users("admin_user").id
       @purchase_request.employee_id = employees("john_doe").id
       @purchase_request.service_id = services("direction_general").id
@@ -104,7 +106,6 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       end
       
       should "be able to update a purchase request supply with 'purchase_request_supply_attributes' " do
-
         @purchase_request.purchase_request_supply_attributes = [@purchase_request_supply.attributes]
         assert_equal 123, @purchase_request.purchase_request_supplies.first.expected_quantity
       end
@@ -117,11 +118,11 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       end
       
       should "NOT return treated purchase request supplies" do
-          assert_equal 0, @purchase_request.treated_purchase_request_supplies.size
+        assert_equal 0, @purchase_request.treated_purchase_request_supplies.size
       end
       
       should "NOT return during_treatment purchase request supplies" do
-          assert_equal 0, @purchase_request.during_treatment_purchase_request_supplies.size
+        assert_equal 0, @purchase_request.during_treatment_purchase_request_supplies.size
       end
       
     end
@@ -173,7 +174,6 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       end
       
       context "whithout canceller id" do
-        
         should "not be able to be cancel" do
           assert !@purchase_request.cancel
         end  

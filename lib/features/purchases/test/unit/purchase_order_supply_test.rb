@@ -20,7 +20,7 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
     setup do
       @purchase_order = PurchaseOrder.new
       build_purchase_order_supplies( @purchase_order, { :supplier_reference => "C.01012010",
-                                                          :supplier_designation => "First Purchase Order Supply" })
+                                                        :supplier_designation => "First Purchase Order Supply" })
       flunk "should have a new record of purchase order supply" unless (@purchase_order_supply = @purchase_order.purchase_order_supplies.first)
     end
     
@@ -31,7 +31,7 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
   
   context "A purchase order supply when purchase order status is draft" do
     setup do
-      @purchase_order = create_a_draft_purchase_order
+      @purchase_order = create_purchase_order
       flunk "should have a new record of purchase order supply" unless (@purchase_order_supply = @purchase_order.purchase_order_supplies.first)
     end
     
@@ -65,8 +65,14 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
     
     context "with a purchase request existing for purchase_order" do
       setup do
-        @purchase_request = PurchaseRequest.new(:user_id => users("admin_user").id, :employee_id => employees("john_doe").id, :service_id => services("direction_general").id)
-        @purchase_request.purchase_request_supplies.build(build_purchase_request_supply(:supply_id => @purchase_order_supply.supply_id, :expected_quantity =>(rand(400) + 1)))
+        @purchase_request = create_purchase_request(:purchase_request_supplies => [{:supply_id => @purchase_order.purchase_order_supplies.first.supply_id,
+                                                                                    :expected_quantity => 1000,
+                                                                                    :expected_delivery_date => Date.today + 4.week
+                                                                                  },
+                                                                                  { :supply_id => @purchase_order.purchase_order_supplies.last.supply_id,
+                                                                                    :expected_quantity => 2000,
+                                                                                    :expected_delivery_date => Date.today + 2.week
+                                                                                  }] )
         @purchase_request.save!
         flunk "purchase request should be saved" if @purchase_request.new_record?
         flunk "purchase request supplies should be saved" if @purchase_request.purchase_request_supplies.select(&:new_record?).any?
@@ -80,7 +86,7 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
         assert_equal 0, @purchase_order_supply.purchase_request_supplies.size
       end
       
-      context "when purchase_request_supply is selected for association with purchase_order_supply" do@purchase_order
+      context "when purchase_request_supply is selected for association with purchase_order_supply" do
         
         setup do
           @purchase_order_supply.purchase_request_supplies_ids = @purchase_request.purchase_request_supplies.first.id.to_s
@@ -125,7 +131,7 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
   
   context "A purchase order supply when purchase order status is confirmed" do
     setup do
-      @purchase_order = create_a_confirmed_purchase_order
+      @purchase_order = create_confirmed_purchase_order
       @purchase_order_supply = @purchase_order.purchase_order_supplies.first
     end
     
@@ -333,7 +339,7 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
       context "when parcel_item is reported and issued_purchase_order_supply is cancelled" do
         
         setup do
-          @issue_purchase_order_supply = create_a_purchase_order_supply_reported_for(@parcel.parcel_items.first).reload
+          @issue_purchase_order_supply = create_purchase_order_supply_reported_for(@parcel.parcel_items.first).reload
           @issue_purchase_order_supply.cancelled_by_id = users("admin_user").id
           @issue_purchase_order_supply.cancelled_comment = "cancelled issue_purchase_order_supply"
           @parcel.reload
@@ -357,7 +363,7 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
   
   context 'A "purchase_order_supply" with associated with a draft "purchase_order" while cancellation' do
     setup do
-      @purchase_order = create_a_draft_purchase_order
+      @purchase_order = create_purchase_order
       @purchase_order.purchase_order_supplies.first.cancelled_at = Time.now
     end
     

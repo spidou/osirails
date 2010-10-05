@@ -1,0 +1,27 @@
+<% require_locals departures_owner %>
+<% owner_type = departures_owner.class.singularized_table_name %>
+<% departures = Departure.actives %>
+
+<% fields_for "#{owner_type}[departure_attributes][]", departure = departure_form do |form| %>
+  <div class="presentation_in_columns resource_form<%= ' new_record' if departure.new_record? %>" id="departure_<%=departure.id%>_form" <%= "style=\"display:none\"" unless departure.new_record? or !departure.errors.empty?%> >
+    <%= form.error_messages %>
+    
+    <%= form.form_or_view(form.collection_select( :forwarders, departures, :id, :formatted,
+                                                  { :prompt   => "Nouveau" },
+                                                  { :selected => departure.id, :class => "nested_resource_select", :onchange => "new_forwarder_nested_resource(this, counter = #{departure_form_counter})" }),
+                                                  :id, :formatted) %>
+    <span class="new_resource">
+      <p>
+        <%= form.label :name, {}, :index => nil %>
+        <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
+      </p>
+    
+
+      <p>
+        <% if !departure.new_record? and is_form_view? %>
+          <%= form.hidden_field :id, :index => nil %>
+          <%= form.hidden_field :should_destroy, :index => nil, :class => :should_destroy %>
+        <% end %>
+      </p>
+    </span>
+<% end %>

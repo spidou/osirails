@@ -8,5 +8,11 @@ ActionController::Routing::Routes.add_routes do |map|
   
   map.resources :factors
   
+  map.resources :forwarders do |forwarder|
+    forwarder.resources :departures
+  end
+  
+  map.resources :conveyances
+  
   map.thirds 'thirds', :controller => 'customers' #default page for thirds
 end

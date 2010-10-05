@@ -1,0 +1,45 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "thirds/thirds" %>
+<% end %>
+<div>
+  <% form_for forwarder, :html => { :multipart => true } do |form| %>
+    <%= form.error_messages %>
+    
+    <div class="presentation_medium">
+      <h2 class="forwarder_informations">Informations g&eacute;n&eacute;rales</h2>
+      <div class="forwarder_informations">
+        <%= render :partial => "forwarder_main_info", :object => forwarder, :locals => { :form => form } %>
+      </div>
+      
+      <h2 class="forwarder_conveyances">Moyens de transport</h2>
+      <div class="forwarder_conveyances">
+        <% unless is_form_view? %>
+          <% if forwarder.conveyances.empty? %>
+            <%= "<p>Aucun moyen de transport n'est associé à ce transporteur</p> " %>
+          <% else %>
+            <%= forwarder.conveyances.collect{ |conveyance| conveyance.name + "<br />" }%>
+          <% end %>
+        <% else %>
+          <%= render :partial => "conveyances/conveyances_in_one_line_for_owner", :object => forwarder, :locals => { :conveyances_owner => forwarder } %>
+        <% end %>
+      </div>
+      
+      <h2 class="forwarder_departures">Points de d&eacute;part</h2>
+      <div class="forwarder_departures">
+        <% unless is_form_view? %>
+          <%= forwarder.departures.collect{ |departure| departure.formatted + "<br />" } %>
+        <% else %>
+          <%= display_establishments_list(customer) %>
+          <%= display_departure_add_button(customer) %>
+        <% end %>
+      </div>
+      
+      <h2 class="forwarder_additional_informations">Informations suppl&eacute;mentaires</h2>
+      <div class="forwarder_additional_informations">
+        <%= render :partial => "thirds/third_additional_info", :object => forwarder, :locals => { :form  => form } %>
+      </div>
+    </div>
+    
+    <%= form.form_buttons %>
+  <% end %>
+</div>

@@ -1,0 +1,47 @@
+<%
+# this partial should not be called directly, you may call _quotation_request_supply.html.erb with the appropriate instance of quotation_request_supply
+quotation_request_supply = comment_line_quotation_request_supply
+collection_length ||= 1
+counter ||= 1
+%>
+
+<% fields_for "quotation_request[comment_line_quotation_request_supply_attributes][]", quotation_request_supply do |f| %>
+  
+  <%
+    position        = quotation_request_supply.position.zero? ? counter : quotation_request_supply.position
+    move_up_image   = "arrow_up_#{'disable_' if position == 1}16x16.png"
+    move_down_image = "arrow_down_#{'disable_' if position == collection_length}16x16.png"
+  %>
+  
+  <tr class="comment_line" <%= "style=\"display:none\"" if quotation_request_supply.should_destroy? %>>
+    
+    <td class="name" colspan="2">
+      <% if is_form_view? %>
+        <span><%= f.label(:name)%></span><br />
+        <%= f.text_field(:name, :size => 30) %>
+      <% else %>
+        %= quotation_request_supply.name %>
+      <% end %>
+    </td>
+    
+    <td class="description" colspan="8">
+      <% if is_form_view? %>
+        <span><%= f.label(:description)%></span><br />
+        <%= f.text_area(:description, :value => quotation_request_supply.description, :cols => 100, :rows => 5) %>
+      <% else %>
+        <%= quotation_request_supply.description %>
+      <% end %>
+    </td>
+    
+    <% if is_form_view? %>
+      <td class="actions">
+        <%= link_to( image_tag( move_up_image, :alt => text_up = "Monter la ligne", :title => text_up, :class => "arrow_up"), "#up", :onclick => "move_up_supply(this);" ) %>
+        <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down_supply(this);" ) %>
+        <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm('Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire.')) remove_line(this)" ) %>
+        <%= f.hidden_field :id, :class => :quotation_request_supply_id, :index => nil %>
+        <%= f.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
+        <%= f.hidden_field :position, :class => :position, :value => position, :index => nil %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>
