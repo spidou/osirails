@@ -3,6 +3,7 @@ require 'test/test_helper'
 require 'lib/features/thirds/test/thirds_test'
 require 'lib/features/logistics/test/logistics_test'
 require File.dirname(__FILE__) + '/unit/product_base_test'
+require File.dirname(__FILE__) + '/unit/quote_base_test'
 require File.dirname(__FILE__) + '/unit/product_test'
 require File.dirname(__FILE__) + '/unit/product_reference_category_base_test'
 

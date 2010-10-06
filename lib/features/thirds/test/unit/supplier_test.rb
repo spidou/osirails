@@ -29,4 +29,14 @@ class SupplierTest < ActiveSupport::TestCase
     
     include SiretNumberTest
   end
+  
+  context "A new supplier a name defined" do
+    setup do
+      @supplier = Supplier.new(:name => "Supplier name")
+    end
+    
+    subject{@supplier}
+    
+    include SupplierBaseTest
+  end
 end

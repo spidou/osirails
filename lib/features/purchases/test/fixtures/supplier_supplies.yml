@@ -1,17 +1,17 @@
-first_supplier_supply:
-  id: 1
-  supplier_id: 1
-  supply_id: 1
+purchases_first_supplier_supply:
+  supplier: first_supplier
+  supply: first_commodity
   supplier_reference: 987654321
+  supplier_designation: Commodity One
   lead_time: 10
   fob_unit_price: 100
   taxes: 10
   
-second_supplier_supply:
-  id: 2
-  supplier_id: 1
-  supply_id: 2
+purchases_second_supplier_supply:
+  supplier: first_supplier
+  supply: second_commodity
   supplier_reference: 987654322
+  supplier_designation: Commodity Two
   lead_time: 5
   fob_unit_price: 10
   taxes: 10

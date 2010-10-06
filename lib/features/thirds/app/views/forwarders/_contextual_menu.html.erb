@@ -1,0 +1,8 @@
+<% forwarder = contextual_menu %>
+
+<% add_contextual_menu_item :forwarder do %>
+  <%= display_forwarder_edit_button(forwarder) if is_show_view? %>
+  <%= display_forwarder_add_button unless is_new_view? %>
+<% end %>
+
+<%= render :partial => 'forwarders/useful_links_contextual_menu', :object => forwarder %>

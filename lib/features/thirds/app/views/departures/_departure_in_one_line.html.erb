@@ -1,0 +1,36 @@
+<%
+  require_locals forwarder
+  departure = departure_in_one_line
+  
+  confim_text = "'Êtes-vous sûr? Attention, les modifications seront appliquées à la soumission du formulaire.'"
+%>
+
+<div class="departure resource" <%= "style=\"display:none\"" if departure_in_one_line.should_destroy? %> >
+<% fields_for "forwarder[departure_attributes][]", departure do %>
+  <p id="departure_<%= departure.id %>_in_one_line">
+    <% unless departure.new_record? %>
+      <%= image_tag 'warning_14x14.png' if !departure.errors.empty? %>
+      
+      <%= "#{DepartureType.find(departure.departure_type_id_was).name} <strong>#{departure.name_was}</strong> (#{departure.address.city_name_was}, #{departure.address.country_name_was})" %>
+      
+      <%= link_to_function "Fiche complète", "this.up('.resource').down('.resource_form').toggle()" if ( !is_form_view? and Departure.can_view?(current_user) ) or ( is_form_view? and Departure.can_view?(current_user) and !Departure.can_edit?(current_user) ) %>
+      
+      <%= link_to_function "Modifier", "mark_resource_for_update(this)" if is_form_view? and Departure.can_edit?(current_user) %>
+      
+      <% if is_form_view? and Departure.can_hide?(current_user) %>
+        <%= link_to_function "Supprimer",
+          "$('departure_#{ departure.id }_new_contacts').innerHTML = '';
+          hide_resource_and_sub_resources(this, $('departure_#{ departure.id }_contacts_list'), #{ confim_text })" %>
+      <% end %>
+      
+      <% if is_form_view? and Departure.can_delete?(current_user) %>
+        <%= link_to_function "Supprimer définitivement",
+          "$('departure_#{ departure.id }_new_contacts').innerHTML = '';
+          destroy_resource_and_sub_resources(this, $('departure_#{ departure.id }_contacts_list'), #{ confim_text })" %>
+      <% end %>
+    <% end %>
+    
+    <%= render :partial => 'departures/departure_form', :object => departure, :locals => { :departures_owner => departures_owner } if Departure.can_view?(current_user) or Departure.can_edit?(current_user) %>
+  </p>
+<% end  %>
+</div>

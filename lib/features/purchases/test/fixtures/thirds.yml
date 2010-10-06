@@ -1,5 +1,4 @@
 first_supplier:
-  id: 1
   type: Supplier
   name: First Supplier
   siret_number: 12345678912345

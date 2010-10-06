@@ -1,0 +1,12 @@
+<%
+collection_length ||= 1
+counter ||= 1
+%>
+
+<% if quotation_request_supply.free_supply? %>
+  <%= render :partial => 'quotation_request_supplies/free_quotation_request_supply', :object => quotation_request_supply, :locals => { :collection_length => collection_length, :counter => quotation_request_supply_counter } %>
+<% elsif quotation_request_supply.existing_supply? %>
+  <%= render :partial => 'quotation_request_supplies/existing_quotation_request_supply', :object => quotation_request_supply, :locals => { :collection_length => collection_length, :counter => quotation_request_supply_counter } %>
+<% else %>
+  <%= render :partial => 'quotation_request_supplies/comment_line_quotation_request_supply', :object => quotation_request_supply, :locals => { :collection_length => collection_length, :counter => quotation_request_supply_counter } %>
+<% end %>

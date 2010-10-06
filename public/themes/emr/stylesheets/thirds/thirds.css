@@ -7,3 +7,11 @@
   padding:2px;
   border: 1px dashed #989898;
 }
+
+.activated{
+  color: green;
+}
+
+.deactivated{
+  color: red;
+}

@@ -14,9 +14,8 @@ module ProductBase
   
   module InstanceMethods
     def unit_price_with_prizegiving
-      return 0.0 if unit_price.nil?
-      return unit_price if prizegiving.nil? or prizegiving.zero?
-      unit_price / ( 1 + ( prizegiving / 100 ) )
+      return 0.0 if unit_price.nil? or unit_price.zero?
+      unit_price.to_f * ( 1.0 - ( prizegiving.to_f / 100.0 ) )
     end
     
     def total
@@ -31,7 +30,7 @@ module ProductBase
     
     def total_with_taxes
       return total_with_prizegiving if vat.nil? or vat.zero?
-      total_with_prizegiving * ( 1 + ( vat / 100 ) ) # TODO test that modification
+      total_with_prizegiving * ( 1 + ( vat / 100.0 ) )
     end
   end
   

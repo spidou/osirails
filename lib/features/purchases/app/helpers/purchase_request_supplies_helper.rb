@@ -16,4 +16,8 @@ module PurchaseRequestSuppliesHelper
     return "Consomable" if supply.type == "Consumable" 
   end
   
+  def display_purchase_request_supply_expected_date(purchase_request_supply)
+    return purchase_request_supply.expected_delivery_date.humanize
+  end
+  
 end

@@ -7,12 +7,12 @@ class PurchaseOrdersController < ApplicationController
     redirect_to pending_purchase_orders_path
   end
   
-  # GET /purchase_orders/prepare_for_new
-  # GET /purchase_orders/prepare_for_new?page=:page
-  # GET /purchase_orders/prepare_for_new?choice=:choice
-  # GET /purchase_orders/prepare_for_new?choice=:choice&page=:page
-  # GET /purchase_orders/prepare_for_new?choice=:choice&supplier_id=:supplier_id
-  # GET /purchase_orders/prepare_for_new?choice=:choice&supplier_id=:supplier_id&page=:page
+  # GET /prepare_for_new
+  # GET /prepare_for_new?page=:page
+  # GET /prepare_for_new?choice=:choice
+  # GET /prepare_for_new?choice=:choice&page=:page
+  # GET /prepare_for_new?choice=:choice&supplier_id=:supplier_id
+  # GET /prepare_for_new?choice=:choice&supplier_id=:supplier_id&page=:page
   def prepare_for_new
     @purchase_order = PurchaseOrder.new
     redirect_to :action => :new, :supplier_id => params[:supplier_id] if params[:supplier_id]
@@ -24,8 +24,8 @@ class PurchaseOrdersController < ApplicationController
   # GET /purchase_orders/new
   # GET /purchase_orders/new?supplier_id=:supplier_id
   def new
-    unless params[:supplier_id]
-      redirect_to :action => :prepare_for_new
+    unless params[:supplier_id] and params[:supplier_id] != ""
+      redirect_to :action => :prepare_for_new, :choice => 1
     else
       @supplier = Supplier.find(params[:supplier_id])
       @purchase_order = PurchaseOrder.new(:supplier_id => @supplier.id)

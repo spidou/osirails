@@ -1,0 +1,25 @@
+<% purchase_request_supplies = grouped_by_purchase_request_supplies %>
+<h3>Liste des demandes d'achats</h3>
+<table>
+  <thead>
+    <tr>
+      <th colspan="2">Interne</th>
+      <th rowspan="2">Grandeur/U</th>
+      <th rowspan="2">Masse /U</th>
+      <th rowspan="2">En stock/Seuil</th>
+      <th rowspan="2">Quantité demandée</th>
+      <th rowspan="2">Référence(s) demande(s) d'achats associée(s)</th>
+      <th rowspan="2">Date de livraison souhaitée la plus proche</th>
+      <th rowspan="2">Priorité</th>
+      <th rowspan="2">Sélection de l'article</th>
+      <th rowspan="2">Action</th>
+    </tr>
+    <tr>
+      <th>Référence</th>
+      <th>Désignation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render :partial => "purchase_request_supplies/grouped_by_purchase_request_supply", :collection => purchase_request_supplies, :locals => { :purchase_request_supplies_size => purchase_request_supplies.size } %>
+  </tbody>
+</table>

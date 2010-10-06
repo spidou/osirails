@@ -1,6 +1,10 @@
 class PurchaseRequestSupply < ActiveRecord::Base
   STATUS_UNTREATED = "untreated"
   
+  has_many :quotation_request_purchase_request_supplies
+  has_many :quotation_request_supplies, :through => :quotation_request_purchase_request_supplies
+  has_many :quotation_purchase_request_supplies
+  has_many :quotation_supplies, :through => :quotation_purchase_request_supplies
   has_many :request_order_supplies
   has_many :purchase_order_supplies, :through => :request_order_supplies
   has_many :draft_purchase_order_supplies, :through    => :request_order_supplies,
@@ -60,6 +64,15 @@ class PurchaseRequestSupply < ActiveRecord::Base
   def self.all_pending_purchase_request_supplies
     #OPTIMIZE use a SQL statement
     PurchaseRequestSupply.all.select{ |s| !s.cancelled? and !s.treated? }
+  end
+  
+  def self.pending_and_merged_by_supply_id
+    list_of_merged_purchase_request_supply = []
+    all_pending_purchase_request_supplies.group_by(&:supply_id).each do |key, value|
+      quantities_sum = value.collect{ |purchase_request_supply| purchase_request_supply[:expected_quantity] }.sum
+      list_of_merged_purchase_request_supply << PurchaseRequestSupply.new(:purchase_request_id => nil, :supply_id => key, :expected_quantity => quantities_sum, :expected_delivery_date => value.first.expected_delivery_date )
+    end
+    list_of_merged_purchase_request_supply
   end
 
   def self.all_suppliers_for_all_pending_purchase_request_supplies

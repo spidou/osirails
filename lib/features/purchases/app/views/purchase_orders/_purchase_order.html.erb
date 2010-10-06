@@ -1,10 +1,10 @@
 <% unless params['supplier_id'] %>
   <div class="presentation_medium">
     <p>
-      Vous &ecirc;tes sur la page de cr&eacute;ation d'ordre d'achat.<br/>
-      Pour cr&eacute;er un nouvel ordre ordre d'achat, vous devez choisir le fournisseur qui sera associ&eacute; &agrave; cet ordre.
+      Vous &ecirc;tes sur la page de cr&eacute;ation d'ordre d'achats.<br/>
+      Pour cr&eacute;er un nouvel ordre ordre d'achats, vous devez choisir le fournisseur qui sera associ&eacute; &agrave; cet ordre.
     </p>
-    <p>Pour cet ordre, avez-vous affaire à un fournisseur connu OU à un nouveau fournisseur ? Si vous ne savez pas, n'hésitez pas à faire une recherche.</p>
+    <p>Pour cet ordre, avez-vous affaire &agrave; un fournisseur connu OU &agrave; un nouveau fournisseur ? Si vous ne savez pas, n'h&eacute;sitez pas &agrave; faire une recherche.</p>
     
     <h2>1. Fournisseur existant</h2>
     <% form_for @purchase_order, :url => { :action => :new }, :html => { :method => :get } do |form| -%>
@@ -19,7 +19,7 @@
     <% form_tag new_supplier_path, :method => :get do %>
       <p>
         <%= hidden_field_tag :purchase_order, 1 %>
-        <%= submit_tag "Créer un nouveau fournisseur" %>
+        <%= submit_tag "Cr&eacute;er un nouveau fournisseur" %>
       </p>
     <% end %>
   </div>

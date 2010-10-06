@@ -30,6 +30,7 @@ class PurchaseOrder < ActiveRecord::Base
   belongs_to :user
   belongs_to :canceller, :class_name => "User", :foreign_key => :cancelled_by_id
   belongs_to :supplier
+  belongs_to :quotation
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
@@ -37,7 +38,7 @@ class PurchaseOrder < ActiveRecord::Base
   @@form_labels[:employee]          = "Demandeur :"
   @@form_labels[:user]              = "Créateur de la demande :"
   @@form_labels[:reference]         = "Référence :"
-  @@form_labels[:statut]            = "Status :"
+  @@form_labels[:statut]            = "Statut :"
   @@form_labels[:cancelled_comment] = "Raison de l'annulation :"
   
   validates_presence_of :user_id, :supplier_id
@@ -59,7 +60,7 @@ class PurchaseOrder < ActiveRecord::Base
   validates_associated :quotation_document, :if => :confirmed?
   
   named_scope :pending, :conditions => ["purchase_orders.status = ? OR purchase_orders.status = ? OR purchase_orders.status = ?", STATUS_DRAFT, STATUS_CONFIRMED, STATUS_PROCESSING_BY_SUPPLIER ],
-                        :order => "purchase_orders.created_at DESC"                        
+                        :order => "purchase_orders.created_at DESC"
   named_scope :completed, :conditions => ["purchase_orders.status = ?", STATUS_COMPLETED ],
                         :order => "purchase_orders.completed_on DESC"
   named_scope :closed, :conditions => ["purchase_orders.status = ? OR purchase_orders.status = ?", STATUS_COMPLETED, STATUS_CANCELLED ],
@@ -74,94 +75,16 @@ class PurchaseOrder < ActiveRecord::Base
 
   before_destroy :can_be_deleted?
   
-  def initialize_to_draft
-    self.status = STATUS_DRAFT
-  end
-  
-  def not_cancelled_purchase_order_supplies
-    purchase_order_supplies.select{ |pos| !pos.cancelled? }
-  end
-  
-  def are_all_purchase_order_supplies_treated?
-    return false if not_cancelled_purchase_order_supplies.empty?
-    not_cancelled_purchase_order_supplies.each{ |pos| return false unless pos.treated? }
-    return true
-  end
-  
-  def destroy_request_order_supplies_deselected
-    self.purchase_order_supplies.each do |e|
-      if e.purchase_request_supplies_deselected_ids
-        e.purchase_request_supplies_deselected_ids.split(';').each do |s|
-          if (s != '' && purchase_request_supply = PurchaseRequestSupply.find(s))
-            request_order_supply = e.request_order_supplies.detect{|t| t.purchase_request_supply_id == s.to_i}
-            request_order_supply.destroy if request_order_supply
-          end
-        end
-      end
-    end
-  end
-  
   def validates_length_of_purchase_order_supplies
     errors.add(:purchase_order_supplies, "Veuillez sélectionner au moins une fourniture") if purchase_order_supplies.reject(&:should_destroy?).empty?
   end
   
-  def build_associated_request_order_supplies
-    purchase_order_supplies.each do |e|
-      next unless e.purchase_request_supplies_ids
-      e.purchase_request_supplies_ids.split(';').map(&:to_i).each do |s|
-        if s > 0 and purchase_request_supply = PurchaseRequestSupply.find_by_id(s)
-          e.request_order_supplies.build(:purchase_request_supply_id => purchase_request_supply.id) unless e.request_order_supplies.detect{|t| t.purchase_request_supply_id == s.to_i}
-        end
-      end
-    end
+  def initialize_to_draft
+    self.status = STATUS_DRAFT
   end
   
-  def build_supplier_supplies
-    purchase_order_supplies.each do |e|
-      unless SupplierSupply.find_by_supply_id_and_supplier_id(e.supply_id, supplier_id)
-        supplier_supplies.build(:supplier_id          => supplier_id,
-                                :supply_id            => e.supply_id,
-                                :supplier_reference   => e.supplier_reference,
-                                :supplier_designation => e.supplier_designation,
-                                :fob_unit_price       => e.fob_unit_price,
-                                :taxes                => e.taxes)
-      end
-    end
-  end
-  
-  def save_request_order_supplies
-    purchase_order_supplies.each do |e|
-      e.request_order_supplies.each do |s|
-        s.save(false)
-      end
-    end
-  end
-  
-  def save_supplier_supplies
-    supplier_supplies.each do |e|
-      e.save(false)
-    end
-  end
-  
-  def save_purchase_order_supplies
-    purchase_order_supplies.each do |e|
-      if e.should_destroy.to_i != 1
-        e.save(false)
-      else
-        e.destroy()
-      end
-    end
-  end
-  
-  def purchase_order_supply_attributes=(purchase_order_supply_attributes)
-    purchase_order_supply_attributes.each do |attributes|
-      if attributes[:id].blank?
-        purchase_order_supplies.build(attributes)
-      else
-        purchase_order_supply = purchase_order_supplies.detect { |t| t.id == attributes[:id].to_i }
-        purchase_order_supply.attributes = attributes
-      end
-    end
+  def total_price
+    cancelled? ? @purchase_order_supplies.collect(&:purchase_order_supply_total).sum : purchase_order_supplies.reject(&:cancelled?).collect(&:purchase_order_supply_total).sum
   end
   
   def draft?
@@ -228,6 +151,10 @@ class PurchaseOrder < ActiveRecord::Base
     was_draft?
   end
   
+  def can_add_parcel?
+    (confirmed? or processing_by_supplier?) and is_remaining_quantity_for_parcel? and !cancelled?
+  end
+  
   def can_be_confirmed_with_purchase_request_supplies_associated?
     purchase_order_supplies.each{ |pos|
       pos.purchase_request_supplies.each{ |prs|
@@ -276,8 +203,8 @@ class PurchaseOrder < ActiveRecord::Base
     false
   end
   
-  def total_price
-    cancelled? ? @purchase_order_supplies.collect(&:purchase_order_supply_total).sum : purchase_order_supplies.reject(&:cancelled?).collect(&:purchase_order_supply_total).sum
+  def not_cancelled_purchase_order_supplies
+    purchase_order_supplies.select{ |pos| !pos.cancelled? }
   end
   
   def associated_purchase_request_supplies
@@ -288,26 +215,15 @@ class PurchaseOrder < ActiveRecord::Base
     associated_purchase_request_supplies.collect(&:purchase_request).uniq
   end
   
-  def build_with_purchase_request_supplies(list_of_supplies)
-    list_of_supplies.collect do |purchase_request_supply|
-      supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id)
-      purchase_order_supply = self.purchase_order_supplies.build({:supply_id => purchase_request_supply.supply_id, 
-                                                                  :quantity       => purchase_request_supply.expected_quantity,
-                                                                  :taxes          => supplier_supply.taxes, 
-                                                                  :fob_unit_price => supplier_supply.fob_unit_price})
-      purchase_order_supply.unconfirmed_purchase_request_supplies.each do |e|
-        purchase_order_supply.request_order_supplies.build(:purchase_request_supply_id => e.id)
-      end
-    end
-  end
-  
   def is_remaining_quantity_for_parcel?
     purchase_order_supplies.each{ |pos| return true if (pos.remaining_quantity_for_parcel > 0 && !pos.was_cancelled?) }
     false
   end
   
-  def can_add_parcel?
-    (confirmed? or processing_by_supplier?) and is_remaining_quantity_for_parcel? and !cancelled?
+  def are_all_purchase_order_supplies_treated?
+    return false if not_cancelled_purchase_order_supplies.empty?
+    not_cancelled_purchase_order_supplies.each{ |pos| return false unless pos.treated? }
+    true
   end
   
   def quotation_document_attributes=(quotation_document_attributes)
@@ -318,6 +234,78 @@ class PurchaseOrder < ActiveRecord::Base
     self.invoice_document = PurchaseDocument.new(invoice_document_attributes.first)
   end
   
+  def build_associated_request_order_supplies
+    purchase_order_supplies.each do |e|
+      next unless e.purchase_request_supplies_ids
+      e.purchase_request_supplies_ids.split(';').map(&:to_i).each do |s|
+        if s > 0 and purchase_request_supply = PurchaseRequestSupply.find_by_id(s)
+          e.request_order_supplies.build(:purchase_request_supply_id => purchase_request_supply.id) unless e.request_order_supplies.detect{|t| t.purchase_request_supply_id == s.to_i}
+        end
+      end
+    end
+  end
+  
+  def purchase_order_supply_attributes=(purchase_order_supply_attributes)
+    purchase_order_supply_attributes.each do |attributes|
+      if attributes[:id].blank?
+        purchase_order_supplies.build(attributes)
+      else
+        purchase_order_supply = purchase_order_supplies.detect { |t| t.id == attributes[:id].to_i }
+        purchase_order_supply.attributes = attributes
+      end
+    end
+  end
+  
+  def build_supplier_supplies
+    purchase_order_supplies.each do |e|
+      unless SupplierSupply.find_by_supply_id_and_supplier_id(e.supply_id, supplier_id)
+        supplier_supplies.build(:supplier_id          => supplier_id,
+                                :supply_id            => e.supply_id,
+                                :supplier_reference   => e.supplier_reference,
+                                :supplier_designation => e.supplier_designation,
+                                :fob_unit_price       => e.fob_unit_price,
+                                :taxes                => e.taxes)
+      end
+    end
+  end
+  
+  def build_with_purchase_request_supplies(list_of_supplies)
+    list_of_supplies.collect do |purchase_request_supply|
+      supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id)
+      purchase_order_supply = self.purchase_order_supplies.build({:supply_id      => purchase_request_supply.supply_id, 
+                                                                  :quantity       => purchase_request_supply.expected_quantity,
+                                                                  :taxes          => supplier_supply.taxes, 
+                                                                  :fob_unit_price => supplier_supply.fob_unit_price})
+      purchase_order_supply.unconfirmed_purchase_request_supplies.each do |e|
+        purchase_order_supply.request_order_supplies.build(:purchase_request_supply_id => e.id)
+      end
+    end
+  end
+  
+  def save_request_order_supplies
+    purchase_order_supplies.each do |e|
+      e.request_order_supplies.each do |s|
+        s.save(false)
+      end
+    end
+  end
+  
+  def save_supplier_supplies
+    supplier_supplies.each do |e|
+      e.save(false)
+    end
+  end
+  
+  def save_purchase_order_supplies
+    purchase_order_supplies.each do |e|
+      if e.should_destroy.to_i != 1
+        e.save(false)
+      else
+        e.destroy()
+      end
+    end
+  end
+  
   def put_purchase_order_status_to_cancelled
     self.purchase_order_supplies.reload
     if cancelled?
@@ -325,6 +313,19 @@ class PurchaseOrder < ActiveRecord::Base
       self.cancelled_comment = "Annulation de toutes les fournitures commandées dans cet ordre." unless was_cancelled?
       self.cancel unless was_cancelled?
       self.reload
+    end
+  end
+  
+  def destroy_request_order_supplies_deselected
+    self.purchase_order_supplies.each do |e|
+      if e.purchase_request_supplies_deselected_ids
+        e.purchase_request_supplies_deselected_ids.split(';').each do |s|
+          if (s != '' && purchase_request_supply = PurchaseRequestSupply.find(s))
+            request_order_supply = e.request_order_supplies.detect{|t| t.purchase_request_supply_id == s.to_i}
+            request_order_supply.destroy if request_order_supply
+          end
+        end
+      end
     end
   end
 end

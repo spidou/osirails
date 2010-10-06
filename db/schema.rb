@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100705104400) do
+ActiveRecord::Schema.define(:version => 20101003222000) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id",        :limit => 11
@@ -203,6 +203,13 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.datetime "updated_at"
   end
 
+  create_table "conveyances", :force => true do |t|
+    t.string   "name"
+    t.boolean  "activated",  :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "countries", :force => true do |t|
     t.string "name"
     t.string "code"
@@ -352,6 +359,16 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.string   "status"
     t.datetime "started_at"
     t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "departures", :force => true do |t|
+    t.integer  "forwarder_id", :limit => 11
+    t.string   "city_name"
+    t.string   "region_name"
+    t.string   "country_name"
+    t.boolean  "hidden"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -549,6 +566,15 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "forwarder_conveyances", :force => true do |t|
+    t.integer  "forwarder_id",  :limit => 11
+    t.integer  "conveyance_id", :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "forwarder_conveyances", ["forwarder_id", "conveyance_id"], :name => "index_forwarder_conveyances_on_forwarder_id_and_conveyance_id", :unique => true
 
   create_table "graphic_document_types", :force => true do |t|
     t.string   "name"
@@ -1129,6 +1155,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "invoice_document_id",          :limit => 11
     t.integer  "quotation_document_id",        :limit => 11
     t.integer  "cancelled_by_id",              :limit => 11
+    t.integer  "quotation_id",                 :limit => 11
     t.integer  "status",                       :limit => 11
     t.string   "reference"
     t.text     "cancelled_comment"
@@ -1159,6 +1186,100 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.string   "reference"
     t.text     "cancelled_comment"
     t.datetime "cancelled_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quotation_forwarders", :force => true do |t|
+    t.integer  "quotation_id", :limit => 11
+    t.integer  "forwarder_id", :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quotation_purchase_request_supplies", :force => true do |t|
+    t.integer  "quotation_supply_id",        :limit => 11
+    t.integer  "purchase_request_supply_id", :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quotation_request_purchase_request_supplies", :force => true do |t|
+    t.integer  "quotation_request_supply_id", :limit => 11
+    t.integer  "purchase_request_supply_id",  :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quotation_request_supplies", :force => true do |t|
+    t.integer  "supply_id",            :limit => 11
+    t.integer  "quotation_request_id", :limit => 11
+    t.integer  "quantity",             :limit => 11
+    t.integer  "position",             :limit => 11
+    t.string   "designation"
+    t.string   "supplier_reference"
+    t.string   "supplier_designation"
+    t.string   "name"
+    t.boolean  "comment_line"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quotation_requests", :force => true do |t|
+    t.integer  "creator_id",           :limit => 11
+    t.integer  "employee_id",          :limit => 11
+    t.integer  "canceller_id",         :limit => 11
+    t.integer  "parent_id",            :limit => 11
+    t.integer  "similar_id",           :limit => 11
+    t.integer  "supplier_id",          :limit => 11
+    t.integer  "supplier_contact_id",  :limit => 11
+    t.integer  "status",               :limit => 11
+    t.string   "reference"
+    t.string   "title"
+    t.text     "cancellation_comment"
+    t.datetime "cancelled_at"
+    t.datetime "confirmed_at"
+    t.datetime "revoked_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quotation_supplies", :force => true do |t|
+    t.integer  "quotation_id",         :limit => 11
+    t.integer  "supply_id",            :limit => 11
+    t.integer  "position",             :limit => 11
+    t.float    "taxes"
+    t.float    "unit_price"
+    t.float    "prizegiving"
+    t.float    "quantity"
+    t.string   "designation"
+    t.string   "supplier_reference"
+    t.string   "supplier_designation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quotations", :force => true do |t|
+    t.integer  "supplier_id",           :limit => 11
+    t.integer  "creator_id",            :limit => 11
+    t.integer  "quotation_document_id", :limit => 11
+    t.integer  "canceller_id",          :limit => 11
+    t.integer  "shipper_id",            :limit => 11
+    t.integer  "quotation_request_id",  :limit => 11
+    t.integer  "status",                :limit => 11
+    t.integer  "validity_delay",        :limit => 11
+    t.float    "prizegiving"
+    t.float    "miscellaneous"
+    t.string   "reference"
+    t.string   "title"
+    t.string   "validity_delay_unit"
+    t.text     "cancellation_comment"
+    t.date     "received_on"
+    t.date     "signed_on"
+    t.date     "sent_on"
+    t.datetime "cancelled_at"
+    t.datetime "revoked_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

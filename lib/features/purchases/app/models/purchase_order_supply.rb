@@ -24,6 +24,8 @@ class PurchaseOrderSupply < ActiveRecord::Base
   validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled_at
   validates_presence_of :canceller, :if => :cancelled_by_id
   
+  validate :validates_is_not_cancelled
+  
   validates_numericality_of :quantity, :fob_unit_price , :greater_than => 0
   validates_numericality_of :taxes, :greater_than_or_equal_to => 0
   
@@ -35,6 +37,12 @@ class PurchaseOrderSupply < ActiveRecord::Base
   
   def should_destroy?
     should_destroy.to_i == 1
+  end
+  
+  def validates_is_not_cancelled
+    unless can_be_cancelled?
+      errors.add(self, "Impossible d'avoir des fournitures annulées dans une ordre d'achats en brouillon") if (cancelled_comment or cancelled_by_id) and !(purchase_order.confirmed_on or purchase_order.processing_by_supplier_since)
+    end
   end
   
   def automatically_put_parcel_items_status_to_cancelled
@@ -129,8 +137,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def taxes
-    self[:taxes] ||= supplier_supply.taxes.to_f if supplier_supply
-    self[:taxes]
+    self[:taxes] ||= supplier_supply && supplier_supply.taxes.to_f
   end
   
   def not_cancelled_purchase_request_supplies

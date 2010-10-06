@@ -36,4 +36,12 @@ module PurchaseRequestsHelper
     html << render(:partial => 'purchase_request_supplies/end_table')
     html << "</div>"
   end
+  
+  def display_active_purchase_requests_having_this_supply(supply)
+    html = []
+    PurchaseRequest.all.select(&:active?).select{ |pr| pr.purchase_request_supplies.detect{ |prs| prs.supply_id == supply.id } }.each do |pr|
+      html << link_to(pr.reference, purchase_request_path(pr))
+    end
+    html.join("<br />")
+  end
 end

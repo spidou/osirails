@@ -31,7 +31,7 @@
       <% end %>
     <% end %>
     
-    <%= render :partial => 'establishments/establishment_form', :object => establishment, :locals => { :establishments_owner => establishments_owner } if Establishment.can_view?(current_user) or Estabslishment.can_edit?(current_user) %>
+    <%= render :partial => 'establishments/establishment_form', :object => establishment, :locals => { :establishments_owner => establishments_owner } if Establishment.can_view?(current_user) or Establishment.can_edit?(current_user) %>
   </p>
 <% end  %>
 </div>

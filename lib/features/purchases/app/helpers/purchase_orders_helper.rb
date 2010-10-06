@@ -94,8 +94,8 @@ module PurchaseOrdersHelper
     "#{supplier.purchase_request_supplies_total.to_f.to_s(2)}&nbsp;&euro;"
   end
   
-  def display_choose_supplier_button(supplier)
-    link_to(image_tag("next_24x24.png", :alt => "Choisir " + supplier.name), new_purchase_order_path(:supplier_id => supplier.id, :from_purchase_request => 1))
+  def display_choose_supplier_button(supplier, controller)
+    link_to(image_tag("next_24x24.png", :title => "Générer une nouvelle demande de devis", :alt => "Choisir " + supplier.name), send("new_#{controller.singularize}_path", :supplier_id => supplier.id, :from_purchase_request => 1))
   end
   
   def display_purchase_order_reference(purchase_order)

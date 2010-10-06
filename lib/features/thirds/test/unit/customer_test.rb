@@ -12,12 +12,17 @@ class CustomerTest < ActiveSupport::TestCase
 
   context "a new customer" do
     setup do
-      @customer = Customer.new
+      @customer = Customer.new(:name => "Customer name")
+      @customer.build_bill_to_address(create_address("New York").attributes)
     end
     
     teardown do
       @customer = nil
     end
+    
+    subject{@customer}
+    
+    include CustomerBaseTest
     
     # test validates_uniqueness_of_siret_number
     context "with sub resources having similar siret_numbers except one" do
