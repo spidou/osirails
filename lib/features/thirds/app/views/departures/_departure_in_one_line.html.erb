@@ -11,8 +11,6 @@
     <% unless departure.new_record? %>
       <%= image_tag 'warning_14x14.png' if !departure.errors.empty? %>
       
-      <%= "#{DepartureType.find(departure.departure_type_id_was).name} <strong>#{departure.name_was}</strong> (#{departure.address.city_name_was}, #{departure.address.country_name_was})" %>
-      
       <%= link_to_function "Fiche complète", "this.up('.resource').down('.resource_form').toggle()" if ( !is_form_view? and Departure.can_view?(current_user) ) or ( is_form_view? and Departure.can_view?(current_user) and !Departure.can_edit?(current_user) ) %>
       
       <%= link_to_function "Modifier", "mark_resource_for_update(this)" if is_form_view? and Departure.can_edit?(current_user) %>
@@ -30,7 +28,7 @@
       <% end %>
     <% end %>
     
-    <%= render :partial => 'departures/departure_form', :object => departure, :locals => { :departures_owner => departures_owner } if Departure.can_view?(current_user) or Departure.can_edit?(current_user) %>
+    <%= render :partial => 'departures/departure_form', :object => departure, :locals => { :forwarder => forwarder } if Departure.can_view?(current_user) or Departure.can_edit?(current_user) %>
   </p>
-<% end  %>
+<% end %>
 </div>

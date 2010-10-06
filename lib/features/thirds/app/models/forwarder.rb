@@ -15,9 +15,7 @@ class Forwarder < Third
   
   FORWARDER_PER_PAGE = 15
   
-#  validates_length_of :conveyances, :minimum => 1, :message => "Vous devez entrer au moins un moyen de transport" # nécessaire?
-  
-  validates_associated :conveyances, :forwarder_conveyances
+  validates_associated :forwarder_conveyances
   
   after_save :save_forwarder_conveyances, :destroy_unselected_forwarder_conveyances
   
@@ -30,14 +28,9 @@ class Forwarder < Third
   @@form_labels[:conveyance]  = "Moyen de transport :"
   
   attr_accessor :conveyances_ids
-  attr_accessor :departures_ids
   
   def activated_conveyances
     conveyances.select(&:activated)
-  end
-  
-  def activated_departures
-    departures.select(&:activated)
   end
   
   def forwarder_conveyances_attributes=(conveyances_attributes)
@@ -54,15 +47,12 @@ class Forwarder < Third
     self.forwarder_conveyances.each{|forwarder_conveyance| forwarder_conveyance.destroy() unless @conveyances_ids.detect{|conveyance_id| conveyance_id == forwarder_conveyance.conveyance_id} }
   end
   
-#  def forwarder_departures_attributes=(departures_attributes)
-#    @departures_ids = departures_ids = departures_attributes.collect{ |departure_attributes| departure_attributes[:forwarder_departure_ids].to_i }
-#    departures_ids.each do |departure_id|
-#      unless forwarder_departures.detect{ |forwarder_departure| departure_id == forwarder_departure.departure_id }
-#        self.forwarder_departures.build(:departure_id => departure_id, :forwarder_id => self.id)
-#      end
-#    end
-#  end
-#  
+  def departure_attributes=(departures_attributes)
+    departures_attributes.each do |attributes|
+      self.departures.build(attributes)
+    end
+  end
+  
 #  def destroy_unselected_forwarder_departures
 #    @departures_ids ||= []
 #    self.forwarder_departures.each{ |forwarder_departure| forwarder_departure.destroy() unless @departures_ids.detect{|departure_id| departure_id == forwarder_departure.departure_id} }

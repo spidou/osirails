@@ -20,18 +20,17 @@
             <%= forwarder.conveyances.collect{ |conveyance| conveyance.name + "<br />" }%>
           <% end %>
         <% else %>
-          <%= render :partial => "conveyances/conveyances_in_one_line_for_owner", :object => forwarder, :locals => { :conveyances_owner => forwarder } %>
+            <p>Veuillez choisir dans la liste les diff&eacute;rents transports que vous souhaitez attribuer &agrave; ce transporteur. </p>
+            <p>Vous pouvez choisir plusieurs transport en maintenant la touche CTRL enfoncé et en cliquant sur les transports</p>
+            <p><%= form.collection_select(:forwarder_conveyance_ids, Conveyance.all, :id, :name, {}, { :index => nil, :multiple => true } ) %></p>
+          <br />
         <% end %>
       </div>
       
       <h2 class="forwarder_departures">Points de d&eacute;part</h2>
       <div class="forwarder_departures">
-        <% unless is_form_view? %>
-          <%= forwarder.departures.collect{ |departure| departure.formatted + "<br />" } %>
-        <% else %>
-          <%= display_establishments_list(customer) %>
-          <%= display_departure_add_button(customer) %>
-        <% end %>
+        <%= display_departures_list(forwarder) %>
+        <%= display_departure_add_button(forwarder) if is_form_view? %>
       </div>
       
       <h2 class="forwarder_additional_informations">Informations suppl&eacute;mentaires</h2>

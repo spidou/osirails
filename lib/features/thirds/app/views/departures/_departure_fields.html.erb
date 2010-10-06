@@ -1,0 +1,19 @@
+<%
+  require_locals form
+  departure = departure_fields
+%>
+
+<div>
+  <p>
+    <%= form.label :city_name, {}, :index => nil %>
+    <%= form.form_or_view(form.text_field(:city_name, :index => nil), :city_name ) %>
+  </p>
+  <p>
+    <%= form.label :region_name, {}, :index => nil %>
+    <%= form.form_or_view(form.text_field(:region_name, :index => nil), :region_name) %>
+  </p>
+  <p>
+    <%= form.label :country_name, {}, :index => nil %>
+    <%= form.form_or_view(form.text_field(:country_name, :index => nil), :country_name) %>
+  </p>
+</div>

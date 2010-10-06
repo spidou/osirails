@@ -1,27 +1,25 @@
-<% require_locals departures_owner %>
-<% owner_type = departures_owner.class.singularized_table_name %>
-<% departures = Departure.actives %>
+<% require_locals forwarder %>
 
-<% fields_for "#{owner_type}[departure_attributes][]", departure = departure_form do |form| %>
-  <div class="presentation_in_columns resource_form<%= ' new_record' if departure.new_record? %>" id="departure_<%=departure.id%>_form" <%= "style=\"display:none\"" unless departure.new_record? or !departure.errors.empty?%> >
+<% fields_for "forwarder[departure_attributes][]", departure = departure_form do |form| %>
+  <div class="presentation_in_columns resource_form<%= ' new_record' if departure.new_record? %>" id="departure_<%=departure.id%>_form" <%= "style=\"display:none\"" unless departure.new_record? or !departure.errors.empty? or departure.should_update? %>
     <%= form.error_messages %>
+    <%= render :partial => "departures/departure_fields", :object => departure, :locals => {:form => form} %>
     
-    <%= form.form_or_view(form.collection_select( :forwarders, departures, :id, :formatted,
-                                                  { :prompt   => "Nouveau" },
-                                                  { :selected => departure.id, :class => "nested_resource_select", :onchange => "new_forwarder_nested_resource(this, counter = #{departure_form_counter})" }),
-                                                  :id, :formatted) %>
-    <span class="new_resource">
-      <p>
-        <%= form.label :name, {}, :index => nil %>
-        <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
-      </p>
-    
+    <p>
+      <% if departure.new_record? %>
+        <%= link_to_function "Annuler la création du point de départ", "this.up('.resource').remove()" %>
+      <% elsif is_form_view? %>
+        <%= link_to_function "Annuler la modification du point de départ", "mark_resource_for_dont_update(this)" %>
+      <% else %>
+        <%= link_to_function "Fermer", "this.up('.resource_form').hide()" %>
+      <% end %>
 
-      <p>
-        <% if !departure.new_record? and is_form_view? %>
-          <%= form.hidden_field :id, :index => nil %>
-          <%= form.hidden_field :should_destroy, :index => nil, :class => :should_destroy %>
-        <% end %>
-      </p>
-    </span>
+      <% if !departure.new_record? and is_form_view? %>
+        <%= form.hidden_field :id, :index => nil %>
+        <%= form.hidden_field :should_destroy, :index => nil, :class => :should_destroy %>
+        <%= form.hidden_field :should_hide, :index => nil, :class => :should_hide %>
+        <%= form.hidden_field :should_update, :index => nil, :class => :should_update %>
+      <% end %>
+    </p>
+  </div>
 <% end %>
