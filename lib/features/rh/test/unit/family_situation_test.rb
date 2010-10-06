@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/../rh_test'
 
 class FamilySituationTest < ActiveSupport::TestCase
+  should_journalize :identifier_method => :name
+
   def setup
     @family_situation = family_situations(:single)
   end

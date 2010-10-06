@@ -27,19 +27,15 @@ class Supplier < Third
                    :only_relationships => [:legal_form, :iban, :contacts, :activity_sector_reference],
                    :main_model         => true
   
-  @@form_labels[:activity_sector_reference] = "Code NAF :"
-  @@form_labels[:phone]                     = "Tél :"
-  @@form_labels[:fax]                       = "Fax :"
+  def iban_attributes=(iban_attributes)
+    if iban_attributes[:id].blank?
+      self.iban = build_iban(iban_attributes)
+    else
+      self.iban.attributes = iban_attributes
+    end
+  end
   
-#  def iban_attributes=(iban_attributes)
-#    if iban_attributes[:id].blank?
-#      self.iban = build_iban(iban_attributes)
-#    else
-#      self.iban.attributes = iban_attributes
-#    end
-#  end
-#  
-#  def save_iban
-#    iban.save if iban
-#  end
+  def save_iban
+    iban.save if iban
+  end
 end

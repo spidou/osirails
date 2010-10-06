@@ -28,6 +28,6 @@ class ConfigurationManager
   # in development mode, this file is called at every page loaded in the browser
   # so we have to call the reload_methods! method manually, and every time,
   # otherwise the dynamic methods are not present anymore.
-  reload_methods! if RAILS_ENV == 'development'
+  reload_methods! if Rails.env.development?
   
 end

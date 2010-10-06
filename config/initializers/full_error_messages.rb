@@ -9,7 +9,7 @@ class ActiveRecord::Errors
         if attr == "base" || msg =~ /^[[:upper:]]/
           full_messages << msg
         else
-          full_messages << @base.class.human_attribute_name(attr) + " " + msg
+          full_messages << @base.class.human_attribute_name(attr.gsub(/_id(s)?$/,"")) + " " + msg
         end
       end
     end

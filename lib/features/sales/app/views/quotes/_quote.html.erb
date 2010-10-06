@@ -10,7 +10,8 @@
 quote_headers = { :quote_header => "Entête",
                   :quote_body   => "Corps",
                   :quote_footer => "Conditions commerciales",
-                  :quote_additional_informations => "Informations supplémentaires"}
+                  :quote_additional_informations => "Informations supplémentaires",
+                  :quote_history => "Historique"}
 
 quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:quote_contact) || quote.errors.on(:quote_contact_id) ? ' errors' : '',
                   :quote_body   => quote.errors.on(:quote_items) || quote.errors.on(:quote_item_ids) || quote.errors.on(:prizegiving) || quote.errors.on(:carriage_costs) || quote.errors.on(:discount) ? ' errors' : '',
@@ -46,6 +47,7 @@ excess_quote_items    = quote.product_quote_items.select{ |q| q.end_product.nil?
     <li class="quote_body<%= quote_errors[:quote_body] %>"><%= quote_headers[:quote_body] %></li>
     <li class="quote_footer<%= quote_errors[:quote_footer] %>"><%= quote_headers[:quote_footer] %></li>
     <li class="quote_additional_informations"><%= quote_headers[:quote_additional_informations] %></li>
+    <li class="quote_history"><%= quote_headers[:quote_history] %></li>
   </ul>
   
   <% action = quote.new_record? ? :create : :update %>
@@ -73,6 +75,11 @@ excess_quote_items    = quote.product_quote_items.select{ |q| q.end_product.nil?
     <h2 class="quote_additional_informations section_nav"><%= quote_headers[:quote_additional_informations] %></h2>
     <div class="quote_additional_informations section_nav">
       <%= render :partial => 'quote_additional_infos', :object => quote, :locals => { :form => form } %>
+    </div>
+    
+    <h2 class="quote_history section_nav"><%= quote_headers[:quote_history] %></h2>
+    <div class="quote_history section_nav">
+      <%= display_journals_list(@quote) unless @quote.new_record? %>
     </div>
 
     <%= form.form_buttons %>

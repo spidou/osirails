@@ -30,15 +30,6 @@ class Checking < ActiveRecord::Base
   validate :validates_not_empty_checking
   validate :validates_date_not_too_far_away,                  :if => :date
   
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:employee]          = "Employé :"
-  @@form_labels[:date]              = "Date :"
-  @@form_labels[:absence_hours]     = "Absence :"
-  @@form_labels[:absence_comment]   = "Commentaire :"
-  @@form_labels[:overtime_hours]    = "Heures supplémentaires :"
-  @@form_labels[:overtime_comment]  = "Commentaire :"
-  
   def mandatory_absence_comment?
     mandatory_comment?(absence_hours, absence_minutes)
   end

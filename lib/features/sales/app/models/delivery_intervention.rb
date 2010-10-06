@@ -88,9 +88,7 @@ class DeliveryIntervention < ActiveRecord::Base
     x.validate :validates_scheduled_intervention_duration
   end
   
-  validates_date :scheduled_delivery_at,  :on_or_after          => Date.today,
-                                          :on_or_after_message  => "ne doit pas être AVANT aujourd'hui&#160;(%s)",
-                                          :if                   => Proc.new{ |i| i.scheduled? and i.scheduled_delivery_at_changed? }
+  validates_date :scheduled_delivery_at, :on_or_after => Date.today, :if => Proc.new{ |i| i.scheduled? and i.scheduled_delivery_at_changed? }
   
   validate :validates_scheduled_delivery_subcontracting,      :if => Proc.new{ |i| i.scheduled? and i.delivery? }
   validate :validates_scheduled_installation_subcontracting,  :if => Proc.new{ |i| i.scheduled? and i.installation? }
@@ -99,10 +97,7 @@ class DeliveryIntervention < ActiveRecord::Base
   with_options :if => :delivered? do |x|
     x.validates_presence_of :delivery_at, :internal_actor_id
     
-    x.validates_date :delivery_at, :on_or_before          => Date.today,
-                                   :on_or_before_message  => "ne doit pas être APRÈS aujourd'hui&#160;(%s)",
-                                   :on_or_after           => Proc.new{ |i| i.delivery_note.published_on },
-                                   :on_or_after_message   => "ne doit pas être AVANT la date d'émission du bon de livraions&#160;(%s)"
+    x.validates_date :delivery_at, :on_or_before => Date.today, :on_or_after => Proc.new{ |i| i.delivery_note.published_on }
     
     x.validate :validates_intervention_duration
     x.validate :validates_emptiness_of_postponed
@@ -127,36 +122,6 @@ class DeliveryIntervention < ActiveRecord::Base
   
   after_save :save_discards
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  ## scheduled
-  @@form_labels[:delivery_type]                             = "Type de livraison :"
-  @@form_labels[:scheduled_delivery_at]                     = "Prévue le :"
-  @@form_labels[:scheduled_intervention_hours]              = "pendant :"
-  @@form_labels[:scheduled_internal_actor]                  = "Responsable :"
-  @@form_labels[:scheduled_delivery_subcontractor]          = "Sous-traitant (transport) :"
-  @@form_labels[:scheduled_delivery_vehicle]                = "Véhicules de transport à utiliser :"
-  @@form_labels[:scheduled_delivery_vehicles_rental]        = "Location de véhicule(s) prévue pour le transport :"
-  @@form_labels[:scheduled_deliverer]                       = "Livreurs :"
-  @@form_labels[:scheduled_installation_subcontractor]      = "Sous-traitant (pose) :"
-  @@form_labels[:scheduled_installation_equipment]          = "Matériels à utiliser pour la pose :"
-  @@form_labels[:scheduled_installation_equipments_rental]  = "Location de matériel(s) prévue pour la pose :"
-  @@form_labels[:scheduled_installer]                       = "Poseurs :"
-  ## reality
-  @@form_labels[:delivery_at]                    = "Réalisée le :"
-  @@form_labels[:intervention_hours]              = "pendant :"
-  @@form_labels[:internal_actor]                  = "Responsable :"
-  @@form_labels[:delivery_subcontractor]          = "Sous-traitant (transport) :"
-  @@form_labels[:delivery_vehicle]                = "Véhicules de transport utilisés :"
-  @@form_labels[:delivery_vehicles_rental]        = "Location de véhicule(s) de transport :"
-  @@form_labels[:deliverer]                       = "Livreurs :"
-  @@form_labels[:installation_subcontractor]      = "Sous-traitant (pose) :"
-  @@form_labels[:installation_equipments]         = "Matériels utilisés pour la pose :"
-  @@form_labels[:installation_equipments_rental]  = "Location de matériel(s) pour la pose :"
-  @@form_labels[:installer]                       = "Poseurs :"
-  @@form_labels[:report]                          = "Rapport d'intervention :"
-  @@form_labels[:comments]                        = "Indiquer pourquoi l'intervention n'a pas eu lieu :"
-  
   def validates_scheduled_intervention_duration
     errors.add(:scheduled_intervention_hours, "La durée de l'intervention est requise") if scheduled_intervention_hours.blank? and scheduled_intervention_minutes.blank?
   end
@@ -168,7 +133,7 @@ class DeliveryIntervention < ActiveRecord::Base
       errors.add(:scheduled_delivery_vehicles_rental, error_message) unless scheduled_delivery_vehicles_rental.blank?
       errors.add(:scheduled_deliverer_ids,            error_message) unless scheduled_deliverers.empty?
     else
-      error_message = ActiveRecord::Errors::default_error_messages[:blank]
+      error_message = I18n.t 'activerecord.errors.messages.blank'
       errors.add(:scheduled_deliverer_ids,            error_message) if scheduled_deliverers.empty?
       errors.add(:scheduled_delivery_vehicle_ids,     error_message) if scheduled_delivery_vehicles.empty?
     end
@@ -181,7 +146,7 @@ class DeliveryIntervention < ActiveRecord::Base
       errors.add(:scheduled_installation_equipments_rental, error_message) unless scheduled_installation_equipments_rental.blank?
       errors.add(:scheduled_installer_ids,                  error_message) unless scheduled_installers.empty?
     else
-      error_message = ActiveRecord::Errors::default_error_messages[:blank]
+      error_message = I18n.t 'activerecord.errors.messages.blank'
       errors.add(:scheduled_installer_ids,                  error_message) if scheduled_installers.empty?
       #errors.add(:scheduled_installation_equipment_ids,     error_message) if scheduled_installation_equipments.empty?
     end
@@ -198,7 +163,7 @@ class DeliveryIntervention < ActiveRecord::Base
       errors.add(:delivery_vehicles_rental, error_message) unless delivery_vehicles_rental.blank?
       errors.add(:deliverer_ids,            error_message) unless deliverers.empty?
     else
-      error_message = ActiveRecord::Errors::default_error_messages[:blank]
+      error_message = I18n.t 'activerecord.errors.messages.blank'
       errors.add(:deliverer_ids,            error_message) if deliverers.empty?
       errors.add(:delivery_vehicle_ids,     error_message) if delivery_vehicles.empty?
     end
@@ -211,7 +176,7 @@ class DeliveryIntervention < ActiveRecord::Base
       errors.add(:installation_equipments_rental, error_message) unless installation_equipments_rental.blank?
       errors.add(:installer_ids,                  error_message) unless installers.empty?
     else
-      error_message = ActiveRecord::Errors::default_error_messages[:blank]
+      error_message = I18n.t 'activerecord.errors.messages.blank'
       errors.add(:installer_ids,                  error_message) if installers.empty?
     end
   end
@@ -338,7 +303,7 @@ class DeliveryIntervention < ActiveRecord::Base
   
   def outdated?
     return false if new_record? or scheduled_delivery_at.nil?
-    scheduled_delivery_at < Date.today
+    scheduled_delivery_at.past?
   end
   
   def scheduled_intervention_duration

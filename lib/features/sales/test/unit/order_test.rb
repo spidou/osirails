@@ -20,6 +20,8 @@ class OrderTest < ActiveSupport::TestCase
   should_have_many :invoices, :uncomplete_invoices
   
   should_have_many :ship_to_addresses, :end_products, :order_logs, :mockups, :graphic_documents
+  
+  #should_journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"} # don't work beacause Procs are not supported by this shoulda macro for the moment
 
   should_validate_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
   should_validate_presence_of :customer, :society_activity_sector, :commercial, :approaching, :order_contact, :with_foreign_key => :default

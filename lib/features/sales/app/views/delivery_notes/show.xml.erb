@@ -5,7 +5,7 @@
     <IsInstallation><%= @delivery_note.delivery_note_type.installation %></IsInstallation>
     <Type><%= @delivery_note.delivery_note_type.installation ? "BON D'INSTALLATION" : "BON DE LIVRAISON" %></Type>
     <Reference><%= @delivery_note.reference %></Reference>
-    <Date><%= Date.today.strftime("%d %B %Y") %></Date>
+    <Date><%= l(Date.today) %></Date>
     <FileName><%= @delivery_note.order.title%></FileName>
     <Supplier>
       <CorporateName><%= ConfigurationManager.admin_society_identity_configuration_name %></CorporateName>

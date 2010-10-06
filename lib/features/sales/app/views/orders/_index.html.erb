@@ -32,7 +32,7 @@
               <td><%= order.ship_to_addresses.collect{|s|s.address.city_name}.join(', ') %></td>
               <td><%= link_to(order.commercial.fullname, order.commercial, :title => "Voir fiche employé") %></td>
               <td><object data="<%= formatted_order_path(order, 'svg', {:for => 'understep'}) %>" type="image/svg+xml" style="width: 32px; height: 32px;"></object></td>
-              <td><%= order.previsional_delivery.humanize %></td>
+              <td><%= l(order.previsional_delivery, :format => :short) %></td>
               <td>Non définie</td>
               <td>Non définie</td>
               <td>Non définie</td>

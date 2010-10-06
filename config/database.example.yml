@@ -1,5 +1,6 @@
 common: &common
   adapter: mysql
+  pool: 5
   encoding: utf8
   collation: utf8_unicode_ci
   timeout: 5000

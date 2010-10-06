@@ -64,14 +64,14 @@ module HasSearchIndex
                 result[:wrong_attributes] << attribute
                 type       = (element == attribute.split(".").last)? "attribute" : "relationship"
                 error = "[#{DateTime.now}](has_search_index) contextual_search > #{type} '#{element}' in '#{attribute}' is undefined.\nYou should modify the configuration of 'has_search_index' in the class '#{model}', or the configuration of the contextual search"
-                RAILS_ENV == "production" ? logger.error(error) : raise(error)
+                Rails.env.production? ? logger.error(error) : raise(error)
                 break  
               end
             end
           end
         else
           error = "[#{DateTime.now}](has_search_index) contextual_search > constant '#{model}' is undefined"
-          RAILS_ENV == "production" ? logger.error(error) : raise(error)
+          Rails.env.production? ? logger.error(error) : raise(error)
           result[:wrong_model] = true
         end
         result

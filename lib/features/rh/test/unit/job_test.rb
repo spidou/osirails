@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/../rh_test'
 
 class JobTest < ActiveSupport::TestCase
+  should_journalize :identifier_method => :name
+
   def setup
     @job = jobs(:developer)
   end

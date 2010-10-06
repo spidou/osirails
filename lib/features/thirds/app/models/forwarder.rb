@@ -25,6 +25,8 @@ class Forwarder < Third
                    :only_relationships => [:legal_form, :iban],
                    :main_model         => true
   
+  cattr_accessor :form_labels
+  @@form_labels = Hash.new
   @@form_labels[:name]        = "Raison sociale :"
   @@form_labels[:departure]   = "Point de départ :"
   @@form_labels[:conveyance]  = "Moyen de transport :"

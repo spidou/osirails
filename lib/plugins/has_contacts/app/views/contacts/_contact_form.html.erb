@@ -7,49 +7,49 @@ style_attr = 'style="display:none"' unless contact.new_record? or !contact.error
 hack_params ||= contacts_owner.is_a?(Establishment)  # used to determine, in customer form, if an hidden field is needed to link a contact to his respective owner, It may be deleted when the bug (see customers_controller) will be resolved.
 %>
 
-<% fields_for "#{owner_type}[contact_attributes][]", contact do |form| %>
+<% fields_for "#{owner_type}[contact_attributes][]", contact, :index => nil do |form| %>
   <div class="resource_form contact_form" <%= id_attr %> <%= style_attr %> >
     <div>
       <%= form.error_messages %>
       <% if is_form_view? %>
         <p>
-          <%= form.label :gender, :index => nil %>
-          <%= form.select(:gender, { 'Homme' => 'M', 'Femme' => 'F' }, {}, :index => nil ) %>
+          <%= form.label :gender %>
+          <%= form.select(:gender, { 'Homme' => 'M', 'Femme' => 'F' }) %>
         </p>
       <% end %>
       <p>
-        <%= form.label :first_name, :index => nil %>
-        <%= form.form_or_view(form.text_field(:first_name, :index => nil), :first_name ) %>
+        <%= form.label :first_name %>
+        <%= form.form_or_view(form.text_field(:first_name), :first_name ) %>
       </p>
       <p>
-        <%= form.label :last_name, :index => nil %>
-        <%= form.form_or_view(form.text_field(:last_name, :index => nil), :last_name ) %>
+        <%= form.label :last_name %>
+        <%= form.form_or_view(form.text_field(:last_name), :last_name ) %>
       </p>
       <p>
-        <%= form.label :job, :index => nil %>
-        <%= form.form_or_view(form.text_field(:job, :index => nil), :job ) %>
+        <%= form.label :job %>
+        <%= form.form_or_view(form.text_field(:job), :job ) %>
       </p>
       <p>
-        <%= form.label :email, :index => nil %>
-        <%= form.form_or_view(form.text_field(:email, :index => nil), :email ) %>
+        <%= form.label :email %>
+        <%= form.form_or_view(form.text_field(:email), :email ) %>
       </p>
       <p>
-        <%= form.label :avatar, :index => nil %>
-        <%= form.form_or_view(form.file_field(:avatar, :index => nil, :size => 14)) %>
+        <%= form.label :avatar %>
+        <%= form.form_or_view(form.file_field(:avatar, :size => 14)) %>
       </p>
       <%= display_numbers(contact) %>
       <p>
         <%= display_contact_close_form_button(contact) %>
         
         <!-- usefull data for the params hack into customers_controller -->
-        <%= form.hidden_field("#{owner_type}_id", :value => contacts_owner.id, :index => nil) if hack_params %>
+        <%= form.hidden_field("#{owner_type}_id", :value => contacts_owner.id) if hack_params %>
         <!-- id must be available for new_record to avoid misplacement of id into params when a new record isn't after all records -->
-        <%= form.hidden_field :id, :index => nil, :class => 'contact_id' %> 
+        <%= form.hidden_field :id, :class => 'contact_id' %> 
         
         <% if !contact.new_record? and is_form_view? %>
-          <%= form.hidden_field :should_hide,    :index => nil, :class => 'should_hide' %>
-          <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
-          <%= form.hidden_field :should_update,  :index => nil, :class => 'should_update' %>
+          <%= form.hidden_field :should_hide,    :class => 'should_hide' %>
+          <%= form.hidden_field :should_destroy, :class => 'should_destroy' %>
+          <%= form.hidden_field :should_update,  :class => 'should_update' %>
         <% end %>
       </p>
     </div>

@@ -110,6 +110,12 @@
     <h2>Documents</h2>
       <%= display_documents_list(@employee) %>
       <%= display_document_add_button(@employee) if is_form_view? %>
+      
+    <!--###### Journals div #######-->
+    <% unless is_form_view? %>
+      <h2>Historique</h2>
+        <%= display_journals_list(@employee) %>
+    <% end %>
     
     <%= f.form_buttons %>
   <% end %><!--end form -->

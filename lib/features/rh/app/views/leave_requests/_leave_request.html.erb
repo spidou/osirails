@@ -21,12 +21,12 @@
       <% if leave_request.was_cancelled? %>
         <p>
           <%= f.label :cancelled_at %>
-          <%= f.strong leave_request.cancelled_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+          <%= f.strong l(leave_request.cancelled_at.to_datetime) %>
         </p>
       <% end %>
       <p>
         <%= f.label :submitted_at %>
-        <%= f.strong leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+        <%= f.strong l(leave_request.submitted_at.to_datetime) %>
       </p>
       <p>
         <%= f.label :period %>
@@ -87,7 +87,7 @@
       </p>
       <p> 
         <%= f.label :checked_at %>
-        <%= f.strong leave_request.checked_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+        <%= f.strong l(leave_request.checked_at.to_datetime) %>
       </p>
       <p>
         <%= f.label :responsible_remarks %>
@@ -111,7 +111,7 @@
       </p> 
       <p>
         <%= f.label :noticed_at %>
-        <%= f.strong leave_request.noticed_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+        <%= f.strong l(leave_request.noticed_at.to_datetime) %>
       </p>  
       <p>
         <%= f.label :observer_remarks %>
@@ -131,7 +131,7 @@
       </p>
       <p> 
         <%= f.label :ended_at %>
-        <%= f.strong leave_request.ended_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+        <%= f.strong l(leave_request.ended_at.to_datetime) %>
       </p>
       <p>
         <%= f.label :director_remarks%>

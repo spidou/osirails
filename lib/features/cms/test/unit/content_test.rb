@@ -8,7 +8,7 @@ class ContentTest < ActiveSupport::TestCase
   should_validate_presence_of :title
   
   def setup
-    @content_one = contents(:one)
+    @content_one = contents(:normal_content)
     @content_one.update_attribute(:contributors, [users(:cms_first_user)])
   end
 

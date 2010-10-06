@@ -3,15 +3,6 @@ class Product < ActiveRecord::Base
   
   validates_presence_of :name
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:reference]   = "Référence :"
-  @@form_labels[:name]        = "Spécificité :"
-  @@form_labels[:description] = "Description :"
-  @@form_labels[:dimensions]  = "Côtes :"
-  @@form_labels[:designation] = "Désignation :"
-  @@form_labels[:vat]         = "Taux de TVA :"
-  
   #TODO test that method
   def enabled?
     !cancelled_at

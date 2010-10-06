@@ -25,7 +25,7 @@ class Inventory < ActiveRecord::Base
     return unless supply_type
     
     supply_types = stock_flows.collect(&:supply).collect(&:type)
-    errors.add(:stock_flows, "L'inventaire faire référence à des fournitures de types de différents") if supply_types.uniq.size > 1
+    errors.add(:stock_flows, "L'inventaire faire référence à des fournitures de types de différents") if supply_types.uniq.many?
     errors.add(:stock_flows, "L'inventaire doit faire référence à des fournitures du type #{supply_type}") if supply_types.any? and supply_types.first != supply_type
   end
   

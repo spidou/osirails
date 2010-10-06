@@ -23,15 +23,6 @@ class Contact < ActiveRecord::Base
   cattr_accessor :contacts_owners_models
   @@contacts_owners_models = []
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:gender]        = "Genre :"
-  @@form_labels[:first_name]    = "Prénom :"
-  @@form_labels[:last_name]     = "Nom :"
-  @@form_labels[:email]         = "Adresse e-mail :"
-  @@form_labels[:job]           = "Fonction :"
-  @@form_labels[:avatar]        = "Photo :"
-  
   has_attached_file :avatar, 
                     :styles         => { :thumb => "75x75#" },
                     :default_style  => :thumb,
@@ -40,6 +31,8 @@ class Contact < ActiveRecord::Base
                     :default_url    => ":current_theme_path/images/avatars/:gender.png"
   
   has_search_index  :only_attributes => [ :first_name, :last_name, :email ]
+  
+  journalize :identifier_method => :fullname
   
   before_save :case_management
   
@@ -81,8 +74,8 @@ class Contact < ActiveRecord::Base
   
   private
     def case_management
-      self.first_name = self.first_name.chars.capitalize
-      self.last_name = self.last_name.chars.upcase
+      self.first_name = self.first_name.mb_chars.capitalize
+      self.last_name = self.last_name.mb_chars.upcase
     end
   
 end
