@@ -102,6 +102,14 @@ module EmployeesHelper
     end
   end
   
+  def query_thead_tr_in_employee_index(content)
+    query_thead_tr_with_context_menu(content, toggle_selectable_items_link(image_tag("confirm_16x16.png"), "employee"))
+  end
+  
+  def query_tr_in_employee_index(content)
+    query_tr_with_context_menu(content, @query_object, "employee_tr")
+  end
+  
   def translate(attr)
     tr = {'last_name' => 'de la famille', 'service.name' => 'dans le service'}
     return tr[attr]

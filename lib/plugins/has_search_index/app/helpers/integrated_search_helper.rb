@@ -205,8 +205,7 @@ module IntegratedSearchHelper
   ## Take in account actions columns
   #
   def generate_table_header(query)
-    columns_with_action = query.columns + ['actions']                                                  # special handle actions column
-    query_thead(columns_with_action.map {|column| query_th(column, query.order)}.join)
+    query_thead(query.columns.map {|column| query_th(column, query.order)}.join)
   end
   
   # Methods to generate a table body from a query
@@ -227,7 +226,7 @@ module IntegratedSearchHelper
   #
   def generate_grouped_table_rows(records, columns, group_list)
     grouped_records(records, group_list).map do |group|
-      group_row = query_group_tr(group.first, columns + ['actions'])                                  # special handle actions column
+      group_row = query_group_tr(group.first, columns)
       rows      = group.last.map {|record| generate_table_row(record, columns)}.join
       query_tbody("#{ group_row }#{ rows }")
     end
@@ -238,8 +237,7 @@ module IntegratedSearchHelper
   #
   def generate_table_row(record, columns)
     @query_object = record
-    columns_with_action = columns + ['actions']                                                        # special handle actions column
-    content = columns_with_action.map {|column| query_td(column)}.join
+    content = columns.map {|column| query_td(column)}.join
     query_tr(content)
   end
   
@@ -586,7 +584,7 @@ module IntegratedSearchHelper
     
     def query_table(content)
       helper = "query_table"
-      override_for(helper) ? send(override_for(helper), content) : content_tag(:table, content)
+      override_for(helper) ? send(override_for(helper), content) : content_tag(:table, content, :id => 'tabletest')
     end
     
     def query_thead(content)

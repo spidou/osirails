@@ -71,12 +71,20 @@ module ActionView
       klass                   = object.class
       html                    = ""
       
-      unless @context_menu_classes.include?(klass)
-        html << javascript_tag("new ContextMenu('#{ context_menu_path(:authenticity_token => form_authenticity_token) }', '#{selectable_item_html_class}')")
-        html << hidden_field_tag("#{klass.name.underscore}_single_selection_template", options[:single_selection_template]) if options[:single_selection_template]
-        html << hidden_field_tag("#{klass.name.underscore}_multiple_selection_template", options[:multiple_selection_template]) if options[:multiple_selection_template]
-        @context_menu_classes << klass
-      end
+      #OPTIMIZE those three following addition in html are repeated after each call of context_menu whereas a simple call for these three are enough
+      # for a same object. Conditions were deleted because it caused trouble when Ajax was used.
+      
+#      unless @context_menu_classes.include?(klass)
+#        html << javascript_tag("new ContextMenu('#{ context_menu_path(:authenticity_token => form_authenticity_token) }', '#{selectable_item_html_class}')")
+#        html << hidden_field_tag("#{klass.name.underscore}_single_selection_template", options[:single_selection_template]) if options[:single_selection_template]
+#        html << hidden_field_tag("#{klass.name.underscore}_multiple_selection_template", options[:multiple_selection_template]) if options[:multiple_selection_template]
+#        @context_menu_classes << klass
+#      end
+
+      html << javascript_tag("new ContextMenu('#{ context_menu_path(:authenticity_token => form_authenticity_token) }', '#{selectable_item_html_class}')")
+      html << hidden_field_tag("#{klass.name.underscore}_single_selection_template", options[:single_selection_template]) if options[:single_selection_template]
+      html << hidden_field_tag("#{klass.name.underscore}_multiple_selection_template", options[:multiple_selection_template]) if options[:multiple_selection_template]   
+      # end OPTIMIZE
       
       html << check_box_tag("#{object.class.name.underscore}_ids[]", object.id, false, 
                             { :id => nil, 

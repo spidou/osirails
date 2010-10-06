@@ -178,4 +178,52 @@ module SuppliesManagerHelper
     text
   end
   
+  def query_thead_tr_in_commodity_index(content)
+    query_thead_tr_with_context_menu(content, toggle_selectable_items_link(image_tag("confirm_16x16.png"), "commodity"))
+  end
+  
+  def query_tr_in_commodity_index(content)
+    query_tr_with_context_menu(content, @query_object, "commodity_tr")
+  end
+
+  def query_td_for_reference_in_commodity_index(content)
+    content_tag(:td, content, :class => "reference")
+  end
+  
+  def query_td_for_designation_in_commodity_index(content)
+    content_tag(:td, content, :class => "designation text")
+  end
+  
+  def query_td_for_measure_in_commodity_index(content)
+    content_tag(:td, content, :class => "unit_measure")
+  end
+  
+  def query_td_content_for_measure_in_commodity_index
+    unit_measure_symbol = @query_object.unit_measure.symbol if @query_object.unit_measure
+    @query_object.measure ? "#{@query_object.measure} #{unit_measure_symbol}" : "-"
+  end
+  
+  def query_td_for_unit_mass_price_in_commodity_index(content)
+    content_tag(:td, content, :class => "unit_mass")
+  end
+  
+  def query_td_content_for_unit_mass_in_commodity_index
+    @query_object.unit_mass ? "#{@query_object.unit_mass} kg" : "-"
+  end
+  
+  def query_td_for_average_unit_price_in_commodity_index(content)
+    content_tag(:td, content, :class => "average_unit_price amount")
+  end
+  
+  def query_td_content_for_average_unit_price_in_commodity_index
+    @query_object.average_unit_price ? "#{number_with_precision(@query_object.average_unit_price, 2)} &euro;" : "-"
+  end
+  
+  def query_td_for_average_measure_price_in_commodity_index(content)
+    content_tag(:td, content, :class => "average_measure_price amount")
+  end
+  
+  def query_td_content_for_average_measure_price_in_commodity_index
+    @query_object.average_measure_price ? "#{number_with_precision(@query_object.average_measure_price, 2)} &euro;/#{display_supply_unit_measure(@query_object)}" : "-"
+  end
 end

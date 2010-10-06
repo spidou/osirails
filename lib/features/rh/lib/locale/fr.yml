@@ -123,7 +123,9 @@ fr:
         id: "Civilité"
     page_names:      
       employee:
-        employee_index: "Tous les employés"
+        employee_index: "Tous les employés actifs"
+      job:
+        job_index: "Toutes les fiches de poste"
     filters:
       civility:
         name: "Nom"
@@ -133,3 +135,6 @@ fr:
         name: "Nom"
       job:
         name: "Nom"
+  seeds:
+    query:
+      all_employees: "Tous les employés"

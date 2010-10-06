@@ -3,7 +3,7 @@ class SupplySubCategory < SupplyCategory
   
   has_many :supply_categories_supply_sizes, :include => [ :supply_size ], :order => "supply_sizes.position"
   has_many :supply_sizes, :through => :supply_categories_supply_sizes
-  
+                   
   validates_presence_of :supply_category_id
   
   validates_persistence_of :name, :unit_measure_id, :if => :has_children?

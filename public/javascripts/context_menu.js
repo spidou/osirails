@@ -32,15 +32,13 @@ ContextMenu.prototype = {
 	    Event.observe(document, 'click', this.clickListener.bindAsEventListener(this));
 	    Event.observe(document, (window.opera ? 'click' : 'contextmenu'), this.rightClickListener.bindAsEventListener(this));
 	    
-	    Event.observe(window, 'load', function() {
-        contextMenu.tagSelectableItems();
-        contextMenu.unselectAll();
-      }); 
-	    
 	    anyContextMenu = true;
     }
     
     if(!selectableItemsHtmlClasses.include(selectableItemHtmlClass)) { selectableItemsHtmlClasses.push(selectableItemHtmlClass); }
+    
+    contextMenu.tagSelectableItems();
+    contextMenu.unselectAll();
 	},
 	
 	tagSelectableItems: function(){

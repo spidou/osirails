@@ -1,5 +1,18 @@
 require 'lib/seed_helper'
 
+# personalized_queries
+Query.create! do |q|
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.all_employees')
+  q.criteria      = {}
+  q.page_name     = "employee_index"
+  q.search_type   = "or"
+  q.columns       = ["civility.name", "last_name", "first_name", "service.name", "job_contract.job_contract_type.name"]
+  q.order         = ["last_name:asc", "first_name:asc"]
+  q.public_access = true
+  q.per_page      = 50
+end
+
 # default civilities
 Civility.create! :name => "Mr"
 Civility.create! :name => "Mme"

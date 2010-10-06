@@ -1,7 +1,7 @@
 class JobsController < ApplicationController
   
   def index
-    @jobs = Job.find(:all, :include => :service, :order => "services.service_parent_id, services.name, jobs.name, jobs.responsible DESC").paginate(:page => params[:page], :per_page => Job::JOBS_PER_PAGE)
+    build_query_for(:job_index)
   end
   
   def new
