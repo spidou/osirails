@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default VAT rates
 Vat.create! :name => "19.6",  :rate => "19.6"
 Vat.create! :name => "8.5",   :rate => "8.5"
@@ -100,3 +102,5 @@ d.mime_types << [ pdf, jpg, png ]
 d = DocumentType.find_or_create_by_name("quote")
 d.update_attribute(:title, "Devis")
 d.mime_types << [ pdf, jpg, png ]
+
+set_default_permissions

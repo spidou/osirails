@@ -9,18 +9,21 @@ class Customer < Third
   belongs_to :creator, :class_name => 'User'
   
   has_one  :head_office
-  has_many :establishments, :conditions => [ "establishments.type IS NULL" ]
+  has_many :establishments, :conditions => ['establishments.type IS NULL and ( hidden = ? or hidden IS NULL )', false]
+  
+  named_scope :activates, :conditions => { :activated => true }
   
   has_attached_file :logo, 
                     :styles => { :thumb => "120x120" },
-                    :path   => ":rails_root/assets/thirds/logos/:id.:style",
+                    :path   => ":rails_root/assets/thirds/customers/:id/logo/:style.:extension",
                     :url    => "/customers/:id.:extension"
   
   validates_presence_of :bill_to_address, :head_office
   
-  validates_presence_of :customer_grade_id, :customer_solvency_id
-  validates_presence_of :customer_grade,    :if => :customer_grade_id
-  validates_presence_of :customer_solvency, :if => :customer_solvency_id
+  # TODO don't know if I have to let that (I'm not sure if customer_grade or customer_solvency can be filled when you create a new customer if you don't even know it)
+  #validates_presence_of :customer_grade_id, :customer_solvency_id
+  #validates_presence_of :customer_grade,    :if => :customer_grade_id
+  #validates_presence_of :customer_solvency, :if => :customer_solvency_id
   
   with_options :if => :logo do |v|
     v.validates_attachment_content_type :logo, :content_type => [ 'image/jpg', 'image/png', 'image/jpeg' ]
@@ -29,17 +32,15 @@ class Customer < Third
   
   validates_associated :establishments, :head_office
   
-  validate :uniqueness_of_siret_number , :if => :head_office
+  validate :validates_uniqueness_of_siret_number
   
   after_save :save_establishments, :save_head_office
   
   # for pagination : number of instances by index page
   CUSTOMERS_PER_PAGE = 25
   
-  named_scope :activates, :conditions => {:activated => true}
-  
-  has_search_index :only_attributes    => [:name, :siret_number],
-                   :only_relationships => [:legal_form, :establishments],
+  has_search_index :only_attributes    => [ :name ],
+                   :only_relationships => [ :legal_form, :factor, :customer_solvency, :customer_grade ], #:head_office, :establishments ], #TODO add these relationships when bug #60 will be resolved
                    :main_model         => true
   
   @@form_labels[:factor]            = "Compagnie d'affacturage :"
@@ -48,15 +49,15 @@ class Customer < Third
   @@form_labels[:logo]              = "Logo :"
   
   def payment_time_limit
-    customer_grade.payment_time_limit
+    customer_grade && customer_grade.payment_time_limit
   end
   
   def payment_method
-    customer_solvency.payment_method
+    customer_solvency && customer_solvency.payment_method
   end
   
-  def establishment_names
-    establishments.collect(&:name).uniq
+  def brand_names
+    head_office_and_establishments.collect{ |e| e[:name] }.uniq
   end
   
   def factorised?
@@ -67,8 +68,12 @@ class Customer < Third
     factor_id_was
   end
   
+  def head_office_and_establishments
+    @head_office_and_establishments ||= ( [ head_office ] + establishments ).compact
+  end
+  
   def contacts
-    ( head_office ? head_office.contacts : [] ) + establishments.collect(&:contacts).flatten
+    @contacts ||= head_office_and_establishments.collect(&:contacts).flatten
   end
   
   def establishment_attributes=(establishment_attributes)
@@ -99,6 +104,8 @@ class Customer < Third
     establishments.each do |e|
       if e.should_destroy?
         e.destroy
+      elsif e.should_hide?
+        e.hide
       elsif e.should_update?
         e.save(false)
       end
@@ -113,14 +120,14 @@ class Customer < Third
     self.establishments.build(attributes)
   end
   
-  def uniqueness_of_siret_number
-    objects           = establishments + [head_office]
+  def validates_uniqueness_of_siret_number
+    establishments    = head_office_and_establishments
     all_siret_numbers = {}
-    objects.each{ |n| all_siret_numbers.merge!(n => n.siret_number) }
+    establishments.each{ |n| all_siret_numbers.merge!(n => n.siret_number) }
     
-    message = ActiveRecord::Errors.default_error_messages[:taken]
-    objects.each do |establishment|
-      other_siret_numbers = all_siret_numbers.reject{ |obj, v| establishment == obj }
+    message = "est déjà pris par un autre établissement (ou le siège social) de ce client"
+    establishments.each do |establishment|
+      other_siret_numbers = all_siret_numbers.reject{ |estab, siret_number| establishment == estab }
       establishment.errors.add(:siret_number, message) if other_siret_numbers.values.include?(establishment.siret_number)
     end
   end

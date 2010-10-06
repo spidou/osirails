@@ -6,13 +6,13 @@ counter ||= 1
 position = quote_item.position.zero? ? counter : quote_item.position
 %>
 
-<% fields_for "quote[quote_item_attributes][]", quote_item do |form| %>
+<% fields_for "quote[free_quote_item_attributes][]", quote_item do |form| %>
   <tr class="free_quote_item">
     <td></td>
     <td class="designation">
       <span class="name">
         <% if is_form_view? %>
-          <%= form.text_field :name, :size => 45, :class => :input_name, :title => "Entrer le titre de la description pour ce produit", :index => nil %>
+          <%= form.text_field :name, :size => 45, :class => :input_name, :title => "Entrer le nom du produit", :index => nil %>
         <% else %>
           <%= quote_item.name %>
         <% end %>
@@ -20,7 +20,7 @@ position = quote_item.position.zero? ? counter : quote_item.position
       <br/>
       <span class="description">
         <% if is_form_view? %>
-          <%= form.text_area_autoresize :description, :cols => 55, :rows => 2, :class => :input_description, :title => "Entrer le corps de la description pour ce produit", :index => nil %>
+          <%= form.text_area_autoresize :description, :cols => 55, :rows => 2, :class => :input_description, :title => "Entrer une description pour ce produit", :index => nil %>
         <% else %>
           <%= quote_item.description %>
         <% end %>

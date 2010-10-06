@@ -105,6 +105,10 @@ class String
         return false 
     end 
   end
+  
+  def numeric?
+    return true if Float(self) rescue false
+  end
 end
 
 class Hash

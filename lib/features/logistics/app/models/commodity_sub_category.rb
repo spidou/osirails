@@ -6,6 +6,8 @@ class CommoditySubCategory < SupplySubCategory
   
   has_many :supplies, :class_name => "Commodity", :foreign_key => :supply_sub_category_id
   
+  validates_presence_of :supply_category, :if => :supply_category_id
+  
   validates_persistence_of :supply_category_id
   
   has_search_index  :only_attributes    => [ :reference, :name ],

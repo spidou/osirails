@@ -8,6 +8,9 @@ Rake::TestTask.new(:test) do |t|
 end
 
 # I want to specify environment variables at call time
+# look at +test_with_mysql_database+ for example
+# it permit to define env variables with :env accessor
+#
 class EnvTestTask < Rake::TestTask
   attr_accessor :env
 

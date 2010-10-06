@@ -1,3 +1,6 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "thirds/thirds.css" %>
+<% end %>
 <%
 require_locals establishments_owner
 force_show_view ||= false

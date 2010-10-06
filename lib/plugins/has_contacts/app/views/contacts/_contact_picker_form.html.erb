@@ -1,0 +1,52 @@
+<%
+require_locals contact_picker, contacts_owners, contact_key, options
+owner_type = contact_picker.class.singularized_table_name
+contact = contact_picker_form
+id_attr = "id=\"resource__form_contact_#{contact.id}\"" unless contact.new_record?
+%>
+<div class="contact resource">
+  <% fields_for "#{owner_type}[#{ contact_key }_attributes]", contact do |form| %>
+    <div class="resource_form contact_form" <%= id_attr %>>
+      <div>
+        <%= form.error_messages %>
+        <p>
+          <%= form.label :gender %>
+          <%= form.select(:gender, { 'Homme' => 'M', 'Femme' => 'F' }, {} ) %>
+        </p>
+        <p>
+          <%= form.label :has_contact , "Lié à :" %>
+          <%= form.collection_select(:has_contact_id, contacts_owners, options[:establishment][:value_method], options[:establishment][:text_method],
+                                      ( contact_picker.new_record? ? { :include_blank => "Veuillez choisir un établissement", } : {} )) %>
+          <%= form.hidden_field :has_contact_type, :value => "Establishment" %>
+          <%# that hidden_field is here temporary and will be replaced by another way to choose a has_contact_type in a collection  
+          %>
+        </p>
+        <p>
+          <%= form.label :first_name%>
+          <%= form.text_field(:first_name) %>
+        </p>
+        <p>
+          <%= form.label :last_name %>
+          <%= form.text_field(:last_name) %>
+        </p>
+        <p>
+          <%= form.label :job %>
+          <%= form.text_field(:job) %>
+        </p>
+        <p>
+          <%= form.label :email%>
+          <%= form.text_field(:email) %>
+        </p>
+        <p>
+          <%= form.label :avatar%>
+          <%= form.file_field(:avatar, :size => 14) %>
+        </p>
+        <%= display_numbers(contact, "#{ contact_key }_attributes") %>
+        <p>
+          <%= display_new_contact_cancel_button_for_contact_picker("contact_picker_container") %>
+          <%= form.hidden_field :id, :class => 'contact_id' %> 
+        </p>
+      </div>
+    </div>
+  <% end %>
+</div>

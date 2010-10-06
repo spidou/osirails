@@ -78,7 +78,9 @@ module SearchIndexesHelper
           html       += "<td>#{ highlight(nested_data.to_s, keywords) }</td>"
         end
       end
-      html += "<td>#{send("#{object.class.to_s.downcase}_link", object, :link_text => '')}</td>" if respond_to?("#{object.class.to_s.downcase}_path")
+      html += "<td>"
+      html += "#{send("#{object.class.name.underscore}_link", object, :link_text => '')}" if respond_to?("#{object.class.name.underscore}_path")
+      html += "</td>"
       html += "</tr>"
     end
     return html

@@ -23,5 +23,5 @@ begin
   end
 rescue ActiveRecord::StatementInvalid, Mysql::Error, NameError, Exception => e
   error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
-  RAKE_TASK ? puts(error) : raise(error)
+  RAKE_TASK ? puts(error) : raise(e)
 end

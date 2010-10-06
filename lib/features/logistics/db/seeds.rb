@@ -1,6 +1,9 @@
+require 'lib/seed_helper'
+
 # default measure units
 metre   = UnitMeasure.create! :name => "Mètre",       :symbol => "m"
 mmetre  = UnitMeasure.create! :name => "Millimètre",  :symbol => "mm"
+mimetre = UnitMeasure.create! :name => "Micromètre",  :symbol => "μm"
 mcarre  = UnitMeasure.create! :name => "Mètre carré", :symbol => "m²"
 mcube   = UnitMeasure.create! :name => "Mètre cube",  :symbol => "m³"
 mlitre  = UnitMeasure.create! :name => "Millilitre",  :symbol => "mL"
@@ -12,21 +15,23 @@ ampere  = UnitMeasure.create! :name => "Ampère",      :symbol => "A"
 mampere = UnitMeasure.create! :name => "Milliampère", :symbol => "mA"
 degre   = UnitMeasure.create! :name => "Degré",       :symbol => "°"
 heure   = UnitMeasure.create! :name => "Heure",       :symbol => "H"
+kilo    = UnitMeasure.create! :name => "Kilogramme",  :symbol => "kg"
 
 # default supply sizes
-epaisseur = SupplySize.create! :name => "Épaisseur"
-diametre  = SupplySize.create! :name => "Diamètre",   :short_name => "Ø", :display_short_name => true, :accept_string => true
-largeur   = SupplySize.create! :name => "Largeur",    :short_name => "l"
-longueur  = SupplySize.create! :name => "Longueur",   :short_name => "L"
-hauteur   = SupplySize.create! :name => "Hauteur",    :short_name => "H"
+epaisseur = SupplySize.create! :name => "Épaisseur",  :accept_string => true
+diametre  = SupplySize.create! :name => "Diamètre",   :accept_string => true, :short_name => "Ø", :display_short_name => true
+largeur   = SupplySize.create! :name => "Largeur",                            :short_name => "l"
+longueur  = SupplySize.create! :name => "Longueur",                           :short_name => "L"
+hauteur   = SupplySize.create! :name => "Hauteur",                            :short_name => "H"
 volume    = SupplySize.create! :name => "Volume"
-puissance = SupplySize.create! :name => "Puissance"
-tension   = SupplySize.create! :name => "Tension"
+puissance = SupplySize.create! :name => "Puissance",  :accept_string => true
+tension   = SupplySize.create! :name => "Tension",    :accept_string => true
 intensite = SupplySize.create! :name => "Intensité"
-angle     = SupplySize.create! :name => "Angle",      :short_name => "θ"
+angle     = SupplySize.create! :name => "Angle",                              :short_name => "θ"
 
 # default supply unit measures
 SupplySizesUnitMeasure.create! :supply_size_id => epaisseur.id,  :unit_measure_id => mmetre.id
+SupplySizesUnitMeasure.create! :supply_size_id => epaisseur.id,  :unit_measure_id => mimetre.id
 SupplySizesUnitMeasure.create! :supply_size_id => diametre.id,   :unit_measure_id => mmetre.id
 SupplySizesUnitMeasure.create! :supply_size_id => largeur.id,    :unit_measure_id => mmetre.id
 SupplySizesUnitMeasure.create! :supply_size_id => largeur.id,    :unit_measure_id => metre.id
@@ -63,3 +68,14 @@ dt.update_attribute(:title, "Note de frais")
 dt.mime_types << [ pdf, jpg, png ]
 dt = DocumentType.find_or_create_by_name("manual")
 dt.update_attribute(:title, "Manuel")
+
+# default permissions for calendars
+Calendar.all.each do |object|
+  object.permissions.each do |permission|
+    permission.permissions_permission_methods.each do |object_permission|
+      object_permission.update_attribute(:active, true)
+    end
+  end
+end
+
+set_default_permissions

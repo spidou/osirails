@@ -1,0 +1,26 @@
+<%
+  customer = customer_contacts
+  establishments = customer.head_office_and_establishments.reject(&:new_record?) ## contacts can only be added to a saved establishment
+%>
+
+<%= content_tag :p, content_tag(:span, "Vous devez d'abord enregistrer la fiche client pour pouvoir ajouter des contacts", :class => :warning) if customer.new_record? %>
+
+<% if is_form_view? %>
+  
+  <% establishments.each do |establishment| %>
+    <% div_id = "#{establishment.class.singularized_table_name}_#{establishment.id}" %>
+    
+    <div id="<%= div_id %>_contacts_list">
+      <h3><%= establishment.name.titleize %><%= " (Siège social)" if establishment.is_a?(HeadOffice) %></h3>
+      <%= render :partial => 'contacts/contact', :collection => establishment.contacts.reject(&:new_record?), :locals => { :contacts_owner => establishment }  %>
+      
+      <div id="<%= div_id %>_new_contacts">
+        <%= render :partial => 'contacts/contact', :collection => establishment.contacts.select(&:new_record?), :locals => { :contacts_owner => establishment }  %>
+      </div>
+      <%= display_add_contact_button_for_owner(establishment) %>
+    </div>
+  <% end %>
+  
+<% else %>
+  <%= display_contacts_list(customer, true) %>
+<% end %>

@@ -165,15 +165,9 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.datetime "updated_at"
   end
 
-  create_table "contact_types", :force => true do |t|
-    t.string   "name"
-    t.string   "owner"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "contacts", :force => true do |t|
-    t.integer  "contact_type_id",     :limit => 11
+    t.integer  "has_contact_id",      :limit => 11
+    t.string   "has_contact_type"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "job"
@@ -182,15 +176,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.string   "avatar_file_name"
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size",    :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "contacts_owners", :force => true do |t|
-    t.integer  "has_contact_id",   :limit => 11
-    t.string   "has_contact_type"
-    t.integer  "contact_id",       :limit => 11
-    t.integer  "contact_type_id",  :limit => 11
+    t.boolean  "hidden"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -223,13 +209,13 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   end
 
   create_table "customer_grades", :force => true do |t|
-    t.string  "name"
     t.integer "payment_time_limit_id", :limit => 11
+    t.string  "name"
   end
 
   create_table "customer_solvencies", :force => true do |t|
-    t.string  "name"
     t.integer "payment_method_id", :limit => 11
+    t.string  "name"
   end
 
   create_table "delivery_interventions", :force => true do |t|
@@ -342,14 +328,15 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   end
 
   create_table "delivery_notes", :force => true do |t|
-    t.integer  "order_id",                :limit => 11
-    t.integer  "creator_id",              :limit => 11
-    t.integer  "delivery_note_type_id",   :limit => 11
+    t.integer  "order_id",                 :limit => 11
+    t.integer  "creator_id",               :limit => 11
+    t.integer  "delivery_note_type_id",    :limit => 11
+    t.integer  "delivery_note_contact_id", :limit => 11
     t.string   "status"
     t.string   "reference"
     t.string   "attachment_file_name"
     t.string   "attachment_content_type"
-    t.integer  "attachment_file_size",    :limit => 11
+    t.integer  "attachment_file_size",     :limit => 11
     t.date     "published_on"
     t.date     "signed_on"
     t.datetime "confirmed_at"
@@ -484,8 +471,10 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.string   "type"
     t.string   "siret_number"
     t.boolean  "activated",                                  :default => true
+    t.boolean  "hidden"
+    t.string   "logo_file_name"
+    t.string   "logo_content_type"
     t.integer  "logo_file_size",               :limit => 11
-    t.datetime "logo_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -676,6 +665,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "creator_id",                  :limit => 11
     t.integer  "cancelled_by_id",             :limit => 11
     t.integer  "abandoned_by_id",             :limit => 11
+    t.integer  "invoice_contact_id",          :limit => 11
     t.string   "reference"
     t.string   "status"
     t.text     "cancelled_comment"
@@ -899,6 +889,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "society_activity_sector_id", :limit => 11
     t.integer  "order_type_id",              :limit => 11
     t.integer  "approaching_id",             :limit => 11
+    t.integer  "order_contact_id",           :limit => 11
     t.string   "title"
     t.string   "reference"
     t.text     "customer_needs"
@@ -1077,24 +1068,28 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
 
   create_table "product_reference_categories", :force => true do |t|
     t.integer  "product_reference_category_id", :limit => 11
+    t.integer  "product_references_count",      :limit => 11, :default => 0
+    t.string   "type"
     t.string   "reference"
     t.string   "name"
-    t.integer  "product_references_count",      :limit => 11, :default => 0
     t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "product_reference_categories", ["reference"], :name => "index_product_reference_categories_on_reference", :unique => true
+  add_index "product_reference_categories", ["name", "type"], :name => "index_product_reference_categories_on_name_and_type", :unique => true
+
   create_table "products", :force => true do |t|
     t.string   "type"
-    t.integer  "product_reference_category_id", :limit => 11
-    t.integer  "end_products_count",            :limit => 11, :default => 0
-    t.integer  "product_reference_id",          :limit => 11
-    t.integer  "order_id",                      :limit => 11
+    t.integer  "product_reference_sub_category_id", :limit => 11
+    t.integer  "end_products_count",                :limit => 11, :default => 0
+    t.integer  "product_reference_id",              :limit => 11
+    t.integer  "order_id",                          :limit => 11
     t.float    "prizegiving"
     t.float    "unit_price"
-    t.integer  "quantity",                      :limit => 11
-    t.integer  "position",                      :limit => 11
+    t.integer  "quantity",                          :limit => 11
+    t.integer  "position",                          :limit => 11
     t.string   "reference"
     t.string   "name"
     t.string   "dimensions"
@@ -1197,6 +1192,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "creator_id",              :limit => 11
     t.integer  "send_quote_method_id",    :limit => 11
     t.integer  "order_form_type_id",      :limit => 11
+    t.integer  "quote_contact_id",        :limit => 11
     t.string   "status"
     t.string   "reference"
     t.float    "carriage_costs",                        :default => 0.0
@@ -1441,11 +1437,12 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   add_index "supply_sizes_unit_measures", ["supply_size_id", "unit_measure_id"], :name => "index_supply_sizes_unit_measures", :unique => true
 
   create_table "survey_interventions", :force => true do |t|
-    t.integer  "survey_step_id",    :limit => 11
-    t.integer  "internal_actor_id", :limit => 11
+    t.integer  "survey_step_id",                 :limit => 11
+    t.integer  "internal_actor_id",              :limit => 11
+    t.integer  "survey_intervention_contact_id", :limit => 11
     t.datetime "start_date"
-    t.integer  "duration_hours",    :limit => 11
-    t.integer  "duration_minutes",  :limit => 11
+    t.integer  "duration_hours",                 :limit => 11
+    t.integer  "duration_minutes",               :limit => 11
     t.text     "comment"
     t.datetime "created_at"
     t.datetime "updated_at"

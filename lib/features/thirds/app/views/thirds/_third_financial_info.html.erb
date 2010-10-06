@@ -12,7 +12,7 @@ third = third_financial_info
   <p>
     <%= form.label :customer_solvency %>
     <%= form.form_or_view(form.collection_select(:customer_solvency_id, CustomerSolvency.all(:order => 'id DESC'), :id, :name, 
-                                                :include_blank => third.new_record? ? "Veuillez choisir une solvabilitée" : false), :customer_solvency, :name) %>
+                                                :include_blank => third.new_record? ? "Veuillez choisir un degré de solvabilité" : false), :customer_solvency, :name) %>
   </p>
 <% else %>
   <%= render :partial => 'shared/iban', :object => third.iban || third.build_iban, :locals => { :iban_owner => third } %>

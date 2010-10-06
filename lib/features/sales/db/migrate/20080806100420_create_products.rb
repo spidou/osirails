@@ -4,7 +4,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string :type
       
       # product_references attributes
-      t.references :product_reference_category
+      t.references :product_reference_sub_category
       t.integer :end_products_count, :default => 0
       
       # end_products attributes

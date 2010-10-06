@@ -70,22 +70,23 @@ table a:hover {
 	text-decoration: underline;
 }
 
-table th,
-table thead th,
-table tbody td.thead {
+table > tr > th,
+table thead > tr > th,
+table tbody > tr > th,
+table tbody > tr > td.thead {
 	background-color: #DFDFDF;
 	border: 1px solid #CCC;
 	padding: 4px 8px 4px 8px;
 	font-weight: bold;
 }
 
-table tbody td.thead,
-table tbody th {
+table tbody > tr > th,
+table tbody > tr > td.thead {
   text-align: right;
 }
 
-table td,
-table tbody td {
+table tr > td,
+table tbody > tr > td {
 	border-right: solid 1px #CCC;
 	border-left: solid 1px #CCC;
 	border-bottom: none;
@@ -93,12 +94,12 @@ table tbody td {
 	padding: 3px 7px 3px 7px;
 }
 
-table:not(.no_nth) tbody tr:not(.nested):nth-child(even),
-table tbody tr.even {
+table:not(.no_nth) tbody > tr:not(.nested):nth-child(even),
+table tbody > tr.even {
   background-color: #EAEAEA;
 }
 
-table.no_nth tbody tr {
+table.no_nth tbody > tr {
   border-top: 1px solid #CCC;
   border-bottom: 1px solid #CCC;
 }
@@ -128,17 +129,17 @@ table tr.group td:not(.actions) {
   font-weight: bold;
 }
 
-table tr td.text,
-table tr td.text input[type=text] {
+table tr > td.text,
+table tr > td.text input[type=text] {
   text-align: left !important;
 }
 
-table tr td.amount,
-table tr td.amount input[type=text] {
+table tr > td.amount,
+table tr > td.amount input[type=text] {
   text-align: right !important;
 }
 
-table tfoot tr.nota td {
+table tfoot > tr.nota > td {
   text-align: left;
   font-style: italic;
   font-size: 0.9em;
@@ -146,7 +147,7 @@ table tfoot tr.nota td {
   padding-bottom: 0.9em;
 }
 
-table tfoot tr.nota td strong {
+table tfoot > tr.nota > td strong {
   color: inherit;
   font-weight: bold;
 }
@@ -645,12 +646,12 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	text-align: left;
 	background: #7E98CB;/*#EBA04E repeat*/
 	border:solid 1px #e5e5e5;
-	color: white;/*#444;*/
-	font-size:1.6em;
-	line-height:23px;
-	font-weight:lighter;
+	color: white;
+	font-size: 1.6em;
+	line-height: 23px;
+	font-weight: lighter;
 	font-variant: small-caps;
-	margin: 0px 0 8px 0;
+	margin: 0 0 8px 0;
 	padding: 3px 5px 8px 5px;
 }
 
@@ -658,13 +659,15 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
   content: '➛ '
 }
 
-#content_page h2 {
+#content_page > div > h2,
+#content_page > div > form > h2,
+#content_page > div > form > div:not(.errorExplanation) > h2 {
 	text-indent: 10px;
 	background: url("/themes/emr/images/background_content_page_second_header.jpg") repeat-x;
 	border-bottom:solid 1px #e5e5e5;
 	font-size: 1.4em;
 	color: white;
-	margin: 0 -5px 0 -5px;
+	margin: 0 -13px 0 -13px;
 	padding-top: 1px;
 	height: 29px;
 	line-height: 29px;
@@ -672,11 +675,15 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	letter-spacing: 2px;
 }
 
-#content_page div > h2:first-child {
+#content_page > div > h2:first-child,
+#content_page > div > form > h2:first-child,
+#content_page > div > form > div:not(.errorExplanation) > h2:first-child {
   margin-top: -5px;
 }
 
-#content_page h2.warning {
+#content_page > div > h2.warning,
+#content_page > div > form > h2.warning,
+#content_page > div > form > div:not(.errorExplanation) > h2.warning {
   background: url("/themes/emr/images/warning_14x14.png") no-repeat 7px;
 	background-color: #e99727;
 	border: 1px solid #737373;
@@ -833,16 +840,18 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 
 #errorExplanation {
   position: relative;
-	border:solid 1px #F1BD73;
+  display: inline-block;
+	border: solid 1px #F1BD73;
 	background: #F6E8CF;
-	margin: 10px;
-	width: 530px;
+	margin-top: 5px;
+	//width: 530px;
+	margin-bottom: 8px;
 }
 
 #errorExplanation ul,
 .errorExplanation ul {
   position: relative;
-  padding-left: 30px;
+  padding-left: 25px;
 }
 
 #errorExplanation ul li,
@@ -857,23 +866,17 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 
 #errorExplanation h2,
 .errorExplanation h2 {
-  height: auto;
-	border: none;
+  background: #F1BD73;
+  margin-top: 0px;
+  padding: 3px 10px;
 	color: #B0383D;
-	background: #F1BD73;
-	padding-left: 5px;
-	padding-right: 5px;
-	margin: 0px;
-	overflow: hidden;
 	text-align: center;
-	text-indent 0;
 	font-size: 1em;
-	font-weight: bold;
 }
 
 #errorExplanation p,
 .errorExplanation p {
-	padding-left: 0px;
+	padding-left: 8px;
 }
 
 .fieldErrorExplanation {
@@ -1025,7 +1028,7 @@ width: 50px ! important;
 #content_page > div {
   margin-top: -3px;
 	margin-bottom: 10px;
-	padding: 5px;
+	padding: 5px 13px 5px 13px;
 	background: #ffffff;
 	border: solid 1px #989898;
 	-moz-box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
@@ -1093,7 +1096,7 @@ div label.skip_presentation {
   background: #e99727;
   border: 1px solid #737373;
   padding: 8px 10px 8px 10px;
-  margin: 10px -5px -5px -5px;
+  margin: 10px -13px -5px -13px;
 }
 
 .calendar-trigger {
@@ -1101,25 +1104,6 @@ div label.skip_presentation {
   vertical-align: middle;
   cursor: pointer;
 }
-
-/* #content_page > div .resource {
-  border: 1px solid red;
-}
-
-#content_page > div .resource_form {
-  display: block;
-  border-width: 0 1px 1px 1px;
-  border-style: solid;
-  border-color: #ddd;
-  -moz-border-radius: 0 0 6px 6px ;
-  margin: 0 5px 5px 5px;
-  padding: 0;
-}
-
-#content_page > div .resource_form.new_record {
-  border: 1px solid #e99727;
-  -moz-border-radius: 6px ;
-}*/
 
 /* FORM WITH MULTIPLE ENTRIES */
 
@@ -1247,10 +1231,9 @@ div label.skip_presentation {
 
 .presentation_in_columns > div:not(.errorExplanation) {
   display:inline-block;
-  max-width:800px;
+  //max-width:800px;
   min-width:100px;
   vertical-align: top;
-  margin-left: 50px;
 }
 
 .presentation_in_columns.large label,
@@ -1309,13 +1292,16 @@ div label.skip_presentation {
 ////////////////////////////////////////////////////*/
 div.auto_complete {
   width: 350px;
+  max-height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: #fff;
+  border:1px solid #888;
   position: relative;
   z-index: 100;
 }
 
 div.auto_complete ul {
-  border:1px solid #888;
   margin:0;
   padding:0;
   width:100%;
@@ -1328,8 +1314,16 @@ div.auto_complete ul li {
   cursor: pointer;
 }
 
+div.auto_complete ul li:nth-child(even) {
+  background-color: #eaf1ff;
+}
+
 div.auto_complete ul li.selected {
   background-color: #ffb;
+}
+
+div.auto_complete ul li em {
+  font-size: smaller;
 }
 
 div.auto_complete ul strong.highlight {

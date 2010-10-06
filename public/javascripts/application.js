@@ -66,7 +66,9 @@ function GetCookieValue(name)
 }
 
 // prepare variables for pin and unpin contextual_menu functions
-function prepare_variables_for_contextual_menu() {
+function prepare_variables_for_contextual_menu()
+{
+  if ($('contextual_menu_container') == null) return;  
   unpin_message     = 'Détacher le menu';
   pin_message       = 'Épingler le menu';
   pinned_image      = 'pinned_16x16.png';

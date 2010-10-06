@@ -5,8 +5,6 @@ class EmployeeTest < ActiveSupport::TestCase
   
   should_have_one :iban, :job_contract
   
-  should_have_many :contacts_owners
-  should_have_many :contacts, :through => :contacts_owners
   should_have_many :premia, :employees_jobs
   should_have_many :jobs, :through => :employees_jobs
   should_have_many :checkings, :leaves, :leave_requests
@@ -24,6 +22,14 @@ class EmployeeTest < ActiveSupport::TestCase
   
   should_allow_values_for :society_email, nil, "", "foo@bar.com", "foo.bar@bar.fr", "foo@bar.abcde"
   should_not_allow_values_for :society_email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "L'adresse e-mail entreprise est incorrecte"
+  
+  context "Thanks to 'has_contacts', a subcontractor" do
+    setup do
+      @contacts_owner = Employee.new
+    end
+    
+    include HasContactsTest
+  end
   
   def setup
     @good_employee = employees(:james_doe)    

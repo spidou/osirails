@@ -11,7 +11,7 @@ class Quote < ActiveRecord::Base
   has_permissions :as_business_object, :additional_class_methods => [:confirm, :cancel, :send_to_customer, :sign]
   has_address     :bill_to_address
   has_address     :ship_to_address
-  has_contact     :accept_from => :order_contacts
+  has_contact     :quote_contact, :accept_from => :order_and_customer_contacts, :required => true
   has_reference   :symbols => [:order], :prefix => :sales
   
   belongs_to :creator, :class_name => 'User'
@@ -27,8 +27,6 @@ class Quote < ActiveRecord::Base
                     :url  => '/quotes/:quote_id/order_form'
   
   named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
-  
-  validates_contact_presence
   
   validates_presence_of :order_id, :creator_id
   validates_presence_of :order,   :if => :order_id
@@ -116,9 +114,21 @@ class Quote < ActiveRecord::Base
   end
   
   def validates_length_of_quote_items
-    if product_quote_items.reject{ |q| q.should_destroy? }.empty?
+    if product_quote_items.reject(&:should_destroy?).empty?
       errors.add(:quote_item_ids, "Vous devez entrer au moins 1 produit")
     end
+  end
+  
+  def prizegiving
+    self[:prizegiving] ||= 0.0
+  end
+  
+  def carriage_costs
+    self[:carriage_costs] ||= 0.0
+  end
+  
+  def discount
+    self[:discount] ||= 0.0
   end
   
   def product_quote_items
@@ -161,14 +171,20 @@ class Quote < ActiveRecord::Base
     build_or_update_quote_item(quote_item_attributes)
   end
   
-  def quote_item_attributes=(quote_item_attributes)
+  def product_quote_item_attributes=(quote_item_attributes)
     quote_item_attributes.each do |attributes|
-      build_or_update_quote_item(attributes) unless attributes[:name].blank? and attributes[:description].blank? and attributes[:dimensions].blank? and attributes[:unit_price].blank? and attributes[:prizegiving].blank? and attributes[:quantity].blank? and attributes[:vat].blank?
+      build_or_update_quote_item(attributes)
     end
     
     # automatically remove a end_product from order if quote_items do not include this end_product
     order.end_products.reject(&:new_record?).each do |p|
       @order_end_products_to_remove << p unless product_quote_items.collect(&:end_product_id).include?(p.id)
+    end
+  end
+  
+  def free_quote_item_attributes=(quote_item_attributes)
+    quote_item_attributes.each do |attributes|
+      build_or_update_quote_item(attributes) unless attributes[:name].blank? and attributes[:description].blank? and attributes[:dimensions].blank? and attributes[:unit_price].blank? and attributes[:prizegiving].blank? and attributes[:quantity].blank? and attributes[:vat].blank?
     end
   end
   
@@ -218,7 +234,11 @@ class Quote < ActiveRecord::Base
   end
   
   def number_of_pieces
-    product_quote_items.collect(&:quantity).sum
+    product_quote_items.collect(&:quantity).compact.sum
+  end
+  
+  def number_of_products
+    product_quote_items.count
   end
   
   def confirm
@@ -309,7 +329,7 @@ class Quote < ActiveRecord::Base
   end
   
   def can_be_added?
-    order.draft_quote.nil? and order.pending_quote.nil? and order.signed_quote.nil?
+    order.draft_quote(true).nil? and order.pending_quote(true).nil? and order.signed_quote(true).nil?
   end
   
   def can_be_edited? # we don't choose 'can_edit?' to avoid conflict with 'has_permissions' methods
@@ -326,7 +346,7 @@ class Quote < ActiveRecord::Base
   
   def can_be_confirmed?
     #was_uncomplete? and quote_step.pending_quote.nil? and quote_step.signed_quote.nil?
-    !new_record? and was_uncomplete? and order.pending_quote.nil? and order.signed_quote.nil?
+    !new_record? and was_uncomplete? and order.pending_quote(true).nil? and order.signed_quote(true).nil?
   end
   
   def can_be_cancelled?
@@ -338,11 +358,11 @@ class Quote < ActiveRecord::Base
   end
   
   def can_be_signed?
-    was_sended?
+    was_sended? and order.signed_quote(true).nil?
   end
   
-  def order_contacts
-    order ? order.contacts : []
+  def order_and_customer_contacts
+    order ? order.all_contacts_and_customer_contacts : []
   end
   
   private

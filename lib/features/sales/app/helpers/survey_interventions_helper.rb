@@ -16,8 +16,9 @@ module SurveyInterventionsHelper
     collection = survey_step.survey_interventions.select(&:new_record?)
     
     if collection.empty?
-      collection << survey_step.survey_interventions.build( :start_date         => Time.now.beginning_of_hour,
-                                                            :internal_actor_id  => ( current_user.employee ? current_user.employee.id : nil ))
+      collection << survey_step.survey_interventions.build( :start_date                     => Time.now.beginning_of_hour,
+                                                            :internal_actor_id              => ( current_user.employee ? current_user.employee.id : nil ),
+                                                            :survey_intervention_contact_id => survey_step.order.order_contact_id )
     end
     
     collection_with_errors = collection.reject{ |s| !s.should_create? and s.errors.empty? }

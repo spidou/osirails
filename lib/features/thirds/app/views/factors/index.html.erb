@@ -17,9 +17,9 @@
       <tbody>
         <% for factor in @factors %>
           <tr>
-            <td><%= factor.name %></td>
-            <td><%= factor.fullname %></td>
-            <td>
+            <td class="name text"><%= factor.name %></td>
+            <td class="fullname text"><%= factor.fullname %></td>
+            <td class="actions">
               <%= factor_link(factor, :link_text => "") %> 
               <%= edit_factor_link(factor, :link_text => "") %>
               <%= delete_factor_link(factor, :link_text => "") %>

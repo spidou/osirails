@@ -1,5 +1,4 @@
 <% content_for :header do %>
-  <%= javascript_include_tag 'sales/round_number' %>
   <%= javascript_include_tag 'sales/invoice' %>
   <%= javascript_include_tag 'sales/sales' %>
   <%= stylesheet_link_tag_with_theme_support 'sales/invoice' %>
@@ -17,7 +16,7 @@
                       :invoice_dunnings           => "Relances",
                       :invoice_infos              => "Informations supplémentaires" }
 
-  invoice_errors  = { :invoice_header             => invoice.errors.on(:bill_to_address) || invoice.errors.on(:contacts) || invoice.errors.on(:contact_ids) || invoice.errors.on(:factor) || invoice.errors.on(:factor_id) || invoice.errors.on(:published_on) ? ' errors' : '',
+  invoice_errors  = { :invoice_header             => invoice.errors.on(:bill_to_address) || invoice.errors.on(:invoice_contact) || invoice.errors.on(:invoice_contact_id) || invoice.errors.on(:factor) || invoice.errors.on(:factor_id) || invoice.errors.on(:published_on) ? ' errors' : '',
                       :invoice_body               => invoice.errors.on(:deposit) || invoice.errors.on(:deposit_amount) || invoice.errors.on(:deposit_vat) || invoice.errors.on(:product_items) || invoice.errors.on(:free_items) || invoice.errors.on(:invoice_items) || invoice.errors.on(:invoice_item_ids) || invoice.errors.on(:delivery_note_invoices) ? ' errors' : '',
                       :invoice_due_dates_payments => invoice.errors.on(:due_dates) || invoice.errors.on(:due_date_ids) ? ' errors' : '' }
   

@@ -1,7 +1,7 @@
 class CreateDeliveryNotes < ActiveRecord::Migration
   def self.up
     create_table :delivery_notes do |t|
-      t.references :order, :creator, :delivery_note_type
+      t.references :order, :creator, :delivery_note_type, :delivery_note_contact
       t.string    :status, :reference
       t.string    :attachment_file_name, :attachment_content_type
       t.integer   :attachment_file_size

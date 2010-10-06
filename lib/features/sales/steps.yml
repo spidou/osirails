@@ -11,7 +11,7 @@ steps:
         position: 2
       press_proof:
         title: BAT
-        position: 4
+        position: 3
   pre_invoicing:
     title: SAS de facturation
     position: 2

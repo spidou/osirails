@@ -4,7 +4,7 @@ quote = quote_body
 %>
 
 <div class="autoscroll">
-  <table id="quote_items" class="sales_table no_nth">
+  <table id="quote_items" class="sales_table no_nth" style="margin-bottom:120px"> <!-- margin-bottom avoid to display the scrollbar (of div.autoscroll) when using the autocomplete textfield for product_reference -->
     <thead>
       <tr>
         <th>Réf.</th>
@@ -25,10 +25,10 @@ quote = quote_body
       </tr>
     </thead>
     <tbody id="quote_items_body">
-      <%= render :partial => 'quote_items/quote_item', :collection => quote.quote_items, :locals => { :collection_length => quote.quote_items.size }  %>
+      <%= render :partial => 'quote_items/quote_item', :collection => quote.sorted_quote_items, :locals => { :collection_length => quote.quote_items.size }  %>
     </tbody>
     <tfoot>
-      <%= render :partial => 'quote_items/product_quote_item', :object => nil, :locals => { :quote => quote } %>
+      <%= render :partial => 'quote_items/new_quote_item', :object => nil, :locals => { :quote => quote } if is_form_view? %>
       <%= render :partial => 'quotes/quote_aggregates', :object => quote, :locals => { :form => form } %>
     </tfoot>
   </table>

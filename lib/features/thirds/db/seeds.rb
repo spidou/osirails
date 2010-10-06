@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default third types
 private_third_type  = ThirdType.create! :name => "Privé"
 public_third_type   = ThirdType.create! :name => "Public"
@@ -16,22 +18,40 @@ EstablishmentType.create! :name => "Usine"
 EstablishmentType.create! :name => "Autre"
 
 # default legal forms
-LegalForm.create! :name => "Association",                   :third_type_id => private_third_type.id
-LegalForm.create! :name => "Entreprise individuelle",       :third_type_id => private_third_type.id
-LegalForm.create! :name => "Établissement scolaire privé",  :third_type_id => private_third_type.id
-LegalForm.create! :name => "EURL",                          :third_type_id => private_third_type.id
-LegalForm.create! :name => "Particulier",                   :third_type_id => private_third_type.id
-LegalForm.create! :name => "SA",                            :third_type_id => private_third_type.id
-LegalForm.create! :name => "SARL",                          :third_type_id => private_third_type.id
-LegalForm.create! :name => "SAS",                           :third_type_id => private_third_type.id
-LegalForm.create! :name => "SASU",                          :third_type_id => private_third_type.id
-LegalForm.create! :name => "SNC",                           :third_type_id => private_third_type.id
-LegalForm.create! :name => "Société mutuelle",              :third_type_id => private_third_type.id
-LegalForm.create! :name => "Agence publique",               :third_type_id => public_third_type.id
-LegalForm.create! :name => "Entreprise publique",           :third_type_id => public_third_type.id
-LegalForm.create! :name => "Établissement scolaire public", :third_type_id => public_third_type.id
-LegalForm.create! :name => "Etat",                          :third_type_id => public_third_type.id
-LegalForm.create! :name => "Collectivité territoriale",     :third_type_id => public_third_type.id
+LegalForm.create! :name => "Agent Commercial",                                                    :third_type_id => private_third_type.id
+LegalForm.create! :name => "Artisan",                                                             :third_type_id => private_third_type.id
+LegalForm.create! :name => "Association loi 1901 ou assimilé",                                    :third_type_id => private_third_type.id
+LegalForm.create! :name => "Autre groupement de droit privé non doté de la personnalité morale",  :third_type_id => private_third_type.id
+LegalForm.create! :name => "Autre personne physique",                                             :third_type_id => private_third_type.id
+LegalForm.create! :name => "Caisse d'épargne et de prévoyance",                                   :third_type_id => private_third_type.id
+LegalForm.create! :name => "CE",                                                                  :third_type_id => private_third_type.id
+LegalForm.create! :name => "Commerçant",                                                          :third_type_id => private_third_type.id
+LegalForm.create! :name => "Entreprise individuelle",                                             :third_type_id => private_third_type.id
+LegalForm.create! :name => "Établissement scolaire privé",                                        :third_type_id => private_third_type.id
+LegalForm.create! :name => "EURL",                                                                :third_type_id => private_third_type.id
+LegalForm.create! :name => "GIE",                                                                 :third_type_id => private_third_type.id
+LegalForm.create! :name => "Organisme mutualiste",                                                :third_type_id => private_third_type.id
+LegalForm.create! :name => "Particulier",                                                         :third_type_id => private_third_type.id
+LegalForm.create! :name => "Profession libérale",                                                 :third_type_id => private_third_type.id
+LegalForm.create! :name => "Personne morale de droit étranger,  immatriculée au RCS",             :third_type_id => private_third_type.id
+LegalForm.create! :name => "Société en commandite",                                               :third_type_id => private_third_type.id
+LegalForm.create! :name => "SA",                                                                  :third_type_id => private_third_type.id
+LegalForm.create! :name => "SARL",                                                                :third_type_id => private_third_type.id
+LegalForm.create! :name => "SAS",                                                                 :third_type_id => private_third_type.id
+LegalForm.create! :name => "SASU",                                                                :third_type_id => private_third_type.id
+LegalForm.create! :name => "SNC",                                                                 :third_type_id => private_third_type.id
+LegalForm.create! :name => "Société civile",                                                      :third_type_id => private_third_type.id
+LegalForm.create! :name => "Société mutuelle",                                                    :third_type_id => private_third_type.id
+
+LegalForm.create! :name => "Administration de l'État",                                                :third_type_id => public_third_type.id
+LegalForm.create! :name => "Agence publique",                                                         :third_type_id => public_third_type.id
+LegalForm.create! :name => "Entreprise publique",                                                     :third_type_id => public_third_type.id
+LegalForm.create! :name => "Établissement public administratif",                                      :third_type_id => public_third_type.id
+LegalForm.create! :name => "Établissement public ou régie à caractère industriel ou commercial",      :third_type_id => public_third_type.id
+LegalForm.create! :name => "Établissement scolaire public",                                           :third_type_id => public_third_type.id
+LegalForm.create! :name => "Collectivité territoriale",                                               :third_type_id => public_third_type.id
+LegalForm.create! :name => "Organisme gérant un régime de protection sociale à adhésion obligatoire", :third_type_id => public_third_type.id
+LegalForm.create! :name => "Organisme professionnel",                                                 :third_type_id => public_third_type.id
 
 # default payment time limit
 ptl1 = PaymentTimeLimit.create! :name => "60 jours après réception des travaux + facilité de paiement éventuelle"
@@ -80,3 +100,5 @@ dt.mime_types << [ pdf, jpg, png ]
 dt = DocumentType.find_or_create_by_name("photo")
 dt.update_attribute(:title, "Photo")
 dt.mime_types << [ jpg, png ]
+
+set_default_permissions

@@ -18,10 +18,10 @@
       <tbody>
         <% for subcontractor in @subcontractors %>
           <tr>
-            <td><%= subcontractor.name %></td>
-            <td><%= subcontractor.legal_form.name %></td>
-            <td><%= subcontractor.activity_sector_reference.get_activity_sector.name if subcontractor.activity_sector_reference %></td>
-            <td>
+            <td class="name text"><%= subcontractor.name %></td>
+            <td class="legal_form text"><%= subcontractor.legal_form.name %></td>
+            <td class="activity_sector_reference text"><%= subcontractor.activity_sector_reference.get_activity_sector.name if subcontractor.activity_sector_reference %></td>
+            <td class="actions">
               <%= subcontractor_link(subcontractor, :link_text => "") %> 
               <%= edit_subcontractor_link(subcontractor, :link_text => "") %>
               <%= delete_subcontractor_link(subcontractor, :link_text => "") %>

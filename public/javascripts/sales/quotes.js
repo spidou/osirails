@@ -1,4 +1,4 @@
-function add_product_reference_to_quote() {
+function add_product_reference_to_quote(remote_path, authenticity_token) {
   var product_reference_id = $('add_this_product_reference_id').value
   
   var quote_items = $('quote_items').select('tbody > tr.quote_item')
@@ -14,94 +14,23 @@ function add_product_reference_to_quote() {
     }
   })
   
-//  if (reference_already_chosen && line_reference != null && line_reference.getStyle('display') != 'none') {
-//    old_quantity = parseInt(line_reference.down('.input_quantity').value)
-//    if ( isNaN(old_quantity) ) { old_quantity = 0 }
-//    line_reference.down('.input_quantity').value = old_quantity + 1
-//    calculate(line_reference)
-//    new Effect.Highlight(line_reference)
-//  } else {
-//    if (parseInt(product_reference_id) > 0) {
-//      new Ajax.Request('/product_references/' + product_reference_id + '.json', {
-//	      method: 'get',
-//	      onSuccess: function(transport) {
-//		      var ref_obj = transport.responseText.evalJSON()["product_reference"];
-//		      append_reference(ref_obj);
-//	      }
-//      });
-//    }
-//  }
   if ( parseInt(product_reference_id) > 0 && ( !reference_already_chosen || ( reference_already_chosen && confirm("Cette référence existe déjà pour ce devis. Êtes-vous sûr de vouloir ajouter une nouvelle ligne avec cette référence ?") ) ) ) {
-    new Ajax.Request('/product_references/' + product_reference_id + '.json', {
-      method: 'get',
+    new Ajax.Request(remote_path, {
+      method: 'post',
+      parameters: { 'product_reference_id':product_reference_id,
+                    'authenticity_token':authenticity_token },
       onSuccess: function(transport) {
-	      var ref_obj = transport.responseText.evalJSON()["product_reference"];
-	      append_reference(ref_obj);
+	      $('quote_items').down('tbody').insert({ bottom: transport.responseText })
 	      
 	      update_up_down_links($('quote_items_body'));  // method defined into sales.js
 	      initialize_autoresize_text_areas()
+	      
+	      last_element = $('quote_items').down('tbody').select('tr').last()
+	      new Effect.Highlight(last_element, {afterFinish: function(){ last_element.setStyle({backgroundColor: ''}) }})
+        //calculate(last_element)
       }
     });
   }
-}
-
-//function add_buttons_in_catalog () {
-//  var catalog = $('catalog');
-//  var div_elm = new Element('div')
-//  div_elm.appendChild( new Element('button', { 'style' : 'float: right', 'onclick' : 'osibox_close(); return false;' }).update("Fermer") )
-//  div_elm.appendChild( new Element('button', { 'style' : 'float: right', 'onclick' : 'add_reference(); return false;' }).update("Ajouter") )
-//  div_elm.appendChild( new Element('button', { 'style' : 'float: right', 'onclick' : 'add_reference(); osibox_close(); return false' }).update("Ajouter et fermer") )
-//  catalog.appendChild(div_elm);
-//}
-
-//function add_reference () {
-//  var all_ref = $('select_reference').childElements();
-//  if (all_ref.first().selected) { alert('Veuillez sélectionner une référence'); return false; };
-//  for (var i = 0; i < all_ref.length; i++) {
-//	  if (all_ref[i].selected) {
-//		  new Ajax.Request('/product_references/' + all_ref[i].value + '.json', {
-//			  method: 'get',
-//			  onSuccess: function(transport) {
-//				  var ref_obj = transport.responseText.evalJSON()["product_reference"];
-//				  append_reference(ref_obj);
-//			  }
-//		  });
-//		  return true;
-//	  };
-//  };
-//  return false;
-//}
-  
-function append_reference(json_object) {
-  var reference             = json_object['reference'].toString() || json_object['product_reference']['reference'].toString()
-  var designation           = json_object['designation']
-  var description           = json_object['description']
-  var quantity              = 1
-  var vat                   = parseFloat(json_object['vat']); if (vat == 0) { vat = "0.0" };
-  var product_reference_id  = parseInt(json_object['id'])
-  var quote_body            = $('quote_items').down('tbody')
-  var quote_items           = $('quote_items').select('tbody > tr.quote_item')
-  var model                 = $('quote_items').down('tfoot > tr.quote_item')
-  var line_reference        = null
-  
-  line_reference = model.cloneNode(true);
-  quote_body.insert( {bottom : line_reference});
-  
-  line_reference.down('.reference').update( reference )
-  line_reference.down('.input_name').value = designation
-  line_reference.down('.input_original_name').value = designation
-  line_reference.down('.input_description').value = description
-  line_reference.down('.input_original_description').value = description
-  line_reference.down('.input_quantity').value = quantity
-  line_reference.down('.input_vat').value = vat
-  line_reference.down('.input_original_vat').value = vat
-  line_reference.select('td').last().down('.product_reference_id').value = product_reference_id
-  
-  line_reference.setStyle({display:'table-row'})
-  new Effect.Highlight(line_reference, {afterFinish: function(){ line_reference.setStyle({backgroundColor: ''}) }})
-  
-  calculate(line_reference)
-  return true;
 }
 
 function remove_reference(obj) {
@@ -118,10 +47,10 @@ function remove_reference(obj) {
 }
 
 function calculate(tr) {
-  var quantity = parseFloat(tr.down('.input_quantity').value)
-  var unit_price = parseFloat(tr.down('.input_unit_price').value)
-  var prizegiving = parseFloat(tr.down('.input_prizegiving').value)
-  var vat = parseFloat(tr.down('.input_vat').value)
+  var quantity = parseFloat(tr.down('.input_quantity').value) || 0
+  var unit_price = parseFloat(tr.down('.input_unit_price').value) || 0
+  var prizegiving = parseFloat(tr.down('.input_prizegiving').value) || 0
+  var vat = parseFloat(tr.down('.input_vat').value) || 0
   var td_unit_price_with_prizegiving = tr.down('.unit_price_with_prizegiving')
   var td_total = tr.down('.total')
   var td_total_with_taxes = tr.down('.total_with_taxes')
@@ -171,22 +100,26 @@ function update_aggregates() {
   // aggregate without taxes
   var aggregate_without_taxes = parseFloat(0)
   totals_without_taxes.each(function(item){
-    aggregate_without_taxes += parseFloat(item.innerHTML.toString().trim())
+    aggregate_without_taxes += parseFloat(item.innerHTML.toString().trim()) || 0
   });
   td_aggregate_without_taxes.update( roundNumber(aggregate_without_taxes, 2) )
   
   // aggregate net
-  var aggregate_net = aggregate_without_taxes*(1-(parseFloat(td_prizegiving.value)/100));
+  var prizegiving = parseFloat(td_prizegiving.value) || 0
+  var aggregate_net = prizegiving > 0 ? aggregate_without_taxes*(1-(prizegiving/100)) : aggregate_without_taxes;
   td_aggregate_net.update( roundNumber(aggregate_net, 2) + "&#160;&euro;" )
   
   // aggregate with taxes
   var aggregate_with_taxes = parseFloat(0)
   totals_with_taxes.each(function(item){
-    aggregate_with_taxes += parseFloat(item.innerHTML.toString().trim())
+    aggregate_with_taxes += parseFloat(item.innerHTML.toString().trim()) || 0
   });
   
   // aggregate net to paid
-  var aggregate_net_to_paid = aggregate_net + parseFloat(td_carriage_costs.value) + aggregate_with_taxes + -(aggregate_without_taxes) - parseFloat(td_prizegiving.value);
+  carriage_costs = parseFloat(td_carriage_costs.value) || 0
+  //var aggregate_net_to_paid = aggregate_net + carriage_costs + aggregate_with_taxes + -(aggregate_without_taxes) - prizegiving;
+  var aggregate_net_to_paid = prizegiving > 0 ? aggregate_with_taxes*(1-(prizegiving/100)) : aggregate_with_taxes;
+  aggregate_net_to_paid += carriage_costs
   td_aggregate_net_to_paid.update( roundNumber(aggregate_net_to_paid, 2) + "&#160;&euro;" )
   
   // aggregate all taxes
@@ -198,16 +131,6 @@ function update_account(tax){
   var account_with_taxes = $('quote_account_with_taxes')
   
   account_with_taxes.update(roundNumber(account.value *(1+tax/100), 2))
-}
-
-function restore_original_value(element, value) {
-  if (value.length > 0) {
-    input = element.down('.input_' + value)
-    original = element.down('.input_original_' + value)
-    if (input != null && original != null && original.value.length > 0) {
-      input.value = original.value
-    }
-  }
 }
 
 function remove_free_quote_item(element) {

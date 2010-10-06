@@ -39,7 +39,7 @@ module HasReference
         pattern_key   = "#{options[:prefix]}_#{self.to_s.tableize.singularize}_reference_pattern"
         configuration = Configuration.last(:conditions => ["name = ?", pattern_key])
         
-        raise "[has_reference] (#{self.class.name}) pattern's configuration is not present in database" unless configuration # OPTIMIZE change the error type
+        raise "[has_reference] (#{self.class.name}) pattern's configuration is not present in database (searching '#{pattern_key}' in 'configurations' table)" unless configuration # OPTIMIZE change the error type
         
         const_set 'SYMBOLS', options[:symbols]
         self.prefix_reference   = options[:prefix]
@@ -55,7 +55,7 @@ module HasReference
   module InstanceMethods  
     
     # Method to generate unique reference according to the calling model
-    # the calling model must have a configured patter into sales/config.yml
+    # the calling model must have a configured pattern into sales/config.yml
     #
     # === Options :
     #
@@ -98,7 +98,7 @@ module HasReference
     #
     #   === example
     #   pattern = "$good_model"
-    #   # => "good_model_reference"
+    #   # => good_model.reference
     #   pattern = "$bad_model"
     #   # => "$bad_model"
     #

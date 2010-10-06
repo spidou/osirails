@@ -1,9 +1,0 @@
-establishment_delivery_type:
-  name: Invoicing contact
-  owner: Establishment
-establishment_invoicing_type:
-  name: Invoicing contact
-  owner: Establishment
-supplier_normal_type:
-  name: Normal contact
-  owner: Supplier

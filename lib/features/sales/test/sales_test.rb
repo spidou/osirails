@@ -4,6 +4,7 @@ require 'lib/features/thirds/test/thirds_test'
 require 'lib/features/logistics/test/logistics_test'
 require File.dirname(__FILE__) + '/unit/product_base_test'
 require File.dirname(__FILE__) + '/unit/product_test'
+require File.dirname(__FILE__) + '/unit/product_reference_category_base_test'
 
 Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + '/fixtures/'
 
@@ -19,32 +20,31 @@ class Test::Unit::TestCase
   end
   
   ## ORDER METHODS
-  def create_default_order(factorised_customer = true)
+  def create_default_order(factorised_customer = true) # TODO set 'factorised_customer' at false by default, and make relative changements in whole project
     prepare_sales_processes
     
     customer = get_customer(factorised_customer)
     
     ## prepare society_activity_sector
-    society_activity_sector = SocietyActivitySector.first
+    society_activity_sector = society_activity_sectors(:fabrication)
     society_activity_sector.order_types << OrderType.all
     
     order = Order.new(:title => "Titre", :customer_needs => "Customer Needs", :previsional_delivery => Time.now + 10.days)
     order.commercial = employees(:john_doe)
     order.creator = users(:sales_user)
     order.customer = customer
-    order.contacts = [ customer.contacts.first, customer.contacts.last ]
+    order.order_contact_id = customer.contacts.first.id
     order.society_activity_sector = society_activity_sector
     order.order_type = society_activity_sector.order_types.first
     order.build_bill_to_address(order.customer.bill_to_address.attributes)
     order.build_ship_to_address(order.customer.establishments.first)
     order.approaching = approachings(:email)
     order.save!
-    flunk "order should be saved" if order.new_record?
     return order
   end
   
   def create_default_product_reference
-    return ProductReference.create!( :product_reference_category_id => product_reference_categories(:child).id, :name => "Default Product Reference" )
+    return ProductReference.create!( :product_reference_sub_category_id => product_reference_categories(:child).id, :name => "Default Product Reference" )
   end
   
   def create_default_end_product(order = nil)
@@ -66,7 +66,7 @@ class Test::Unit::TestCase
     
     quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
     quote.creator = users(:sales_user)
-    quote.contacts << contacts(:pierre_paul_jacques)
+    quote.quote_contact_id = order.all_contacts.first.id
     
     order.end_products.each do |end_product|
       quote.build_quote_item(:end_product_id  => end_product.id,
@@ -116,7 +116,7 @@ class Test::Unit::TestCase
     dn = order.delivery_notes.build
     dn.creator          = users(:sales_user)
     dn.ship_to_address  = address
-    dn.contacts         = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_contact_id = order.all_contacts.first.id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     dn.associated_quote.quote_items.each do |ref|
@@ -141,7 +141,7 @@ class Test::Unit::TestCase
     dn = order.delivery_notes.build
     dn.creator            = users(:sales_user)
     dn.ship_to_address    = address
-    dn.contacts           = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_contact_id = order.all_contacts.first.id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     count = 0
@@ -169,7 +169,7 @@ class Test::Unit::TestCase
     dn = order.build_delivery_note_with_remaining_end_products_to_deliver
     dn.creator          = users(:sales_user)
     dn.ship_to_address  = address
-    dn.contacts         = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_contact_id = order.all_contacts.first.id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     dn.save!
@@ -180,11 +180,11 @@ class Test::Unit::TestCase
   
   def build_valid_delivery_intervention_for(delivery_note)
     intervention = delivery_note.delivery_interventions.build(:scheduled_delivery_at        => Time.now,
-                                                              :scheduled_internal_actor_id  => Employee.first.id,
+                                                              :scheduled_internal_actor_id  => employees(:john_doe).id,
                                                               :scheduled_intervention_hours => 2)
     
-    intervention.scheduled_delivery_subcontractor_id      = Subcontractor.first.id if delivery_note.delivery?
-    intervention.scheduled_installation_subcontractor_id  = Subcontractor.first.id if delivery_note.installation?
+    intervention.scheduled_delivery_subcontractor_id      = thirds(:first_subcontractor).id if delivery_note.delivery?
+    intervention.scheduled_installation_subcontractor_id  = thirds(:first_subcontractor).id if delivery_note.installation?
     
     return intervention
   end
@@ -282,11 +282,11 @@ class Test::Unit::TestCase
     
     invoice = order.invoices.build
     
-    invoice.invoice_type    = invoice_types(:deposit_invoice)
-    invoice.creator         = User.first
-    invoice.contact         = order.contacts.first
-    invoice.bill_to_address = order.bill_to_address
-    invoice.published_on    = Date.today
+    invoice.invoice_type        = invoice_types(:deposit_invoice)
+    invoice.creator             = users(:sales_user)
+    invoice.invoice_contact_id  = order.all_contacts.first.id
+    invoice.bill_to_address     = order.bill_to_address
+    invoice.published_on        = Date.today
     
     invoice.deposit         = 40
     invoice.deposit_amount  = invoice.associated_quote.net_to_paid * 0.4
@@ -412,10 +412,10 @@ class Test::Unit::TestCase
     press_proof = create_default_press_proof
     get_sended_press_proof(press_proof)
     
-    dunning = press_proof.dunnings.build(:date       => Date.today,
-                                         :comment    => "comment for tests",
-                                         :creator_id => User.first.id,
-                                         :dunning_sending_method_id => DunningSendingMethod.first.id)
+    dunning = press_proof.dunnings.build(:date                      => Date.today,
+                                         :comment                   => "comment for tests",
+                                         :creator_id                => users(:sales_user).id,
+                                         :dunning_sending_method_id => dunning_sending_methods(:telephone).id)
 
     flunk "dunning should be saved > #{dunning.errors.full_messages.join(', ')}" unless dunning.save
     return dunning

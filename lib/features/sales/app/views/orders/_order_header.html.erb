@@ -1,4 +1,5 @@
 <% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
   <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
   <%= javascript_include_tag 'sales/order' %>
 <% end -%>
@@ -48,7 +49,7 @@
     <div class="order_header_extra">
       <p>
         <label>Contact :</label>
-        <strong><%= @order.contacts.first.fullname + " " + link_to("(Voir plus)", order_informations_path(:anchor => 'contacts_section')) unless @order.contacts.empty? %></strong>
+        <strong><%= @order.all_contacts.first.fullname + " " + link_to("(Voir plus)", order_informations_path(:anchor => 'contacts_section')) unless @order.all_contacts.empty? %></strong>
       </p>
     </div>
   </div>
