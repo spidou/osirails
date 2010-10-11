@@ -9,11 +9,6 @@ class QuotationRequestSupply < ActiveRecord::Base
   
   attr_accessor :purchase_request_supplies_ids, :purchase_request_supplies_deselected_ids, :should_destroy
   
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]        = "Titre :"
-  @@form_labels[:description] = "Description :"
-  
   validates_presence_of :position
   validates_presence_of :supply, :if => :supply_id
   

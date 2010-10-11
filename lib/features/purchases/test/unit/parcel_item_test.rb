@@ -32,7 +32,7 @@ class ParcelItemTest < ActiveSupport::TestCase
       
       should "through a validity error" do
         @parcel.valid?
-        assert_match /quantity not valid/, @parcel.parcel_items.first.errors.on(:quantity)
+        assert_match /n'est pas valide/, @parcel.parcel_items.first.errors.on(:quantity)
       end
     end
     
@@ -89,7 +89,7 @@ class ParcelItemTest < ActiveSupport::TestCase
         @parcel.parcel_items.first.issues_comment = "parcel item issues comment"
         @parcel.parcel_items.first.issues_quantity = 2000
         @parcel.parcel_items.first.report
-        assert_match /quantity not valid/, @parcel.parcel_items.first.errors.on(:issues_quantity)
+        assert_match /n'est pas valide/, @parcel.parcel_items.first.errors.on(:issues_quantity)
       end
       
       context "and which is reported whithout reshipment" do

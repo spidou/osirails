@@ -1192,11 +1192,23 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
     t.datetime "updated_at"
   end
 
+  create_table "purchase_priorities", :force => true do |t|
+    t.string   "name"
+    t.integer  "position"
+    t.boolean  "default"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "purchase_request_supplies", :force => true do |t|
     t.integer  "purchase_request_id"
     t.integer  "supply_id"
     t.integer  "cancelled_by_id"
+    t.integer  "purchase_priority_id"
     t.integer  "expected_quantity"
+    t.string   "designation"
+    t.string   "manufacturer"
+    t.text     "comment"
     t.datetime "cancelled_at"
     t.date     "expected_delivery_date"
     t.datetime "created_at"
@@ -1210,6 +1222,7 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
     t.integer  "cancelled_by_id"
     t.string   "reference"
     t.text     "cancelled_comment"
+    t.text     "site"
     t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"

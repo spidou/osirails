@@ -1,0 +1,72 @@
+fr:     
+  activerecord:
+    models: 
+      purchase_request: "Demande d'achat"
+      purchase_order: "Ordre d'achat"
+      parcel: "Colis"
+    attributes: 
+      purchase_request:
+        service: "Service concerné"
+        employee: "Demandeur"
+        user: "Créateur de la demande"
+        reference: "Référence"
+        status: "Statut"
+        global_date: "Date de livraison souhaitée"
+        cancelled_comment: "Raison de l'annulation"
+      purchase_order:
+        supplier: "Fournisseur"
+        employee: "Demandeur"
+        user: "Créateur de la demande"
+        reference: "Référence"
+        status: "Statut"
+        cancelled_comment: "Raison de l'annulation"
+      purchase_order_supply:
+        cancelled_comment: "Raison de l'annulation"
+      parcel:
+        processing_by_supplier_since: "En attente d'expédition depuis le"
+        shipped_on: "Expédié le"
+        conveyance: "Par"
+        previsional_delivery_date: "Date de livraison prévue du colis"
+        received_by_forwarder_on: "Reçu par le transitaire le"
+        awaiting_pick_up: "Récupération chez le transitaire"
+        received_on: "Reçu le"
+        purchase_document: "Bon de livraison"
+        cancelled_comment: "Veuillez saisir la raison de l'annulation"
+      parcel_item:
+        cancelled_comment: "Veuillez saisir la raison de l'annulation"
+        purchase_document: "Veuillez joindre le devis"
+        issues_comment: "Commentaire"
+        issues_quantity: "Quantit&eacute; &agrave; declarer"
+        must_be_reshipped: "&Agrave; r&eacute;expedier par le fournisseur"
+        send_back_to_supplier: "&Agrave; renvoyer au fournisseur"
+      quotation_request_supply:
+        name: "Titre"
+        description: "Description"
+    errors:
+      models:
+        purchase_request:
+          attributes:
+            purchase_request_supplies:
+             message_error_length_of_for_purchase_request: "Vous devez choisir au moins une fourniture"
+        parcel:
+          attributes:
+            parcel_items:
+              presence_of: "Veuillez selectionner au moins une fourniture dans votre colis"
+            processing_by_supplier_since:
+              on_or_before: "ne doit pas être APRÈS la date d'aujourd'hui ({{restriction}})"
+            shipped_on:
+              on_or_after: "ne doit pas être AVANT la date de préparation ({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS la date d'aujourd'hui ({{restriction}})"
+            received_by_forwarder_on:
+              on_or_after: "ne doit pas être AVANT ({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS la date d'aujourd'hui ({{restriction}})"
+            received_on:
+              on_or_after: "ne doit pas être AVANT ({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS ({{restriction}})"
+        parcel_item:
+          attributes:
+            quantity: 
+              validity: "n'est pas valide"
+            issues_quantity:
+              validity: "n'est pas valide"
+              

@@ -21,7 +21,6 @@ class PurchaseRequestSupply < ActiveRecord::Base
                                               :include    => 'purchase_order',
                                               :conditions => [ 'purchase_orders.status = ?', PurchaseOrder::STATUS_DRAFT ],
                                               :source     => :purchase_order_supply
-  
   belongs_to :purchase_request
   belongs_to :supply
   belongs_to :canceller, :class_name => "User", :foreign_key => :cancelled_by_id
