@@ -1,11 +1,11 @@
-en:     
+en:
   activerecord:
-    models: 
+    models:
       tool_event: "Event"
-    attributes: 
-      commodity_category: 
+    attributes:
+      commodity_category:
         commodity_category: "Belongs to"
-      consumable_category: 
+      consumable_category:
         consumable_category: "Belongs to"
       supply_category:
         unit_measure: "Unit of measure"

@@ -64,7 +64,7 @@ module OrdersHelper
     status = order.critical_status
     
     days = (Date.today - order.previsional_delivery).abs
-    date = order.previsional_delivery.humanize
+    date = l(order.previsional_delivery)
     
     case status
     when Order::CRITICAL, Order::LATE

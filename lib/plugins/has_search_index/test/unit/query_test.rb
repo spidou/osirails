@@ -3,11 +3,13 @@ require File.join(File.dirname(__FILE__), '..', 'test_helper')
 class QueryTest < ActiveRecordTestCase
   fixtures :users
   
-  should_belong_to(:creator)
-  should_validate_presence_of(:name, :page_name, :columns)
-  should_allow_values_for(:search_type, 'and', 'or', 'not')
-  should_allow_values_for(:public_access, false, true)
-  should_validate_presence_of(:creator, :with_foreign_key => :default)
+  should_belong_to :creator
+  
+  should_validate_presence_of :name, :page_name, :columns
+  should_validate_presence_of :creator, :with_foreign_key => :default
+  
+  should_allow_values_for :search_type, 'and', 'or', 'not'
+  should_allow_values_for :public_access, false, true
   
   context "" do # context to setup some constant for testing purposes
     setup do

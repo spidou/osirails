@@ -1,6 +1,6 @@
 fr:
   activerecord:
-    models: 
+    models:
       admin_mailer: "Mailer admin"
       feature: "Module"
       file_type: "Type de fichier"
@@ -11,15 +11,15 @@ fr:
       service: "Service"
       society_activity_sector: "Secteur d'activité"
       user: "Utilisateur"
-    attributes: 
-      iban: 
+    attributes:
+      iban:
         bank_name: "Nom de la banque"
         bank_code: "Code bancaire"
         branch_code: "Code guichet"
         account_number: "N° de compte"
         key: "Clé"
         account_name: "Nom du compte"
-      menu: 
+      menu:
         title: "Titre"
         description: "Description"
         parent: "Menu parent"
@@ -41,4 +41,3 @@ fr:
         last_connection: "Dernière connexion"
         roles: "Rôles"
         force_password_expiration: "Demander à l'utilisateur un nouveau mot de passe à sa prochaine connexion"
-        

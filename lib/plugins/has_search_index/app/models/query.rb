@@ -5,18 +5,21 @@ class Query < ActiveRecord::Base
   serialize :group
   serialize :per_page
   
-  before_validation :prepare_attributes
-  
   belongs_to :creator, :class_name => 'User'
   
-  validates_presence_of     :name, :creator_id, :page_name, :columns
-  validates_presence_of     :creator,        :if => :creator_id
-  validates_numericality_of :per_page,       :if => :per_page
-  validates_length_of       :columns,        :minimum => 1 , :too_short => "n'a pas assez d'éléments ({{count}} minimum)"
-  validates_inclusion_of    :public_access,  :in => [true, false]
-  validates_inclusion_of    :search_type, :in => ['and', 'or', 'not']
+  validates_presence_of :name, :page_name, :columns, :creator_id
+  validates_presence_of :creator, :if => :creator_id
+  
+  validates_numericality_of :per_page, :if => :per_page
+  
+  validates_length_of :columns, :minimum => 1, :too_short => "n'a pas assez d'éléments ({{count}} minimum)" #TODO use I18n
+  
+  validates_inclusion_of :public_access, :in => [true, false]
+  validates_inclusion_of :search_type,   :in => ['and', 'or', 'not']
   
   validate :validates_criteria, :validates_order, :validates_serialized_attributes, :validates_page_name, :validates_persistence_of_page_name
+  
+  before_validation :prepare_attributes
   
   def page_configuration(key = nil)
     hash = HasSearchIndex::HTML_PAGES_OPTIONS[self.page_name.to_sym]
@@ -72,7 +75,7 @@ class Query < ActiveRecord::Base
         [:columns, :group].each do |option| 
           next unless self.send(option) && should_validate?(option)
           unless self.send(option).is_a?(Array)
-            errors.add(option, message_for_validates_custom(option, :bad_type))    
+            errors.add(option, message_for_validates_custom(option, :bad_type))
           else
             errors.add(option, message_for_validates_custom(option, :different_form_configuration)) unless page_configuration(option).include_all?(self.send(option))
           end
@@ -98,7 +101,7 @@ class Query < ActiveRecord::Base
       if self.page_name && should_validate?(:order)
         
         unless self.send(:order) && self.send(:order).is_a?(Array)
-          errors.add(:order, message_for_validates_custom(:order, :bad_type))    
+          errors.add(:order, message_for_validates_custom(:order, :bad_type))
         else
           order_attributes = self.send(:order).map {|n| n.split(':').first}
           errors.add(:order, message_for_validates_custom(:order, :different_form_configuration)) unless page_configuration(:order).include_all?(order_attributes)
@@ -130,11 +133,8 @@ class Query < ActiveRecord::Base
       end
       return true
     end
-
+    
     def message_for_validates_custom(attribute, context)
       I18n.t("activerecord.errors.models.query.attributes.#{ attribute.to_s }.#{ context.to_s }")
     end
-    
-    
-
-end    
+end

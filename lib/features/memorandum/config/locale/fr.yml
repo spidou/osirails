@@ -1,8 +1,8 @@
-fr:     
+fr:
   activerecord:
     models:
       memorandum: "Note de service"
-    attributes: 
+    attributes:
       memorandum:
         title: "Titre"
         subject: "Objet"

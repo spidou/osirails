@@ -18,6 +18,7 @@ module ErrorsHelper
   # ==== Miscellaneous
   # * Fixes an issue encountered on nested resource, error messages were repeated once more than necessary.
   # * Uses a custom counter to display the correct number of errors when some of them are hidden.
+  # * The attribute name is wrapped into a 'strong' markup (eg: <li><strong>Name</strong> is required</li>)
   def error_messages_for(*params)
     options = params.extract_options!.symbolize_keys
     if object = options.delete(:object)
@@ -38,7 +39,8 @@ module ErrorsHelper
       end
       options[:object_name] ||= params.first
       unless options.include?(:message)
-        options[:message] ||= I18n.t 'activerecord.errors.template.body'
+        one_or_other = count > 1 ? 'other' : 'one'
+        options[:message] ||= I18n.t("activerecord.errors.template.body.#{one_or_other}")
       end
     
       errors_count = 0
@@ -47,6 +49,10 @@ module ErrorsHelper
           full_message_index = object.errors.full_messages.index(full_message)
           error_attribute = object.errors.map[full_message_index][0]
           error_message = object.errors.map[full_message_index][1]
+          
+          i18n_error_attribute = full_message.gsub(error_message, "").strip
+          full_message = full_message.gsub(i18n_error_attribute, strong(i18n_error_attribute))
+          
           if object.attributes.map{|attribute| attribute[0]}.include?(error_attribute) or error_attribute == "base"
             unless (error_message == I18n.t('activerecord.errors.messages.invalid') and !options[:keep_invalid_attributes])
               errors_count +=1
@@ -59,8 +65,8 @@ module ErrorsHelper
         end
       end
       
-      header_message = errors_count > 1 ? "other" : "one"
-      options[:header_message] = I18n.t("activerecord.errors.template.header.#{header_message}", :count => errors_count) unless options.include?(:header_message)
+      one_or_other = errors_count > 1 ? 'other' : 'one'
+      options[:header_message] = I18n.t("activerecord.errors.template.header.#{one_or_other}", :count => errors_count) unless options.include?(:header_message)
 
       contents = ''
       contents << content_tag(options[:header_tag] || :h2, options[:header_message]) unless options[:header_message].blank?

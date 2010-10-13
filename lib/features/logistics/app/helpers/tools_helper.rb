@@ -65,10 +65,6 @@ module ToolsHelper
     link || tool_event.internal_actor.fullname 
   end
   
-  def get_end_date(tool_event)
-    return l(tool_event.end_date, :format => :long_ordinal) unless tool_event.end_date.nil?
-  end
-  
   def effectives_image(tool_event, currents_tools, effectives_tools)
     if !effectives_tools.include?(tool_event)
       image   = 'clock'

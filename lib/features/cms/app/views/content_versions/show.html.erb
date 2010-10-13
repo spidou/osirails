@@ -4,7 +4,7 @@
     <%= link_to("Document référent", :controller => :contents, :action => :show, :id => @content.id) %>
   <% end %>
 
-  <h1><%= content_version.title %> (<%= content_version.versioned_at.humanize %>)</h1>
+  <h1><%= content_version.title %> (<%= l(content_version.versioned_at) %>)</h1>
   <div>
     <div class='formated_content'>
       <fieldset>

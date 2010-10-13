@@ -1,12 +1,13 @@
 <%
   search_type_config = [
-    [I18n.t('view.search_type.and'),'and'],
-    [I18n.t('view.search_type.or'),'or'],
-    [I18n.t('view.search_type.not'),'not']
+    [I18n.t('view.search_types.and'),'and'],
+    [I18n.t('view.search_types.or'),'or'],
+    [I18n.t('view.search_types.not'),'not']
   ]
   visible            = cookies["#{ @page_name }_criteria"] == 'false' ? false : true
   collapse           = visible ? 'not-collapsed' : 'collapsed'
 %>
+
 <fieldset>
     <%= toggle_criteria_legend(collapse) %>
     
@@ -22,4 +23,3 @@
       </table>
     </div>
 </fieldset>
-

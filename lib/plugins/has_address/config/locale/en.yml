@@ -1,6 +1,6 @@
-en:     
+en:
   activerecord:
-    attributes: 
+    attributes:
       address:
         country_name: "Country"
         city_name: "City"

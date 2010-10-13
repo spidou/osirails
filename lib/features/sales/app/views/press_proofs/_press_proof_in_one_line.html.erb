@@ -6,13 +6,13 @@ status      = status_text(press_proof)
 
 <tr class="press_proof <%= press_proof.status %>_press_proof" title="<%= status %>">
   <td class="reference"><%= press_proof.reference %></td>
-  <td class="confirmed_on"><%= press_proof.confirmed_on.humanize if press_proof.confirmed_on %></td>
+  <td class="confirmed_on"><%= l(press_proof.confirmed_on, :format => :short) if press_proof.confirmed_on %></td>
   <td class="internal_actor"><%= press_proof.internal_actor.fullname %></td>
   <td class="mockups">
     <%= items.collect{ |i| "#{i.position}. #{i.graphic_item_version.graphic_item.mockup_type.name} - #{i.graphic_item_version.graphic_item.name}" }.join("<br/>") %>
   </td>
-  <td class="sended_on"><%= press_proof.sended_on.humanize if press_proof.sended_on %></td>
-  <td class="signed_on"><%= press_proof.signed_on.humanize if press_proof.signed_on %></td>
+  <td class="sended_on"><%= l(press_proof.sended_on, :format => :short) if press_proof.sended_on %></td>
+  <td class="signed_on"><%= l(press_proof.signed_on, :format => :short) if press_proof.signed_on %></td>
   <td class="status"><%= status %></td>
   <td class="actions"><%= display_actions_press_proof_button(press_proof) %></td>
 </tr>

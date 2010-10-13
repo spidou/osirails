@@ -1,6 +1,6 @@
-fr:     
+fr:
   activerecord:
-    models: 
+    models:
       activity_sector: "Secteur d'activité"
       activity_sector_reference: "Code NAF"
       custom_activity_sector: "Secteur d'activité personnalisé"
@@ -17,7 +17,7 @@ fr:
       supplier: "Fournisseur"
       third: "Tiers"
       third_type: "Type de tiers"
-    attributes: 
+    attributes:
       third:
         name: "Raison Sociale"
         legal_form: "Forme juridique"
@@ -47,4 +47,4 @@ fr:
         bill_to_address:
           formatted: "Adresse de facturation"
       activity_sector_reference:
-        get_activity_sector_name: "Secteur d'activité" 
+        get_activity_sector_name: "Secteur d'activité"

@@ -1,6 +1,6 @@
-fr:     
+fr:
   activerecord:
-    models: 
+    models:
       commodity: "Matière première"
       commodity_category: "Catégorie de matière première"
       commodity_sub_category: "Sous-catégorie de matière première"
@@ -93,4 +93,4 @@ fr:
         provider_actor: "Représentant prestataire"
         start_date: "Date de début"
         end_date: "Date de fin"
-        comment: "Commentaire"        
+        comment: "Commentaire"

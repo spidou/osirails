@@ -879,6 +879,12 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	padding-left: 8px;
 }
 
+#errorExplanation strong,
+.errorExplanation strong {
+  color: inherit;
+  font-weight: bold;
+}
+
 .fieldErrorExplanation {
   border: solid 1px #F1BD73;
 	background: #F6E8CF url("/themes/emr/images/warning_14x14.png") no-repeat 4px 50%;
@@ -1765,8 +1771,7 @@ ul#home_links li a img {
 ////////////////////////////////////////////////////*/
 
 div.pagination {
-	padding: 3px;
-	margin-left: 10px;
+	padding: 3px 3px 3px 0;
 	margin-top: 3px;
 	margin-bottom: 10px;
 	text-align:left;

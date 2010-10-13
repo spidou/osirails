@@ -114,14 +114,14 @@ class String
   # return the boolean value according to the string
   #
   def to_b
-    case self.strip             # avoid spaces
+    case self.strip # avoid spaces
       when "true", "1"
         return true
       when "false", "0"
         return false
       else
         return nil 
-    end 
+    end
   end
   
   def numeric?
@@ -147,20 +147,23 @@ end
 
 class Date
   def humanize
-    I18n.l(self, :format => :long)
+    ActiveSupport::Deprecation.warn("humanize is now deprecated, please use localize instead. eg: l(date)", caller)
+    I18n.l(self)
   end
 end
 
 class DateTime
   def humanize
-    I18n.l(self, :format => :short)
+    ActiveSupport::Deprecation.warn("humanize is now deprecated, please use localize instead. eg: l(date)", caller)
+    I18n.l(self)
   end
 end
 
 module ActiveSupport
   class TimeWithZone
     def humanize
-      self.to_datetime.humanize
+      ActiveSupport::Deprecation.warn("humanize is now deprecated, please use localize instead. eg: l(date)", caller)
+      I18n.l(self.to_datetime)
     end
   end
 end

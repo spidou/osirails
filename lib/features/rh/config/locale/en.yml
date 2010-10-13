@@ -1,6 +1,6 @@
 en:
   activerecord:
-    attributes: 
+    attributes:
       checking:
         absence_hours: "Time of absence"
         absence_comment: "Comment"
@@ -77,9 +77,10 @@ en:
       civility:
         name: "Civility"
         id: "Civility"
-    page_names:      
+    page_names:
       employee:
-        employee_index: "All employees"
+        advanced_employee: "Employees"
+        employee_index: "Employees"
     filters:
       civility:
         name: "Name"

@@ -221,7 +221,7 @@ fr:
         delivery_intervention:
           attributes:
             scheduled_delivery_at:
-              on_or_after_message: "ne doit pas être AVANT aujourd'hui&#160;({{restriction}})"
+              on_or_after: "ne doit pas être AVANT aujourd'hui&#160;({{restriction}})"
             delivery_at:
               on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
               on_or_after: "ne doit pas être AVANT la date d'émission du bon de livraion&#160;({{restriction}})"

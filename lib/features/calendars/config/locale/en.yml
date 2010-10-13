@@ -1,8 +1,8 @@
-en:     
+en:
   activerecord:
-    models: 
+    models:
       alarm: "Alarm"
-    attributes: 
+    attributes:
       alarm:
         do_alarm_before: "Alert"
-        description: "Comment" 
+        description: "Comment"

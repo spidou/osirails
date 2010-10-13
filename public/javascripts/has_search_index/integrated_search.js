@@ -123,9 +123,12 @@ function toggleIntegratedForm(page_name, link)
   main_div = link.up('.integrated_search_form_footer')
   main_form_visibility = main_div.previous('.integrated_search_form').visible()
   
-  if(main_div.down('.quick_search_inputs') != null) { main_div.down('.quick_search_inputs').toggle(); }
-  exp_date       = new Date( 2038 , 1, 1 ); // the year is set to 2038 to simule never expire behavior FIXME
-  setCookie(page_name + '_form', !main_form_visibility, exp_date, '/')
+  if (main_div.down('.quick_search_inputs') != null) {
+    link.toggleClassName('quick_search_visible')
+    main_div.down('.quick_search_inputs').toggleClassName('hidden');
+  }
+  exp_date = new Date( 2038 , 1, 1 ); // the year is set to 2038 to simule never expire behavior FIXME
+  setCookie(page_name + '_form_visible', !main_form_visibility, exp_date, '/')
   
   Effect.toggle(main_div.previous('.integrated_search_form'), 'blind', {duration:0.3})
 }

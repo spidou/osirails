@@ -11,7 +11,7 @@ class Service < ActiveRecord::Base
   
   validates_presence_of :name
   
-  has_search_index :only_attributes       => [:name],
+  has_search_index :only_attributes     => [:name],
                    :only_relationships  => [:schedules, :parent, :children]
   
   # Store the ancient services_parent_id before update_service_parent

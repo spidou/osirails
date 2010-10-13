@@ -25,7 +25,7 @@ advanced_customer:
 #    - head_office_and_establishments.name
     - factor.name
     - customer_grade.name
-    - customer_solvency.name 
+    - customer_solvency.name
   order:
     - name
     - legal_form.name

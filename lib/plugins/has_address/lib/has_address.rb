@@ -62,8 +62,5 @@ end
 
 # Set it all up.
 if Object.const_defined?("ActiveRecord")
-  I18n.load_path += Dir[ File.join(RAILS_ROOT, 'lib', 'plugins', 'has_address', 'config', 'locale', '*.{rb,yml}') ]
-  I18n.reload!
-
   ActiveRecord::Base.send(:include, HasAddress)
 end
