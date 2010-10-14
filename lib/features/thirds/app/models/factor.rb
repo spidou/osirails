@@ -13,11 +13,6 @@ class Factor < ActiveRecord::Base
                    :only_relationships => [ :customers ],
                    :main_model         => true
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]      = "Nom :"
-  @@form_labels[:fullname]  = "Nom complet :"
-  
   def name_and_fullname
     "#{name} (#{fullname})"
   end

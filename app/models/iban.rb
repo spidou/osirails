@@ -3,6 +3,8 @@ class Iban < ActiveRecord::Base
   
   belongs_to :has_iban, :polymorphic => true
   
+  journalize :attributes => [:account_name, :bank_name, :bank_code, :branch_code, :account_number, :key]
+    
 #  ########### 
 #  Active theses validations (and deactive others) when in the ibans/_iban.html.erb view we have
 #  a button 'Create an Iban', and when we click on it the Iban's form appears
@@ -21,13 +23,4 @@ class Iban < ActiveRecord::Base
   validates_format_of 'key',            :with => /^[0-9]{2}$/,  :allow_blank => true, :message => "La clé doit contenir 2 chiffres"
   
   has_search_index :only_attributes => [:account_name, :bank_name, :bank_code, :branch_code, :account_number, :key]
-  
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:bank_name]       = "Nom de la banque :"
-  @@form_labels[:bank_code]       = "Code bancaire :"
-  @@form_labels[:branch_code]     = "Code guichet :"
-  @@form_labels[:account_number]  = "N° de compte :"
-  @@form_labels[:key]             = "Clé :"
-  @@form_labels[:account_name]    = "Nom du compte :"
 end

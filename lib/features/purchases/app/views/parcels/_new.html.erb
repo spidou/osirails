@@ -23,7 +23,7 @@
       <h2>Liste des fournitures</h2>
       <div>
         <%= render :partial => 'parcel_items/begin_table' %>
-        <%= render :partial => 'parcel_items/parcel_item_in_one_line', :collection => parcel.build_parcel_items_with_purchase_order_supplies(purchase_order.purchase_order_supplies), :locals => { :purchase_order => purchase_order}  %>
+        <%= render :partial => 'parcel_items/parcel_item_in_one_line', :collection => parcel.build_parcel_items_with_purchase_order_supplies(purchase_order.purchase_order_supplies), :locals => { :purchase_order => purchase_order} if parcel.build_parcel_items_with_purchase_order_supplies(purchase_order.purchase_order_supplies).any?  %>
         <%= render :partial => 'parcel_items/end_table' %>
       </div>
       

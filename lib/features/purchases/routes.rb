@@ -5,6 +5,9 @@ ActionController::Routing::Routes.add_routes do |map|
     request.cancel_form   'cancel_form',  :controller => 'purchase_requests', :action => 'cancel_form'
   end
   
+  map.resources "purchase_request_supplies"
+  map.purchase_request_managements "purchase_request_managements", :controller => "purchase_request_supplies", :action => "index"
+  
   map.prepare_for_new_quotation_request 'quotation_requests/prepare_for_new', :controller => 'quotation_requests', :action => 'prepare_for_new'
   map.auto_complete_for_supply 'auto_complete_for_supply',  :controller => 'quotation_requests', 
                                                             :action     => 'auto_complete_for_supply', 

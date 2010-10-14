@@ -325,9 +325,9 @@ class Test::Unit::TestCase
     
     mockup = order.mockups.build(:name                  => "Sample",
                                  :description           => "Sample de maquette destiné aux tests unitaires",
-                                 :graphic_unit_measure  => graphic_unit_measures(:normal), 
+                                 :graphic_unit_measure  => graphic_unit_measures(:millimeter), 
                                  :creator               => users(:sales_user),
-                                 :mockup_type           => mockup_types(:normal),
+                                 :mockup_type           => mockup_types(:detailed_view),
                                  :end_product           => end_product,
                                  :graphic_item_version_attributes => ( {:image  => File.new( File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg")),
                                                                         :source => File.new( File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))} )
@@ -341,9 +341,9 @@ class Test::Unit::TestCase
     order = create_default_order
     gd = order.graphic_documents.build(:name                  => "Sample", 
                                        :description           => "Sample de document graphique destiné aux tests unitaires", 
-                                       :graphic_unit_measure  => graphic_unit_measures(:normal), 
+                                       :graphic_unit_measure  => graphic_unit_measures(:millimeter), 
                                        :creator               => users(:sales_user), 
-                                       :graphic_document_type => graphic_document_types(:normal),
+                                       :graphic_document_type => graphic_document_types(:global_view),
                                        :graphic_item_version_attributes => ( {:image  => File.new( File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg")),
                                                                               :source => File.new( File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))} )
                                       )    

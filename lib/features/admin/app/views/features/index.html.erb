@@ -12,7 +12,6 @@
         <th style='width: 40px;'>Installé</th>
         <th style='width: 40px;'>Activé</th>
         <th style='width: 70px;'>Suppression</th>
-
       </tr>
     </thead>
     <tbody>
@@ -21,7 +20,7 @@
         <td><%= feature.title %></td>
         <td><%= feature.name %></td>
         <td><%= feature.version %></td>
-        <td><%= feature.created_at.strftime("%d/%m/%Y") %></td>
+        <td><%= l(feature.created_at) %></td>
         <td><%= display_install_link(feature) %></td>
         <td><%= display_activate_link(feature) %></td>
         <td><%= display_remove_link(feature) %></td>

@@ -4,7 +4,7 @@
 
 <% add_contextual_menu_item :useful_links do %>
   <%= display_purchase_order_add_button %>
-  <%= link_to(image_tag("list_16x16.png", :alt => list_text = "Voir toutes les demandes", :title => list_text) + " " + list_text, purchase_requests_path(:filter => "all")) %>
-  <%= link_to(image_tag("list_16x16.png", :alt => list_text = "Voir les demandes annulees", :title => list_text) + " " + list_text, purchase_requests_path(:filter => "cancelled")) %>
-  <%= link_to(image_tag("list_16x16.png", :alt => list_text = "Voir les demandes en cours", :title => list_text) + " " + list_text, purchase_requests_path(:filter => "in_progress")) %>
+  <%= link_to(image_tag("list_16x16.png", :alt => list_text = "Voir les demandes en cours", :title => list_text) + " " + list_text, purchase_requests_path()) %>
+  <%= link_to(image_tag("list_16x16.png", :alt => list_text = "Voir les demandes par acticle", :title => list_text) + " " + list_text, purchase_request_supplies_path()) %>
+ 
 <% end %>

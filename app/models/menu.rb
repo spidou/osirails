@@ -24,13 +24,6 @@ class Menu < ActiveRecord::Base
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:title] = "Titre :"
-  @@form_labels[:description] = "Description :"
-  @@form_labels[:parent] = "Menu parent :"
-  @@form_labels[:separator] = "Insérer un séparateur :"
-  
   def before_update
     if self.update_parent
       @new_parent_id, self.parent_id = self.parent_id, self.old_parent_id

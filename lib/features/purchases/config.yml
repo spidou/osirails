@@ -38,10 +38,19 @@ menus:
             title: "Fournitures commandées"
             description: "Permet la gestion des fournitures dans un ordre d'achats"
             hidden: true
-      purchase_requests:
+      purchase_request_managements:
         title: "Gestion des demandes d'achats"
         description: "Permet la gestion des demandes d'achats"
         position: 2
+        children:
+          purchase_request_supplies:
+            title: "Par articles"
+            description: "Affiche la liste des demandes d'achats triés par articles"
+            position: 1
+          purchase_requests:
+            title: "Par demandes"
+            description: "Affiche la liste des demandes d'achats triés par demandes"
+            position: 2
       quotation_requests:
         title: "Gestion des demandes de devis"
         description: "Permet la gestion des demandes de devis"

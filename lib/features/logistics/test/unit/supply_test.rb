@@ -77,8 +77,8 @@ module SupplyTest
           assert !@supply.has_been_used?
         end
         
-        should "be editable" do
-          assert @supply.can_be_edited?
+        should "NOT be editable" do
+          assert !@supply.can_be_edited?
         end
         
         should "be destroyable" do
@@ -405,7 +405,6 @@ module SupplyTest
                                       :unit_measure_id  => unit_measures(:millimeter).id,
                                       :value            => "1000" } ] }
             @supply.valid?
-            
             assert @supply.errors.invalid?(:supplies_supply_sizes)
             assert_match /La famille choisie contient déjà une fourniture avec le même type et les mêmes spécificités \(#{@supply.designation}\)/, @supply.errors.on(:supplies_supply_sizes)
             assert @supply.errors.invalid?(:name)
@@ -641,45 +640,45 @@ module SupplyTest
           
           # test stock_quantity
           should "have a good stock_quantity when given date is NOW" do
-            assert_equal 200, @supply.stock_quantity
+            assert_equal 200.0, @supply.stock_quantity.to_f
           end
           
           should "have a good stock_quantity when given date is after an inventory which doesn't imply the supply" do
-            assert_equal 170, @supply.stock_quantity(Time.zone.parse("2009-03-02"))
+            assert_equal 170.0, @supply.stock_quantity(Time.zone.parse("2009-03-02")).to_f
           end
           
           should "have a good stock_quantity when given date is after an inventory which imply the supply" do
-            assert_equal 200, @supply.stock_quantity(Time.zone.parse("2009-04-02"))
+            assert_equal 200.0, @supply.stock_quantity(Time.zone.parse("2009-04-02")).to_f
           end
           
           should "have a good stock_quantity when given date is after a stock_flow which imply the supply" do
-            assert_equal 200, @supply.stock_quantity(Time.zone.parse("2009-01-16"))
+            assert_equal 200.0, @supply.stock_quantity(Time.zone.parse("2009-01-16")).to_f
           end
           
           should "have a stock_quantity at 0 when given date is before all stock_flows" do
-            assert_equal 0, @supply.stock_quantity(Time.zone.parse("2008-12-31"))
+            assert_equal 0.0, @supply.stock_quantity(Time.zone.parse("2008-12-31")).to_f
           end
           
           
           # test stock_quantity_at_last_inventory
           should "have a good stock_quantity_at_last_inventory when given date is NOW" do
-            assert_equal 200, @supply.stock_quantity_at_last_inventory
+            assert_equal 200.0, @supply.stock_quantity_at_last_inventory.to_f
           end
           
           should "have a good stock_quantity_at_last_inventory when given date is after an inventory which doesn't imply the supply" do
-            assert_equal 170, @supply.stock_quantity_at_last_inventory(Time.zone.parse("2009-03-02"))
+            assert_equal 170.0, @supply.stock_quantity_at_last_inventory(Time.zone.parse("2009-03-02")).to_f
           end
           
           should "have a good stock_quantity_at_last_inventory when given date is after an inventory which imply the supply" do
-            assert_equal 70, @supply.stock_quantity_at_last_inventory(Time.zone.parse("2009-02-02"))
+            assert_equal 70.0, @supply.stock_quantity_at_last_inventory(Time.zone.parse("2009-02-02")).to_f
           end
           
           should "have a good stock_quantity_at_last_inventory when given date is after a 'normal' stock_flow" do # normal <=> from_inventory
-            assert_equal 70, @supply.stock_quantity_at_last_inventory(Time.zone.parse("2009-02-16"))
+            assert_equal 70.0, @supply.stock_quantity_at_last_inventory(Time.zone.parse("2009-02-16")).to_f
           end
           
           should "have a stock_quantity_at_last_inventory at 0 when given date is before all stock_flows" do
-            assert_equal 0, @supply.stock_quantity_at_last_inventory(Time.zone.parse("2008-12-31"))
+            assert_equal 0.0, @supply.stock_quantity_at_last_inventory(Time.zone.parse("2008-12-31")).to_f
           end
         end
         
@@ -729,7 +728,7 @@ module SupplyTest
           end
           
           should "have a good stock_value when given date is before all stock_flows" do
-            assert_equal 0, @supply.stock_value(Time.zone.parse("2008-12-31"))
+            assert_equal 0.0, @supply.stock_value(Time.zone.parse("2008-12-31")).to_f
           end
           
           should "have a stock_value at 0 when given date is after a stock_output which put stock_quantity at 0" do
@@ -749,7 +748,7 @@ module SupplyTest
           end
           
           should "have a good stock_measure when given date is before all stock_flows" do
-            assert_equal 0, @supply.stock_measure(Time.zone.parse("2008-12-31"))
+            assert_equal 0.0, @supply.stock_measure(Time.zone.parse("2008-12-31")).to_f
           end
           
           should "have a stock_measure at 0 when given date is after a stock_output which put stock_quantity at 0" do
@@ -769,7 +768,7 @@ module SupplyTest
           end
           
           should "have a good stock_mass when given date is before all stock_flows" do
-            assert_equal 0, @supply.stock_mass(Time.zone.parse("2008-12-31"))
+            assert_equal 0.0, @supply.stock_mass(Time.zone.parse("2008-12-31")).to_f
           end
           
           should "have a stock_mass at 0 when given date is after a stock_output which put stock_quantity at 0" do
@@ -816,11 +815,11 @@ module SupplyTest
           
           # test stock_quantity
           should "have a good stock_quantity when given date is NOW" do
-            assert_equal 100, @supply.stock_quantity
+            assert_equal 100.0, @supply.stock_quantity.to_f
           end
           
           should "have a good stock_quantity when given date is after a stock_flow" do
-            assert_equal 200, @supply.stock_quantity(Time.zone.parse("2009-05-02"))
+            assert_equal 200.0, @supply.stock_quantity(Time.zone.parse("2009-05-02")).to_f
           end
           
           should "have a good stock_quantity when given date is before all stock_flows" do
@@ -852,19 +851,19 @@ module SupplyTest
           
           # test average_unit_stock_value
           should "have a good average_unit_stock_value when given date is NOW" do
-            assert_equal 150, @supply.average_unit_stock_value
+            assert_equal 150.0, @supply.average_unit_stock_value.to_f
           end
           
           should "have a good average_unit_stock_value when given date is after a stock_flow" do
-            assert_equal 150, @supply.average_unit_stock_value(Time.zone.parse("2009-05-02"))
+            assert_equal 150.0, @supply.average_unit_stock_value(Time.zone.parse("2009-05-02"))
           end
           
           should "have a good average_unit_stock_value when given date is before all stock_flows" do
-            assert_equal 0.0, @supply.average_unit_stock_value(Time.zone.parse("2008-12-31"))
+            assert_equal 0.0, @supply.average_unit_stock_value(Time.zone.parse("2008-12-31")).to_f
           end
           
           should "have a average_unit_stock_value at 0 when given date is after a stock_output which put stock_quantity at 0" do
-            assert_equal 0.0, @supply.average_unit_stock_value(Time.zone.parse("2008-04-02"))
+            assert_equal 0.0, @supply.average_unit_stock_value(Time.zone.parse("2008-04-02")).to_f
           end
         end
         
@@ -909,12 +908,12 @@ module SupplyTest
           end
           
           should "have supplier_supplies_unit_prices" do
-            expected_value = [ 110 ] # unit_price = fob_unit_price * ( 1 + ( taxes / 100 ) ) <=> 100 * ( 1 + 0.1 ) = 110
+            expected_value = [ 110.0 ] # unit_price = fob_unit_price * ( 1 + ( taxes / 100 ) ) <=> 100 * ( 1 + 0.1 ) = 110
             assert_equal expected_value, @supply.supplier_supplies_unit_prices
           end
           
           should "have an average_unit_price" do
-            expected_value = 110 # supplier_supplies_unit_prices.sum / supplier_supplies.size <=> 110 / 1 = 110
+            expected_value = 110.0 # supplier_supplies_unit_prices.sum / supplier_supplies.size <=> 110 / 1 = 110
             assert_equal expected_value, @supply.average_unit_price
           end
           
@@ -923,7 +922,7 @@ module SupplyTest
           end
           
           should "have an higher_unit_price" do
-            expected_value = 110 # supplier_supplies_unit_prices.max = 110
+            expected_value = 110.0 # supplier_supplies_unit_prices.max = 110
             assert_equal expected_value, @supply.higher_unit_price
           end
           
@@ -938,12 +937,12 @@ module SupplyTest
             end
             
             should "have an average_measure_price" do
-              expected_value = 22 # average_measure_price / measure <=> 110 / 5 = 22
+              expected_value = 22.0 # average_measure_price / measure <=> 110 / 5 = 22
               assert_equal expected_value, @supply.average_measure_price
             end
             
             should "have an higher_measure_price" do
-              expected_value = 22 # higher_unit_price / measure <=> 110 / 5 = 22
+              expected_value = 22.0 # higher_unit_price / measure <=> 110 / 5 = 22
               assert_equal expected_value, @supply.higher_measure_price
             end
           end
@@ -968,7 +967,7 @@ module SupplyTest
           end
           
           should "have supplier_supplies_unit_prices" do
-            expected_value = [ 110, 108, 130 ] # unit_price = fob_unit_price * ( 1 + ( taxes / 100 ) ) <=> 100 * ( 1 + 0.1 ) = 110
+            expected_value = [ 110.0.to_d, 108.0.to_d, 130.0.to_d ] # unit_price = fob_unit_price * ( 1 + ( taxes / 100 ) ) <=> 100 * ( 1 + 0.1 ) = 110
             assert_equal expected_value, @supply.supplier_supplies_unit_prices
           end
           

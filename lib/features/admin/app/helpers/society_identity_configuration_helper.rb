@@ -13,7 +13,7 @@ module SocietyIdentityConfigurationHelper
     html = ''
     date = Date::today.beginning_of_week
     7.times do |i|
-      html += date.strftime("%A") + "<input name=\"admin_society_identity_configuration_working_day[]\" type=\"checkbox\" value=#{i} "
+      html += l(date, :format => "%A") + "<input name=\"admin_society_identity_configuration_working_day[]\" type=\"checkbox\" value=#{i} "
       html += " checked" if value.include?(i.to_s)
       html += " disabled" unless params[:action] == 'edit'
       html += ">"
@@ -42,6 +42,24 @@ module SocietyIdentityConfigurationHelper
     html << "<select #{disabled}id='#{name}' name='#{name}'>\n"
     html << time_zone_options_for_select(value)
     html << "</select>\n"
+  end
+  
+  def choosen_language(name, value)
+    path = "config/locale"
+    disabled = (params[:action] != 'edit' ? "disabled " : "")
+    languages = {:fr => "Français", :en => "English"}
+    
+    html = ""
+    html << "<select #{disabled}id='#{name}' name='#{name}'>\n"
+    Dir.open(path).sort.each do |file|
+      unless file.start_with?(".")
+        file = file.split(".").first
+        selected = (file == value ? "selected='selected' " : "" )
+        html << "<option #{selected}value='#{file}'>#{languages[file.to_sym]}</option>\n"
+      end
+    end
+    html << "</select>\n"
+    html
   end
 
   def edit_society_identity_configuration_link(text="")

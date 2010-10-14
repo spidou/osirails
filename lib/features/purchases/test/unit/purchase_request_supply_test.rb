@@ -12,8 +12,9 @@ class PurchaseRequestSupplyTest < ActiveSupport::TestCase
   should_have_one   :confirmed_purchase_order_supply, :through => :request_order_supplies
   should_have_many  :draft_purchase_order_supplies, :through => :request_order_supplies
   should_belong_to :purchase_request, :supply
+  should_belong_to :purchase_priority
   
-  should_validate_presence_of :supply_id
+  should_validate_presence_of :purchase_priority_id
   #TODO should_validate_persistence_of :expected_delivery_date
   
   should_validate_numericality_of :expected_quantity

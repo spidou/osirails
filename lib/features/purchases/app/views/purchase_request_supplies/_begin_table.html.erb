@@ -1,16 +1,20 @@
-<table>
+<table class= "purchase_requests">
   <thead>
     <tr>
-      <th>R&eacute;f&eacute;rence</th>
+      <th>R&eacute;f.</th>
       <th>D&eacute;signation</th>
-      <th>Type</th>
-      <th>Qt&eacute; en stock</th>
+      <th>Grandeur/U</th>
+      <th>En stock/seuil</th>
+      <th>Qt&eacute; demand&eacute;e</th>
       <th>Date de livraison souhait&eacute;e</th>
-      <th>Quantit&eacute; souhait&eacute;e</th>
+      <th>Priorit&eacute;</th>
+      <th>Observations</th>
       <% unless is_form_view? %>
-      <th>Statut de la fourniture</th>
+        <th>Etat de l'article</th>
+        <th>Dem. Devis associées</th>
+        <th>Devis associé</th>
+        <th>Ordres d'achats associés</th>
       <% end %>
-      <th>Ordre associ&eacute;e</th>
       <th>Action</th>
     </tr>
   </thead>

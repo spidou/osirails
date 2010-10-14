@@ -2,7 +2,7 @@
   <% if is_new_view? %>
   <tfoot>
     <tr class='footer'>
-      <td colspan='7'>
+      <td colspan='13'>
         <%= hidden_field_tag 'add_this_supply_reference_id' %>
         <%= custom_text_field_with_auto_complete( :supply, :reference,
                                                   { :value      => "Cherchez une fourniture dans la base",
@@ -11,14 +11,15 @@
                                                   { :update_id  => 'add_this_supply_reference_id',
                                                     :url => auto_complete_for_supply_reference_path()}) %>
         
-        <%= link_to_remote "Ajouter une fourniture", :update => "purchase_request_supply_form",
+        <%= button_to_remote "Ajouter un article", :update => "purchase_request_supply_form",
                                       :with => "'supply_id='+$('add_this_supply_reference_id').value", 
                                       :url => purchase_request_supply_in_one_line_path,
                                       :html => { :method => :get },
                                       :position => "bottom",
                                       :condition => "can_add_request_supply()",
-                                      :complete => "$('add_this_supply_reference_id').value = null"   
+                                      :complete => "$('add_this_supply_reference_id').value = null;initialize_autoresize_text_areas();"   
                                       %>
+        <%= display_add_unreferenced_supply_for(purchase_request)%>
       </td>
     </tr>
   </tfoot>

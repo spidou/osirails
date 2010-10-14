@@ -4,7 +4,7 @@ module PaymentsHelper
     id = due_date.was_paid? ? '' : " id=\"new_payments_for_due_date_#{due_date.id}\""
     
     html = "<div class=\"payments\"#{id}>"
-    html << render(:partial => 'payments/payment', :collection => due_date.payments, :locals => { :due_date => due_date })
+    html << render(:partial => 'payments/payment', :collection => due_date.payments, :locals => { :due_date => due_date }) unless due_date.payments.empty?
     html << '</div>'
   end
   

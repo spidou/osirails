@@ -3,7 +3,7 @@ class CreatePurchaseRequests < ActiveRecord::Migration
     create_table  :purchase_requests do |t|
       t.references  :user, :employee, :service, :cancelled_by      
       t.string    :reference
-      t.text      :cancelled_comment 
+      t.text      :cancelled_comment, :site
       t.datetime  :cancelled_at
       
       t.timestamps

@@ -15,10 +15,6 @@ class PurchaseOrderSupply < ActiveRecord::Base
   attr_accessor :purchase_request_supplies_deselected_ids
   attr_accessor :should_destroy
   
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:cancelled_comment] = "Veuillez saisir la raison de l'annulation :"
-  
   validates_presence_of :supply_id, :supplier_designation, :supplier_reference
   validates_presence_of :supply, :if => :supply_id
   validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled_at

@@ -23,6 +23,8 @@ class EndProduct < Product
   
   acts_as_list :scope => :order
   
+  journalize :identifier_method => :name
+  
   validates_presence_of :product_reference_id, :order_id
   validates_presence_of :product_reference, :if => :product_reference_id
   validates_presence_of :order,             :if => :order_id
@@ -45,9 +47,6 @@ class EndProduct < Product
   attr_accessor :should_destroy
   
   END_PRODUCTS_PER_PAGE = 15
-  
-  @@form_labels[:product_reference] = "Produit référence :"
-  @@form_labels[:quantity]          = "Quantité :"
   
   def should_destroy?
     should_destroy.to_i == 1

@@ -1,0 +1,10 @@
+fr:     
+  activerecord:
+    models: 
+      address: "Adresse"
+    attributes: 
+      address:
+        street_name: "Adresse"
+        country_name: "Pays"
+        city_name: "Ville"
+        zip_code: "Code postal"

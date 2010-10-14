@@ -1,0 +1,20 @@
+ <%purchase_request = purchase_request_header%>
+ <div class="presentation_in_columns">
+      <div> 
+        <p>
+          <%= f.label :employee %>
+          <%= f.form_or_view(collection_select(:purchase_request, :employee_id, Employee.find(:all), :id, :fullname), :employee, :fullname)%>  
+        </p>
+        <p>
+          <%= f.label :site %>
+          <%= f.form_or_view(f.text_field(:site), :site)%>  
+        </p>
+      </div>
+      <div>
+        <p>
+          <%= f.label :service %>
+          <%= f.form_or_view(collection_select(:purchase_request, :service_id, Service.find(:all), :id, :name), :service, :name)%>  
+        </p>
+      </div>
+    <br>      
+</div>

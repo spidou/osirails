@@ -5,7 +5,7 @@ class ContentVersionTest < ActiveSupport::TestCase
   should_belong_to :content, :contributor
   
   def setup
-    @content = contents(:one)
+    @content = contents(:normal_content)
     @content_version = ContentVersion.create_from_content(@content)
   end
   subject{ @content_version }

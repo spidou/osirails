@@ -1,0 +1,32 @@
+<%purchase_request = purchase_request_footer%>
+<div class="presentation_in_columns">
+        <% unless f.form_view? %>
+       <div>
+        <p>
+           <%= f.label :reference %>
+           <strong><%= purchase_request.reference %></strong>
+        </p>
+        
+        <p>
+           <%= f.label :created_at%>
+           <strong><%= l(purchase_request.created_at, :format => :short) %></strong>
+        </p>
+       
+       </div>
+       <div>
+        <p>
+          <label>Etat: </label>
+          <strong>
+            <%="#{purchase_request.treated_purchase_request_supplies.size}/#{purchase_request.purchase_request_supplies.size} traitée(s)"%>
+          </strong>
+          <% if purchase_request.canceller %>
+            (Cette demande d'achat a &eacute;t&eacute; annul&eacute;e par <strong><%= purchase_request.canceller.employee_name%></strong> le <strong><%= l(purchase_request.cancelled_at, :format => :short)%> </strong> pour le motif suivant: <strong><%= purchase_request.cancelled_comment%></strong>)
+          <% end %>
+        </p>
+        <p>
+           <%= f.label :user %>
+           <strong><%= purchase_request.user.employee_name %></strong>
+        </p>
+       </div>
+       <% end %>     
+</div>

@@ -1,4 +1,4 @@
-normal:
-  event: normal
+normal_participant:
+  event: two_hours_ago
   name: FooMan
   email: fooman@osirails.lan

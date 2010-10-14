@@ -21,15 +21,6 @@ class ParcelItem < ActiveRecord::Base
   attr_accessor :selected 
   attr_accessor :tmp_selected
   
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
-  @@form_labels[:purchase_document]                       = "Veuillez joindre le devis :"
-  @@form_labels[:issues_comment]                          = "Commentaire :"
-  @@form_labels[:issues_quantity]                         = "Quantit&eacute; &agrave; declarer :"
-  @@form_labels[:must_be_reshipped]                       = "&Agrave; r&eacute;expedier par le fournisseur :"
-  @@form_labels[:send_back_to_supplier]                   = "&Agrave; renvoyer au fournisseur :"
-  
   after_save :save_issue_purchase_order_supply, :if => :issued_at
   
   before_validation_on_update :build_issue_purchase_order_supply, :if => :issued_at 
@@ -66,11 +57,11 @@ class ParcelItem < ActiveRecord::Base
   end
   
   def validates_quantity_for_parcel_item
-    errors.add(:quantity, "quantity not valid")  if self.selected? && self.quantity > self.purchase_order_supply.remaining_quantity_for_parcel
+    errors.add(:quantity, I18n.t("activerecord.errors.models.parcel_item.attributes.quantity.validity", :restriction => ""))  if self.selected? && self.quantity > self.purchase_order_supply.remaining_quantity_for_parcel
   end
   
   def validates_issue_quantity_for_parcel_item
-    errors.add(:issues_quantity, "quantity not valid")  if self.issues_quantity.to_i > self.quantity.to_i
+    errors.add(:issues_quantity, I18n.t("activerecord.errors.models.parcel_item.attributes.issues_quantity.validity", :restriction => ""))  if self.issues_quantity.to_i > self.quantity.to_i
   end
   
   def can_be_cancelled?

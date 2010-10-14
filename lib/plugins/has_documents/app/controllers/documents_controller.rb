@@ -16,7 +16,7 @@ class DocumentsController < ApplicationController
       @group_by = params[:group_by] || "date"
       @order_by = params[:order_by] || "asc" # ascendent
     rescue Exception => e
-      if RAILS_ENV == "production"
+      if Rails.env.production?
         logger.error("[#{DateTime.now}] (#{File.basename(__FILE__)}) > #{e.message}")
         flash.now[:error] = "Une erreur est critique est survenue. Merci de signaler le problème à votre administrateur."
       else

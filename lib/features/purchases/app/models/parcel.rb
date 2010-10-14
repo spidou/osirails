@@ -27,34 +27,34 @@ class Parcel < ActiveRecord::Base
   @@form_labels[:cancelled_comment]             = "Veuillez saisir la raison de l'annulation :"
   
   validates_date :processing_by_supplier_since, :on_or_before => Date::today,
-                                                :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
+                                                :on_or_before_message  => :message_for_processing_by_supplier_since_on_or_before_today,
                                                 :if => :processing_by_supplier?
   validates_date :shipped_on, :on_or_after => :processing_by_supplier_since,
-                              :on_or_after_message  => "ne doit pas être AVANT la date de préparation du colis (%s)",
+                              :on_or_after_message  => :message_for_shipped_on_or_after_processing_by_supplier_since,
                               :if => :shipped?
   validates_date :shipped_on, :on_or_before => Date::today,
-                              :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
+                              :on_or_before_message  => :message_for_shipped_on_or_before_today,
                               :if => :shipped?
   validates_date :received_by_forwarder_on, :on_or_after => :processing_by_supplier_since,
-                                            :on_or_after_message  => "ne doit pas être AVANT la date de préparation du colis (%s)",
+                                            :on_or_after_message  => :message_for_received_by_forwarder_on_or_after_processing_by_supplier_since,
                                             :if => :received_by_forwarder?
   validates_date :received_by_forwarder_on, :on_or_after => :shipped_on,
-                                            :on_or_after_message  => "ne doit pas être AVANT la date d'expédition du colis (%s)",
+                                            :on_or_after_message  => :message_for_received_by_forwarder_on_or_after_shipped_on,
                                             :if => :received_by_forwarder?
   validates_date :received_by_forwarder_on, :on_or_before => Date::today,
-                                            :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
+                                            :on_or_before_message  => :message_for_received_by_forwarder_on_or_before_today,
                                             :if => :received_by_forwarder?
   validates_date :received_on, :on_or_after => :processing_by_supplier_since,
-                                :on_or_after_message  => "ne doit pas être AVANT la date de préparation du colis (%s)",
+                                :on_or_after_message  => :message_for_received_on_or_after_processing_by_supplier_since,
                                 :if => :received?
   validates_date :received_on, :on_or_after => :shipped_on,
-                                :on_or_after_message  => "ne doit pas être AVANT la date de d'expédition du colis (%s)",
+                                :on_or_after_message  => :message_for_received_on_or_after_shipped_on,
                                 :if => :received?  
   validates_date :received_on, :on_or_after => :received_by_forwarder_on,
-                                :on_or_after_message  => "ne doit pas être AVANT la date de récetion par le transitaire (%s)",
+                                :on_or_after_message  => :message_for_received_on_or_after_received_by_forwarder_on,
                                 :if => :received?
   validates_date :received_on, :on_or_before => Date::today,
-                                :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
+                                :on_or_before_message  => :message_for_received_on_or_before_today,
                                 :if => :received?
   
   validates_presence_of :conveyance , :if => :shipped?, :message => "Veuillez renseigner le transport."
@@ -108,7 +108,7 @@ class Parcel < ActiveRecord::Base
     for parcel_item in parcel_items
       result += parcel_item.selected.to_i
     end
-    errors.add(:parcel_items, "Veuillez selectionner au moins une fourniture dans votre colis") if result == 0
+    errors.add(:parcel_items, I18n.t("activerecord.errors.models.parcel.attributes.parcel_items.presence_of", :restriction => "")) if result == 0
   end
   
   def delete_unselected_parcel_items
@@ -246,4 +246,49 @@ class Parcel < ActiveRecord::Base
   def save_delivery_document
     delivery_document.save
   end
+  
+  def message_for_processing_by_supplier_since_on_or_before_today 
+    message_for_validates_date("processing_by_supplier_since", "on_or_before", Date.today)
+  end
+  
+  def message_for_shipped_on_or_after_processing_by_supplier_since
+    message_for_validates_date("shipped_on", "on_or_after", self.processing_by_supplier_since)
+  end 
+  
+  def message_for_shipped_on_or_before_today 
+    message_for_validates_date("shipped_on", "on_or_after", Date.today)  
+  end 
+  
+  def message_for_received_by_forwarder_on_or_after_processing_by_supplier_since
+     message_for_validates_date("received_by_forwarder_on", "on_or_after", self.processing_by_supplier_since)
+  end 
+  
+  def message_for_received_by_forwarder_on_or_after_shipped_on
+    message_for_validates_date("received_by_forwarder_on", "on_or_after", self.shipped_on) 
+  end 
+  
+  def message_for_received_by_forwarder_on_or_before_today 
+    message_for_validates_date("received_by_forwarder_on", "on_or_before", Date.today)
+  end 
+  
+  def message_for_received_on_or_after_processing_by_supplier_since
+    message_for_validates_date("received_on", "on_or_after", self.processing_by_supplier_since)
+  end
+    
+  def message_for_received_on_or_after_shipped_on 
+    message_for_validates_date("received_on", "on_or_after", self.shipped_on)
+  end 
+  
+  def message_for_received_on_or_after_received_by_forwarder_on 
+    message_for_validates_date("received_on", "on_or_after", self.received_by_forwarder_on)
+  end
+  
+  def message_for_received_on_or_before_today
+    message_for_validates_date("received_on", "on_or_before", Date.today) 
+  end
+  
+  private
+    def message_for_validates_date(attribute, error_type, restriction)
+      I18n.t("activerecord.errors.models.parcel.attributes.#{attribute}.#{error_type}", :restriction => restriction)
+    end
 end

@@ -5,6 +5,6 @@ class ActivitySector < ActiveRecord::Base
   has_search_index :only_attributes => [:name]
   
   def short_name
-    name.size > 40 ? name.chars[0...40].to_s.strip + "..." : name unless name.blank?
+    name.size > 40 ? name.mb_chars[0...40].to_s.strip + "..." : name unless name.blank?
   end
 end

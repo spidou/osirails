@@ -27,6 +27,12 @@ class Quote < ActiveRecord::Base
   has_attached_file :order_form,
                     :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
                     :url  => '/quotes/:quote_id/order_form'
+                    
+  journalize :attributes   => [:status, :order_id, :creator_id,  :quote_contact_id, :reference, :carriage_costs, :prizegiving, 
+                               :deposit, :discount, :sales_terms, :validity_delay, :validity_delay_unit, :confirmed_on, 
+                               :cancelled_on, :sended_on, :send_quote_method_id, :signed_on, :order_form_type_id, ],
+             :subresources => [:quote_items, :bill_to_address, :ship_to_address],
+             :attachments  =>  :order_form
   
   named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
   
@@ -45,22 +51,18 @@ class Quote < ActiveRecord::Base
   
   ## VALIDATIONS ON VALIDATING QUOTE
   with_options :if => Proc.new{ |i| i.created_at_was and i.confirmed? } do |quote|
-    quote.validates_date :confirmed_on, :on_or_after          => :created_at,
-                                        :on_or_after_message  => "ne doit pas être AVANT la date de création du devis&#160;(%s)"
+    quote.validates_date :confirmed_on, :on_or_after => :created_at
     quote.validates_presence_of   :reference
   end
   
   ## VALIDATIONS ON INVALIDATING QUOTE
-  validates_date :cancelled_on, :on_or_after          => :created_at,
-                                :on_or_after_message  => "ne doit pas être AVANT la date de création du devis&#160;(%s)",
-                                :if                   => Proc.new{ |i| i.created_at_was and i.cancelled? }
+  validates_date :cancelled_on, :on_or_after => :created_at,
+                                :if          => Proc.new{ |i| i.created_at_was and i.cancelled? }
   
   ## VALIDATIONS ON SENDING QUOTE
   with_options :if => :sended? do |quote|
-    quote.validates_date  :sended_on, :on_or_after          => :confirmed_on,
-                                      :on_or_after_message  => "ne doit pas être AVANT la date de validation du devis&#160;(%s)",
-                                      :on_or_before         => Date.today,
-                                      :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    quote.validates_date  :sended_on, :on_or_after  => :confirmed_on,
+                                      :on_or_before => Date.today
     
     quote.validates_presence_of :send_quote_method_id
     quote.validates_presence_of :send_quote_method, :if => :send_quote_method_id # prevent errors by providing wrong ID
@@ -71,10 +73,8 @@ class Quote < ActiveRecord::Base
     quote.validates_presence_of :order_form_type_id, :order_form
     quote.validates_presence_of :order_form_type, :if => :order_form_type_id
     
-    quote.validates_date  :signed_on, :on_or_after          => :sended_on,
-                                      :on_or_after_message  => "ne doit pas être AVANT la date d'envoi du devis&#160;(%s)",
-                                      :on_or_before         => Date.today,
-                                      :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    quote.validates_date  :signed_on, :on_or_after  => :sended_on,
+                                      :on_or_before => Date.today
     
     quote.validate :validates_presence_of_order_form
   end
@@ -85,20 +85,6 @@ class Quote < ActiveRecord::Base
   attr_protected :status, :confirmed_on, :cancelled_on
   
   attr_accessor :order_end_products_to_remove
-  
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:validity_delay]    = 'Période de validité :'
-  @@form_labels[:sended_on]         = 'Devis envoyé au client le :'
-  @@form_labels[:send_quote_method] = 'Par :'
-  @@form_labels[:signed_on]         = 'Devis signé par le client le :'
-  @@form_labels[:order_form_type]   = 'Type de document :'
-  @@form_labels[:order_form]        = 'Fichier (document signé) :'
-  @@form_labels[:sales_terms]       = 'Conditions commerciales :'
-  @@form_labels[:created_at]        = 'Date de création :'
-  @@form_labels[:creator]           = "Créateur :"
-  @@form_labels[:reference]         = "Référence :"
-  @@form_labels[:status]            = "État actuel :"
   
   def initialize(*params)
     super(*params)
