@@ -1,35 +1,34 @@
 <% generate_contextual_menu_partial %>
 
-<h1>Liste des demandes d'achats</h1>
+<h1>Les demandes d'achat en cours</h1>
 <div>
   <table>
     <thead>
       <tr>
-        <th rowspan='2'>R&eacute;f&eacute;rence</th>
-        <th rowspan='2'>Date de cr&eacute;ation</th>
-        <th rowspan='2'>Demandeur</th>
-        <th rowspan='2'>Service</th>
-        <th colspan='4'>Statuts des fournitures</th>
-        <th rowspan='2'>Actions</th>
-      </tr>
-      <tr>
-        <th>Non trait&eacute;e(s)</th>
-        <th>En cours de traitement(s)</th>
-        <th>Trait&eacute;e(s)</th>
-        <th>Total</th>
+        <th>R&eacute;f&eacute;rence</th>
+        <th>Cr&eacute;&eacute;e le</th>
+        <th>Demandeur</th>
+        <th>Service</th>
+        <th>Date de livraison souhait&eacute;e</th>
+        <th>Etat de la demande d'achat</th>
+        <th>Etat article<br />trait&eacute;/total</th>
+        <th>Demande de devis</th>
+        <th>Ordre d'achat</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <% for request in @requests %>
         <tr <%= "class='disabled'" if request.canceller %>>
           <td><%=h request.reference %></td>
-          <td><%=h request.created_at.humanize %></td>
+          <td><%=h l(request.created_at, :format => :short) %></td>
           <td><%=h request.employee.fullname %></td>
           <td><%=h request.service.name %></td>
-          <td><%=h request.untreated_purchase_request_supplies.size %></td>
-          <td><%=h request.during_treatment_purchase_request_supplies.size %></td>
-          <td><%=h request.treated_purchase_request_supplies.size %></td>
-          <td><%=h request.purchase_request_supplies.size %></td>
+          <td><%=h l(request.expected_delivery_date, :format => :short) %></td>
+          <td><%=h display_status_for(request) %></td>
+          <td><%=h "#{request.treated_purchase_request_supplies.size}/#{request.purchase_request_supplies.size}" %></td>
+          <td>#</td>
+          <td><%=h  request.purchase_orders_associated.size%></td>
           <td><%= generate_list_action(request) %> </td>
         </tr>
         <% end %>
@@ -37,3 +36,4 @@
   </table>
   <%= will_paginate @requests %>
 </div>
+

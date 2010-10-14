@@ -8,11 +8,12 @@ fr:
       purchase_request:
         service: "Service concerné"
         employee: "Demandeur"
-        user: "Créateur de la demande"
+        user: "Créée par"
         reference: "Référence"
         status: "Statut"
         global_date: "Date de livraison souhaitée"
         cancelled_comment: "Raison de l'annulation"
+        created_at: "Créée le"
       purchase_order:
         supplier: "Fournisseur"
         employee: "Demandeur"
@@ -69,4 +70,14 @@ fr:
               validity: "n'est pas valide"
             issues_quantity:
               validity: "n'est pas valide"
+  acronyms:
+    purchase_request:
+      acronym: "DA" 
+      title: "Demande d&#39;Achat"
+    purchase_order:
+      acronym: "OA"
+      title: "Ordre d&#39;Achat"
+    quotation_request:
+      acronym: "DD"
+      title: "Demande de Devis"
               

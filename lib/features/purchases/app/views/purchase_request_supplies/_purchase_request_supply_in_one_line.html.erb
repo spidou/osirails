@@ -1,30 +1,31 @@
-<% fields_for "purchase_request[purchase_request_supply_attributes][]", purchase_request_supply = purchase_request_supply_in_one_line do |f|%>
+<% purchase_request_supply = purchase_request_supply_in_one_line %>
+<% class_name = purchase_request_supply.supply ? "" : "unreferenced_supply" %>
+<% fields_for "purchase_request[purchase_request_supply_attributes][]", purchase_request_supply do |f|%>
+<% purchase_request_supply.purchase_priority_id = PurchasePriority.default_priority.id if f.form_view?%>
   <tr <% if f.form_view? %>
-        <%="class='purchase_request_supply resource'"  %> 
+        <%="class='purchase_request_supply resource #{class_name}'"  %> 
       <% elsif purchase_request_supply.cancelled? %>
         <%="class=disabled" %>
       <% end %> >
     <td style="display:none;">
       <%= f.hidden_field(:supply_id) %>
     </td>
-    <td>
-       <%= purchase_request_supply.supply.reference %>
+        <td>
+       <%= purchase_request_supply.reference %>
     </td>
     <td>
-       <%= purchase_request_supply.supply.designation %>
-    </td>
-    <td>
-       <%= display_type_for(purchase_request_supply.supply) %>
-    </td>
-    <td>
-       <%= purchase_request_supply.supply.stock_quantity %>
-    </td>
-    <td>
-      <% if f.form_view? %>
-        <%= f.text_field(:expected_delivery_date, :size => 8) %>
+       <% if !purchase_request_supply.supply && f.form_view?%>
+        <%= f.text_field(:designation) %>
       <% else %>
-        <%= purchase_request_supply.expected_delivery_date.humanize %>
+        <%= purchase_request_supply.designation %>
+        <%= f.hidden_field(:designation, :value => purchase_request_supply.designation) %>
       <% end %>
+    </td>
+    <td>
+       <%= purchase_request_supply.measure %>
+    </td>
+    <td>
+       <%= "#{purchase_request_supply.stock_quantity}  /  #{purchase_request_supply.threshold}" %>
     </td>
     <td>
       <% if f.form_view? %>
@@ -35,24 +36,40 @@
     </td>
     <td>
       <% if f.form_view? %>
+        <%= f.text_field(:expected_delivery_date, :size => 8) %>
+      <% else %>
+        <%= l(purchase_request_supply.expected_delivery_date, :format => :short)  %>
+      <% end %>
+    </td>
+    <td>
+      <% if f.form_view? %>
+         <%= f.collection_select :purchase_priority_id, PurchasePriority.all , :id, :name %>
+      <% else %>
+        <%= purchase_request_supply.purchase_priority.name %>
+      <% end %>
+    </td>
+    
+    <td>
+      <% if f.form_view? %>
+         <%= f.text_area_autoresize :comment , :cols => 25%>
+      <% else %>
+        <%= purchase_request_supply.comment %>
+      <% end %>
+    </td>
+    
+    <td>
+      <% if f.form_view? %>
          <%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')) this.up('.resource').remove()") %>
       <% else %>
         <%= check_request_supply_status(purchase_request_supply) %>
       <% end %>
     </td>
+    
     <% unless f.form_view? %>
+      <td>#</td>
+      <td>#</td>
       <td><%= display_associated_purchase_order(purchase_request_supply) %></td>
-      <td>
-      <% if purchase_request_supply.can_be_cancelled? %>
-        <%= link_to( image_tag( "cancel_16x16.png",
-                                :alt => text = "Annuler cette fourniture",
-                                :title => text ),
-                     purchase_request_cancel_supply_path(purchase_request_supply.purchase_request_id, purchase_request_supply.id),
-                     :confirm => "Êtes-vous sûr ?" ) %>
-      <% else %>
-         &nbsp;
-      <% end %>
-      </td>
+      <td><%= display_action_button_for(purchase_request_supply)%></td>
     <% end %>
   </tr>
 <% end  %>

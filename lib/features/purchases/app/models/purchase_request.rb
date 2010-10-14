@@ -32,6 +32,7 @@ class PurchaseRequest < ActiveRecord::Base
   
   before_validation_on_create :update_reference, :update_date
   after_save :save_purchase_request_supplies
+
   
   def update_date
     for purchase_request_supply in purchase_request_supplies
@@ -77,6 +78,10 @@ class PurchaseRequest < ActiveRecord::Base
     untreated_purchase_request_supplies.size > 0 || during_treatment_purchase_request_supplies.size > 0
   end
   
+  def partially_treated_purchase_request_supplies?
+    purchase_request_supplies.select{|n| n.treated? || n.cancelled?}.size == purchase_request_supplies.size && purchase_request_supplies.select(&:cancelled?).any? 
+  end
+  
   def treated_purchase_request_supplies
     purchase_request_supplies.select(&:treated?)
   end
@@ -84,6 +89,18 @@ class PurchaseRequest < ActiveRecord::Base
   def cancel
     self.cancelled_at = Time.now
     self.save
+  end
+  
+  def expected_delivery_date
+    purchase_request_supplies.collect(&:expected_delivery_date).sort.first
+  end
+    
+  def purchase_orders_associated
+    purchase_orders = []
+    for purchase_request in purchase_request_supplies
+      purchase_orders << purchase_request.confirmed_purchase_order_supply.purchase_order if  purchase_request.treated?
+    end
+    purchase_orders.flatten.uniq
   end
   
   def message_error_length_of_for_purchase_request

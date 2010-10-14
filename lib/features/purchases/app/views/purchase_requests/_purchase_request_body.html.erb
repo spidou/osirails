@@ -1,0 +1,13 @@
+<%purchase_request = purchase_request_body%>
+<div>
+   <% if f.form_view? %>
+          <p>
+            <%= f.label :global_date %>
+            <%= f.calendar_date_select :global_date %>
+            <span class="help_text">(La date renseign&eacute;e dans ce champs, s'appliquera &agrave; tous les champs de date de livraison souhait&eacute;e except&eacute; les champs remplis manuellement)</span>
+          </p>
+    <% end %>
+   <div>
+    <%= render :partial => 'purchase_request_supplies/purchase_request_supplies',  :locals => { :purchase_request => purchase_request }  %>
+   </div>
+</div>

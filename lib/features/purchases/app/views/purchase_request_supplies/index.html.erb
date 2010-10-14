@@ -1,0 +1,50 @@
+<% generate_contextual_menu_partial %>
+
+<h1>Les demandes d'achat en cours par articles</h1>
+<div>
+  <table>
+    <thead>
+      <tr>
+        <th>Réf.</th>	
+        <th>Désignation</th>		
+        <th>Grandeur/U</th>		
+        <th>En stock/Seuil</th>	
+        <th>Qté demandée</th>	
+        <th>Réf. <%= acronym(:purchase_request) %> associée</th>	
+        <th>Créée le</th>	
+        <th>Demandeur</th>	
+        <th>Service</th>	
+        <th>Date de livraison souhaitée</th>		
+        <th>Priorité</th>	
+        <th>État de l'article</th>	
+        <th><%= acronym(:quotation_request) %> associées</th>	
+        <th>Devis associé</th>	
+        <th><%= acronym(:purchase_order) %> associées</th>	
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for purchase_request_supply in @purchase_request_supplies %>
+        <tr <%= "class='disabled'" if purchase_request_supply.purchase_request.canceller %>>
+          <td><%= purchase_request_supply.reference%></td>
+          <td><%= purchase_request_supply.designation%></td>
+          <td><%= purchase_request_supply.measure%></td>
+          <td><%= "#{purchase_request_supply.stock_quantity}  /  #{purchase_request_supply.threshold}" %></td>
+          <td><%= purchase_request_supply.expected_quantity%></td>
+          <td><%= link_to purchase_request_supply.purchase_request.reference, purchase_request_supply.purchase_request%></td>
+          <td><%= l(purchase_request_supply.purchase_request.created_at, :format => :short) %></td>
+          <td><%= purchase_request_supply.purchase_request.employee.fullname%></td>
+          <td><%= purchase_request_supply.purchase_request.service.name %></td>
+          <td><%= l(purchase_request_supply.expected_delivery_date, :format => :short) %></td>
+          <td><%= purchase_request_supply.purchase_priority.name %></td>
+          <td><%= check_request_supply_status(purchase_request_supply) %></td>
+          <td>#</td>
+          <td>#</td>
+          <td><%= display_associated_purchase_order(purchase_request_supply) %></td>
+           <td><%= display_action_button_for(purchase_request_supply)%></td>          
+        </tr>
+        <% end %>
+    </tbody>
+  </table>
+  <%= will_paginate @requests %>
+</div>

@@ -321,10 +321,12 @@ class Test::Unit::TestCase
     if !purchase_request_supplies || purchase_request_supplies.empty?
       purchase_request_supplies = [ { :supply_id               => supplies("first_commodity").id,
                                       :expected_quantity       => 30,
-                                      :expected_delivery_date  => Date.today + 1.week },
+                                      :expected_delivery_date  => Date.today + 1.week,
+                                      :purchase_priority_id    => purchase_priorities("first_purchase_priority").id },
                                     { :supply_id               => supplies("second_commodity").id,
                                       :expected_quantity       => 30,
-                                      :expected_delivery_date  => Date.today + 1.week } ]
+                                      :expected_delivery_date  => Date.today + 1.week,
+                                      :purchase_priority_id    => purchase_priorities("second_purchase_priority").id } ]
     end
     
     purchase_request_supplies.each do |prs|

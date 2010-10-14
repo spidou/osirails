@@ -1,0 +1,5 @@
+first_purchase_priority:
+  name: low
+  default: true
+second_purchase_priority:
+  name: regular

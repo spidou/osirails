@@ -3,13 +3,8 @@ class PurchaseRequestsController < ApplicationController
   helper :purchase_request_supplies, :purchase_orders
   
   # GET /purchase_requests
-  # GET /purchase_requests?filter=all
-  # GET /purchase_requests?filter=cancelled
-  # GET /purchase_requests?filter=in_progress
   def index  
-    conditions = "cancelled_by_id IS NULL" if (params[:filter]) == nil or (params[:filter]) == 'in_progress'
-    conditions = "cancelled_by_id IS NOT NULL"  if (params[:filter]) == 'cancelled' 
-    @requests = PurchaseRequest.all(:conditions => conditions, :order => "created_at DESC").paginate(:page => params[:page], :per_page => PurchaseRequest::REQUESTS_PER_PAGE)
+    @requests = PurchaseRequestSupply.sorted_by_priority_and_expected_delivery_date.collect(&:purchase_request).uniq.paginate(:page => params[:page], :per_page => PurchaseRequest::REQUESTS_PER_PAGE)
   end
   
   # GET /purchase_requests/:purchase_request_id

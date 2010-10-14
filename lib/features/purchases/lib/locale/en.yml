@@ -8,11 +8,12 @@ en:
       purchase_request:
         service: "Departement concerned"
         employee: "Applicant"
-        user: "Application's creator"
+        user: "Created by"
         reference: "Reference"
         status: "Status"
         global_date: "Expected delivery date"
         cancelled_comment: "Reason for cancellation"
+        created_at: "Created at"
       purchase_order:
         supplier: "Supplier"
         employee: "Applicant"
@@ -69,5 +70,14 @@ en:
               validity: "not valid"
             issues_quantity:
               validity: "not valid"
-              
+  acronyms:
+    purchase_request:
+      acronym: "PR" 
+      title: "Purchase Request"
+    purchase_order:
+      acronym: "PO"
+      title: "Purchase Order"
+    quotation_request:
+      acronym: "QR"
+      title: "Quotation Request"              
         

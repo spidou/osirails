@@ -21,11 +21,14 @@ class PurchaseRequestSupply < ActiveRecord::Base
                                               :include    => 'purchase_order',
                                               :conditions => [ 'purchase_orders.status = ?', PurchaseOrder::STATUS_DRAFT ],
                                               :source     => :purchase_order_supply
+  belongs_to :purchase_priority
   belongs_to :purchase_request
   belongs_to :supply
   belongs_to :canceller, :class_name => "User", :foreign_key => :cancelled_by_id
-  
-  validates_presence_of :supply_id
+
+  validates_presence_of :purchase_priority_id
+  validates_presence_of :designation, :unless => :supply
+  validates_presence_of :purchase_priority, :if => :purchase_priority_id
   validates_presence_of :supply, :if => :supply_id
   validates_presence_of :cancelled_by_id, :if => :cancelled_at
   validates_presence_of :canceller, :if => :cancelled_by_id
@@ -34,6 +37,36 @@ class PurchaseRequestSupply < ActiveRecord::Base
   
   validates_numericality_of :expected_quantity, :greater_than => 0
   validates_date :expected_delivery_date, :after => Date.today, :if => :new_record?
+
+  named_scope :sorted_by_priority_and_expected_delivery_date, :order => "purchase_priority_id, expected_delivery_date"
+  
+  def reference
+    self.supply ? self.supply.reference : "-"
+  end
+  
+  def designation
+    self.supply ? self.supply.designation : self[:designation] 
+  end
+  
+  def unit_mass
+    self.supply ? self.supply.unit_mass : "-"
+  end
+  
+  def measure
+    self.supply ? self.supply.measure : "-"
+  end
+  
+  def threshold
+    self.supply ? self.supply.threshold : "-"
+  end
+  
+  def stock_quantity
+    self.supply ? self.supply.stock_quantity : "-"
+  end
+  
+  def stock_quantity_at_last_inventory
+    self.supply ? self.supply.stock_quantity_at_last_inventory : "-"
+  end
   
   def can_be_cancelled?
     !cancelled?
@@ -57,7 +90,7 @@ class PurchaseRequestSupply < ActiveRecord::Base
   end
   
   def treated?
-    confirmed_purchase_order_supply
+    !confirmed_purchase_order_supply.nil?
   end
   
   def self.all_pending_purchase_request_supplies

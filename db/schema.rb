@@ -1207,7 +1207,6 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
     t.integer  "purchase_priority_id"
     t.integer  "expected_quantity"
     t.string   "designation"
-    t.string   "manufacturer"
     t.text     "comment"
     t.datetime "cancelled_at"
     t.date     "expected_delivery_date"

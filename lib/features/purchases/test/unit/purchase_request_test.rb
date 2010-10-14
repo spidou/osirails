@@ -41,6 +41,7 @@ class PurchaseRequestTest < ActiveSupport::TestCase
         
         setup do
           @purchase_request.purchase_request_supplies.build({ :supply_id => supplies("second_commodity").id,
+                                                              :purchase_priority_id => purchase_priorities("first_purchase_priority").id,
                                                               :expected_delivery_date => nil, 
                                                               :expected_quantity => 200})
           @purchase_request.global_date = Date.today + 1.day
@@ -63,6 +64,7 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       setup do
         build_purchase_request_supplies_for(@purchase_request, [ { :supply_id => supplies("second_commodity").id,
                                                                    :expected_quantity => 30,
+                                                                   :purchase_priority_id => purchase_priorities("first_purchase_priority").id,
                                                                    :expected_delivery_date => Date.today + 1.week } ] )
       end
       

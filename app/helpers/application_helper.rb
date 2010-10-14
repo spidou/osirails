@@ -521,4 +521,12 @@ module ApplicationHelper
       end
       content_tag(:li, link_to(menu.title, url, :title => menu.description), li_options)
     end
+    
+    def acronym(id)
+      title = I18n.t("acronyms.#{id.to_s}.title")
+      acronym = I18n.t("acronyms.#{id.to_s}.acronym")
+      content_tag :acronym, acronym, :title => title
+      #"<ACRONYM title='#{title}'>#{acronym}</ACRONYM>"
+    end
+    
 end

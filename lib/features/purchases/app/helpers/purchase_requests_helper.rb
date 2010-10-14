@@ -31,9 +31,9 @@ module PurchaseRequestsHelper
   def display_purchase_request_supplies_list(purchase_request)
     purchase_request_supplies = purchase_request.purchase_request_supplies
     html = "<div id=\"supplies\" class=\"resources\">"
-    html << render(:partial => 'purchase_request_supplies/begin_table')
-    html << render(:partial => 'purchase_request_supplies/purchase_request_supply_in_one_line', :collection => purchase_request_supplies, :locals => { :purchase_request => purchase_request })
-    html << render(:partial => 'purchase_request_supplies/end_table')
+    html << render(:partial => 'purchase_request_supplies/begin_table', :locals => { :purchase_request => purchase_request })
+    html << render(:partial => 'purchase_request_supplies/purchase_request_supply_in_one_line', :collection => purchase_request_supplies, :locals => { :purchase_request => purchase_request }) if purchase_request_supplies.any?
+    html << render(:partial => 'purchase_request_supplies/end_table', :locals => { :purchase_request => purchase_request })
     html << "</div>"
   end
   
@@ -44,4 +44,14 @@ module PurchaseRequestsHelper
     end
     html.join("<br />")
   end
+  
+  def display_status_for(purchase_request)
+    total_quantity_of_supplies = purchase_request.purchase_request_supplies.size
+    return "Annulée" if purchase_request.cancelled? 
+    return "Non traitée" if purchase_request.untreated_purchase_request_supplies.size == total_quantity_of_supplies
+    return "En cours de traitement" if purchase_request.during_treatment_purchase_request_supplies.any?
+    return "Partiellement traitée" if partially_treated_purchase_request_supplies?
+    return "Traitée" if purchase_request.treated_purchase_request_supplies.size == total_quantity_of_supplies
+  end
+  
 end
