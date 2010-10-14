@@ -5,7 +5,7 @@ collection_length ||= 1
 counter ||= 1
 %>
 
-<% fields_for "quotation_request[comment_line_quotation_request_supply_attributes][]", quotation_request_supply do |f| %>
+<% fields_for "quotation_request[comment_line_quotation_request_supply_attributes][]", quotation_request_supply, :index => nil do |f| %>
   
   <%
     position        = quotation_request_supply.position.zero? ? counter : quotation_request_supply.position
@@ -14,23 +14,17 @@ counter ||= 1
   %>
   
   <tr class="comment_line" <%= "style=\"display:none\"" if quotation_request_supply.should_destroy? %>>
+  
+    <td></td>
     
-    <td class="name" colspan="2">
-      <% if is_form_view? %>
-        <span><%= f.label(:name)%></span><br />
-        <%= f.text_field(:name, :size => 30) %>
-      <% else %>
-        %= quotation_request_supply.name %>
-      <% end %>
-    </td>
-    
-    <td class="description" colspan="8">
-      <% if is_form_view? %>
-        <span><%= f.label(:description)%></span><br />
-        <%= f.text_area(:description, :value => quotation_request_supply.description, :cols => 100, :rows => 5) %>
-      <% else %>
-        <%= quotation_request_supply.description %>
-      <% end %>
+    <td class="description" colspan="<%= is_form_view? ? 9 : 8 %>">
+      <span class="description">
+        <% if is_form_view? %>
+          <%= f.text_area_autoresize :description, :cols => 55, :class => :input_description, :title => "Entrez une description pour ce produit", :index => nil %>
+        <% else %>
+          <%= quotation_request_supply.description %>
+        <% end %>
+      </span>
     </td>
     
     <% if is_form_view? %>

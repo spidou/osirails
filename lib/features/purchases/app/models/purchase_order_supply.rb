@@ -167,7 +167,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
     res.join(";")
   end
   
-  def request_order_supplies_already_exist_for?(purchase_request_supply)
+  def already_associated_with_purchase_request_supply?(purchase_request_supply)
     request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id?(purchase_request_supply.id) 
   end
   

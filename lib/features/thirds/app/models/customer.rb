@@ -1,7 +1,4 @@
 class Customer < Third
-  
-  include CustomerBase
-  
   has_permissions :as_business_object
   has_documents   :graphic_charter
   has_address     :bill_to_address
@@ -9,12 +6,12 @@ class Customer < Third
   belongs_to :factor
   belongs_to :customer_solvency
   belongs_to :customer_grade
-#  belongs_to :creator, :class_name => 'User'
+  belongs_to :creator, :class_name => 'User'
   
   has_one  :head_office
   has_many :establishments, :conditions => ['establishments.type IS NULL and ( hidden = ? or hidden IS NULL )', false]
   
-#  named_scope :activates, :conditions => { :activated => true }
+  named_scope :activates, :conditions => { :activated => true }
   
   has_attached_file :logo, 
                     :styles => { :thumb => "120x120" },

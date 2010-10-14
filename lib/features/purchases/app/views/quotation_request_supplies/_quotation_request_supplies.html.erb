@@ -7,8 +7,8 @@
       <th rowspan='2'>Masse/U</th>
       <th rowspan='2'>En stock/Seuil</th>
       <th rowspan='2'>Quantit&eacute;</th>
-      <th colspan='3'>Demandes d'achats &agrave; satisfaire</th>
-      <th rowspan='2'>Actions</th>
+      <th colspan="<%= is_form_view? ? 3 : 2 %>">Demandes d'achats &agrave; satisfaire</th>
+      <%= "<th rowspan='2'>Actions</th>" if is_form_view? %>
     </tr>
     <tr>
       <th>R&eacute;f&eacute;rence</th>
@@ -17,13 +17,11 @@
       <th>D&eacute;signation</th>
       <th>R&eacute;f&eacute;rence</th>
       <th>Quantit&eacute;</th>
-      <th>S&eacute;lectionner</th>
+      <%= "<th>S&eacute;lectionner</th>" if is_form_view? %>
     </tr>
   </thead>
   <tbody id="quotation_request_supplies_body">
-  <% action = quotation_request.new_record? ? :create : :update %>
-  <% method = quotation_request.new_record? ? :put : :post %>
-    <%= render :partial => 'quotation_request_supplies/quotation_request_supply', :collection => quotation_request.quotation_request_supplies, :locals => { :supplier => quotation_request.supplier, :collection_length => quotation_request.quotation_request_supplies.size } %>
+    <%= render :partial => 'quotation_request_supplies/quotation_request_supply', :collection => quotation_request.quotation_request_supplies.sort_by(&:position), :locals => { :supplier => quotation_request.supplier, :collection_length => quotation_request.quotation_request_supplies.size } %>
   </tbody>
   <tfoot>
     <tr class='footer'>

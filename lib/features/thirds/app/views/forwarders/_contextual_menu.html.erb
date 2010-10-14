@@ -2,7 +2,9 @@
 
 <% add_contextual_menu_item :forwarder do %>
   <%= display_forwarder_edit_button(forwarder) if is_show_view? %>
+  <%= display_forwarder_show_button(forwarder) if is_form_view? %>
   <%= display_forwarder_add_button unless is_new_view? %>
+  <%= display_forwarder_delete_button(forwarder) unless is_index_view? or is_new_view? %>
 <% end %>
 
 <%= render :partial => 'forwarders/useful_links_contextual_menu', :object => forwarder %>

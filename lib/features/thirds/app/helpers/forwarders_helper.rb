@@ -61,13 +61,13 @@ module ForwardersHelper
   end
   
   def display_forwarder_delete_button(forwarder, message = nil)
-    return unless Forwarder.can_delete?(current_user) and forwarder.can_be_destroyed?
+#    return unless Forwarder.can_delete?(current_user) and forwarder.can_be_destroyed?
     text = "Supprimer ce transporteur"
     message ||= " #{text}"
     link_to( image_tag( "delete_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             forwarder, :method => :delete, :confirm => "Êtes vous sûr?")
+             forwarder_deactivate_path(forwarder), :confirm => "Êtes vous sûr?")
   end
   
   def display_forwarder_buttons(forwarder)

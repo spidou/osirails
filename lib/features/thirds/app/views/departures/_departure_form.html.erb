@@ -2,8 +2,8 @@
 
 <% fields_for "forwarder[departure_attributes][]", departure = departure_form do |form| %>
   <div class="presentation_in_columns resource_form<%= ' new_record' if departure.new_record? %>" id="departure_<%=departure.id%>_form" <%= "style=\"display:none\"" unless departure.new_record? or !departure.errors.empty? or departure.should_update? %>
-    <%= form.error_messages %>
     <%= render :partial => "departures/departure_fields", :object => departure, :locals => {:form => form} %>
+    <%= form.error_messages %>
     
     <p>
       <% if departure.new_record? %>

@@ -1,0 +1,9 @@
+<% quotation_request = contextual_menu %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_quotation_request_link(:link_text => "Nouvelle demande de devis") unless is_new_view? or params[:action] == "prepare_for_new" %>
+  <%= edit_quotation_request_link(quotation_request, :link_text => "Modifier la demande de devis" ) if quotation_request.can_be_edited? and !is_edit_view? %>
+  <%= delete_quotation_request_link(quotation_request, :link_text => "Supprimer la demande de devis" ) if quotation_request.can_be_destroyed? %>
+<% end %>
+
+<%= render :partial => 'quotation_requests/useful_links_contextual_menu', :object => quotation_request %>

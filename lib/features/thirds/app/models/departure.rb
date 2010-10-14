@@ -3,11 +3,9 @@ class Departure < ActiveRecord::Base
   
   belongs_to :forwarder
   
-  validates_presence_of :city_name, :country_name
-  validates_uniqueness_of :city_name, :scope => :country_name
-  validates_uniqueness_of :country_name, :scope => :city_name
-  
-  DEPARTURES_PER_PAGE = 15
+  validates_presence_of   :city_name, :country_name
+  validates_uniqueness_of :city_name, :scope => [:country_name, :forwarder_id]
+  validates_uniqueness_of :country_name, :scope => [:city_name, :forwarder_id]
   
   named_scope :actives, :conditions => [ "activated = ?", true ]
   
@@ -24,12 +22,12 @@ class Departure < ActiveRecord::Base
   @@form_labels[:region_name]   = 'Nom de la région :'
   @@form_labels[:country_name]  = 'Nom du pays :'
   
-  def should_destroy?
-    should_destroy.to_i == 1
-  end
-  
   def can_be_hidden?
     !new_record?
+  end
+  
+  def can_be_destroyed?
+    !new_record? #and !forwarder.quotation
   end
   
   def hide
@@ -51,12 +49,7 @@ class Departure < ActiveRecord::Base
     should_update.to_i == 1
   end
   
-  def can_be_destroyed?
-    !new_record? and forwarders.empty?
-  end
-  
   def formatted
-    
-    @formatted ||= [city_name, (region_name.strip == "" ? nil : region_name.strip ), country_name].compact.join(", ")
+    @formatted ||= [city_name, (region_name == "" ? nil : region_name ), country_name].compact.join(", ")
   end
 end

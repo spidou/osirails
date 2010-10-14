@@ -7,12 +7,12 @@
   <td><%= "#{supply.measure.to_f.to_s(2)}&#160;m²" if supply.measure %></td>
   <td><%= "#{supply.unit_mass.to_f.to_s(2)}&#160;kg" if supply.unit_mass %></td>
   <td <%= "class=\"warning\"" if supply.stock_quantity < supply.threshold %> ><%=  purchase_request_supply.supply.stock_quantity.to_s + "/" + purchase_request_supply.supply.threshold.to_i.to_s %></td>
-  <td class="price"><%= (supplier_supply.fob_unit_price * ((100 + supplier_supply.taxes ) / 100)).to_f.to_s(2) %>&#160;&euro;</td>
-  <td></td>
+  <td class="amount"><%= supplier_supply.fob_unit_price.to_f.to_s(2) %>&#160;&euro;</td>
+  <td class="amount"><%= supplier_supply.fob_measure_price.to_f.to_s(2) %>&nbsp;&euro;</td>
   <td><%= purchase_request_supply.expected_quantity %></td>
-  <td class="price"><%= ((supplier_supply.fob_unit_price * ((100 + supplier_supply.taxes ) / 100)) * purchase_request_supply.expected_quantity).to_f.to_s(2) %> &euro;</td>
+  <td class="amount"><%= ((supplier_supply.fob_unit_price * ((100 + supplier_supply.taxes ) / 100)) * purchase_request_supply.expected_quantity).to_f.to_s(2) %> &euro;</td>
   <td><%= "#{supplier_supply.lead_time}&#160;jour(s)" if supplier_supply.lead_time %></td>
-  <td></td>
+  <td>#</td>
   <td <%= "class=\"warning\"" if purchase_request_supply.expected_delivery_date < Date.today %> ><%= purchase_request_supply.expected_delivery_date.humanize %></td>
   <%= "<td rowspan=#{supplier.merge_purchase_request_supplies.count}>" + display_choose_supplier_button(supplier, params[:controller]) + "</td>" if grouped_by_supplier_purchase_request_supply_counter == 1 %>
 </tr>

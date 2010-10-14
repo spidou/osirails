@@ -1197,6 +1197,8 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
     t.datetime "updated_at"
   end
 
+  add_index "quotation_forwarders", ["quotation_id", "forwarder_id"], :name => "index_quotation_forwarders_on_quotation_id_and_forwarder_id", :unique => true
+
   create_table "quotation_purchase_request_supplies", :force => true do |t|
     t.integer  "quotation_supply_id",        :limit => 11
     t.integer  "purchase_request_supply_id", :limit => 11
@@ -1219,7 +1221,6 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
     t.string   "designation"
     t.string   "supplier_reference"
     t.string   "supplier_designation"
-    t.string   "name"
     t.boolean  "comment_line"
     t.text     "description"
     t.datetime "created_at"

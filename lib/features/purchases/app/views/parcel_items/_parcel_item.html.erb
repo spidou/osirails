@@ -6,8 +6,8 @@
   <td><%= purchase_order_supply.supplier_reference %></td>
   <td><%= purchase_order_supply.supplier_designation %></td>
   <td><%= parcel_item.quantity %></td>
-  <td class="price"><%= display_purchase_order_supply_unit_price_including_tax(purchase_order_supply) %></td>
-  <td class="price"><%= display_parcel_item_total(parcel_item) %></td>
+  <td class="amount"><%= display_purchase_order_supply_unit_price_including_tax(purchase_order_supply) %></td>
+  <td class="amount"><%= display_parcel_item_total(parcel_item) %></td>
   <td><%= display_purchase_order_supply_associated_purchase_requests(purchase_order_supply) %></td>
   <td><%= display_parcel_item_issued_at(parcel_item) %></td>
   <td><%= display_parcel_item_issues_quantity(parcel_item)%></td>

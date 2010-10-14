@@ -1,7 +1,7 @@
 class CreateQuotationRequests < ActiveRecord::Migration
   def self.up
     create_table :quotation_requests do |t|
-      t.references  :creator, :employee, :canceller, :parent, :similar, :supplier, :supplier_contact
+      t.references  :creator, :employee, :canceller, :parent, :similar, :supplier, :supplier_contact, :revoker
       t.integer     :status
       t.string      :reference, :title
       t.text        :cancellation_comment

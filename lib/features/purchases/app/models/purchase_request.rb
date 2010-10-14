@@ -55,7 +55,12 @@ class PurchaseRequest < ActiveRecord::Base
   end
   
   def cancelled?
-    cancelled_at
+    cancelled_at ? true : false
+  end
+  
+  #TODO test this method
+  def was_cancelled?
+    cancelled_at_was ? true : false
   end
   
   def save_purchase_request_supplies

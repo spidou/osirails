@@ -1,12 +1,11 @@
 <% content_for :header do -%>
   <%= stylesheet_link_tag_with_theme_support 'purchases/purchases' %>
+  <%= javascript_include_tag 'purchases/quotation_requests' %>
 <% end -%>
 
 <h1>Nouvelle demande de devis</h1>
 
-<% if params['supplier_id'] or params['supplier_choice'] %>
-  <%= render :partial => "supplier_choice", :object => @quotation_request, :locals => { :chosen_purchase_request_supplies => @chosen_purchase_request_supplies } %>
-<% else %>
+<% unless params['supplier_choice']  %>
   <div class="presentation_medium">
     <h2>&Agrave; partir d'une liste vide.</h2>
     <p><%= link_to "Nouveau", prepare_for_new_quotation_request_path(:supplier_choice => true) %></p>
@@ -30,4 +29,6 @@
       <% end %>
     </div>
   </div>
+<% else%>
+  <%= render :partial => "supplier_choice", :object => @quotation_request %>
 <% end %>

@@ -45,18 +45,18 @@ class SupplierSupplyTest < ActiveSupport::TestCase
       end
     end
     
-    context "with fob_unit_price and taxes" do
+    context "with fob_unit_price" do
       setup do
         @supplier_supply.fob_unit_price = 100
       end
       
-      context "but without taxes" do
+      context "and without taxes" do
         should "have a unit_price equal to its fob_unit_price" do
           assert_equal @supplier_supply.fob_unit_price, @supplier_supply.unit_price
         end
       end
       
-      context "with taxes" do
+      context "and with taxes" do
         setup do
           @supplier_supply.taxes = 10
         end
@@ -64,6 +64,36 @@ class SupplierSupplyTest < ActiveSupport::TestCase
         should "have a valid unit_price" do
           expected_value = 110 # fob_unit_price * ( 1 + ( taxes / 100 ) ) <=> 100 * ( 1 + ( 10 / 100 ) ) = 110
           assert_equal expected_value, @supplier_supply.unit_price
+        end
+        
+        should "have a nil fob_measure_price" do
+          assert_nil @supplier_supply.fob_measure_price
+        end
+        
+        should "have a nil measure_price" do
+          assert_nil @supplier_supply.measure_price
+        end
+        
+        context "and with a supply which have a measure" do
+          setup do
+            @commodity_category = CommodityCategory.create! :name => "CommodityCategory For SupplierSupply"
+            @commodity_sub_category = CommoditySubCategory.create! :reference => "C.00.00", :supply_category_id => @commodity_category.id, :name => "CommoditySubCategory For SupplierSupply"
+            @commodity = Commodity.create! :reference => "C.00.00.00", :name => "Commodity For SupplierSupply", :supply_sub_category_id => @commodity_sub_category.id, :measure => 1.60
+            @supplier_supply.supply_id = @commodity.id
+            @supplier_supply.fob_unit_price = 12
+            @supplier_supply[:reference] = "SR.124578124"
+            @supplier_supply.save!
+          end
+          
+          should "have a valid fob_measure_price" do
+            # fob_unit_price / supply.measure
+            assert_equal 7.5, @supplier_supply.fob_measure_price
+          end
+          
+          should "have a valid measure_price" do
+            # unit_price / supply.measure
+            assert_equal 8.25, @supplier_supply.measure_price
+          end
         end
       end
     end

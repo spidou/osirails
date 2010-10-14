@@ -1,6 +1,6 @@
 class PurchaseOrdersController < ApplicationController
   
-  helper :purchase_order_supplies, :parcels, :parcel_items
+  helper :purchase_order_supplies, :purchase_request_supplies, :parcels, :parcel_items
   
   # GET /purchase_orders/
   def index
@@ -24,12 +24,13 @@ class PurchaseOrdersController < ApplicationController
   # GET /purchase_orders/new
   # GET /purchase_orders/new?supplier_id=:supplier_id
   def new
-    unless params[:supplier_id] and params[:supplier_id] != ""
-      redirect_to :action => :prepare_for_new, :choice => 1
-    else
-      @supplier = Supplier.find(params[:supplier_id])
+    if params[:supplier_id] and (@supplier = Supplier.find(params[:supplier_id]))
       @purchase_order = PurchaseOrder.new(:supplier_id => @supplier.id)
       @purchase_order.build_with_purchase_request_supplies(@supplier.merge_purchase_request_supplies) if params[:from_purchase_request]
+    elsif params[:supplier_id]
+      redirect_to :action => :prepare_for_new, :choice => 1
+    else
+      redirect_to :action => :prepare_for_new
     end
   end
   

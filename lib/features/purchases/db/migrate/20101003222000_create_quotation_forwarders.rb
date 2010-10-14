@@ -5,6 +5,8 @@ class CreateQuotationForwarders < ActiveRecord::Migration
       
       t.timestamps
     end
+    
+    add_index :quotation_forwarders, [:quotation_id, :forwarder_id], :unique => true
   end
   
   def self.down

@@ -37,6 +37,17 @@ class SupplierTest < ActiveSupport::TestCase
     
     subject{@supplier}
     
-    include SupplierBaseTest
+    should_have_one :iban
+    should_validate_uniqueness_of :siret_number, :scoped_to => :type
+    
+    context 'with required attributes and a built iban then saved' do
+      setup do
+        @supplier = create_supplier(@supplier)
+      end
+      
+      should 'have saved the iban too' do
+        assert_not_nil @supplier.iban.id
+      end
+    end
   end
 end

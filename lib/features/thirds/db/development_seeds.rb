@@ -66,13 +66,4 @@ contact2.numbers.create! :number => "262357913", :indicative_id => Indicative.fi
 contact3.numbers.create! :number => "918729871", :indicative_id => Indicative.first.id, :number_type_id => NumberType.first.id
 contact4.numbers.create! :number => "918559871", :indicative_id => Indicative.first.id, :number_type_id => NumberType.last.id
 
-conveyance1 = Conveyance.create!(:name => "Avion")
-conveyance2 = Conveyance.create!(:name => "Bateau")
-conveyance3 = Conveyance.create!(:name => "Camion")
-
-#forwarder = Forwarder.create!(:name => "Forwarder Name", :legal_form_id => LegalForm.first.id)
-#ForwarderConveyance.create!(:conveyance_id => Conveyance.first.id, :forwarder_id => forwarder.id)
-
-#departure = Departure.create!(:city_name => "New York", :country_name => "United States Of America", :creator_id => user.id)
-
 set_default_permissions

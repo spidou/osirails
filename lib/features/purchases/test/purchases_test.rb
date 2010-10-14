@@ -38,11 +38,7 @@ class Test::Unit::TestCase
     quotation_request.creator_id = users("admin_user").id
     quotation_request.supplier_id = supplier.id
     quotation_request.supplier_contact_id = supplier.contacts.first.id
-    if args[:quotation_request_supplies_attributes]
-      build_quotation_request_supplies(quotation_request, :quotation_request_supplies_attributes => args[:quotation_request_supplies_attributes])
-    else
-      build_quotation_request_supplies(quotation_request)
-    end
+    build_quotation_request_supplies(quotation_request, :quotation_request_supplies_attributes => args[:quotation_request_supplies_attributes])
     quotation_request.save!
     quotation_request
   end
@@ -157,7 +153,6 @@ class Test::Unit::TestCase
     initial_size = quotation_request.quotation_request_supplies.size
     default_attributes = {:position => ( quotation_request.quotation_request_supplies.last && quotation_request.quotation_request_supplies.last.position.to_i + 1 ) || 0,
                           :comment_line => true,
-                          :name => "Comment line",
                           :description => "This is a comment line for tests" }
     flunk 'Quotation_request_supply failed to build' unless quotation_request.quotation_request_supplies.build(default_attributes.merge(attributes))
     flunk 'Quotation_request_supply wasn\'t added successfully' unless quotation_request.quotation_request_supplies.size == initial_size + 1
@@ -356,6 +351,7 @@ class Test::Unit::TestCase
     first_request_order_supply = RequestOrderSupply.new({ :purchase_request_supply_id => purchase_request_supply.id,
                                                           :purchase_order_supply_id => first_purchase_order.purchase_order_supplies.first.id})
     first_request_order_supply.save!
+    first_request_order_supply
   end
   
   def create_association_with_purchase_order_confirmed(purchase_request_supply)
@@ -398,13 +394,13 @@ class Test::Unit::TestCase
   end
   
   def fill_ids_with_identical_supply_ids(quotation_request, purchase_request)
-    purchase_request_supplies = purchase_request.purchase_request_supplies
+    purchase_request_supplies = purchase_request.purchase_request_supplies.collect{ |prs| prs }
     quotation_request.quotation_request_supplies.each do |qrs| 
       qrs.purchase_request_supplies_ids = ""
       purchase_request_supplies.each do |prs|
         if prs.supply_id == qrs.supply_id
           qrs.purchase_request_supplies_ids += prs.id.to_s + "\;"
-          purchase_request_supplies.reject{ |purchase_request_supply| purchase_request_supply == prs }
+          purchase_request_supplies.reject!{ |purchase_request_supply| purchase_request_supply == prs }
         end
       end
     end

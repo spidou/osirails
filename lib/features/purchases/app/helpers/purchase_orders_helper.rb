@@ -33,7 +33,7 @@ module PurchaseOrdersHelper
     link_to( image_tag( "add_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             new_purchase_order_path(:choice => true))
+             new_purchase_order_path)
   end
   
   def display_purchase_order_show_button(purchase_order, message = nil)

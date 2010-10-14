@@ -1,15 +1,6 @@
-<% content_for :header do -%>
-  <%= javascript_include_tag 'purchases/purchases' %>
-  <%= javascript_include_tag 'purchases/quotation_requests' %>
-  <%= javascript_include_tag 'sales/sales' %>
-  <%= stylesheet_link_tag_with_theme_support 'purchases/purchases' %>
-<% end -%>
-
 <%= 
 # generate_purchase_order_contextual_menu_partial(@purchase_order)
 %>
 
 <h1>Nouvelle demande de devis</h1>
-<div class="quotation_request_body">
-   <%= render :partial => "quotation_request", :object => @quotation_request %>
-</div>
+<%= render :partial => "quotation_request", :object => @quotation_request %>

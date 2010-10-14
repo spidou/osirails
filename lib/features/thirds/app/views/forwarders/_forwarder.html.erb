@@ -2,7 +2,7 @@
   <%= stylesheet_link_tag_with_theme_support "thirds/thirds" %>
 <% end %>
 <div>
-  <% form_for forwarder, :html => { :multipart => true } do |form| %>
+  <% form_for forwarder do |form| %>
     <%= form.error_messages %>
     
     <div class="presentation_medium">
@@ -22,7 +22,9 @@
         <% else %>
             <p>Veuillez choisir dans la liste les diff&eacute;rents transports que vous souhaitez attribuer &agrave; ce transporteur. </p>
             <p>Vous pouvez choisir plusieurs transport en maintenant la touche CTRL enfoncé et en cliquant sur les transports</p>
-            <p><%= form.collection_select(:forwarder_conveyance_ids, Conveyance.all, :id, :name, {}, { :index => nil, :multiple => true } ) %></p>
+            <% fields_for "forwarder[forwarder_conveyances_attributes][]", forwarder, forwarder.forwarder_conveyance_ids, :index => nil do |f| %>
+              <p><%= f.collection_select(:forwarder_conveyance_ids, Conveyance.actives, :id, :name, {}, { :index => nil, :multiple => true } ) %></p>
+            <% end %>
           <br />
         <% end %>
       </div>

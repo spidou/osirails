@@ -85,6 +85,15 @@ CustomerSolvency.create! :name => "40%",  :payment_method => pm4
 CustomerSolvency.create! :name => "20%",  :payment_method => pm5
 CustomerSolvency.create! :name => "0%",   :payment_method => pm6
 
+conveyance1 = Conveyance.create! :name => "Avion"
+conveyance2 = Conveyance.create! :name => "Bateau"
+conveyance3 = Conveyance.create! :name => "Camion"
+
+forwarder = Forwarder.create! :name => "Forwardz", :legal_form_id => LegalForm.first.id
+ForwarderConveyance.create! :conveyance_id => Conveyance.first.id, :forwarder_id => forwarder.id
+
+departure = Departure.create! :city_name => "New York", :country_name => "Etats Unis", :forwarder_id => forwarder.id
+
 ## default document types for customers (document types are created automatically when the class of the owner is parsed)
 #### get mime types
 pdf = MimeType.find_by_name("application/pdf")

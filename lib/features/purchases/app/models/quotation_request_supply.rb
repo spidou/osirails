@@ -9,24 +9,29 @@ class QuotationRequestSupply < ActiveRecord::Base
   
   attr_accessor :purchase_request_supplies_ids, :purchase_request_supplies_deselected_ids, :should_destroy
   
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]        = "Titre :"
-  @@form_labels[:description] = "Description :"
-  
   validates_presence_of :position
   validates_presence_of :supply, :if => :supply_id
+  validates_presence_of :designation, :if => :free_supply_and_not_associated_prs?
   
   with_options :if => :comment_line? do |qr|
-    qr.validates_presence_of :name, :description
+    qr.validates_presence_of :description
   end
   
-  with_options :unless => :comment_line? do |qr|
-    qr.validates_presence_of :designation
-    qr.validates_numericality_of :quantity, :greater_than => 0
-  end
+  validates_numericality_of :quantity, :greater_than => 0, :unless => :comment_line?
+  
+  validates_uniqueness_of :supply_id, :scope => :quotation_request_id, :allow_blank => :true
   
   before_destroy :can_be_destroyed?
+  
+  #TODO test this method
+  def free_supply_and_not_associated_prs?
+    free_supply? and purchase_request_supplies.empty?
+  end
+  
+  #TODO test this method
+  def associated_prs_designation
+    purchase_request_supplies.last.designation if purchase_request_supplies.any?
+  end
   
   #TODO test this method
   def position
@@ -35,6 +40,11 @@ class QuotationRequestSupply < ActiveRecord::Base
   
   def should_destroy?
     should_destroy.to_i == 1
+  end
+  
+  #TODO test this method
+  def can_be_cancelled?
+    quotation_request.was_confirmed? and (!quotation_request.quotation or (quotation_request.quotation and quotation_request.quotation.was_drafted?))
   end
   
   def can_be_destroyed?
@@ -58,7 +68,13 @@ class QuotationRequestSupply < ActiveRecord::Base
   end
   
   def designation
-    existing_supply? ? self[:designation] ||= supply.designation : self[:designation]
+    if existing_supply?
+      self[:designation] = supply.designation
+    elsif associated_prs_designation
+      self[:designation] = associated_prs_designation
+    else
+      self[:designation]
+    end
   end
   
   def supplier_reference
@@ -85,7 +101,7 @@ class QuotationRequestSupply < ActiveRecord::Base
   end
   
   #TODO test this method
-  def get_purchase_request_supplies_ids
+  def get_purchase_request_supplies_ids #get_ is useful to not replace purchase_request_supplies_ids accessor
     res = []
     unconfirmed_purchase_request_supplies.each do |prs|
       if quotation_request_purchase_request_supplies.detect{ |t| t.purchase_request_supply_id == prs.id } and can_add_purchase_request_supply_id?(prs.id)
@@ -97,6 +113,6 @@ class QuotationRequestSupply < ActiveRecord::Base
   
   #TODO test this method
   def already_associated_with_purchase_request_supply?(purchase_request_supply)
-    quotation_request_purchase_request_supplies.detect{ |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_purchase_request_supply_id?(purchase_request_supply.id) 
+    quotation_request_purchase_request_supplies.detect{ |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_purchase_request_supply_id?(purchase_request_supply.id)
   end
 end
