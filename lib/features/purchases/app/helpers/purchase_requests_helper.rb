@@ -24,7 +24,7 @@ module PurchaseRequestsHelper
                                                                 :object  => PurchaseRequestSupply.new,
                                                                 :locals  => { :purchase_request => purchase_request }
       last_element = page['purchase_request_supply_form'].select('.resource').last
-      last_element.visual_effect :highlight
+      last_element.visual_effect "highlight" # :highlight symbol replaced by "highlight" string to relieve to the "undefined method `ascii_only?' for {}:Hash" error, in views
     end )
   end
   

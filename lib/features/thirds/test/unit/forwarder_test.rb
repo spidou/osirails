@@ -6,8 +6,7 @@ class ForwarderTest < ActiveSupport::TestCase
   should_have_many :departures
   should_have_many :forwarder_conveyances
   should_have_many :conveyances
-#  should_have_many :quotation_forwarders
-
+  
   should_belong_to :creator
   
   context "A forwarder" do

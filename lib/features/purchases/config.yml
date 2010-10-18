@@ -1,5 +1,5 @@
 name: purchases
-title: Achats
+title: Achat
 version: 0.1
 dependencies:
   logistics:
@@ -8,22 +8,22 @@ dependencies:
     - 0.1
 menus:
   purchases:
-    title: Achats
-    description: "Gestion des ordres et des demandes d'achats"
+    title: Achat
+    description: "Gestion des ordres et des demandes d'achat"
     position: 6
     children:
       purchase_orders:
-        title: "Gestion des ordres d'achats"
-        description: "Permet la gestion des ordres d'achats"
+        title: "Gestion des ordres d'achat"
+        description: "Permet la gestion des ordres d'achat"
         position: 1
         children:
           pending_purchase_orders:
-            title: "Ordres d'achats en cours"
-            description: "Affiche la liste des ordres d'achats dont le traitement n'est pas terminé"
+            title: "Ordres d'achat en cours"
+            description: "Affiche la liste des ordres d'achat dont le traitement n'est pas terminé"
             position: 1
           closed_purchase_orders:
-            title: "Ordres d'achats terminés"
-            description: "Affiche la liste des ordres d'achats dont le traitement est terminé"
+            title: "Ordres d'achat terminés"
+            description: "Affiche la liste des ordres d'achat dont le traitement est terminé"
             position: 2
           parcels:
             title: "Colis"
@@ -36,20 +36,20 @@ menus:
                 hidden: true
           purchase_order_supplies:
             title: "Fournitures commandées"
-            description: "Permet la gestion des fournitures dans un ordre d'achats"
+            description: "Permet la gestion des fournitures dans un ordre d'achat"
             hidden: true
       purchase_request_managements:
-        title: "Gestion des demandes d'achats"
-        description: "Permet la gestion des demandes d'achats"
+        title: "Gestion des demandes d'achat"
+        description: "Permet la gestion des demandes d'achat"
         position: 2
         children:
           purchase_request_supplies:
             title: "Par articles"
-            description: "Affiche la liste des demandes d'achats triés par articles"
+            description: "Affiche la liste des demandes d'achat triés par articles"
             position: 1
           purchase_requests:
             title: "Par demandes"
-            description: "Affiche la liste des demandes d'achats triés par demandes"
+            description: "Affiche la liste des demandes d'achat triés par demandes"
             position: 2
       quotation_requests:
         title: "Gestion des demandes de devis"

@@ -35,9 +35,10 @@ class PurchaseOrderSupply < ActiveRecord::Base
     should_destroy.to_i == 1
   end
   
+  #TODO test this method
   def validates_is_not_cancelled
     unless can_be_cancelled?
-      errors.add(self, "Impossible d'avoir des fournitures annulées dans une ordre d'achats en brouillon") if (cancelled_comment or cancelled_by_id) and !(purchase_order.confirmed_on or purchase_order.processing_by_supplier_since)
+      errors.add(:base, message_error_for_different_supplier_between_similars) if (cancelled_comment or cancelled_by_id) and !(purchase_order.confirmed_on or purchase_order.processing_by_supplier_since)
     end
   end
   
@@ -173,4 +174,13 @@ class PurchaseOrderSupply < ActiveRecord::Base
     end
     true
   end
+  
+  def message_error_for_different_supplier_between_similars
+    message_for_validates("base", "is_not_cancelled")
+  end
+  
+  private
+    def message_for_validates(attribute, error_type, restriction = "")
+      I18n.t("activerecord.errors.models.#{self.class.name.tableize.singularize}.attributes.#{attribute}.#{error_type}", :restriction => restriction)
+    end
 end

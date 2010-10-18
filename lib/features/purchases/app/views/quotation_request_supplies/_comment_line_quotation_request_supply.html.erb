@@ -20,7 +20,7 @@ counter ||= 1
     <td class="description" colspan="<%= is_form_view? ? 9 : 8 %>">
       <span class="description">
         <% if is_form_view? %>
-          <%= f.text_area_autoresize :description, :cols => 55, :class => :input_description, :title => "Entrez une description pour ce produit", :index => nil %>
+          <%= f.text_area_autoresize :description, :cols => 55, :class => :input_description, :title => "Entrez une description pour ce produit" %>
         <% else %>
           <%= quotation_request_supply.description %>
         <% end %>
@@ -32,9 +32,9 @@ counter ||= 1
         <%= link_to( image_tag( move_up_image, :alt => text_up = "Monter la ligne", :title => text_up, :class => "arrow_up"), "#up", :onclick => "move_up_supply(this);" ) %>
         <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down_supply(this);" ) %>
         <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm('Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire.')) remove_line(this)" ) %>
-        <%= f.hidden_field :id, :class => :quotation_request_supply_id, :index => nil %>
-        <%= f.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
-        <%= f.hidden_field :position, :class => :position, :value => position, :index => nil %>
+        <%= f.hidden_field :id, :class => :quotation_request_supply_id %>
+        <%= f.hidden_field :should_destroy, :class => :should_destroy %>
+        <%= f.hidden_field :position, :class => :position, :value => position %>
       </td>
     <% end %>
   </tr>

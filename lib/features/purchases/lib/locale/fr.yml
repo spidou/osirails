@@ -1,10 +1,10 @@
-fr:     
+fr:
   activerecord:
-    models: 
+    models:
       purchase_request: "Demande d'achat"
       purchase_order: "Ordre d'achat"
       parcel: "Colis"
-    attributes: 
+    attributes:
       purchase_request:
         service: "Service concerné"
         employee: "Demandeur"
@@ -12,21 +12,21 @@ fr:
         reference: "Référence"
         status: "Statut"
         global_date: "Date de livraison souhaitée"
-        cancelled_comment: "Raison de l'annulation"
+        cancelled_comment: "Veuillez saisir la raison de l'annulation"
         created_at: "Créée le"
       purchase_order:
         supplier: "Fournisseur"
         employee: "Demandeur"
-        user: "Créateur de la demande"
+        user: "Créée par"
         reference: "Référence"
         status: "Statut"
-        cancelled_comment: "Raison de l'annulation"
+        cancelled_comment: "Veuillez saisir la raison de l'annulation"
       purchase_order_supply:
-        cancelled_comment: "Raison de l'annulation"
+        cancelled_comment: "Veuillez saisir la raison de l'annulation"
       parcel:
         processing_by_supplier_since: "En attente d'expédition depuis le"
         shipped_on: "Expédié le"
-        conveyance: "Par"
+        conveyance: "par"
         previsional_delivery_date: "Date de livraison prévue du colis"
         received_by_forwarder_on: "Reçu par le transitaire le"
         awaiting_pick_up: "Récupération chez le transitaire"
@@ -45,10 +45,14 @@ fr:
         description: "Description"
     errors:
       models:
+        purchase_order_supply:
+          attributes:
+            base:
+              is_not_cancelled: "Impossible d'avoir des fournitures annulées dans une ordre d'achat en brouillon"
         purchase_request:
           attributes:
             purchase_request_supplies:
-             message_error_length_of_for_purchase_request: "Vous devez choisir au moins une fourniture"
+              length_of: "Vous devez choisir au moins une fourniture"
         parcel:
           attributes:
             parcel_items:
@@ -70,6 +74,26 @@ fr:
               validity: "n'est pas valide"
             issues_quantity:
               validity: "n'est pas valide"
+        quotation_request:
+          attributes:
+            base:
+              has_not_both_parent_id_and_similar_id: "La demande de devis ne devrait pas avoir un parent et un similar à la fois."
+            supplier_id:
+              similarity_of_supplier_between_parents: "Le fournisseur ne doit pas changer lors de la modification."
+              different_supplier_between_similars: "Cette demande de devis existe déjà pour ce fournisseur, veuillez choisir un autre fournisseur."
+            quotation_request_supplies:
+              length_of: "Vous devez choisir au moins une fourniture."
+              similarity_with_similar: "La demande de devis n'est pas similaire à celle prise comme modèle."
+        quotation:
+          attributes:
+            signed_on:
+              on_or_before: "ne doit pas être APRÈS la date d'aujourd'hui ({{restriction}})"
+            sent_on:
+              on_or_before: "ne doit pas être APRÈS la date d'aujourd'hui ({{restriction}})"
+            supplier_id:
+              similarity_of_supplier: "Le fournisseur doit être le même que celui de la demande de devis associée."
+            quotation_supplies:
+              length_of: "Vous devez choisir au moins une fourniture."
   acronyms:
     purchase_request:
       acronym: "DA" 
@@ -80,4 +104,3 @@ fr:
     quotation_request:
       acronym: "DD"
       title: "Demande de Devis"
-              

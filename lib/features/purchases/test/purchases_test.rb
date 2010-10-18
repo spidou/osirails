@@ -262,40 +262,6 @@ class Test::Unit::TestCase
     quotation.quotation_supplies.last
   end
   
-  
-  
-# Issues with fixtures if supply.id is not set manually but there is issues with relationships tables if we set supply.id manually and then use dynamical filling
-#  def build_purchase_request_supply(attributes = {})  
-#    default_attributes = {:supply_id => supplies("first_commodity").id,
-#                          :expected_quantity => 400,
-#                          :expected_delivery_date => Date.today + 1.week }
-#    default_attributes.merge(attributes)
-#  end
-#  
-#  def build_purchase_request_supplies_for(purchase_request, counter)
-#    counter.times do |count|
-#      purchase_request.purchase_request_supplies.build(build_purchase_request_supply(:supply_id => count+1, :expected_quantity => (rand(400)+ 1)))
-#    end
-#    flunk 'Build of purchase_request_supplies failed' unless purchase_request.purchase_request_supplies.size == counter
-#    purchase_request
-#  end
-#  
-#  
-#  def create_purchase_request(parameters = {:number_of_purchase_request_supplies => 2}, attributes = {})
-#    default_attributes = {:user_id => users("admin_user").id,
-#                          :employee_id => employees("john_doe").id,
-#                          :service_id => services("direction_general").id }
-#    purchase_request = PurchaseRequest.new(default_attributes.merge(attributes))
-#    purchase_request = build_purchase_request_supplies_for(purchase_request, parameters[:number_of_purchase_request_supplies])
-#    purchase_request.save!
-#    flunk "purchase request should be saved" if purchase_request.new_record?
-#    flunk "purchase request supplies should be saved" if purchase_request.purchase_request_supplies.select(&:new_record?).any?
-#    purchase_request
-#  end
-  
-######################################################################################################################################################################
-# should replace precedent methods
-  
   def create_purchase_request(args = {})
     args[:attributes] = { :user_id     => users("admin_user").id,
                           :employee_id => employees("john_doe").id,

@@ -5,7 +5,7 @@ module EstablishmentsHelper
     establishments = customer.activated_establishments
     html = "<div id=\"establishments\" class=\"resources\">"
     unless establishments.empty?
-      html << render(:partial => 'establishments/establishment_in_one_line', :collection => establishments, :locals => { :establishments_owner => customer })
+      html << render(:partial => 'establishments/establishment_in_one_line', :collection => establishments, :locals => { :establishments_owner => customer }) unless establishments.empty?
     else
       html << "<p>Aucun établissement n'a été trouvé</p>"
     end
@@ -20,7 +20,7 @@ module EstablishmentsHelper
                                                  :object  => Establishment.new,
                                                  :locals  => { :establishments_owner => customer }
       last_element = page['establishments'].select('.resource').last
-      last_element.visual_effect :highlight
+      last_element.visual_effect "highlight" # :highlight symbol replaced by "highlight" string to relieve to the "undefined method `ascii_only?' for {}:Hash" error, in views
     end )
   end
 end

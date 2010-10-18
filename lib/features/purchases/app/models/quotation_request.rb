@@ -33,7 +33,7 @@ class QuotationRequest < ActiveRecord::Base
   validates_presence_of :employee, :if => :employee_id
   validates_presence_of :canceller, :if => :canceller_id
   
-  validates_length_of :quotation_request_supplies, :minimum => 1, :message => "Vous devez entrer au moins une fourniture"
+  validates_length_of :quotation_request_supplies, :minimum => 1, :message => :length_of
   
   with_options :if => :similar_id do |qr|
     qr.validate :validates_similarity_with_similar
@@ -83,17 +83,18 @@ class QuotationRequest < ActiveRecord::Base
     similar_id and new_record?
   end
   
+  #TODO test this method
   def validates_has_not_both_parent_id_and_similar_id
-    errors.add(self, "Une erreur est survenue : la demande de devis ne devrait pas avoir un parent_id et un similar_id") if parent_id and similar_id
+    errors.add(:base, message_error_for_has_not_both_parent_id_and_similar_id) if parent_id and similar_id
   end
   
   def validates_similarity_of_supplier_between_parents
-    errors.add(:supplier_id, "Le fournisseur ne doit pas changer lors de la modification.") unless parent.supplier_id == supplier_id
+    errors.add(:supplier_id, message_error_for_similarity_of_supplier_between_parents) unless parent.supplier_id == supplier_id
   end
   
   def validates_similarity_with_similar
     similar_qrs = similar.quotation_request_supplies
-    error_message = "La demande de devis n'est pas similaire à celle prise comme modèle"
+    error_message = message_error_for_similarity_with_similar
   
     unless similar_qrs.size == quotation_request_supplies.size
       errors.add(:quotation_request_supplies, error_message)
@@ -109,7 +110,7 @@ class QuotationRequest < ActiveRecord::Base
   end
   
   def validates_different_supplier_between_similars
-    errors.add(:supplier_id, "Cette demande de devis existe déjà pour ce fournisseur, veuillez choisir un autre fournisseur") if similars.detect{ |s| supplier_id == s.supplier_id }
+    errors.add(:supplier_id, message_error_for_different_supplier_between_similars) if similars.detect{ |s| supplier_id == s.supplier_id }
   end
   
   def validates_no_similar_id_if_similar
@@ -464,4 +465,26 @@ class QuotationRequest < ActiveRecord::Base
       r.quotation.revoke if r.quotation and r.quotation.can_be_revoked?
     end
   end
+  
+  
+  def message_error_for_has_not_both_parent_id_and_similar_id
+    message_for_validates("base", "not_both_parent_id_and_similar_id")
+  end
+  
+  def message_error_for_similarity_of_supplier_between_parents
+    message_for_validates("supplier_id", "similarity_of_supplier_between_parents")
+  end
+  
+  def message_error_for_similarity_with_similar
+    message_for_validates("quotation_request_supplies", "similarity_with_similar")
+  end
+  
+  def message_error_for_different_supplier_between_similars
+    message_for_validates("supplier_id", "different_supplier_between_similars")
+  end
+  
+  private
+    def message_for_validates(attribute, error_type, restriction = "")
+      I18n.t("activerecord.errors.models.#{self.class.name.tableize.singularize}.attributes.#{attribute}.#{error_type}", :restriction => restriction)
+    end
 end

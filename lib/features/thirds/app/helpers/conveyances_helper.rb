@@ -13,7 +13,7 @@ module ConveyancesHelper
     end
     html = "<div id=\"conveyances\" class=\"resources\">"
     unless conveyances.empty?
-      html << render(:partial => 'conveyances/conveyance_in_one_line', :collection => conveyances, :locals => { :conveyances_owner => owner })
+      html << render(:partial => 'conveyances/conveyance_in_one_line', :collection => conveyances, :locals => { :conveyances_owner => owner }) unless conveyances.empty?
     else
       html << "<p>Aucun moyen de transport n'a été trouvé</p>"
     end
@@ -74,7 +74,7 @@ module ConveyancesHelper
                        :object  => Conveyance.new,
                        :locals  => { :conveyance_owner => owner }
       last_element = page["#{owner_type}_conveyances"].select('.resource').last
-      last_element.visual_effect :highlight
+      last_element.visual_effect "highlight" # :highlight symbol replaced by "highlight" string to relieve to the "undefined method `ascii_only?' for {}:Hash" error, in views
     end )
   end
   

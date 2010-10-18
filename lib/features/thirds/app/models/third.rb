@@ -6,7 +6,7 @@ class Third < ActiveRecord::Base
   
   validates_format_of :website, :with         => /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$/ix,
                                 :allow_blank  => true,
-                                :message      => "L'adresse du site web ne respecte pas le format demandé"
+                                :message      => :format_of
   
   validates_uniqueness_of :name, :scope => :type
   

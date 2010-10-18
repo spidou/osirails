@@ -7,12 +7,10 @@ class Forwarder < Third
   has_many :departures, :dependent => :delete_all
   has_many :forwarder_conveyances, :dependent => :delete_all
   has_many :conveyances, :through => :forwarder_conveyances
-#  has_many :quotation_forwarders
-#  has_many :quotations, :through => :quotation_forwarders
-
+  
   belongs_to :creator, :class_name => 'User'
   
-  validates_uniqueness_of :name, :scope => :type, :message => "Ce nom existe déjà."
+  validates_uniqueness_of :name, :scope => :type, :message => :uniqueness_of
   
   named_scope :activates, :conditions => { :activated => true }
   
@@ -25,13 +23,7 @@ class Forwarder < Third
   has_search_index :only_attributes    => [:name, :siret_number],
                    :only_relationships => [:legal_form],
                    :main_model         => true
-  
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]        = "Raison sociale :"
-  @@form_labels[:departure]   = "Point de départ :"
-  @@form_labels[:conveyance]  = "Moyen de transport :"
-  
+    
   attr_accessor :conveyances_ids
   
   def forwarder_conveyances_attributes=(conveyances_attributes)
@@ -62,10 +54,5 @@ class Forwarder < Third
   
   def save_departures
     departures.each{ |departure| departure.should_destroy? ? departure.destroy() : departure.save(false)}
-  end
-  
-  def can_be_destroyed?
-#    quotations.empty?
-    true
   end
 end

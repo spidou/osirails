@@ -211,7 +211,8 @@ class QuotationRequestTest < ActiveSupport::TestCase
         context 'and which is taking a new _free_supply associated to a purchase_request_supply without supply_id and then is saved' do
           setup do
 #            @purchase_request = create_purchase_request(:purchase_request_supplies => [{ :expected_quantity => 123654,
-#                                                                                        :expected_delivery_date => Date.today + 1.week }])
+#                                                                                        :expected_delivery_date => Date.today + 1.week,
+#                                                                                        :purchase_priority_id    => purchase_priorities("first_purchase_priority").id }])
 #            flunk 'free_quotation_request_supply_attributes= should success' unless @quotation_request.build_qrs_from_prs=(@params)
 #            flunk '@quotation_request should have one quotation_request_supply' unless @quotation_request.quotation_request_supplies.size == 1
           end
@@ -237,7 +238,7 @@ class QuotationRequestTest < ActiveSupport::TestCase
     
     should 'require at least one quotation_request_supply' do
       @quotation_request.valid?
-      assert_match /Vous devez entrer au moins une fourniture/, @quotation_request.errors.on(:quotation_request_supplies)
+      assert_match /Vous devez choisir au moins une fourniture/, @quotation_request.errors.on(:quotation_request_supplies)
     end
     
     context 'with an existing quotation_request_supply' do
@@ -389,6 +390,10 @@ class QuotationRequestTest < ActiveSupport::TestCase
 
       should 'be the in the list of similars of the first quotation_request' do
         assert_equal @second_quotation_request, @first_quotation_request.similars.first
+      end
+      
+      should 'NOT have a similar_id and be a new_record?' do
+        assert !@second_quotation_request.similar_id_and_new_record?
       end
     end
 

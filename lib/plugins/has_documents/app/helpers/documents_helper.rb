@@ -60,7 +60,7 @@ module DocumentsHelper
       page[options[:new_div_id]].show if page[options[:new_div_id]].visible
       last_document = page[options[:new_div_id]].select('.document').last
       last_document.show
-      last_document.visual_effect :highlight
+      last_document.visual_effect "highlight" # :highlight symbol replaced by "highlight" string to relieve to the "undefined method `ascii_only?' for {}:Hash" error, in views
     end )
   end
 

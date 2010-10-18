@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101003222000) do
+ActiveRecord::Schema.define(:version => 20100929145930) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id"
@@ -1227,15 +1227,6 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
     t.datetime "updated_at"
   end
 
-  create_table "quotation_forwarders", :force => true do |t|
-    t.integer  "quotation_id"
-    t.integer  "forwarder_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "quotation_forwarders", ["quotation_id", "forwarder_id"], :name => "index_quotation_forwarders_on_quotation_id_and_forwarder_id", :unique => true
-
   create_table "quotation_purchase_request_supplies", :force => true do |t|
     t.integer  "quotation_supply_id"
     t.integer  "purchase_request_supply_id"
@@ -1272,6 +1263,7 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
     t.integer  "similar_id"
     t.integer  "supplier_id"
     t.integer  "supplier_contact_id"
+    t.integer  "revoker_id"
     t.integer  "status"
     t.string   "reference"
     t.string   "title"
@@ -1300,6 +1292,7 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
 
   create_table "quotations", :force => true do |t|
     t.integer  "supplier_id"
+    t.integer  "forwarder_id"
     t.integer  "creator_id"
     t.integer  "quotation_document_id"
     t.integer  "canceller_id"

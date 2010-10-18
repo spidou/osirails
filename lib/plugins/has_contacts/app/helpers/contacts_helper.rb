@@ -51,7 +51,7 @@ module ContactsHelper
       page[div_id].show if page[div_id].visible
       last_contact = page[div_id].select('.contact').last
       last_contact.show
-      last_contact.visual_effect :highlight
+      last_contact.visual_effect "highlight"
     end
     html << "</p>"
   end

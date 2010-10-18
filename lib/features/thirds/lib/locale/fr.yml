@@ -1,6 +1,6 @@
-fr:     
+fr:
   activerecord:
-    models: 
+    models:
       activity_sector: "Secteur d'activité"
       activity_sector_reference: "Code NAF"
       custom_activity_sector: "Secteur d'activité personnalisé"
@@ -17,7 +17,7 @@ fr:
       supplier: "Fournisseur"
       third: "Tiers"
       third_type: "Type de tiers"
-    attributes: 
+    attributes:
       third:
         name: "Raison Sociale"
         legal_form: "Forme juridique"
@@ -27,7 +27,7 @@ fr:
       customer:
         factor: "Société d'affacturage"
         customer_solvency: "Degré de solvabilité"
-        customer_grade: "Note relation client"  
+        customer_grade: "Note relation client"
       supplier:
         activity_sector_reference: "Code NAF"
       establishment:
@@ -40,3 +40,25 @@ fr:
       factor:
         name: "Nom"
         fullname: "Nom complet"
+      quotation_request:
+        departure: "Point de départ"
+        conveyance: "Moyen de transport"
+      departure:
+        id: "Point de départ"
+        city_name: "Nom de la ville"
+        region_name: "Nom de la région"
+        country_name: "Nom du pays"
+    errors:
+      models:
+        third:
+          attributes:
+            website:
+              format_of: "L'adresse du site web ne respecte pas le format demandé"
+        customer:
+          attributes:
+            establishment_siret_number:
+              uniqueness_of: "est déjà pris par un autre établissement (ou le siège social) de ce client."
+        forwarder:
+          attributes:
+            name:
+              uniqueness_of: "Ce nom existe déjà."

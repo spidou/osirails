@@ -13,7 +13,7 @@ module ForwardersHelper
     end
     html = "<div id=\"forwarders\" class=\"resources\">"
     unless forwarders.empty?
-      html << render(:partial => 'forwarders/forwarder_in_one_line', :collection => forwarders, :locals => { :forwarders_owner => owner })
+      html << render(:partial => 'forwarders/forwarder_in_one_line', :collection => forwarders, :locals => { :forwarders_owner => owner }) unless forwarders.empty?
     else
       html << "<p>Aucun transporteur n'a été trouvé</p>"
     end

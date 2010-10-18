@@ -56,7 +56,7 @@ class PurchaseOrdersController < ApplicationController
   def update
     if @purchase_order = PurchaseOrder.find(params[:id])
       if @purchase_order.update_attributes(params[:purchase_order])
-        flash[:notice] = "L'ordre d'achats a été modifié avec succès"
+        flash[:notice] = "L'ordre d'achat a été modifié avec succès"
         redirect_to @purchase_order
       else
         render :action => "edit"
@@ -111,7 +111,7 @@ class PurchaseOrdersController < ApplicationController
       @purchase_order.attributes = params[:purchase_order]
       @purchase_order.canceller = current_user
       if  @purchase_order.cancel
-        flash[:notice] = "L'ordre d'achats a été annulé avec succès."
+        flash[:notice] = "L'ordre d'achat a été annulé avec succès."
         redirect_to @purchase_order
       else
         render :action => "cancel_form"   
@@ -131,9 +131,9 @@ class PurchaseOrdersController < ApplicationController
   def destroy
     if (@purchase_order = PurchaseOrder.find(params[:id])).can_be_deleted?
       unless @purchase_order.destroy
-        flash[:error] = 'Une erreur est survenue lors de la suppression de l\'ordre d\'achats'
+        flash[:error] = 'Une erreur est survenue lors de la suppression de l\'ordre d\'achat'
       end
-      flash[:notice] = 'La suppression de l\'ordre d\'achats a été effectué avec succès'
+      flash[:notice] = 'La suppression de l\'ordre d\'achat a été effectué avec succès'
       redirect_to purchase_orders_path
     else
       error_access_page(412)
@@ -160,7 +160,7 @@ class PurchaseOrdersController < ApplicationController
       unless @purchase_order.confirm
         render :action => "confirm_form"
       else
-        flash[:notice] = 'La confirmation de votre ordre d\'achats a été effectuée avec succès'
+        flash[:notice] = 'La confirmation de votre ordre d\'achat a été effectuée avec succès'
         redirect_to new_purchase_order_parcel_path(@purchase_order)
       end
     else

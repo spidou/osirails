@@ -5,7 +5,7 @@ module DeparturesHelper
     departures = forwarder.departures
     html = "<div id=\"departures\" class=\"resources\">"
     unless departures.empty?
-      html << (render :partial => 'departures/departure_in_one_line', :collection => departures, :locals => { :forwarder => forwarder })
+      html << (render :partial => 'departures/departure_in_one_line', :collection => departures, :locals => { :forwarder => forwarder }) unless departures.empty?
     else
       html << "<p>Aucun point de départ n'a été trouvé</p>"
     end
@@ -20,7 +20,7 @@ module DeparturesHelper
                                                  :object  => Departure.new,
                                                  :locals  => { :forwarder => forwarder }
       last_element = page['departures'].select('.resource').last
-      last_element.visual_effect :highlight
+      last_element.visual_effect "highlight" # :highlight symbol replaced by "highlight" string to relieve to the "undefined method `ascii_only?' for {}:Hash" error, in views
     end )
   end
   

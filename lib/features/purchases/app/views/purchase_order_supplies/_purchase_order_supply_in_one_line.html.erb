@@ -14,21 +14,21 @@ unconfirmed_purchase_request = purchase_order_supply.unconfirmed_purchase_reques
       <%= f.hidden_field :should_destroy, :class => :should_destroy %>
       <%= f.hidden_field :purchase_request_supplies_deselected_ids, :class => :purchase_request_supplies_deselected_ids, :value => purchase_order_supply.purchase_request_supplies_deselected_ids %>
     </td>
-    <td class="reference"><%= purchase_order_supply.supply.reference %></td>
-    <td class="designation"><%= purchase_order_supply.supply.designation %></td>
-    <td class="supplier_reference"><%= f.text_field(:supplier_reference, :value => purchase_order_supply.supplier_reference ||  supplier_supply.supplier_reference, :size => 4) %></td>
-    <td class="supplier_designation"><%= f.text_field(:supplier_designation, :value => purchase_order_supply.supplier_designation ||  supplier_supply.supplier_designation) %></td>
-    <td class="type"><%= display_type_for(purchase_order_supply.supply)%></td>
-    <td class="stock_quantity"><%= purchase_order_supply.supply.stock_quantity%></td>
-    <td class="fob_unit_price amount"><%= f.text_field(:fob_unit_price, :value => purchase_order_supply.fob_unit_price || supplier_supply.fob_unit_price, :size => 3, :class => "fob_unit_price", :onchange => "refresh_lign(this.up('.resource'))" ) %> </td>
-    <td class="taxes"><%= f.text_field(:taxes, :value => purchase_order_supply.taxes || supplier_supply.taxes, :size => 2, :class => "taxes", :onchange => "refresh_lign(this.up('.resource'))") %></td>
-    <td class="unit_price amount" ><%= purchase_order_supply.unit_price_including_tax(supplier.id, purchase_order_supply.supply.id).to_f.to_s(2) %></td>
-    <td class="quantity"><%= f.text_field(:quantity, :size => 3, :onchange => "refresh_lign(this.up('.resource'))", :class => "quantity" )%></td>
-    <td class="total_price amount" ><%= display_purchase_order_supply_total(purchase_order_supply, supplier.id, purchase_order_supply.supply.id) %></td>
-    <td class="lead_time"><%= "#{supplier_supply.lead_time}&#160;jour(s)"%></td>
-    <td class="purchase_request_supplies references"><%= display_unconfirmed_purchase_request_supplies_references(purchase_order_supply) %></td>
-    <td class="purchase_request_supplies quantities"><%= display_unconfirmed_purchase_request_supplies_expected_quantities(purchase_order_supply) %></td>
-    <td class="purchase_request_supplies select"><%= display_unconfirmed_purchase_request_supplies_check_boxes(purchase_order_supply) %></td>
+    <td><%= purchase_order_supply.supply.reference %></td>
+    <td><%= purchase_order_supply.supply.designation %></td>
+    <td><%= f.text_field(:supplier_reference, :value => purchase_order_supply.supplier_reference ||  supplier_supply.supplier_reference, :size => 4) %></td>
+    <td><%= f.text_field(:supplier_designation, :value => purchase_order_supply.supplier_designation ||  supplier_supply.supplier_designation) %></td>
+    <td><%= display_type_for(purchase_order_supply.supply)%></td>
+    <td><%= purchase_order_supply.supply.stock_quantity%></td>
+    <td><%= f.text_field(:fob_unit_price, :value => purchase_order_supply.fob_unit_price || supplier_supply.fob_unit_price, :size => 3, :class => "fob_unit_price", :onchange => "refresh_lign(this.up('.resource'))" ) %> </td>
+    <td><%= f.text_field(:taxes, :value => purchase_order_supply.taxes || supplier_supply.taxes, :size => 2, :class => "taxes", :onchange => "refresh_lign(this.up('.resource'))") %></td>
+    <td class="PU_TTC amount" ><%= purchase_order_supply.unit_price_including_tax(supplier.id, purchase_order_supply.supply.id).to_f.to_s(2) %></td>
+    <td><%= f.text_field(:quantity, :size => 3, :onchange => "refresh_lign(this.up('.resource'))", :class => "quantity" )%></td>
+    <td class="sum amount" ><%= display_purchase_order_supply_total(purchase_order_supply, supplier.id, purchase_order_supply.supply.id) %></td>
+    <td><%= "#{supplier_supply.lead_time}&#160;jour(s)"%></td>
+    <td><%= display_unconfirmed_purchase_request_supplies_references(purchase_order_supply) %></td>
+    <td><%= display_unconfirmed_purchase_request_supplies_expected_quantities(purchase_order_supply) %></td>
+    <td><%= display_unconfirmed_purchase_request_supplies_check_boxes(purchase_order_supply) %></td>
     <td>
       <% if purchase_order_supply.new_record?%>
         <%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')){this.up('.resource').remove(); update_all_total();}") %>

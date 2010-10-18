@@ -14,18 +14,6 @@ class Parcel < ActiveRecord::Base
   belongs_to :canceller, :class_name => "User", :foreign_key => :cancelled_by_id
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:processing_by_supplier_since]  = "En attente d'expédition depuis le :"
-  @@form_labels[:shipped_on]                    = "Expédié le :"
-  @@form_labels[:conveyance]                    = "Par :"
-  @@form_labels[:previsional_delivery_date]     = "Date de livraison prévue du colis :"
-  @@form_labels[:received_by_forwarder_on]      = "Reçu par le transitaire le :"
-  @@form_labels[:awaiting_pick_up]              = "Récupération chez le transitaire :"
-  @@form_labels[:received_on]                   = "Reçu le :"
-  @@form_labels[:purchase_document]             = "Bon de livraison :"
-  @@form_labels[:cancelled_comment]             = "Veuillez saisir la raison de l'annulation :"
-  
   validates_date :processing_by_supplier_since, :on_or_before => Date::today,
                                                 :on_or_before_message  => :message_for_processing_by_supplier_since_on_or_before_today,
                                                 :if => :processing_by_supplier?

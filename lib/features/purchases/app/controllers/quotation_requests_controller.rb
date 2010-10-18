@@ -31,13 +31,21 @@ class QuotationRequestsController < ApplicationController
   def new
     if params[:supplier_id] and params[:supplier_id] != ""
       @supplier = Supplier.find(params[:supplier_id])
-      @quotation_request = QuotationRequest.new(:supplier_id => @supplier.id)
       if params[:from_supplier_purchase_request]
         purchase_request_supplies = @supplier.merge_purchase_request_supplies
       elsif cookies[:chosen_prs_ids]
         purchase_request_supplies = PurchaseRequestSupply.find_then_merge_purchase_request_supplies(cookies[:chosen_prs_ids].split(",").collect(&:to_i))
       end
-      @quotation_request.build_qrs_from_prs(purchase_request_supplies)
+      
+      if cookies[:quotation_request]
+        @quotation_request = cookies[:quotation_request]
+        cookies[:quotation_request] = nil
+        @quotation_request.supplier_id = @supplier.id
+      else
+        @quotation_request = QuotationRequest.new(:supplier_id => @supplier.id)
+        @quotation_request.build_qrs_from_prs(purchase_request_supplies)
+      end
+      
     else
       redirect_to :action => :prepare_for_new, :supplier_choice => true
     end
@@ -69,6 +77,15 @@ class QuotationRequestsController < ApplicationController
       else
         render :action => :edit
       end
+    else
+      error_access_page(412)
+    end
+  end
+  
+  def review
+    if (@reviewed_quotation_request = QuotationRequest.find(params[:id])).can_be_reviewed?
+      cookies[:quotation_request] = @reviewed_quotation_request.build_prefilled_child
+      render :action => :new
     else
       error_access_page(412)
     end

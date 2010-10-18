@@ -32,15 +32,6 @@ class PurchaseOrder < ActiveRecord::Base
   belongs_to :supplier
   belongs_to :quotation
   
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:supplier]          = "Fournisseur :"
-  @@form_labels[:employee]          = "Demandeur :"
-  @@form_labels[:user]              = "Créateur de la demande :"
-  @@form_labels[:reference]         = "Référence :"
-  @@form_labels[:statut]            = "Statut :"
-  @@form_labels[:cancelled_comment] = "Raison de l'annulation :"
-  
   validates_presence_of :user_id, :supplier_id
   validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled?
   validates_presence_of :canceller, :if => :cancelled_by_id
@@ -159,7 +150,7 @@ class PurchaseOrder < ActiveRecord::Base
     purchase_order_supplies.each{ |pos|
       pos.purchase_request_supplies.each{ |prs|
         if prs.confirmed_purchase_order_supply
-          errors.add(:purchase_order_supplies, "Certains éléments empêchent la confirmation de votre ordre d'achats")
+          errors.add(:purchase_order_supplies, "Certains éléments empêchent la confirmation de votre ordre d'achat")
           return false
         end
       }

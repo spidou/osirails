@@ -76,10 +76,10 @@ counter ||= 1
         <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm(\"Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire.\")) remove_line(this)" ) %>
         <%= f.hidden_field :id %>
         <%= f.hidden_field :supply_id, :class => :supply_id %>
-        <%= f.hidden_field :position, :class => :position, :value => position, :index => nil %>
+        <%= f.hidden_field :position, :class => :position, :value => position %>
         <%= f.hidden_field :purchase_request_supplies_ids, :value => quotation_request_supply.get_purchase_request_supplies_ids, :class => :purchase_request_supplies_ids %>
         <%= f.hidden_field :purchase_request_supplies_deselected_ids, :value => quotation_request_supply.purchase_request_supplies_deselected_ids, :class => :purchase_request_supplies_deselected_ids %>
-        <%= f.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
+        <%= f.hidden_field :should_destroy, :class => :should_destroy %>
       </td>
     <% end %>
   </tr>

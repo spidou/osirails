@@ -17,7 +17,7 @@ en:
       purchase_order:
         supplier: "Supplier"
         employee: "Applicant"
-        user: "Application's creator"
+        user: "Created by"
         reference: "Reference"
         status: "Status"
         cancelled_comment: "Reason for cancellation"
@@ -45,10 +45,14 @@ en:
         description: "Description"
     errors:
       models:
+        purchase_order_supply:
+          attributes:
+            base:
+              is_not_cancelled: "Impossible to have cancelled supplies in a drafted purchase order"
         purchase_request:
           attributes:
             purchase_request_supplies:
-             message_error_length_of_for_purchase_request: "select at least one supply"
+             message_error_length_of_for_purchase_request: "You must select at least one supply"
         parcel:
           attributes:
             parcel_items:
@@ -66,18 +70,37 @@ en:
               on_or_before: "should not be AFTER ({{restriction}})"
         parcel_item:
           attributes:
-            quantity: 
+            quantity:
               validity: "not valid"
             issues_quantity:
               validity: "not valid"
+        quotation_request:
+          attributes:
+            base:
+              has_not_both_parent_id_and_similar_id: "The request for quotation should not have both parent and similar."
+            supplier_id:
+              similarity_of_supplier_between_parents: "The supplier should not change while modification."
+              different_supplier_between_similars: "This request for quotation already exist for this supplier, please choose another supplier."
+            quotation_request_supplies:
+              length_of: "You must choose at least one supply."
+              similarity_with_similar: "The request for quotation is not similar to the one taken as model."
+        quotation:
+          attributes:
+            signed_on:
+              on_or_before: "should not be AFTER today's date ({{restriction}})."
+            sent_on:
+              on_or_before: "should not be AFTER today's date ({{restriction}})."
+            supplier_id:
+              similarity_of_supplier: "The supplier must be the same than the associated request for quotation."
+            quotation_supplies:
+              length_of: "Vous devez choisir au moins une fourniture."
   acronyms:
     purchase_request:
-      acronym: "PR" 
+      acronym: "PR"
       title: "Purchase Request"
     purchase_order:
       acronym: "PO"
       title: "Purchase Order"
     quotation_request:
       acronym: "QR"
-      title: "Quotation Request"              
-        
+      title: "Quotation Request"

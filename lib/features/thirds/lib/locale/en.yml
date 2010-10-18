@@ -1,6 +1,7 @@
-en:     
+en:
   activerecord:
-    attributes: 
+    models:
+    attributes:
       third:
         name: "Corporate name"
         creator: "Created by"
@@ -10,3 +11,21 @@ en:
         customer_grade: "Client relation grade"
       establishment:
         name: "Establishment name"
+      quotation_request:
+        departure: "Departure point"
+      departure:
+        id: "Departure point"
+    errors:
+      models:
+        third:
+          attributes:
+            website:
+              format_of: "The website address do not respect the required format."
+        customer:
+          attributes:
+            establishment_siret_number:
+              uniqueness_of: "is already taken by another establishment (or the head office) of this customer."
+        forwarder:
+          attributes:
+            name:
+              uniqueness_of: "This name already exist."

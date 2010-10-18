@@ -6,13 +6,13 @@ module PurchaseOrdersHelper
   
   def display_purchase_order_complete_button(purchase_order, message = nil)
     return unless purchase_order.can_be_completed?
-    text = "Cloturer l'ordre d'achats"
+    text = "Cloturer l'ordre d'achat"
     message ||= " #{text}"
     link_to( image_tag( "complete_24x24.png",
                         :alt => text,
                         :title => text ) + message,
                          purchase_order_complete_form_path(purchase_order),
-                        :confirm => "Êtes-vous sûr ?\nVous ne pourrez plus apporter de modification à cet ordre d'achats par la suite.", :method => :put)
+                        :confirm => "Êtes-vous sûr ?\nVous ne pourrez plus apporter de modification à cet ordre d'achat par la suite.", :method => :put)
   end
   
   def display_purchase_order_confirm_button(purchase_order, message = nil)
@@ -81,7 +81,7 @@ module PurchaseOrdersHelper
     purchase_order_supplies = purchase_order.purchase_order_supplies
     html = "<div id=\"supplies\" class=\"resources\">"
     html << render(:partial => 'purchase_order_supplies/begin_table')
-    html << render(:partial => 'purchase_order_supplies/purchase_order_supply_in_one_line', :collection => purchase_order_supplies, :locals => { :purchase_order => purchase_order })
+    html << render(:partial => 'purchase_order_supplies/purchase_order_supply_in_one_line', :collection => purchase_order_supplies, :locals => { :purchase_order => purchase_order }) unless purchase_order_supplies.empty?
     html << render(:partial => 'purchase_order_supplies/end_table', :locals => { :purchase_order => purchase_order })
     html << "</div>"
   end

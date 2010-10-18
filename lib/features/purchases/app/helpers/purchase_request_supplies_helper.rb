@@ -1,7 +1,7 @@
 module PurchaseRequestSuppliesHelper
   
   def verify_validity_of_purchase_request_supply(purchase_request_supply)
-    return image_tag('warning_14x14.png', :alt => "warning", :title => "Cette demande d'achat est associ&eacute;e &agrave; un ordre d'achats qui est d&eacute;j&agrave; confirm&eacute; vous devez le d&eacute;s&eacute;lectionn&eacute; ou supprim&eacute; la fourniture pour pouvoir confimer votre demande de devis.") if purchase_request_supply.confirmed_purchase_order_supply
+    return image_tag('warning_14x14.png', :alt => "warning", :title => "Cette demande d'achat est associ&eacute;e &agrave; un ordre d'achat qui est d&eacute;j&agrave; confirm&eacute; vous devez le d&eacute;s&eacute;lectionn&eacute; ou supprim&eacute; la fourniture pour pouvoir confimer votre demande de devis.") if purchase_request_supply.confirmed_purchase_order_supply
     "" 
   end
   
@@ -69,7 +69,7 @@ module PurchaseRequestSuppliesHelper
       page.insert_html :bottom, :purchase_request_supply_form, :partial => 'purchase_request_supplies/purchase_request_supply_in_one_line',
                                                    :object  => purchase_request.purchase_request_supplies.build, :locals => { :purchase_request => purchase_request }
                                                    
-      last_item = page[:purchase_request_supply_form].select('.unreferenced_supply').last.show.visual_effect :highlight
+      last_item = page["purchase_request_supply_form"].select('.unreferenced_supply').last.show.visual_effect "highlight" # :highlight symbol replaced by "highlight" string to relieve to the "undefined method `ascii_only?' for {}:Hash" error, in views
       page << "initialize_autoresize_text_areas()"
     end
   end

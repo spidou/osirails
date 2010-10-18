@@ -191,7 +191,8 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
         
         @purchase_request = create_purchase_request(:purchase_request_supplies => [{:supply_id               => supplies("first_commodity").id,
                                                                                     :expected_quantity       => 30,
-                                                                                    :expected_delivery_date  => Date.today + 1.week }] )
+                                                                                    :expected_delivery_date  => Date.today + 1.week,
+                                                                                    :purchase_priority_id    => purchase_priorities("first_purchase_priority").id }] )
         
         flunk 'The purchase_request should have one purchase_request_supply' unless @purchase_request.purchase_request_supplies.size == 1
         fill_ids_with_identical_supply_ids(@quotation_request, @purchase_request)

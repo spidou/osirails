@@ -15,13 +15,6 @@ class Departure < ActiveRecord::Base
   
   before_destroy :can_be_destroyed?
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:id]            = "Point de départ :"
-  @@form_labels[:city_name]     = 'Nom de la ville :'
-  @@form_labels[:region_name]   = 'Nom de la région :'
-  @@form_labels[:country_name]  = 'Nom du pays :'
-  
   def can_be_hidden?
     !new_record?
   end

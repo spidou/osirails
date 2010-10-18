@@ -1,3 +1,4 @@
+<% grouped_by_supplier_purchase_request_supply_counter += 1 %>
 <% purchase_request_supply = grouped_by_supplier_purchase_request_supply %>
 <% supply = purchase_request_supply.supply %>
 <% supplier_supply = purchase_request_supply.supply.supplier_supplies.first( :conditions => ['supplier_id = ?', supplier]) %>
@@ -13,6 +14,6 @@
   <td class="amount"><%= ((supplier_supply.fob_unit_price * ((100 + supplier_supply.taxes ) / 100)) * purchase_request_supply.expected_quantity).to_f.to_s(2) %> &euro;</td>
   <td><%= "#{supplier_supply.lead_time}&#160;jour(s)" if supplier_supply.lead_time %></td>
   <td>#</td>
-  <td <%= "class=\"warning\"" if purchase_request_supply.expected_delivery_date < Date.today %> ><%= purchase_request_supply.expected_delivery_date.humanize %></td>
+  <td <%= "class=\"warning\"" if purchase_request_supply.expected_delivery_date.past? %> ><%= purchase_request_supply.expected_delivery_date.humanize %></td>
   <%= "<td rowspan=#{supplier.merge_purchase_request_supplies.count}>" + display_choose_supplier_button(supplier, params[:controller]) + "</td>" if grouped_by_supplier_purchase_request_supply_counter == 1 %>
 </tr>
