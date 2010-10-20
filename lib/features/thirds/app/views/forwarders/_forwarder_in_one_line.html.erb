@@ -3,31 +3,14 @@
 
 <tr class="forwarder resource">
   
-  <td>
-    <%= forwarder.name %>
-  </td>
-  
-  <td>
-    <%= forwarder.conveyances.collect{ |conveyance| conveyance.name + "<br />" } %>
-  </td>
-  
-  <td>
-    <%= forwarder.departures.collect{ |departure| departure.formatted + "<br />" } %>
-  </td>
-  
+  <td><%= forwarder.name %></td>
+  <td><%= forwarder.conveyances.collect{ |conveyance| conveyance.name + "<br />" } %></td>
+  <td><%= forwarder.departures.collect{ |departure| departure.formatted + "<br />" } %></td>
   <td>
     <% if forwarder.activated %>
-      <% if is_form_view? and form %>
-        <%= form.check_box :activated, :checked => true %>
-      <% else %>
-        <%= "<span class=\"activated\">Activé</span>" %>
-      <% end %>
+      <%= "<span class=\"activated\">Oui</span>" %>
     <% else %>
-      <% if is_form_view? and form %>
-        <%= form.check_box :activated %>
-      <% else %>
-        <%= "<span class=\"deactivated\">Désactivé</span>"%>
-      <% end %>
+      <%= "<span class=\"deactivated\">Non</span>"%>
     <% end %>
   </td>
   

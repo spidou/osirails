@@ -24,12 +24,13 @@ class PurchaseOrdersController < ApplicationController
   # GET /purchase_orders/new
   # GET /purchase_orders/new?supplier_id=:supplier_id
   def new
-    unless params[:supplier_id] and params[:supplier_id] != ""
-      redirect_to :action => :prepare_for_new, :choice => 1
-    else
-      @supplier = Supplier.find(params[:supplier_id])
+    if params[:supplier_id] and (@supplier = Supplier.find(params[:supplier_id]))
       @purchase_order = PurchaseOrder.new(:supplier_id => @supplier.id)
       @purchase_order.build_with_purchase_request_supplies(@supplier.merge_purchase_request_supplies) if params[:from_purchase_request]
+    elsif params[:supplier_id]
+      redirect_to :action => :prepare_for_new, :choice => 1
+    else
+      redirect_to :action => :prepare_for_new
     end
   end
   
@@ -55,7 +56,7 @@ class PurchaseOrdersController < ApplicationController
   def update
     if @purchase_order = PurchaseOrder.find(params[:id])
       if @purchase_order.update_attributes(params[:purchase_order])
-        flash[:notice] = "L'ordre d'achats a été modifié avec succès"
+        flash[:notice] = "L'ordre d'achat a été modifié avec succès"
         redirect_to @purchase_order
       else
         render :action => "edit"
@@ -110,7 +111,7 @@ class PurchaseOrdersController < ApplicationController
       @purchase_order.attributes = params[:purchase_order]
       @purchase_order.canceller = current_user
       if  @purchase_order.cancel
-        flash[:notice] = "L'ordre d'achats a été annulé avec succès."
+        flash[:notice] = "L'ordre d'achat a été annulé avec succès."
         redirect_to @purchase_order
       else
         render :action => "cancel_form"   
@@ -130,9 +131,9 @@ class PurchaseOrdersController < ApplicationController
   def destroy
     if (@purchase_order = PurchaseOrder.find(params[:id])).can_be_deleted?
       unless @purchase_order.destroy
-        flash[:error] = 'Une erreur est survenue lors de la suppression de l\'ordre d\'achats'
+        flash[:error] = 'Une erreur est survenue lors de la suppression de l\'ordre d\'achat'
       end
-      flash[:notice] = 'La suppression de l\'ordre d\'achats a été effectué avec succès'
+      flash[:notice] = 'La suppression de l\'ordre d\'achat a été effectué avec succès'
       redirect_to purchase_orders_path
     else
       error_access_page(412)

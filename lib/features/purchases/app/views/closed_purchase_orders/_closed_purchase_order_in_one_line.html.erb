@@ -1,4 +1,5 @@
 <%
+closed_purchase_order_in_one_line_counter += 1
 purchase_order = closed_purchase_order_in_one_line
 purchase_deliveries = purchase_order.purchase_deliveries.compact
 cancelled = purchase_order.was_cancelled?

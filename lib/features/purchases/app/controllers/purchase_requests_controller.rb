@@ -23,7 +23,7 @@ class PurchaseRequestsController < ApplicationController
     @purchase_request = PurchaseRequest.new(params[:purchase_request])
     @purchase_request.user_id = current_user.id
     if @purchase_request.save
-      flash[:notice] = "La demande d'achats a été créé(e) avec succès."
+      flash[:notice] = "La demande d'achat a été créé(e) avec succès."
       redirect_to @purchase_request
     else
       render :action => "new"

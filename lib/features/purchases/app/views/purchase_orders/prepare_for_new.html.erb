@@ -7,10 +7,10 @@
 <h1>Nouvel ordre d'achat</h1>
 <% if !params['choice'] or params['choice'] != "1" %>
   <div class="presentation_medium">
-    <h2>Créer un ordre d'achats depuis une liste vide.</h2>
-    <p><%= link_to "Nouveau", prepare_for_new_path(:choice => 1) %></p>
+    <h2>Créer un ordre d'achat depuis une liste vide.</h2>
+    <p><%= link_to "Nouveau", prepare_for_new_purchase_order_path(:choice => 1) %></p>
     
-    <h2>Créer un ordre d'achats en se basant sur les demandes existantes.</h2>
+    <h2>Créer un ordre d'achat en se basant sur les demandes existantes.</h2>
     <div class="presentation_in_columns">
       <% if @suppliers.empty? %>
         <p>Il n'y a aucune demande en attente pour le moment.</p>

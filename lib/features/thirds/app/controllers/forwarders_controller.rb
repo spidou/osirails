@@ -45,9 +45,9 @@ class ForwardersController < ApplicationController
     end
   end
   
-    # DELETE /forwarders/:id
-  def destroy
-    @forwarder = Forwarder.find(params[:id])
+  #GET /forwarders/:forwarder_id/deactivate
+  def deactivate
+    @forwarder = Forwarder.find(params[:forwarder_id])
     @forwarder.activated = false
     if @forwarder.save
       flash[:notice] = "Le transporteur a été supprimé avec succès"

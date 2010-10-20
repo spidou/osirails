@@ -1,10 +1,10 @@
 <%= generate_purchase_order_contextual_menu_partial %>
 <% cancelled = params['filter'] == PurchaseOrder::STATUS_CANCELLED %>
 
-<h1>Liste des ordres d'achats terminés</h1>
+<h1>Liste des ordres d'achat terminés</h1>
 <div>
   <% if @closed_purchase_orders.empty? %>
-    <p>Aucun ordre d'achats terminés</p>
+    <p>Aucun ordre d'achat terminés</p>
   <% else %>
     <table class="no_nth">
       <thead>

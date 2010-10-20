@@ -68,14 +68,11 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
         @purchase_request = create_purchase_request(:purchase_request_supplies => [{:supply_id => @purchase_order.purchase_order_supplies.first.supply_id,
                                                                                     :expected_quantity => 1000,
                                                                                     :expected_delivery_date => Date.today + 4.week,
-                                                                                    :purchase_priority_id => purchase_priorities("first_purchase_priority").id
-                                                                                  },
+                                                                                    :purchase_priority_id => purchase_priorities("first_purchase_priority").id},
                                                                                   { :supply_id => @purchase_order.purchase_order_supplies.last.supply_id,
                                                                                     :expected_quantity => 2000,
                                                                                     :expected_delivery_date => Date.today + 2.week,
-                                                                                    :purchase_priority_id => purchase_priorities("first_purchase_priority").id
-                                                                                  }] )
-        @purchase_request.save!
+                                                                                    :purchase_priority_id => purchase_priorities("first_purchase_priority").id}] )
         flunk "purchase request should be saved" if @purchase_request.new_record?
         flunk "purchase request supplies should be saved" if @purchase_request.purchase_request_supplies.select(&:new_record?).any?
       end

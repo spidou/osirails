@@ -15,7 +15,6 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
     
     subject {@quotation_request_supply}
     
-#    should_validate_presence_of :designation, :supply # ne fonctionne pas car assigné automatiquement si vide (demander à Mathieu si c'est nécessaire)
     should_validate_numericality_of :quantity
     
     should 'be an existing_supply' do
@@ -32,6 +31,10 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
     
     should 'have designation prefilled automatiquement' do
       assert_not_nil @quotation_request_supply.designation
+    end
+    
+    should 'have a matching designation' do
+      assert_match /First Commodity Category First Commodity Sub Category First Commodity/, @quotation_request_supply.designation
     end
   end
   
@@ -59,8 +62,18 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
       assert !@quotation_request_supply.comment_line?
     end
     
-    should 'NOT have desigation prefilled automatically' do
+    should 'NOT have designation prefilled automatically' do
       assert_nil @quotation_request_supply.designation
+    end
+    
+    context 'associated to a quotation_request_supply without supply_id' do
+      setup do
+        #TODO when purchase_request_supplies will accept free_supply
+      end
+      
+      should 'have an designation matching with associated quotation_request_supply\'s designation' do
+        #TODO when purchase_request_supplies will accept free_supply
+      end
     end
   end
   
@@ -73,7 +86,7 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
     
     subject {@quotation_request_supply}
     
-    should_validate_presence_of :name, :description
+    should_validate_presence_of :description
     
     should 'NOT be an existing_supply' do
       assert !@quotation_request_supply.existing_supply?
@@ -127,10 +140,6 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
       assert_nil @quotation_request_supply.supplier_designation
     end
     
-    should 'NOT have a name' do
-      assert_nil @quotation_request_supply.name
-    end
-    
     should 'have comment line set to false' do
       assert !@quotation_request_supply.comment_line
     end
@@ -182,7 +191,8 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
         
         @purchase_request = create_purchase_request(:purchase_request_supplies => [{:supply_id               => supplies("first_commodity").id,
                                                                                     :expected_quantity       => 30,
-                                                                                    :expected_delivery_date  => Date.today + 1.week }] )
+                                                                                    :expected_delivery_date  => Date.today + 1.week,
+                                                                                    :purchase_priority_id    => purchase_priorities("first_purchase_priority").id }] )
         
         flunk 'The purchase_request should have one purchase_request_supply' unless @purchase_request.purchase_request_supplies.size == 1
         fill_ids_with_identical_supply_ids(@quotation_request, @purchase_request)
@@ -264,6 +274,10 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
     should 'be destroyed successfully' do
       assert @quotation_request_supply.destroy
     end
+    
+    should 'have a designation' do
+      assert @quotation_request_supply.designation
+    end
   end
   
   context 'A comment line quotation_request_supply in a drafted quotation_request' do
@@ -275,14 +289,12 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
       @quotation_request.creator_id = users("admin_user").id
       @quotation_request.supplier_id = supplier.id
       @quotation_request.supplier_contact_id = supplier.contacts.first.id
-      build_comment_line_for_quotation_request(@quotation_request)
+      build_comment_line_for_quotation_request(@quotation_request, { :description => "Designation for tests" })
       @quotation_request.save!
     
       @quotation_request_supply = @quotation_request.quotation_request_supplies.last
       flunk 'Failed to build the quotation_request_supply' unless @quotation_request_supply
     end
-    
-    subject {@quotation_request_supply}
     
     should 'NOT have supply_id' do
       assert_nil @quotation_request_supply.supply_id
@@ -294,10 +306,6 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
     
     should 'have comment line set to true' do
       assert @quotation_request_supply.comment_line
-    end
-    
-    should 'have a name' do
-      assert_not_nil @quotation_request_supply.name
     end
     
     should 'have a description' do

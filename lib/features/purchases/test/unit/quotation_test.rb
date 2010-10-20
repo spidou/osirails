@@ -2,6 +2,7 @@ require File.dirname(__FILE__) + '/../purchases_test'
 
 class QuotationTest < ActiveSupport::TestCase
   #TODO test has_permissions :as_business_object
+  #TODO test validate_date
   
   should_have_many :quotation_supplies
   should_have_many :existing_quotation_supplies
@@ -103,7 +104,7 @@ class QuotationTest < ActiveSupport::TestCase
     
     should 'require at least one quotation_supply' do
       @quotation.valid?
-      assert_match /Veuillez sélectionner au moins une fourniture/, @quotation.errors.on(:quotation_supplies)
+      assert_match /Vous devez choisir au moins une fourniture./, @quotation.errors.on(:quotation_supplies)
     end
 
     should 'NOT be able to be associated with a purchase_order' do
@@ -772,7 +773,7 @@ class QuotationTest < ActiveSupport::TestCase
       end
       
       should 'invalid the supplier_id' do
-        assert_match /Le fournisseur doit être le même que celui de la demande de devis associée/, @quotation.errors.on(:supplier_id)
+        assert_match /Le fournisseur doit être le même que celui de la demande de devis associée./, @quotation.errors.on(:supplier_id)
       end
     end
   end

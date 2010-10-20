@@ -1,3 +1,4 @@
+<% purchase_order_supply_in_one_line_for_view_counter += 1 %>
 <% purchase_order_supply = purchase_order_supply_in_one_line_for_view %>
 <% purchase_deliveries = purchase_order_supply.purchase_deliveries.compact %>
 <% supplier_supply = purchase_order_supply.supplier_supply(purchase_order_supply.purchase_order.supplier.id, purchase_order_supply.supply_id)  %>

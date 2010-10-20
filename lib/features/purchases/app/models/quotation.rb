@@ -27,13 +27,14 @@ class Quotation < ActiveRecord::Base
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
   belongs_to :canceller, :class_name => "User", :foreign_key => :canceller_id
   belongs_to :quotation_request
+  belongs_to :forwarder
   
-  validates_date :signed_on,  :on_or_before => Date::today,
-                              :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
+  validates_date :signed_on,  :on_or_before => Date.today,
+                              :on_or_before_message  => :message_error_for_date_signed_after_today,
                               :if => :signed_or_sent?
 
-  validates_date :sent_on,  :on_or_before => Date::today,
-                            :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
+  validates_date :sent_on,  :on_or_before => Date.today,
+                            :on_or_before_message  => :message_error_for_date_sent_after_today,
                             :if => :sent?
 
   with_options :if => :cancelled? do |q|
@@ -55,7 +56,7 @@ class Quotation < ActiveRecord::Base
   validates_inclusion_of :status, :in => [ STATUS_CANCELLED ], :if => :was_sent?
   validates_inclusion_of :status, :in => [ STATUS_SIGNED, STATUS_SENT ], :allow_nil => true, :if => :was_cancelled?
 
-  validates_length_of :quotation_supplies, :minimum => 1, :message => "Veuillez sélectionner au moins une fourniture"
+  validates_length_of :quotation_supplies, :minimum => 1, :message => :length_of
   
   validates_associated :quotation_supplies, :quotation_document
   
@@ -66,7 +67,7 @@ class Quotation < ActiveRecord::Base
   before_destroy :can_be_destroyed?
   
   def validates_similarity_of_supplier
-     errors.add(:supplier_id, "Le fournisseur doit être le même que celui de la demande de devis associée") unless supplier_id == quotation_request.supplier_id
+     errors.add(:supplier_id, message_error_for_similarity_of_supplier) unless supplier_id == quotation_request.supplier_id
   end
   
   def validity_delay_unit
@@ -257,6 +258,19 @@ class Quotation < ActiveRecord::Base
     self.quotation_document = PurchaseDocument.new(quotation_document_attributes.first)
   end
   
+  
+  def message_error_for_date_signed_after_today
+    message_for_validates("signed_on", "on_or_before", Date.today)
+  end
+  
+  def message_error_for_date_sent_after_today
+    message_for_validates("sent_on", "on_or_before", Date.today)
+  end
+  
+  def message_error_for_similarity_of_supplier
+    message_for_validates("supplier_id", "similarity_of_supplier")
+  end
+  
 #  private
     def revoke_quotation_request
       quotation_request.revoke if quotation_request and !quotation_request.was_cancelled? and !quotation_request.was_revoked? and cancelled?
@@ -264,5 +278,9 @@ class Quotation < ActiveRecord::Base
 
     def revoke_related_quotation_requests_and_quotations
       quotation_request.revoke_related_quotation_requests_and_quotations if should_revoke_related_quotation_requests_and_quotations?
+    end
+    
+    def message_for_validates(attribute, error_type, restriction = "")
+      I18n.t("activerecord.errors.models.#{self.class.name.tableize.singularize}.attributes.#{attribute}.#{error_type}", :restriction => restriction)
     end
 end

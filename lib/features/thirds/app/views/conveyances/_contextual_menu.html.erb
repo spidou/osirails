@@ -1,9 +1,0 @@
-<% conveyance = contextual_menu %>
-
-<% add_contextual_menu_item :conveyance do %>
-  <%= display_conveyances_list_button unless is_index_view? %>
-  <%= display_conveyance_add_button unless is_new_view? %>
-  <%= display_conveyance_edit_button(conveyance) if is_show_view? %>
-<% end %>
-
-<%= render :partial => 'conveyances/useful_links_contextual_menu', :object => conveyance %>

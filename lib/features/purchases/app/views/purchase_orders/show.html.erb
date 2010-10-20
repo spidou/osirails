@@ -4,7 +4,7 @@
 
 <%= generate_purchase_order_contextual_menu_partial(@purchase_order) %>
 
-<h1>Ordre d'achats</h1>
+<h1>Ordre d'achat</h1>
 <div class="presentation_medium">
   <h2>Informations</h2>
   <div class="presentation_in_columns">
@@ -56,9 +56,8 @@
   <% unless @purchase_order.status == PurchaseOrder::STATUS_DRAFT %>
   
     <h2>Liste des colis</h2>
-    
     <% if @purchase_order.can_add_purchase_delivery? %>
-      <p><%= link_to @purchase_order.purchase_deliveries.empty? ? ("Poursuivre l'ordre d'achats") : ("Ajouter un colis"), new_purchase_order_purchase_delivery_path(@purchase_order) %></p>
+      <p><%= link_to @purchase_order.purchase_deliveries.empty? ? ("Poursuivre l'ordre d'achats") : ("Ajouter une livraison"), new_purchase_order_purchase_delivery_path(@purchase_order) %></p>
     <% end%>
     
     <% if @purchase_order.purchase_deliveries.count > 0 %>

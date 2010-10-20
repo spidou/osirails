@@ -24,7 +24,7 @@ class PurchaseRequest < ActiveRecord::Base
   validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled_at
   validates_presence_of :canceller, :if => :cancelled_by_id
   
-  validates_length_of :purchase_request_supplies, :minimum => 1, :message => :message_error_length_of_for_purchase_request
+  validates_length_of :purchase_request_supplies, :minimum => 1, :message => :length_of
   
   validates_persistence_of :cancelled_by_id, :cancelled_comment, :cancelled_at, :if => :cancelled_at_was
   
@@ -46,7 +46,12 @@ class PurchaseRequest < ActiveRecord::Base
   end
   
   def cancelled?
-    cancelled_at
+    cancelled_at ? true : false
+  end
+  
+  #TODO test this method
+  def was_cancelled?
+    cancelled_at_was ? true : false
   end
   
   def save_purchase_request_supplies
@@ -102,13 +107,4 @@ class PurchaseRequest < ActiveRecord::Base
     end
     purchase_orders.flatten.uniq
   end
-  
-  def message_error_length_of_for_purchase_request
-    message_for_validates("purchase_request_supplies", "length_of", "")
-  end
-  
-  private
-    def message_for_validates(attribute, error_type, restriction)
-      I18n.t("activerecord.errors.models.purchase_request.attributes.purchase_request_supplies.length_of", :restriction => restriction)
-    end
 end

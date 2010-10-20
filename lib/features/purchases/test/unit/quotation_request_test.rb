@@ -46,7 +46,7 @@ class QuotationRequestTest < ActiveSupport::TestCase
       should_not_allow_values_for :status, QuotationRequest::STATUS_CONFIRMED, QuotationRequest::STATUS_CANCELLED, QuotationRequest::STATUS_REVOKED
       should_allow_values_for :status, nil
     end
-
+    
     should 'return false to drafted? method' do
       assert !@quotation_request.drafted?
     end
@@ -127,12 +127,121 @@ class QuotationRequestTest < ActiveSupport::TestCase
       assert !@quotation_request.revoke
     end
     
-    should 'require at least one quotation_request_supply' do
-      @quotation_request.valid?
-      assert_match /Vous devez entrer au moins une fourniture/, @quotation_request.errors.on(:quotation_request_supplies)
+    context 'with params for news quotation_request_supplies' do
+      setup do
+        @params = []
+        @params << {:supply_id              => supplies("first_commodity").id,
+                    :quantity               => 1000,
+                    :position               => 2,
+                    :designation            => supplies("first_commodity").designation,
+                    :supplier_reference     => "CO.00.00.00.01",
+                    :supplier_designation   => "Commodity One",
+                    :description            => "Description for tests"}
+      end
+      
+      context 'and which is taking a new existing_supply' do
+        setup do
+          flunk 'existing_quotation_request_supply_attributes= should success' unless @quotation_request.existing_quotation_request_supply_attributes=(@params)
+          flunk '@quotation_request should have one quotation_request_supply' unless @quotation_request.quotation_request_supplies.size == 1
+        end
+        
+        should 'have a matching designation' do
+          assert_match /First Commodity Category First Commodity Sub Category First Commodity/, @quotation_request.quotation_request_supplies.last.designation
+        end
+      end
+      
+      context 'and which is taking a new free_supply' do
+        setup do
+          flunk 'free_quotation_request_supply_attributes= should success' unless @quotation_request.free_quotation_request_supply_attributes=(@params)
+          flunk '@quotation_request should have one quotation_request_supply' unless @quotation_request.quotation_request_supplies.size == 1
+        end
+        
+        should 'have a line with a designation' do
+          assert_match /First Commodity Category First Commodity Sub Category First Commodity/, @quotation_request.quotation_request_supplies.last.designation
+        end
+      end
+      
+      context 'and which is taking a new comment_line' do
+        setup do
+          flunk 'comment_line_quotation_request_supply_attributes= should success' unless @quotation_request.comment_line_quotation_request_supply_attributes=(@params)
+          flunk '@quotation_request should have one quotation_request_supply' unless @quotation_request.quotation_request_supplies.size == 1
+        end
+        
+        should 'have a line with a nil designation' do
+          assert_nil @quotation_request.quotation_request_supplies.last.designation
+        end
+      end
+      
+      context 'with prerequisites to be valid' do
+        setup do
+          supplier = create_supplier
+          
+          @quotation_request.creator_id = users('admin_user').id
+          @quotation_request.supplier_id = supplier.id
+          @quotation_request.supplier_contact_id = supplier.contacts.first.id
+          flunk 'Supplier undefined' unless @quotation_request.supplier
+          @quotation_request.employee_id = employees('john_doe').id
+        end
+        
+        context 'and which is taking a new existing_supply and then is saved' do
+          setup do
+            flunk 'existing_quotation_request_supply_attributes= should success' unless @quotation_request.existing_quotation_request_supply_attributes=(@params)
+            flunk '@quotation_request should have one quotation_request_supply' unless @quotation_request.quotation_request_supplies.size == 1
+            @quotation_request.save!
+          end
+          
+#          should 'have a nil designation in the database' do
+#            assert_nil @quotation_request.quotation_request_supplies.last.designation_was
+#          end
+        end
+        
+        context 'and which is taking a new free_supply and then is saved' do
+          setup do
+            flunk 'free_quotation_request_supply_attributes= should success' unless @quotation_request.free_quotation_request_supply_attributes=(@params)
+            flunk '@quotation_request should have one quotation_request_supply' unless @quotation_request.quotation_request_supplies.size == 1
+            @quotation_request.save!
+          end
+          
+          should 'have a line with a nil designation' do
+            assert_match /First Commodity Category First Commodity Sub Category First Commodity/, @quotation_request.quotation_request_supplies.last.designation_was
+          end
+        end
+        
+        #TODO complete this tests when purchase_request_supplies will accept to not fill supply_id
+        context 'and which is taking a new _free_supply associated to a purchase_request_supply without supply_id and then is saved' do
+          setup do
+#            @purchase_request = create_purchase_request(:purchase_request_supplies => [{ :expected_quantity => 123654,
+#                                                                                        :expected_delivery_date => Date.today + 1.week,
+#                                                                                        :purchase_priority_id    => purchase_priorities("first_purchase_priority").id }])
+#            flunk 'free_quotation_request_supply_attributes= should success' unless @quotation_request.build_qrs_from_prs=(@params)
+#            flunk '@quotation_request should have one quotation_request_supply' unless @quotation_request.quotation_request_supplies.size == 1
+          end
+          
+          should 'NOT have designation saved in database' do
+#            assert_nil @quotation_request.quotation_request_supplies.last.description_was
+          end
+        end
+        
+        context 'and which is taking a new comment_line and then is saved' do
+          setup do
+            flunk 'comment_line_quotation_request_supply_attributes= should success' unless @quotation_request.comment_line_quotation_request_supply_attributes=(@params)
+            flunk '@quotation_request should have one quotation_request_supply' unless @quotation_request.quotation_request_supplies.size == 1
+            @quotation_request.save!
+          end
+          
+          should 'have a line with a nil designation' do
+            assert_nil @quotation_request.quotation_request_supplies.last.designation_was
+          end
+        end
+      end
     end
     
-    context 'with a quotation_request_supply' do
+    should 'require at least one quotation_request_supply' do
+      @quotation_request.valid?
+      assert_match /Vous devez choisir au moins une fourniture/, @quotation_request.errors.on(:quotation_request_supplies)
+    end
+    
+    context 'with an existing quotation_request_supply' do
       setup do
         @quotation_request_supply = build_existing_quotation_request_supply(@quotation_request)
         flunk 'The quotation_request_supply is invalid' unless @quotation_request_supply.valid?
@@ -142,7 +251,7 @@ class QuotationRequestTest < ActiveSupport::TestCase
         assert_nil @quotation_request.errors.on(:quotation_request_supplies)
       end
       
-      context 'associated to a purchase_request_supply' do
+      context 'filled with all prerequisites to be valid' do
         setup do
           supplier = create_supplier
           
@@ -150,29 +259,43 @@ class QuotationRequestTest < ActiveSupport::TestCase
           @quotation_request.supplier_id = supplier.id
           @quotation_request.supplier_contact_id = supplier.contacts.first.id
           flunk 'Supplier undefined' unless @quotation_request.supplier
-          
           @quotation_request.employee_id = employees('john_doe').id
-          flunk 'Quotation_request_supplies number is not equal to 1' unless @quotation_request.quotation_request_supplies.size == 1
           
-          @purchase_request = create_purchase_request
-          fill_ids_with_identical_supply_ids(@quotation_request, @purchase_request)
-          flunk 'The quotation_request_supply do not have purchase_request_supplies_ids filled' unless @quotation_request.quotation_request_supplies.first.purchase_request_supplies_ids
-          @quotation_request.save!
+          flunk 'Quotation_request_supplies number is not equal to 1' unless @quotation_request.quotation_request_supplies.size == 1
         end
         
-        should 'have one purchase_request_supply associated' do
-          assert_equal 1, @quotation_request.quotation_request_supplies.first.purchase_request_supplies.size
-        end
-        
-        context 'then dissociated' do
+        context 'and then we save' do
           setup do
-            fill_ids_with_identical_supply_ids_for_deselection(@quotation_request, @purchase_request)
-            flunk 'The quotation_request_supply do not have purchase_request_supplies_deselected_ids filled' unless @quotation_request.quotation_request_supplies.first.purchase_request_supplies_deselected_ids
             @quotation_request.save!
           end
           
-          should 'NOT have purchase_request_supplies associated anymore' do
-            assert !@quotation_request.quotation_request_supplies.detect{ |qrs| qrs.purchase_request_supplies.any? }
+          should 'NOT have description in its quotation_request_supply' do
+            assert_nil @quotation_request.quotation_request_supplies.last.description
+          end
+        end
+        
+        context 'associated to a purchase_request_supply then saved' do
+          setup do
+            @purchase_request = create_purchase_request
+            fill_ids_with_identical_supply_ids(@quotation_request, @purchase_request)
+            flunk 'The quotation_request_supply do not have purchase_request_supplies_ids filled' unless @quotation_request.quotation_request_supplies.first.purchase_request_supplies_ids
+            @quotation_request.save!
+          end
+          
+          should 'have one purchase_request_supply associated' do
+            assert_equal 1, @quotation_request.quotation_request_supplies.first.purchase_request_supplies.size
+          end
+          
+          context 'then dissociated' do
+            setup do
+              fill_ids_with_identical_supply_ids_for_deselection(@quotation_request, @purchase_request)
+              flunk 'The quotation_request_supply do not have purchase_request_supplies_deselected_ids filled' unless @quotation_request.quotation_request_supplies.first.purchase_request_supplies_deselected_ids
+              @quotation_request.save!
+            end
+            
+            should 'NOT have purchase_request_supplies associated anymore' do
+              assert !@quotation_request.quotation_request_supplies.detect{ |qrs| qrs.purchase_request_supplies.any? }
+            end
           end
         end
       end
@@ -185,8 +308,8 @@ class QuotationRequestTest < ActiveSupport::TestCase
                                                                                                                   :supply_id => supplies("first_commodity").id,
                                                                                                                   :designation => supplies("first_commodity").name },
                                                                                                                 { :quantity => 500,
-                                                                                                                  :supply_id => supplies("first_commodity").id,
-                                                                                                                  :designation => supplies("first_commodity").name } ])
+                                                                                                                  :supply_id => supplies("second_commodity").id,
+                                                                                                                  :designation => supplies("second_commodity").name } ])
       @second_quotation_request = @first_quotation_request.build_prefilled_similar
       flunk 'Failed to build quotation_request' unless @second_quotation_request
       second_supplier = create_supplier(thirds('second_supplier'))
@@ -202,7 +325,11 @@ class QuotationRequestTest < ActiveSupport::TestCase
 #    should_not_allow_values_for :status, QuotationRequest::STATUS_CANCELLED, QuotationRequest::STATUS_REVOKED, nil
 #    should_allow_values_for :status, QuotationRequest::STATUS_CONFIRMED
     
-    should 'have the first quotation_request as similar' do
+    should 'have a similar_id and be a new_record?' do
+      assert @second_quotation_request.similar_id_and_new_record?
+    end
+    
+    should 'have the first quotation_request id as similar_id' do
       assert_equal @first_quotation_request.id, @second_quotation_request.similar_id
     end
     
@@ -264,13 +391,17 @@ class QuotationRequestTest < ActiveSupport::TestCase
       should 'be the in the list of similars of the first quotation_request' do
         assert_equal @second_quotation_request, @first_quotation_request.similars.first
       end
+      
+      should 'NOT have a similar_id and be a new_record?' do
+        assert !@second_quotation_request.similar_id_and_new_record?
+      end
     end
 
     context 'and then a quotation_request built by reviewing the confirmed one, the reviewed quotation_request' do
       setup do
         @reviewed_quotation_request = @first_quotation_request.build_prefilled_child
         flunk 'Failed to build reviewed quotation_request' unless @reviewed_quotation_request
-        flunk 'Parent item don\'t feat with child item' unless @first_quotation_request.quotation_request_supplies.first.supply_id == @reviewed_quotation_request.quotation_request_supplies.first.supply_id and @first_quotation_request.quotation_request_supplies.first.quantity == @reviewed_quotation_request.quotation_request_supplies.first.quantity and @first_quotation_request.quotation_request_supplies.first.position == @reviewed_quotation_request.quotation_request_supplies.first.position  and @first_quotation_request.quotation_request_supplies.first.name == @reviewed_quotation_request.quotation_request_supplies.first.name and @first_quotation_request.quotation_request_supplies.first.description == @reviewed_quotation_request.quotation_request_supplies.first.description and @first_quotation_request.quotation_request_supplies.first.comment_line == @reviewed_quotation_request.quotation_request_supplies.first.comment_line and @first_quotation_request.quotation_request_supplies.first.designation == @reviewed_quotation_request.quotation_request_supplies.first.designation
+        flunk 'Parent item don\'t feat with child item' unless @first_quotation_request.quotation_request_supplies.first.supply_id == @reviewed_quotation_request.quotation_request_supplies.first.supply_id and @first_quotation_request.quotation_request_supplies.first.quantity == @reviewed_quotation_request.quotation_request_supplies.first.quantity and @first_quotation_request.quotation_request_supplies.first.position == @reviewed_quotation_request.quotation_request_supplies.first.position  and @first_quotation_request.quotation_request_supplies.first.description == @reviewed_quotation_request.quotation_request_supplies.first.description and @first_quotation_request.quotation_request_supplies.first.comment_line == @reviewed_quotation_request.quotation_request_supplies.first.comment_line and @first_quotation_request.quotation_request_supplies.first.designation == @reviewed_quotation_request.quotation_request_supplies.first.designation
         @reviewed_quotation_request.creator_id = users('admin_user').id
         flunk 'Parent is not good' unless @reviewed_quotation_request.parent_id == @first_quotation_request.id
         flunk 'Parent supplier is not the same than first quotation_request' unless @first_quotation_request.supplier_id == @reviewed_quotation_request.supplier_id
@@ -423,7 +554,12 @@ class QuotationRequestTest < ActiveSupport::TestCase
     
     context 'while confirmation' do
       setup do
-        build_existing_quotation_request_supply(@quotation_request)
+        build_existing_quotation_request_supply(@quotation_request, {:quantity => 2000,
+                                                                      :position => ( @quotation_request.quotation_request_supplies.last && @quotation_request.quotation_request_supplies.last.position.to_i + 1 ) || 0,
+                                                                      :supply_id => supplies("second_commodity").id,
+                                                                      :designation => supplies("second_commodity").name,
+                                                                      :supplier_reference => SupplierSupply.first("supplier_id = ? and supply_id = ?", @quotation_request.supplier_id, supplies("second_commodity").id ).supplier_reference,
+                                                                      :supplier_designation => SupplierSupply.first("supplier_id = ? and supply_id = ?", @quotation_request.supplier_id, supplies("second_commodity").id ).supplier_designation })
         flunk 'Failed to create quotation_request_supply' unless @quotation_request_supply = @quotation_request.quotation_request_supplies.first
         prepare_quotation_request_to_be_confirmed(@quotation_request)
       end
@@ -448,9 +584,12 @@ class QuotationRequestTest < ActiveSupport::TestCase
     end
 
     subject {@quotation_request}
-
+    
     should_not_allow_values_for :status, QuotationRequest::STATUS_CONFIRMED
     should_allow_values_for :status, QuotationRequest::STATUS_CANCELLED, QuotationRequest::STATUS_REVOKED, nil
+    
+    should_validate_presence_of :employee, :supplier_contact, :with_foreign_key => :default
+    should_validate_presence_of :reference
     
     should 'return false to drafted? method' do
       assert !@quotation_request.drafted?
@@ -685,6 +824,9 @@ class QuotationRequestTest < ActiveSupport::TestCase
     
     should_not_allow_values_for :status, QuotationRequest::STATUS_REVOKED, QuotationRequest::STATUS_CANCELLED
     should_allow_values_for :status, QuotationRequest::STATUS_CONFIRMED, nil
+    
+    should_validate_presence_of :cancellation_comment
+    should_validate_presence_of :canceller, :with_foreign_key => :default
     
     should 'return false to drafted? method' do
       assert !@quotation_request.drafted?

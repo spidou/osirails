@@ -7,16 +7,15 @@ class PurchaseRequestSupply < ActiveRecord::Base
   has_many :quotation_supplies, :through => :quotation_purchase_request_supplies
   has_many :request_order_supplies
   has_many :purchase_order_supplies, :through => :request_order_supplies
-  
+  has_many :draft_purchase_order_supplies, :through    => :request_order_supplies,
+                                           :include    => 'purchase_order',
+                                           :conditions => [ 'purchase_orders.status = ?', PurchaseOrder::STATUS_DRAFT],
+                                           :source     => :purchase_order_supply
   has_one   :confirmed_purchase_order_supply, :through    => :request_order_supplies,
                                               :include    => 'purchase_order',
                                               :conditions => [ 'purchase_orders.status > ?', PurchaseOrder::STATUS_DRAFT ],
                                               :source     => :purchase_order_supply
   
-  has_many  :draft_purchase_order_supplies,   :through    => :request_order_supplies,
-                                              :include    => 'purchase_order',
-                                              :conditions => [ 'purchase_orders.status = ?', PurchaseOrder::STATUS_DRAFT ],
-                                              :source     => :purchase_order_supply
   belongs_to :purchase_priority
   belongs_to :purchase_request
   belongs_to :supply
@@ -69,7 +68,12 @@ class PurchaseRequestSupply < ActiveRecord::Base
   end
   
   def cancelled?
-   cancelled_at || purchase_request.cancelled? 
+   (cancelled_at ? true : false) || purchase_request.cancelled? 
+  end
+  
+  #TODO test this method
+  def was_cancelled?
+    (cancelled_at_was ? true : false) || purchase_request.was_cancelled?
   end
   
   def cancel
@@ -106,5 +110,17 @@ class PurchaseRequestSupply < ActiveRecord::Base
   def self.all_suppliers_for_all_pending_purchase_request_supplies
     suppliers = all_pending_purchase_request_supplies.collect{ |s| s.supply.suppliers }.flatten.uniq
     suppliers.sort_by{ |s| s.merge_purchase_request_supplies.count }.reverse
+  end
+  
+  #TODO test this method
+  def self.find_then_merge_purchase_request_supplies(ids)
+    purchase_request_supplies = PurchaseRequestSupply.find(ids)
+    merged_purchase_request_supplies = purchase_request_supplies.select{ |prs| prs.supply_id.nil? }
+    purchase_request_supplies.reject!{ |prs| prs.supply_id.nil? }
+    purchase_request_supplies.group_by(&:supply_id).each do |key, value|
+      quantities_sum = value.collect{ |prs| prs[:expected_quantity] }.sum
+      merged_purchase_request_supplies << PurchaseRequestSupply.new( :purchase_request_id => nil, :supply_id => key, :expected_quantity => quantities_sum, :expected_delivery_date => value.first.expected_delivery_date )
+    end
+    merged_purchase_request_supplies
   end
 end

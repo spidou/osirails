@@ -1,7 +1,4 @@
 class Customer < Third
-  
-  include CustomerBase
-  
   has_permissions :as_business_object
   has_documents   :graphic_charter
   has_address     :bill_to_address
@@ -9,12 +6,12 @@ class Customer < Third
   belongs_to :factor
   belongs_to :customer_solvency
   belongs_to :customer_grade
-#  belongs_to :creator, :class_name => 'User'
+  belongs_to :creator, :class_name => 'User'
   
   has_one  :head_office
   has_many :establishments, :conditions => ['establishments.type IS NULL and ( hidden = ? or hidden IS NULL )', false]
   
-#  named_scope :activates, :conditions => { :activated => true }
+  named_scope :activates, :conditions => { :activated => true }
   
   has_attached_file :logo, 
                     :styles => { :thumb => "120x120" },
@@ -124,10 +121,19 @@ class Customer < Third
     all_siret_numbers = {}
     establishments.each{ |n| all_siret_numbers.merge!(n => n.siret_number) }
     
-    message = "est déjà pris par un autre établissement (ou le siège social) de ce client"
+    message = message_error_for_uniqueness_of_siret_number
     establishments.each do |establishment|
       other_siret_numbers = all_siret_numbers.reject{ |estab, siret_number| establishment == estab }
       establishment.errors.add(:siret_number, message) if other_siret_numbers.values.include?(establishment.siret_number)
     end
   end
+  
+  def message_error_for_uniqueness_of_siret_number
+    message_for_validates("establishment_siret_number", "uniqueness_of")
+  end
+  
+  private
+    def message_for_validates(attribute, error_type, restriction = "")
+      I18n.t("activerecord.errors.models.#{self.class.name.tableize.singularize}.attributes.#{attribute}.#{error_type}", :restriction => restriction)
+    end
 end

@@ -9,6 +9,7 @@ ActionController::Routing::Routes.add_routes do |map|
   map.resources :factors
   
   map.resources :forwarders do |forwarder|
+    forwarder.deactivate "deactivate", :controller => 'forwarders', :action => 'deactivate'
     forwarder.resources :departures
   end
   

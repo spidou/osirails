@@ -1,4 +1,5 @@
 ActionController::Routing::Routes.add_routes do |map|
+
   map.resources :purchase_requests do |request|
     request.cancel_supply 'cancel_supply/:purchase_request_supply_id', :controller => 'purchase_requests', :action => 'cancel_supply'
     request.cancel        'cancel',       :controller => 'purchase_requests', :action => 'cancel'
@@ -6,22 +7,16 @@ ActionController::Routing::Routes.add_routes do |map|
   end
   
   map.resources "purchase_request_supplies"
+  
   map.purchase_request_managements "purchase_request_managements", :controller => "purchase_request_supplies", :action => "index"
   
   map.prepare_for_new_quotation_request 'quotation_requests/prepare_for_new', :controller => 'quotation_requests', :action => 'prepare_for_new'
-  map.auto_complete_for_supply 'auto_complete_for_supply',  :controller => 'quotation_requests', 
-                                                            :action     => 'auto_complete_for_supply', 
-                                                            :method     => :post
+  
   map.quotation_request_supply 'quotation_request_supply', :controller => 'quotation_requests',
                                                            :action => 'quotation_request_supply',
                                                            :method => :get
   map.resources :quotation_requests
   
-  map.prepare_for_new 'prepare_for_new', :controller => 'purchase_orders', :action => 'prepare_for_new'
-  
-  map.purchase_order_supply_in_one_line 'purchase_order_supply_in_one_line',  :controller => 'purchase_orders', 
-                                    :action => 'purchase_order_supply_in_one_line', 
-                                    :method => :get
   
   map.purchase_delivery_status_partial 'purchase_delivery_status_partial',  :controller => 'purchase_deliveries', 
                                     :action => 'purchase_delivery_status_partial', 
@@ -30,6 +25,10 @@ ActionController::Routing::Routes.add_routes do |map|
   map.purchase_request_supply_in_one_line 'purchase_request_supply_in_one_line',  :controller => 'purchase_requests', 
                                     :action => 'purchase_request_supply_in_one_line', 
                                     :method => :get
+                                    
+  map.auto_complete_for_supply 'auto_complete_for_supply',  :controller => 'quotation_requests', 
+                                                            :action     => 'auto_complete_for_supply', 
+                                                            :method     => :post
   
   map.auto_complete_for_supply_reference 'auto_complete_for_supply_reference',  :controller => 'purchase_orders', 
                                                                                 :action     => 'auto_complete_for_supply_reference', 
@@ -38,6 +37,16 @@ ActionController::Routing::Routes.add_routes do |map|
   map.auto_complete_for_supplier_name 'auto_complete_for_supplier_name',  :controller => 'purchase_orders', 
                                                                           :action     => 'auto_complete_for_supplier_name', 
                                                                           :method     => :get
+  
+  map.purchase_order_supply_in_one_line 'purchase_order_supply_in_one_line',  :controller => 'purchase_orders', 
+                                    :action => 'purchase_order_supply_in_one_line', 
+                                    :method => :get
+  
+  map.pending_purchase_orders 'purchase_orders/pending', :controller => 'pending_purchase_orders', :action => 'index'
+  
+  map.closed_purchase_orders  'purchase_orders/closed',  :controller => 'closed_purchase_orders',  :action => 'index'
+  
+  map.prepare_for_new_purchase_order 'purchase_orders/prepare_for_new', :controller => 'purchase_orders', :action => 'prepare_for_new'
   
   map.resources :purchase_orders do |order|
     order.cancel                      'cancel',                                   :controller => 'purchase_orders', :action => 'cancel'
@@ -77,9 +86,6 @@ ActionController::Routing::Routes.add_routes do |map|
       purchase_order_supply.cancel_form 'cancel_form',  :controller => 'purchase_order_supplies', :action => 'cancel_form'
     end
   end
-  
-  map.pending_purchase_orders 'pending_purchase_orders', :controller => 'pending_purchase_orders', :action => 'index'
-  map.closed_purchase_orders  'closed_purchase_orders',  :controller => 'closed_purchase_orders',  :action => 'index'
   
   map.purchases 'purchases', :controller => 'pending_purchase_orders', :action => 'index'  # default page for purchases\
 end

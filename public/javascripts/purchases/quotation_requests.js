@@ -95,3 +95,10 @@ function remove_line(element)
   
   update_up_down_links_for_quotation_request($('quotation_request_supplies_body'));
 }
+
+
+
+
+function update_prs_ids(id){
+  $('prs_ids').value = $('purchase_request_supplies').select('.check_boxes').collect(function(item){ if(item.checked){return item.value}}).compact()
+}

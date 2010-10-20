@@ -85,7 +85,7 @@ class PurchaseRequestSupplyTest < ActiveSupport::TestCase
       context "which is in draft status" do
         
         setup do
-          create_association_with_purchase_order_draft(@purchase_request_supply) 
+          create_association_with_purchase_order_draft(@purchase_request_supply)
         end
         
         should "be in during treatment status" do

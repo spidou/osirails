@@ -1,22 +1,90 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
+  <%= stylesheet_link_tag_with_theme_support 'purchases/purchases' %>
+  <%= stylesheet_link_tag_with_theme_support "thirds/thirds" %>
+  <%= javascript_include_tag 'core/has_resources/has_resources' %>
+  <%= javascript_include_tag 'sales/sales' %>
+  <%= javascript_include_tag 'purchases/purchases' %>
+  <%= javascript_include_tag 'purchases/quotation_requests' %>
+<% end %>
+
 <% supplier = quotation_request.supplier %>
 
-<%= hidden_field_tag "choice", :value => 1 %>
 <%= hidden_field_tag "supplier_id", supplier.id %>
 
-<% form_for(quotation_request, :html => {:multipart => true, :choice => 1}) do |f| %>
-  <%= f.error_messages %>
-    <div class="presentation_in_columns">
-      <h2>Informations</h2>
+<%
+quotation_request_headers = { :quotation_request_informations             => "Informations générales",
+                              :quotation_request_supplies_list            => "Liste des produits (#{quotation_request.quotation_request_supplies.reject{ |qrs| qrs.should_destroy? and qrs.comment_line?}.count})",
+                              :quotation_request_supplier_contacts        => "Contacts fournisseur (#{quotation_request.supplier.contacts.reject(&:should_destroy?).count})",
+                              :quotation_request_additional_informations  => "Informations supplémentaires"}
+
+quotation_request_errors  = { :quotation_request_informations       => quotation_request.errors.on(:supplier_id)          || quotation_request.errors.on(:supplier)         ||
+                                                                       quotation_request.errors.on(:supplier_contact_id)  || quotation_request.errors.on(:supplier_contact) ||
+                                                                       quotation_request.errors.on(:status)               ||quotation_request.errors.on(:reference)         ||
+                                                                       quotation_request.errors.on(:title) ? ' errors' : '',
+                              :quotation_request_supplies_list      => quotation_request.errors.on(:quotation_request_supplies) ? ' errors' : '',
+                              :quotation_request_supplier_contacts  => quotation_request.errors.on(:name) ? ' errors' : '' }
+%>
+
+<div class="presentation_medium root_nav">
+  <ul class="quotation_request_nav tab_nav">
+    <li class="quotation_request_informations<%= quotation_request_errors[:quotation_request_informations] %> selected">
+      <%= quotation_request_headers[:quotation_request_informations ] %>
+    </li>
+    
+    <li class="quotation_request_supplies_list<%= quotation_request_errors[:quotation_request_supplies_list] %>">
+      <%= quotation_request_headers[:quotation_request_supplies_list ] %>
+    </li>
+    
+    <li class="quotation_request_supplier_contacts<%= quotation_request_errors[:quotation_request_supplier_contacts] %>">
+      <%= quotation_request_headers[:quotation_request_supplier_contacts ] %>
+    </li>
+    
+    <li class="quotation_request_additional_informations">
+      <%= quotation_request_headers[:quotation_request_additional_informations ] %>
+    </li>
+  </ul>
+  <% form_for quotation_request do |f| %>
+    <%= f.error_messages %>
+    
+    <h2 class="quotation_request_informations section_nav"><%= quotation_request_headers[:quotation_request_informations] %></h2>
+    <div class="quotation_request_informations section_nav selected">
       <%= hidden_field_tag 'add_this_supplier_id', supplier.id %>
       <%= f.hidden_field :supplier_id, :value => supplier.id %>
-      <div>
-        <p>Fournisseur: <strong><%= supplier.name%></strong></p><br>
-      </div>
+      <p>Fournisseur: <strong><%= supplier.name%></strong></p><br>
     </div>
-  
-    <div>
-      <h2>Listes des fournitures</h2>
+    
+    <h2 class="quotation_request_supplies_list section_nav"><%= quotation_request_headers[:quotation_request_supplies_list] %></h2>
+    <div class="quotation_request_supplies_list section_nav">
       <%= render :partial => 'quotation_request_supplies/quotation_request_supplies', :locals => { :quotation_request => quotation_request }  %>
     </div>
-  <%= f.form_buttons %>
-<% end %>
+    
+    <h2 class="quotation_request_supplier_contacts section_nav"><%= quotation_request_headers[:quotation_request_supplier_contacts] %></h2>
+    <div class="quotation_request_supplier_contacts section_nav">
+      <% if is_form_view? %>
+        <% div_id = "#{supplier.class.singularized_table_name}_#{supplier.id}"%>
+    
+        <div id="<%= div_id %>_contacts_list">
+          <h3><%= "Liste des contacts de " %><%= supplier.name.titleize %></h3>
+          <%= render :partial => 'contacts/contact', :collection => supplier.contacts.reject(&:new_record?), :locals => { :contacts_owner => supplier }  %>
+          
+          <div id="<%= div_id %>_new_contacts">
+            <%= render :partial => 'contacts/contact', :collection => supplier.contacts.select(&:new_record?), :locals => { :contacts_owner => supplier }  %>
+          </div>
+          <%= display_add_contact_button_for_owner(supplier) %>
+        </div>
+      <% else %>
+        <%= display_contacts_list(supplier, true) %>
+      <% end %>
+    </div>
+    
+    <h2 class="quotation_request_additional_informations section_nav"><%= quotation_request_headers[:quotation_request_additional_informations] %></h2>
+    <div class="quotation_request_additional_informations section_nav">
+      
+    </div>
+  
+    <%= f.form_buttons %>
+  <% end %>
+</div>

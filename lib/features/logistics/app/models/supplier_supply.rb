@@ -32,4 +32,12 @@ class SupplierSupply < ActiveRecord::Base
   def unit_price
     (fob_unit_price * ( 1 + ( taxes.to_f / 100.0 ) )).to_d
   end
+  
+  def fob_measure_price
+    (fob_unit_price / supply.measure) if supply and supply.measure and supply.measure != 0
+  end
+  
+  def measure_price
+    (unit_price / supply.measure) if supply and supply.measure and supply.measure != 0
+  end
 end

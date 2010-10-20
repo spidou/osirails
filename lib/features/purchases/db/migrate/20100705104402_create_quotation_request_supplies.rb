@@ -3,7 +3,7 @@ class CreateQuotationRequestSupplies < ActiveRecord::Migration
     create_table :quotation_request_supplies do |t|
       t.references  :supply, :quotation_request
       t.integer     :quantity, :position
-      t.string      :designation, :supplier_reference, :supplier_designation, :name
+      t.string      :designation, :supplier_reference, :supplier_designation
       t.boolean     :comment_line
       t.text        :description
       

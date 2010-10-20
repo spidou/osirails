@@ -39,19 +39,20 @@ module PurchaseOrderSuppliesHelper
   
   def display_purchase_order_supply_unit_price_including_tax(purchase_order_supply)
     unit_price = purchase_order_supply.unit_price_including_tax
-    unit_price.to_f.to_s(2) + "&nbsp;&euro;"
+    unit_price.to_f.to_s(2)
   end
   
   def display_purchase_order_supply_total(purchase_order_supply, supplier_id = 0, supply_id = 0)
+    return "0" if supplier_id == 0 or supply_id == 0
     if purchase_order_supply.new_record?
       if supplier_supply = purchase_order_supply.supplier_supply(supplier_id, supply_id)
-        purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100 + supplier_supply.taxes.to_f)/100))
+        (purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100 + supplier_supply.taxes.to_f)/100))).to_f.to_s(2)
       else
-        return 0
+        return "0"
       end
     else
-      return 0 unless purchase_order_supply
-      purchase_order_supply.purchase_order_supply_total.to_s(2) +"&nbsp;&euro;"
+      return "0" unless purchase_order_supply
+       purchase_order_supply.purchase_order_supply_total.to_f.to_s(2)
     end
   end
   
@@ -124,11 +125,6 @@ module PurchaseOrderSuppliesHelper
   def display_purchase_order_supply_reshipped_from_purchase_delivery(purchase_order_supply)
     return unless purchase_order_supply.issued_purchase_delivery_item
     link_to purchase_order_supply.issued_purchase_delivery_item.purchase_delivery.reference, purchase_order_purchase_delivery_path(purchase_order_supply.purchase_order, purchase_order_supply.issued_purchase_delivery_item.purchase_delivery)
-  end
-  
-  def verify_validity_of_purchase_request_supply(purchase_request_supply)
-    return image_tag('warning_14x14.png', :alt => "warning", :title => "cette demande d'achat est associ&eacute;e &agrave; un ordre d'achats qui est d&eacute;j&agrave; confirm&eacute; vous devez le d&eacute;s&eacute;lectionn&eacute; ou supprim&eacute; la fourniture pour pouvoir confimer votre ordre.") if purchase_request_supply.confirmed_purchase_order_supply
-    return "" 
   end
   
   def display_type_for(supply)

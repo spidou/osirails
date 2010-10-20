@@ -7,7 +7,7 @@ collection_length ||= 1
 counter ||= 1
 %>
 
-<% fields_for "quotation_request[existing_quotation_request_supply_attributes][]", quotation_request_supply do |f| %>
+<% fields_for "quotation_request[existing_quotation_request_supply_attributes][]", quotation_request_supply, :index => nil do |f| %>
 
   <%
     position        = quotation_request_supply.position.zero? ? counter : quotation_request_supply.position
@@ -15,7 +15,7 @@ counter ||= 1
     move_down_image = "arrow_down_#{'disable_' if position == collection_length}16x16.png"
   %>
 
-  <tr class="quotation_request_supply" <%= "style=\"display:none\"" if quotation_request_supply.should_destroy? %>>
+  <tr class="quotation_request_supply resource" <%= "style=\"display:none\"" if quotation_request_supply.should_destroy? %>>
     <td class="reference">
       <%= supply.reference %>
     </td>
@@ -56,27 +56,16 @@ counter ||= 1
     </td>
 
     <td class="purchase_request_supplies references">
-      <% unconfirmed_purchase_request_supplies.each do |purchase_request_supply| %>
-        <%= link_to purchase_request_supply.purchase_request.reference + verify_validity_of_purchase_request_supply(purchase_request_supply), purchase_request_path(purchase_request_supply.purchase_request), :popup => true %><br/>
-      <% end %>
+      <%= display_unconfirmed_purchase_request_supplies_references(quotation_request_supply) %>
     </td>
 
     <td class="purchase_request_supplies expected_quantities">
-      <% unconfirmed_purchase_request_supplies.each do |purchase_request_supply| %>
-        <%= purchase_request_supply.expected_quantity.to_s %><br/>
-      <% end %>
+      <%= display_unconfirmed_purchase_request_supplies_expected_quantities(quotation_request_supply) %>
     </td>
 
     <% if is_form_view? %>
       <td class="purchase_request_supplies selection">
-        <% unconfirmed_purchase_request_supplies.each do |purchase_request_supply| %>
-          <%= check_box_tag purchase_request_supply.id, 
-              purchase_request_supply.id, 
-              quotation_request_supply.already_associated_with_purchase_request_supply?(purchase_request_supply), 
-              :data_quantity => purchase_request_supply.expected_quantity.to_s, 
-              :idx => (quotation_request_supply.already_associated_with_purchase_request_supply?(purchase_request_supply) ? 1 : 0), 
-              :onchange => "update_purchase_request_supplies_ids(this, this.up('.resource'))" %> <br>
-        <% end %>
+        <%= display_unconfirmed_purchase_request_supplies_check_boxes(quotation_request_supply) %>
       </td>
     <% end %>
 
@@ -85,10 +74,12 @@ counter ||= 1
         <%= link_to( image_tag( move_up_image, :alt => text_up = "Monter la ligne", :title => text_up, :class => "arrow_up"), "#up", :onclick => "move_up_supply(this);" ) %>
         <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down_supply(this);" ) %>
         <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm(\"Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire.\")) remove_line(this)" ) %>
-        <%= f.hidden_field :id, :class => :quotation_request_supply_id, :index => nil %>
-        <%= f.hidden_field :supply_id, :class => :supply_id, :index => nil %>
-        <%= f.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
-        <%= f.hidden_field :position, :class => :position, :value => position, :index => nil %>
+        <%= f.hidden_field :id %>
+        <%= f.hidden_field :supply_id, :class => :supply_id %>
+        <%= f.hidden_field :position, :class => :position, :value => position %>
+        <%= f.hidden_field :purchase_request_supplies_ids, :value => quotation_request_supply.get_purchase_request_supplies_ids, :class => :purchase_request_supplies_ids %>
+        <%= f.hidden_field :purchase_request_supplies_deselected_ids, :value => quotation_request_supply.purchase_request_supplies_deselected_ids, :class => :purchase_request_supplies_deselected_ids %>
+        <%= f.hidden_field :should_destroy, :class => :should_destroy %>
       </td>
     <% end %>
   </tr>

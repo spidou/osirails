@@ -1265,13 +1265,6 @@ ActiveRecord::Schema.define(:version => 20101019053246) do
     t.datetime "updated_at"
   end
 
-  create_table "quotation_forwarders", :force => true do |t|
-    t.integer  "quotation_id"
-    t.integer  "forwarder_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "quotation_purchase_request_supplies", :force => true do |t|
     t.integer  "quotation_supply_id"
     t.integer  "purchase_request_supply_id"
@@ -1294,7 +1287,6 @@ ActiveRecord::Schema.define(:version => 20101019053246) do
     t.string   "designation"
     t.string   "supplier_reference"
     t.string   "supplier_designation"
-    t.string   "name"
     t.boolean  "comment_line"
     t.text     "description"
     t.datetime "created_at"
@@ -1309,6 +1301,7 @@ ActiveRecord::Schema.define(:version => 20101019053246) do
     t.integer  "similar_id"
     t.integer  "supplier_id"
     t.integer  "supplier_contact_id"
+    t.integer  "revoker_id"
     t.integer  "status"
     t.string   "reference"
     t.string   "title"
@@ -1337,6 +1330,7 @@ ActiveRecord::Schema.define(:version => 20101019053246) do
 
   create_table "quotations", :force => true do |t|
     t.integer  "supplier_id"
+    t.integer  "forwarder_id"
     t.integer  "creator_id"
     t.integer  "quotation_document_id"
     t.integer  "canceller_id"

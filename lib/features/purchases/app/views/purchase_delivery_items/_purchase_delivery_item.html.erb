@@ -6,8 +6,8 @@
   <td><%= purchase_order_supply.supplier_reference %></td>
   <td><%= purchase_order_supply.supplier_designation %></td>
   <td><%= purchase_delivery_item.quantity %></td>
-  <td class="price"><%= display_purchase_order_supply_unit_price_including_tax(purchase_order_supply) %></td>
-  <td class="price"><%= display_purchase_delivery_item_total(purchase_delivery_item) %></td>
+  <td class="amount"><%= display_purchase_order_supply_unit_price_including_tax(purchase_order_supply) %></td>
+  <td class="amount"><%= display_purchase_delivery_item_total(purchase_delivery_item) %></td>
   <td><%= display_purchase_order_supply_associated_purchase_requests(purchase_order_supply) %></td>
   <td><%= display_purchase_delivery_item_issued_at(purchase_delivery_item) %></td>
   <td><%= display_purchase_delivery_item_issues_quantity(purchase_delivery_item)%></td>
@@ -15,3 +15,4 @@
   <td><%= display_purchase_delivery_item_must_be_reshipped(purchase_delivery_item) %></td>
   <td><%= display_purchase_delivery_item_buttons(purchase_delivery_item) %></td>
 </tr>
+
