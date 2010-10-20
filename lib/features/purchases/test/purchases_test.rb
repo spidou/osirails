@@ -505,11 +505,11 @@ class Test::Unit::TestCase
   
   def create_processing_purchase_order(attributes = {})
     purchase_order = create_confirmed_purchase_order(attributes)
-    purchase_order.parcels.build(  :status => Parcel::STATUS_PROCESSING_BY_SUPPLIER,
-                                    :conveyance => "ship",
+    purchase_order.purchase_deliveries.build(  :status => PurchaseDelivery::STATUS_PROCESSING_BY_SUPPLIER,
+                                    :ship_conveyance => "ship",
                                     :previsional_delivery_date => (Date.today + 10),
                                     :processing_by_supplier_since => Date.today)
-    purchase_order.parcels.first.parcel_items.build(:selected => "1",
+    purchase_order.purchase_deliveries.first.purchase_delivery_items.build(:selected => "1",
                                                     :purchase_order_supply_id => purchase_order.purchase_order_supplies.first.id,
                                                     :quantity => (purchase_order.purchase_order_supplies.first.quantity) )
     purchase_order.save!
@@ -517,96 +517,96 @@ class Test::Unit::TestCase
   end
   
   def prepare_purchase_order_to_be_completed(purchase_order)
-    purchase_order.parcels.build(  :previsional_delivery_date => (Date.today),
+    purchase_order.purchase_deliveries.build(  :previsional_delivery_date => (Date.today),
                                     :received_on => (Date.today) )
-    purchase_order.parcels.first.build_delivery_document( :purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_document.gif")) )
-    purchase_order.parcels.first.parcel_items.build(  :selected => "1",
+    purchase_order.purchase_deliveries.first.build_delivery_document( :purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_document.gif")) )
+    purchase_order.purchase_deliveries.first.purchase_delivery_items.build(  :selected => "1",
                                                       :purchase_order_supply_id => purchase_order.purchase_order_supplies.first.id,
                                                       :quantity => (purchase_order.purchase_order_supplies.first.quantity) )
-    purchase_order.parcels.first.parcel_items.build(  :selected => "1",
+    purchase_order.purchase_deliveries.first.purchase_delivery_items.build(  :selected => "1",
                                                       :purchase_order_supply_id => purchase_order.purchase_order_supplies[1].id,
                                                       :quantity => (purchase_order.purchase_order_supplies[1].quantity) )
-    flunk '"parcel failed" to be received when preparing purchase_order to be completed' unless purchase_order.parcels.first.receive
+    flunk '"purchase_delivery failed" to be received when preparing purchase_order to be completed' unless purchase_order.purchase_deliveries.first.receive
     flunk 'purchase_order failed to save when preparing purchase_order to be completed' unless purchase_order.save!
     purchase_order.reload
     purchase_order.build_invoice_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "invoice_document.gif")))
     purchase_order
   end
   
-  def build_parcel_item_for(parcel, purchase_order = nil)
+  def build_purchase_delivery_item_for(purchase_delivery, purchase_order = nil)
     purchase_order = create_confirmed_purchase_order unless purchase_order
-    parcel.status = Parcel::STATUS_PROCESSING_BY_SUPPLIER
-    parcel.processing_by_supplier_since = Date.today
-    parcel.parcel_items.build({ :purchase_order_supply_id => purchase_order.purchase_order_supplies.first.id,
+    purchase_delivery.status = PurchaseDelivery::STATUS_PROCESSING_BY_SUPPLIER
+    purchase_delivery.processing_by_supplier_since = Date.today
+    purchase_delivery.purchase_delivery_items.build({ :purchase_order_supply_id => purchase_order.purchase_order_supplies.first.id,
                                 :quantity => purchase_order.purchase_order_supplies.first.quantity,
                                 :selected => "1"})
-    parcel
+    purchase_delivery
   end
   
-  def put_received_status_for(parcel)
-    parcel.received_on = Date.today
-    parcel.build_delivery_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_document.gif")))
-    flunk "parcel should be put in received status" unless parcel.receive
-    parcel
+  def put_received_status_for(purchase_delivery)
+    purchase_delivery.received_on = Date.today
+    purchase_delivery.build_delivery_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_document.gif")))
+    flunk "purchase_delivery should be put in received status" unless purchase_delivery.receive
+    purchase_delivery
   end
   
   
-  def create_valid_parcel
-    parcel = Parcel.new
-    parcel = build_parcel_item_for(parcel, nil)
-    flunk "parcel should be saved" unless parcel.save!
-    parcel
+  def create_valid_purchase_delivery
+    purchase_delivery = PurchaseDelivery.new
+    purchase_delivery = build_purchase_delivery_item_for(purchase_delivery, nil)
+    flunk "purchase_delivery should be saved" unless purchase_delivery.save!
+    purchase_delivery
   end
   
-  def processing_by_supplier_parcel
-    parcel = Parcel.new
-    parcel = build_parcel_item_for(parcel, nil)
-    flunk "parcel should in processing_by_supplier_parcel status" unless parcel.process_by_supplier
-    flunk "parcel should in processing_by_supplier_parcel status" unless parcel.processing_by_supplier?
-    parcel
+  def processing_by_supplier_purchase_delivery
+    purchase_delivery = PurchaseDelivery.new
+    purchase_delivery = build_purchase_delivery_item_for(purchase_delivery, nil)
+    flunk "purchase_delivery should in processing_by_supplier_purchase_delivery status" unless purchase_delivery.process_by_supplier
+    flunk "purchase_delivery should in processing_by_supplier_purchase_delivery status" unless purchase_delivery.processing_by_supplier?
+    purchase_delivery
   end
   
-  def shipped_parcel
-    parcel = create_valid_parcel
-    parcel.shipped_on = Date.today
-    parcel.conveyance = "par avion"
-    flunk "parcel should in shipped status" unless parcel.ship
-    flunk "parcel should in shipped status" unless parcel.shipped?
-    parcel
+  def shipped_purchase_delivery
+    purchase_delivery = create_valid_purchase_delivery
+    purchase_delivery.shipped_on = Date.today
+    purchase_delivery.ship_conveyance = "par avion"
+    flunk "purchase_delivery should in shipped status" unless purchase_delivery.ship
+    flunk "purchase_delivery should in shipped status" unless purchase_delivery.shipped?
+    purchase_delivery
   end
   
-  def received_by_forwarder_parcel
-    parcel = create_valid_parcel
-    parcel.received_by_forwarder_on = Date.today
-    flunk "parcel should be in received_by_forwarder status" unless parcel.receive_by_forwarder
-    flunk "parcel should be in received_by_forwarder status" unless parcel.received_by_forwarder?
-    parcel
+  def received_by_forwarder_purchase_delivery
+    purchase_delivery = create_valid_purchase_delivery
+    purchase_delivery.received_by_forwarder_on = Date.today
+    flunk "purchase_delivery should be in received_by_forwarder status" unless purchase_delivery.receive_by_forwarder
+    flunk "purchase_delivery should be in received_by_forwarder status" unless purchase_delivery.received_by_forwarder?
+    purchase_delivery
   end  
   
-  def received_parcel
-    parcel = create_valid_parcel
-    parcel.received_on = Date.today
-    parcel.delivery_document_attributes = [{:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_document.gif"))}]
-    flunk "parcel should in received status" unless parcel.receive
-    flunk "parcel should in received status" unless parcel.received?
-    flunk 'parcel should have delivery_document' unless parcel.delivery_document
-    parcel
+  def received_purchase_delivery
+    purchase_delivery = create_valid_purchase_delivery
+    purchase_delivery.received_on = Date.today
+    purchase_delivery.delivery_document_attributes = [{:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_document.gif"))}]
+    flunk "purchase_delivery should in received status" unless purchase_delivery.receive
+    flunk "purchase_delivery should in received status" unless purchase_delivery.received?
+    flunk 'purchase_delivery should have delivery_document' unless purchase_delivery.delivery_document
+    purchase_delivery
   end
   
-  def cancelled_parcel
-    parcel = create_valid_parcel
-    parcel.cancelled_comment = "cancelled parcel"
-    flunk "parcel should be cancelled" unless parcel.cancel
-    flunk "parcel should be cancelled" unless parcel.cancelled?
-    parcel
+  def cancelled_purchase_delivery
+    purchase_delivery = create_valid_purchase_delivery
+    purchase_delivery.cancelled_comment = "cancelled purchase_delivery"
+    flunk "purchase_delivery should be cancelled" unless purchase_delivery.cancel
+    flunk "purchase_delivery should be cancelled" unless purchase_delivery.cancelled?
+    purchase_delivery
   end
   
-  def create_purchase_order_supply_reported_for(parcel_item)
-    parcel_item.must_be_reshipped = "1"
-    parcel_item.issues_comment = "purchase_order_supply reported"
-    parcel_item.issues_quantity = parcel_item.quantity
-    flunk "parcel_item should be reported" unless parcel_item.report
-    flunk "issue_purchase_order_supply should be create" if parcel_item.issue_purchase_order_supply.new_record?
-    parcel_item.issue_purchase_order_supply
+  def create_purchase_order_supply_reported_for(purchase_delivery_item)
+    purchase_delivery_item.must_be_reshipped = "1"
+    purchase_delivery_item.issues_comment = "purchase_order_supply reported"
+    purchase_delivery_item.issues_quantity = purchase_delivery_item.quantity
+    flunk "purchase_delivery_item should be reported" unless purchase_delivery_item.report
+    flunk "issue_purchase_order_supply should be create" if purchase_delivery_item.issue_purchase_order_supply.new_record?
+    purchase_delivery_item.issue_purchase_order_supply
   end
 end

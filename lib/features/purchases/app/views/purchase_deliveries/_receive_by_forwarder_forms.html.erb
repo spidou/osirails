@@ -1,0 +1,14 @@
+<% @purchase_delivery = receive_by_forwarder_forms || purchase_delivery.new %>
+<%= render :partial => "purchase_deliveries/ship_forms", :object => @purchase_delivery %>
+<% fields_for @purchase_delivery do |f| %>
+  <p>
+    <%= f.label :received_by_forwarder_on %>
+    <%= f.calendar_date_select :received_by_forwarder_on , {:disabled => 
+      @purchase_delivery.new_record? ? false : (@purchase_delivery.received_by_forwarder_on_was ? true : false)}, {}%>
+  </p>
+  <p>
+    <%= f.label :awaiting_pick_up %>
+    <%= f.check_box :awaiting_pick_up, {:disabled => (@purchase_delivery.new_record? ? false : (@purchase_delivery.awaiting_pick_up_was ? true : false))} %>
+  </p>
+<% end %>
+

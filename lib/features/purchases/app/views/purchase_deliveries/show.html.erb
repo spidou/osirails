@@ -1,0 +1,94 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
+<%= generate_purchase_delivery_contextual_menu_partial(@purchase_order, @purchase_delivery) %>
+
+<h1>Colis</h1>
+<div class="presentation_medium">
+  <h2>Informations</h2>
+  <div class="presentation_in_columns">
+    <div>
+      <p>
+        <label>Référence :</label>
+        <strong><%= @purchase_delivery.reference %></strong>
+      </p>
+      <p>
+        <label>Ordre d'achats associé :</label>
+        <strong><%= link_to @purchase_delivery.purchase_order.reference, @purchase_delivery.purchase_order %></strong>
+      </p>
+      <p>
+        <label>Créé le :</label>
+        <strong><%= display_purchase_delivery_created_at(@purchase_delivery) %></strong>
+      </p>
+      <p>
+        <label>Statut en cours :</label>
+        <strong><%= display_purchase_delivery_current_status(@purchase_delivery) %></strong>
+      </p>
+    </div>
+    <div>
+      <% if @purchase_delivery.previsional_delivery_date %>
+        <p>
+          <label>Date de livraison prévu le :</label>
+          <strong><%= display_purchase_delivery_previsional_deliveray_date(@purchase_delivery) %></strong>
+        </p>
+      <% end %>
+      <% if @purchase_delivery.processing_by_supplier_since %>
+        <p>
+          <label>En traitement depuis le :</label>
+          <strong><%= display_purchase_delivery_processing_by_supplier_since(@purchase_delivery) %></strong>
+        </p>
+      <% end %>
+      <% if @purchase_delivery.shipped_on %>
+        <p>
+          <label>Expédié depuis le :</label>
+          <strong><%= display_purchase_delivery_shipped_on(@purchase_delivery) %></strong>
+        </p>
+      <% end %>
+      <% if @purchase_delivery.received_by_forwarder_on %>
+        <p>
+          <label>Reçu par le transitaire le :</label>
+          <strong><%= display_purchase_delivery_received_by_forwarder_on(@purchase_delivery) %></strong>
+        </p>
+      <% end %>
+      <% if @purchase_delivery.received_on %>
+        <p>
+          <label>Reçu le :</label>
+          <strong><%= display_purchase_delivery_received_on(@purchase_delivery) %></strong>
+        </p>
+      <% end %>
+      <% if @purchase_delivery.cancelled_at %>
+        <p>
+          <label>Annulé le :</label>
+          <strong><%= display_purchase_delivery_cancelled_at(@purchase_delivery) %></strong>
+        </p>
+      <% end %>
+    </div>
+    <div>
+      <% if @purchase_delivery.previsional_delivery_date and @purchase_delivery.conveyance != "" %>
+        <p>
+          <label>Par :</label>
+          <strong><%= @purchase_delivery.conveyance %></strong>
+        </p>
+      <% end %>
+      <% if @purchase_delivery.received_by_forwarder_on %>
+        <p>
+          <label>En attente de récupération :</label>
+          <strong><%= (@purchase_delivery.received_on and @purchase_delivery.awaiting_pick_up) ? ( "A été récupéré" ) : ( @purchase_delivery.awaiting_pick_up == "1" ? "Oui" : "Non" ) %></strong>
+        </p>
+      <% end %>
+      <% if @purchase_delivery.delivery_document %>
+        <p>
+          <label>Bon de livraison :</label>
+          <%= link_to image_tag ("download_16x16.png", :alt => "Facture", :title => "Bon de livraison du colis" ),
+            purchase_order_purchase_delivery_attached_delivery_document_path(@purchase_order, @purchase_delivery) %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+  
+  <h2>Contenu du colis</h2>
+  <%= render :partial => "purchase_deliveries/array_head" %>
+  <%= render :partial => "purchase_delivery_items/purchase_delivery_item", :collection => @purchase_delivery.purchase_delivery_items %>
+  <%= render :partial => "purchase_deliveries/array_foot" %>
+</div>

@@ -1,0 +1,19 @@
+<% @purchase_delivery = ship_forms || purchase_delivery.new %>
+<%= render :partial => "purchase_deliveries/process_by_supplier_forms", :object => @purchase_delivery %>
+
+<% fields_for @purchase_delivery do |f| %>
+  <p>
+    <%= f.label :shipped_on %>
+    <%= f.calendar_date_select :shipped_on , {:disabled => 
+      @purchase_delivery.new_record? ? false : (@purchase_delivery.shipped_on_was ? true : false)}, {} %>
+  </p>
+  <p>
+    <%= f.label :conveyance %>
+    <%= f.text_field :conveyance, :disabled => (@purchase_delivery.new_record? ? false : (@purchase_delivery.conveyance_was ? true : false)) %>
+  </p>
+  <p>
+    <%= f.label :previsional_delivery_date %>
+    <%= f.calendar_date_select :previsional_delivery_date , {:disabled => 
+      @purchase_delivery.new_record? ? false : (@purchase_delivery.previsional_delivery_date_was ? true : false)}, {} %>
+  </p>
+<% end %>

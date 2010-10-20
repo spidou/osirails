@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../purchases_test'
 class PurchaseOrderTest < ActiveSupport::TestCase
   
   should_have_many :purchase_order_supplies
-  should_have_many :parcel_items
+  should_have_many :purchase_delivery_items
   
   should_belong_to :invoice_document, :quotation_document, :user, :supplier
   
@@ -93,8 +93,8 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       assert !@purchase_order.can_be_cancelled?
     end
     
-    should 'be NOT able to add parcels' do
-      assert !@purchase_order.can_add_parcel?
+    should 'be NOT able to add purchase_deliveries' do
+      assert !@purchase_order.can_add_purchase_delivery?
     end
     
     should 'NOT be confirmed successfully' do
@@ -235,8 +235,8 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       assert !@purchase_order.can_be_cancelled?
     end
     
-    should 'NOT be able to add parcels' do
-      assert !@purchase_order.can_add_parcel?
+    should 'NOT be able to add purchase_deliveries' do
+      assert !@purchase_order.can_add_purchase_delivery?
     end
     
     should 'be able to be deleted' do
@@ -474,17 +474,17 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       assert @purchase_order.associated_purchase_requests.empty?
     end
     
-    context 'with a parcel NOT containing all purchase_order_supplies' do
+    context 'with a purchase_delivery NOT containing all purchase_order_supplies' do
       setup do
-        @purchase_order.parcels.build(  :status => Parcel::STATUS_PROCESSING_BY_SUPPLIER,
+        @purchase_order.purchase_deliveries.build(  :status => PurchaseDelivery::STATUS_PROCESSING_BY_SUPPLIER,
                                         :conveyance => "ship",
                                         :previsional_delivery_date => (Date.today + 10),
                                         :processing_by_supplier_since => (Date.today - 10))
-        @purchase_order.parcels.first.parcel_items.build( :selected => "1",
+        @purchase_order.purchase_deliveries.first.purchase_delivery_items.build( :selected => "1",
                                                           :purchase_order_supply_id => @purchase_order.purchase_order_supplies.first.id,
                                                           :quantity => (@purchase_order.purchase_order_supplies.first.quantity - 1) )
         @purchase_order.save!
-        flunk 'should remain purchase_order_supplies to make parcels' unless @purchase_order.is_remaining_quantity_for_parcel?
+        flunk 'should remain purchase_order_supplies to make purchase_deliveries' unless @purchase_order.is_remaining_quantity_for_purchase_delivery?
         @purchase_order.reload
       end
       
@@ -492,44 +492,44 @@ class PurchaseOrderTest < ActiveSupport::TestCase
         assert_equal PurchaseOrder::STATUS_PROCESSING_BY_SUPPLIER, @purchase_order.status_was
       end
       
-      should 'remain purchase_order_supplies to add parcels' do
-        assert @purchase_order.is_remaining_quantity_for_parcel?
+      should 'remain purchase_order_supplies to add purchase_deliveries' do
+        assert @purchase_order.is_remaining_quantity_for_purchase_delivery?
       end
       
-      should 'be able to add parcels' do
-        assert @purchase_order.can_add_parcel?
+      should 'be able to add purchase_deliveries' do
+        assert @purchase_order.can_add_purchase_delivery?
       end
-    end # end context 'with a parcel NOT containing all purchase_order_supplies' #
+    end # end context 'with a purchase_delivery NOT containing all purchase_order_supplies' #
     
-    context 'with a parcel containing all purchase_order_supplies' do
+    context 'with a purchase_delivery containing all purchase_order_supplies' do
       setup do
-        @purchase_order.parcels.build(  :status => Parcel::STATUS_PROCESSING_BY_SUPPLIER,
+        @purchase_order.purchase_deliveries.build(  :status => PurchaseDelivery::STATUS_PROCESSING_BY_SUPPLIER,
                                         :conveyance => "ship",
                                         :previsional_delivery_date => (Date.today + 10),
                                         :processing_by_supplier_since => (Date.today - 10))
-        @purchase_order.parcels.first.parcel_items.build( :selected => "1",
+        @purchase_order.purchase_deliveries.first.purchase_delivery_items.build( :selected => "1",
                                                           :purchase_order_supply_id => @purchase_order.purchase_order_supplies.first.id,
                                                           :quantity => (@purchase_order.purchase_order_supplies.first.quantity) )
-        @purchase_order.parcels.first.parcel_items.build( :selected => "1",
+        @purchase_order.purchase_deliveries.first.purchase_delivery_items.build( :selected => "1",
                                                           :purchase_order_supply_id => @purchase_order.purchase_order_supplies[1].id,
                                                           :quantity => (@purchase_order.purchase_order_supplies[1].quantity) )
         @purchase_order.save!
-        @purchase_order.reload # necessary because @purchase_order.purchase_order_supplies are not associated with parcel_items otherwise
-        flunk 'should NOT remain purchase_order_supplies to make parcels' unless !@purchase_order.is_remaining_quantity_for_parcel?
+        @purchase_order.reload # necessary because @purchase_order.purchase_order_supplies are not associated with purchase_delivery_items otherwise
+        flunk 'should NOT remain purchase_order_supplies to make purchase_deliveries' unless !@purchase_order.is_remaining_quantity_for_purchase_delivery?
       end
       
       should 'have status automatically switched to processing_by_supplier' do
         assert_equal PurchaseOrder::STATUS_PROCESSING_BY_SUPPLIER, @purchase_order.status_was
       end
       
-      should 'NOT remain purchase_order_supplies to add parcels' do
-        assert !@purchase_order.is_remaining_quantity_for_parcel?
+      should 'NOT remain purchase_order_supplies to add purchase_deliveries' do
+        assert !@purchase_order.is_remaining_quantity_for_purchase_delivery?
       end
       
-      should 'NOT be able to add parcels' do
-        assert !@purchase_order.can_add_parcel?
+      should 'NOT be able to add purchase_deliveries' do
+        assert !@purchase_order.can_add_purchase_delivery?
       end
-    end # end context 'with a parcel containing all purchase_order_supplies' #
+    end # end context 'with a purchase_delivery containing all purchase_order_supplies' #
     
     context ', while cancellation' do
       setup do
@@ -654,8 +654,8 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       assert @purchase_order.can_be_cancelled?
     end
     
-    should 'be able to add parcels' do
-      assert @purchase_order.can_add_parcel?
+    should 'be able to add purchase_deliveries' do
+      assert @purchase_order.can_add_purchase_delivery?
     end
     
     should 'NOT be confirmed successfully' do
@@ -699,8 +699,8 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       assert @purchase_order.can_be_completed?
     end
     
-    should 'NOT be able to add parcels' do
-      assert !@purchase_order.can_add_parcel?
+    should 'NOT be able to add purchase_deliveries' do
+      assert !@purchase_order.can_add_purchase_delivery?
     end
     
     should 'be completed successfully' do
@@ -792,8 +792,8 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       assert !@purchase_order.can_be_cancelled?
     end
     
-    should 'NOT be able to add parcels' do
-      assert !@purchase_order.can_add_parcel?
+    should 'NOT be able to add purchase_deliveries' do
+      assert !@purchase_order.can_add_purchase_delivery?
     end
     
     should 'NOT be confirmed successfully' do
@@ -913,8 +913,8 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       assert !@purchase_order.can_be_cancelled?
     end
     
-    should 'NOT be able to add parcels' do
-      assert !@purchase_order.can_add_parcel?
+    should 'NOT be able to add purchase_deliveries' do
+      assert !@purchase_order.can_add_purchase_delivery?
     end
     
     should 'NOT be confirmed successfully' do

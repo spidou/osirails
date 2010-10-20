@@ -7,10 +7,6 @@ class PurchaseRequestSupply < ActiveRecord::Base
   has_many :quotation_supplies, :through => :quotation_purchase_request_supplies
   has_many :request_order_supplies
   has_many :purchase_order_supplies, :through => :request_order_supplies
-  has_many :draft_purchase_order_supplies, :through    => :request_order_supplies,
-                                           :include    => 'purchase_order',
-                                           :conditions => [ 'purchase_orders.status IS NULL'],
-                                           :source     => :purchase_order_supply
   
   has_one   :confirmed_purchase_order_supply, :through    => :request_order_supplies,
                                               :include    => 'purchase_order',

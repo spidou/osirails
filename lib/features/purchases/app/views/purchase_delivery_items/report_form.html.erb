@@ -1,0 +1,54 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
+<%= generate_purchase_delivery_contextual_menu_partial(@purchase_order, @purchase_delivery) %>
+
+<h1>Signaler un probl&egrave;me sur une fourniture</h1>
+<div class="presentation_medium">
+  <h2>Informations &agrave; propos du colis</h2>
+  
+  <div class="presentation_in_columns">
+    <p><label>R&eacute;f&eacute;rence :</label> <strong><%= display_purchase_delivery_reference(@purchase_delivery) %></strong></p>
+    <p><label>Re&ccedil;u le :</label> <strong><%= display_purchase_delivery_received_on(@purchase_delivery) %></strong></p>
+    <p><label>Fournisseur :</label> <strong><%= display_purchase_order_supplier_name(@purchase_order) %></strong></p>
+  </div>
+  
+  <h2>Fourniture concern&eacute;e</h2>
+  <%= render :partial => "purchase_deliveries/array_head" %>
+  <%= render :partial => "purchase_delivery_items/purchase_delivery_item", :object => @purchase_delivery_item %>
+  <%= render :partial => "purchase_deliveries/array_foot" %>
+  
+  <br />
+  <span class="warning">Les quantités que vous signalerez comme manquantes ou défectueuses ne seront pas prises en compte dans le stock</span>
+  <br /><br />
+  
+  <div class="presentation_in_columns">
+  <% form_for [@purchase_order, @purchase_delivery, @purchase_delivery_item], :url => { :controller => "purchase_delivery_items", :action => "report" } do |f| %>
+    <%= f.error_messages %>
+    <div class="presentation_in_columns">
+      <p>
+        <%= f.label :issues_quantity %>
+        <%= f.text_field :issues_quantity, :size => 4 %>
+        <span class="help_text">(Manquante et/ou d&eacute;fectueuse)</span>
+      </p>
+      <p>
+        <%= f.label :issues_comment %>
+        <%= f.text_area_autoresize :issues_comment %>
+      </p>
+      <p>
+        <%= f.label :send_back_to_supplier %>
+        <%= f.check_box :send_back_to_supplier %>
+        <span class="help_text">(Indique que la fourniture a &eacute;t&eacute; ou sera renvoy&eacute; au fournisseur)</span>
+      </p>
+      <p>
+        <%= f.label :must_be_reshipped %>
+        <%= f.check_box :must_be_reshipped %>
+        <span class="help_text">(Indique que le fournisseur va renvoyer la fourniture)</span>
+      </p>
+    </div>
+    <br>
+    <%= f.form_buttons %>
+  <% end %>
+  </div>
+</div>

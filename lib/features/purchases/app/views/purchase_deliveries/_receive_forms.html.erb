@@ -1,0 +1,17 @@
+<% @purchase_delivery = receive_forms || purchase_delivery.new %>
+<%= render :partial => "purchase_deliveries/receive_by_forwarder_forms", :object => @purchase_delivery %>
+
+<% fields_for @purchase_delivery do |f| %>
+  <p>
+    <%= f.label :received_on %>
+    <%= f.calendar_date_select :received_on , {:disabled => 
+      @purchase_delivery.new_record? ? false : (@purchase_delivery.received_on_was ? true : false)}, {} %>
+  </p>
+<% end %>
+
+<% fields_for "purchase_delivery[delivery_document_attributes][]", PurchaseDocument.new do |field| %>
+  <p>
+    <%= label_tag "Bon de livraison :" %>
+    <%= field.file_field :purchase_document %>
+  </p>
+<% end %>

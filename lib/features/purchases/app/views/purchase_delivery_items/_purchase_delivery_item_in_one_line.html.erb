@@ -1,0 +1,29 @@
+<% purchase_delivery_item = purchase_delivery_item_in_one_line%>
+<% fields_for "purchase_delivery[purchase_delivery_item_attributes][]", purchase_delivery_item do |f|%>
+  <tr class='purchase_delivery_item resource'>
+    <td style="display:none"> 
+      <%= f.hidden_field :purchase_order_supply_id , :class => "purchase_order_supply_id"%>
+      <%= f.hidden_field :selected , :class => "selected", :value => purchase_delivery_item.selected%> 
+    </td>
+    <td><%= display_supply_reference(purchase_delivery_item.purchase_order_supply.supply) %></td>   
+    <td><%= purchase_delivery_item.purchase_order_supply.supply.designation %></td>
+    <td><%= purchase_delivery_item.purchase_order_supply.supplier_reference %></td>   
+    <td><%= purchase_delivery_item.purchase_order_supply.supplier_designation %></td>
+    <td> 
+    <% unless purchase_delivery_item.selected.to_i == 1%>
+      <span id=<%= "span_quantity_" + purchase_delivery_item.purchase_order_supply_id.to_s %> >0</span>
+      <span id=<%= "quantity_field_" + purchase_delivery_item.purchase_order_supply_id.to_s %> style="display:none"><%= f.text_field :quantity, :value => purchase_delivery_item.quantity, :size => 3%></span>
+    <% else %> 
+      <span id=<%= "span_quantity_" + purchase_delivery_item.purchase_order_supply_id.to_s %> style="display:none" >0</span>
+      <span id=<%= "quantity_field_" + purchase_delivery_item.purchase_order_supply_id.to_s %> ><%= f.text_field :quantity, :value => purchase_delivery_item.quantity, :size => 3%></span>
+    <% end %>
+      <span>/</span> 
+      <span class="remaining_quantity"><%= purchase_delivery_item.purchase_order_supply.remaining_quantity_for_purchase_delivery.to_s%> </span>
+    </td>
+    <% unless purchase_delivery_item.selected.to_i == 1%>
+      <td><%= check_box_tag 'purchase_delivery[purchase_delivery_item_attributes][][tmp_selected]',1, false, :onchange => "disabled_or_enabled_quantity_text_field(this.up('.resource'));" %></td> 
+    <% else %>
+      <td><%= check_box_tag 'purchase_delivery[purchase_delivery_item_attributes][][tmp_selected]',1, true, :onchange => "disabled_or_enabled_quantity_text_field(this.up('.resource'));" %></td>
+    <% end %> 
+  </tr>
+<% end  %>

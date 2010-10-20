@@ -1,11 +1,11 @@
 <%
 purchase_order = closed_purchase_order_in_one_line
-parcels = purchase_order.parcels.compact
+purchase_deliveries = purchase_order.purchase_deliveries.compact
 cancelled = purchase_order.was_cancelled?
 
 even = (closed_purchase_order_in_one_line_counter % 2).zero? ? 'even' : ''
 disabled = cancelled ? 'disabled' : ''
-rowspan = parcels.any? ? "rowspan=\"#{parcels.size}\"" : ''
+rowspan = purchase_deliveries.any? ? "rowspan=\"#{purchase_deliveries.size}\"" : ''
 %>
 
 <tr class="<%= even %> <%= disabled %>">
@@ -14,12 +14,12 @@ rowspan = parcels.any? ? "rowspan=\"#{parcels.size}\"" : ''
   <td <%= rowspan %>><%= display_purchase_order_current_status_date(purchase_order) %></td>
   <td <%= rowspan %>><%= purchase_order.supplier.address.country_name %></td>
   <td <%= rowspan %>><%= purchase_order.supplier.name %></td>
-  <% if parcels.empty? %>
+  <% if purchase_deliveries.empty? %>
     <td></td>
     <td></td>
   <% else %>
-    <td class="<%= 'disabled' if parcels.first.was_cancelled? %>"><%= parcels.first.reference %></td>
-    <td class="<%= 'disabled' if parcels.first.was_cancelled? %>"><%= display_parcel_received_on(parcels.first) %></td>
+    <td class="<%= 'disabled' if purchase_deliveries.first.was_cancelled? %>"><%= purchase_deliveries.first.reference %></td>
+    <td class="<%= 'disabled' if purchase_deliveries.first.was_cancelled? %>"><%= display_purchase_delivery_received_on(purchase_deliveries.first) %></td>
   <% end %>
   <td <%= rowspan %>><%= display_associated_purchase_requests(purchase_order) %></td>
   <td <%= rowspan %>><%= display_purchase_order_total_price(purchase_order) %></td>
@@ -27,15 +27,15 @@ rowspan = parcels.any? ? "rowspan=\"#{parcels.size}\"" : ''
 </tr>
 
 <%
-for parcel in parcels
-  if parcel != parcels.first 
-    parcel_even = "even" if (closed_purchase_order_in_one_line_counter % 2) == 0
-    parcel_disabled = "disabled" if parcel.was_cancelled?
+for purchase_delivery in purchase_deliveries
+  if purchase_delivery != purchase_deliveries.first 
+    purchase_delivery_even = "even" if (closed_purchase_order_in_one_line_counter % 2) == 0
+    purchase_delivery_disabled = "disabled" if purchase_delivery.was_cancelled?
 %>
 
-    <tr class="<%= parcel_even %> <%= parcel_disabled %>">
-      <td><%= parcel.reference %></td>
-      <td><%= display_parcel_received_on(parcel) %></td>
+    <tr class="<%= purchase_delivery_even %> <%= purchase_delivery_disabled %>">
+      <td><%= purchase_delivery.reference %></td>
+      <td><%= display_purchase_delivery_received_on(purchase_delivery) %></td>
     </tr>
 <%  
   end

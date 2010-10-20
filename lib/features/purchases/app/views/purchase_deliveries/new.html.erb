@@ -1,0 +1,11 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'purchases/purchases' %>
+  <%= stylesheet_link_tag_with_theme_support 'purchases/purchases' %>
+<% end %>
+
+<%= generate_purchase_delivery_contextual_menu_partial(@purchase_order, @purchase_delivery) %>
+
+<h1>Nouveau colis</h1>
+<div>
+  <%= render :partial => "purchase_deliveries/new", :locals => {:purchase_delivery => @purchase_delivery, :purchase_order => @purchase_order} %>
+</div>

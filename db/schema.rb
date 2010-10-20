@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101003222000) do
+ActiveRecord::Schema.define(:version => 20101019053246) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id"
@@ -954,37 +954,13 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
 
   add_index "orders", ["reference"], :name => "index_orders_on_reference", :unique => true
 
-  create_table "parcel_items", :force => true do |t|
-    t.integer  "parcel_id"
-    t.integer  "purchase_order_supply_id"
-    t.integer  "issue_purchase_order_supply_id"
-    t.integer  "cancelled_by_id"
-    t.integer  "quantity"
-    t.integer  "issues_quantity"
-    t.boolean  "must_be_reshipped"
-    t.boolean  "send_back_to_supplier"
-    t.text     "issues_comment"
-    t.text     "cancelled_comment"
-    t.datetime "cancelled_at"
-    t.datetime "issued_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "parcels", :force => true do |t|
-    t.integer  "delivery_document_id"
-    t.integer  "cancelled_by_id"
-    t.integer  "status"
+    t.integer  "purchase_delivery_id"
+    t.float    "mass"
+    t.float    "volume"
+    t.string   "dimension"
     t.string   "reference"
-    t.string   "conveyance"
-    t.boolean  "awaiting_pick_up"
-    t.date     "previsional_delivery_date"
-    t.date     "processing_by_supplier_since"
-    t.date     "shipped_on"
-    t.date     "received_by_forwarder_on"
-    t.date     "received_on"
-    t.text     "cancelled_comment"
-    t.datetime "cancelled_at"
+    t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1151,10 +1127,65 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
     t.datetime "updated_at"
   end
 
+  create_table "purchase_deliveries", :force => true do |t|
+    t.integer  "delivery_document_id"
+    t.integer  "cancelled_by_id"
+    t.integer  "forwarder_id"
+    t.integer  "departure_id"
+    t.integer  "arrival_id"
+    t.integer  "status"
+    t.string   "reference"
+    t.string   "receive_conveyance"
+    t.string   "ship_conveyance"
+    t.boolean  "awaiting_pick_up"
+    t.boolean  "expected_recovery"
+    t.date     "supplies_available_since"
+    t.date     "previsional_delivery_date"
+    t.date     "processing_by_supplier_since"
+    t.date     "shipped_on"
+    t.date     "received_by_forwarder_on"
+    t.date     "received_on"
+    t.text     "cancelled_comment"
+    t.datetime "cancelled_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchase_delivery_items", :force => true do |t|
+    t.integer  "purchase_delivery_id"
+    t.integer  "purchase_order_supply_id"
+    t.integer  "issue_purchase_order_supply_id"
+    t.integer  "cancelled_by_id"
+    t.integer  "quantity"
+    t.integer  "issues_quantity"
+    t.boolean  "must_be_reshipped"
+    t.boolean  "send_back_to_supplier"
+    t.text     "issues_comment"
+    t.text     "cancelled_comment"
+    t.datetime "cancelled_at"
+    t.datetime "issued_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "purchase_documents", :force => true do |t|
     t.string   "purchase_document_file_name"
     t.string   "purchase_document_content_type"
     t.integer  "purchase_document_file_size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchase_order_payments", :force => true do |t|
+    t.integer  "purchase_order_id"
+    t.integer  "deposit_payment_method_id"
+    t.integer  "balance_payment_method_id"
+    t.integer  "number_of_due_dates"
+    t.float    "deposit_amount"
+    t.text     "comment"
+    t.boolean  "payed"
+    t.boolean  "payment_before_shipment"
+    t.boolean  "payment_on_delivery"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1166,10 +1197,13 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
     t.integer  "quantity"
     t.float    "taxes"
     t.float    "fob_unit_price"
+    t.float    "prizegiving"
     t.string   "supplier_reference"
     t.string   "supplier_designation"
     t.text     "cancelled_comment"
+    t.text     "description"
     t.datetime "cancelled_at"
+    t.boolean  "comment_line"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1181,10 +1215,14 @@ ActiveRecord::Schema.define(:version => 20101003222000) do
     t.integer  "quotation_document_id"
     t.integer  "cancelled_by_id"
     t.integer  "quotation_id"
+    t.integer  "contact_id"
     t.integer  "status"
+    t.float    "prizegiving"
+    t.float    "miscellaneous"
     t.string   "reference"
     t.text     "cancelled_comment"
     t.datetime "cancelled_at"
+    t.datetime "purchased_on"
     t.date     "confirmed_on"
     t.date     "processing_by_supplier_since"
     t.date     "completed_on"

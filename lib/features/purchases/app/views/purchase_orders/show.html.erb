@@ -57,14 +57,14 @@
   
     <h2>Liste des colis</h2>
     
-    <% if @purchase_order.can_add_parcel? %>
-      <p><%= link_to @purchase_order.parcels.empty? ? ("Poursuivre l'ordre d'achats") : ("Ajouter un colis"), new_purchase_order_parcel_path(@purchase_order) %></p>
+    <% if @purchase_order.can_add_purchase_delivery? %>
+      <p><%= link_to @purchase_order.purchase_deliveries.empty? ? ("Poursuivre l'ordre d'achats") : ("Ajouter un colis"), new_purchase_order_purchase_delivery_path(@purchase_order) %></p>
     <% end%>
     
-    <% if @purchase_order.parcels.count > 0 %>
-        <%= render :partial => "parcels/array_head" %>
-        <%= render :partial => "parcels/parcel", :collection => @purchase_order.parcels, :locals => { :purchase_order => @purchase_order } %>
-        <%= render :partial => "parcels/array_foot" %>
+    <% if @purchase_order.purchase_deliveries.count > 0 %>
+        <%= render :partial => "purchase_deliveries/array_head" %>
+        <%= render :partial => "purchase_deliveries/purchase_delivery", :collection => @purchase_order.purchase_deliveries, :locals => { :purchase_order => @purchase_order } %>
+        <%= render :partial => "purchase_deliveries/array_foot" %>
     <% end %>
   <% end %>
   

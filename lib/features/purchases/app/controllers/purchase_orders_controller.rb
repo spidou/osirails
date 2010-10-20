@@ -1,6 +1,6 @@
 class PurchaseOrdersController < ApplicationController
   
-  helper :purchase_order_supplies, :parcels, :parcel_items
+  helper :purchase_order_supplies, :purchase_deliveries, :purchase_delivery_items
   
   # GET /purchase_orders/
   def index
@@ -160,7 +160,7 @@ class PurchaseOrdersController < ApplicationController
         render :action => "confirm_form"
       else
         flash[:notice] = 'La confirmation de votre ordre d\'achats a été effectuée avec succès'
-        redirect_to new_purchase_order_parcel_path(@purchase_order)
+        redirect_to new_purchase_order_purchase_delivery_path(@purchase_order)
       end
     else
       error_access_page(412)

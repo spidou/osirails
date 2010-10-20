@@ -3,7 +3,7 @@ fr:
     models: 
       purchase_request: "Demande d'achat"
       purchase_order: "Ordre d'achat"
-      parcel: "Colis"
+      purchase_delivery: "Livraison"
     attributes: 
       purchase_request:
         service: "Service concerné"
@@ -23,7 +23,7 @@ fr:
         cancelled_comment: "Raison de l'annulation"
       purchase_order_supply:
         cancelled_comment: "Raison de l'annulation"
-      parcel:
+      purchase_delivery:
         processing_by_supplier_since: "En attente d'expédition depuis le"
         shipped_on: "Expédié le"
         conveyance: "Par"
@@ -33,7 +33,7 @@ fr:
         received_on: "Reçu le"
         purchase_document: "Bon de livraison"
         cancelled_comment: "Veuillez saisir la raison de l'annulation"
-      parcel_item:
+      purchase_delivery_item:
         cancelled_comment: "Veuillez saisir la raison de l'annulation"
         purchase_document: "Veuillez joindre le devis"
         issues_comment: "Commentaire"
@@ -49,9 +49,9 @@ fr:
           attributes:
             purchase_request_supplies:
              message_error_length_of_for_purchase_request: "Vous devez choisir au moins une fourniture"
-        parcel:
+        purchase_delivery:
           attributes:
-            parcel_items:
+            purchase_delivery_items:
               presence_of: "Veuillez selectionner au moins une fourniture dans votre colis"
             processing_by_supplier_since:
               on_or_before: "ne doit pas être APRÈS la date d'aujourd'hui ({{restriction}})"
@@ -64,7 +64,7 @@ fr:
             received_on:
               on_or_after: "ne doit pas être AVANT ({{restriction}})"
               on_or_before: "ne doit pas être APRÈS ({{restriction}})"
-        parcel_item:
+        purchase_delivery_item:
           attributes:
             quantity: 
               validity: "n'est pas valide"

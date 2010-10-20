@@ -3,7 +3,7 @@ en:
     models: 
       purchase_request: "Purchase request"
       purchase_order: "Purchase order"
-      parcel: "Parcel"
+      purchase_delivery: "Purchase delivery"
     attributes: 
       purchase_request:
         service: "Departement concerned"
@@ -23,17 +23,17 @@ en:
         cancelled_comment: "Reason for cancellation"
       purchase_order_supply:
         cancelled_comment: "Reason for cancellation"
-      parcel:
+      purchase_delivery:
         processing_by_supplier_since: "waiting by supplier from the"
         shipped_on: "Shipped on"
         conveyance: "by"
-        previsional_delivery_date: "previsional delivery date of the parcel"
+        previsional_delivery_date: "previsional delivery date of the purchase_delivery"
         received_by_forwarder_on: "Received by the freight forwarder"
         awaiting_pick_up: "Recovery from the freight forwarder"
         received_on: "Received on"
         purchase_document: "Delivery note"
         cancelled_comment: "Reason for cancellation"
-      parcel_item:
+      purchase_delivery_item:
         cancelled_comment: "Reason for cancellation"
         purchase_document: "Please include the quote"
         issues_comment: "Comment"
@@ -49,10 +49,10 @@ en:
           attributes:
             purchase_request_supplies:
              message_error_length_of_for_purchase_request: "select at least one supply"
-        parcel:
+        purchase_delivery:
           attributes:
-            parcel_items:
-              presence_of: "select at least one supply in your parcel"
+            purchase_delivery_items:
+              presence_of: "select at least one supply in your purchase_delivery"
             processing_by_supplier_since:
               on_or_before: "should not be after today's date ({{restriction}})"
             shipped_on:
@@ -64,7 +64,7 @@ en:
             received_on:
               on_or_after: "should not be BEFORE ({{restriction}})"
               on_or_before: "should not be AFTER ({{restriction}})"
-        parcel_item:
+        purchase_delivery_item:
           attributes:
             quantity: 
               validity: "not valid"

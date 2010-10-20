@@ -3,11 +3,12 @@ class CreatePurchaseOrderSupplies < ActiveRecord::Migration
     create_table :purchase_order_supplies do |t|
       t.references  :purchase_order, :supply, :cancelled_by
       t.integer     :quantity
-      t.float       :taxes, :fob_unit_price
+      t.float       :taxes, :fob_unit_price, :prizegiving
       t.string      :supplier_reference, :supplier_designation
-      t.text        :cancelled_comment
+      t.text        :cancelled_comment, :description
       t.datetime    :cancelled_at
-
+      t.boolean     :comment_line
+      
       t.timestamps
     end
   end

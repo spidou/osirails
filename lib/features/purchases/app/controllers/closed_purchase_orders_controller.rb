@@ -1,6 +1,6 @@
 class ClosedPurchaseOrdersController < ApplicationController
 
-  helper :purchase_orders, :parcels
+  helper :purchase_orders, :purchase_deliveries
   
   # GET /closed_purchase_orders
   # GET /closed_purchase_orders?filter=completed_only

@@ -1,9 +1,0 @@
-<% @parcel = process_by_supplier_forms || Parcel.new %>
-
-<% fields_for @parcel do |f| %>
-  <p>
-    <%= f.label :processing_by_supplier_since %>
-    <%= f.calendar_date_select :processing_by_supplier_since , {:disabled => 
-      @parcel.new_record? ? false : (@parcel.processing_by_supplier_since_was ? true : false)}, {}%>
-  </p>
-<% end %>

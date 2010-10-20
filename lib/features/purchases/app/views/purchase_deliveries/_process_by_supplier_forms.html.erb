@@ -1,0 +1,9 @@
+<% @purchase_delivery = process_by_supplier_forms || purchase_delivery.new %>
+
+<% fields_for @purchase_delivery do |f| %>
+  <p>
+    <%= f.label :processing_by_supplier_since %>
+    <%= f.calendar_date_select :processing_by_supplier_since , {:disabled => 
+      @purchase_delivery.new_record? ? false : (@purchase_delivery.processing_by_supplier_since_was ? true : false)}, {}%>
+  </p>
+<% end %>

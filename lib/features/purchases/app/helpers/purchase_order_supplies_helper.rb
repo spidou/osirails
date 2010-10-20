@@ -71,9 +71,9 @@ module PurchaseOrderSuppliesHelper
     if purchase_order_supply.untreated?
       purchase_order_supply.created_at ? purchase_order_supply.created_at.humanize : "Aucune date de création"
     elsif purchase_order_supply.processing_by_supplier?
-      purchase_order_supply.parcel_items.first.created_at ? purchase_order_supply.parcel_items.first.created_at.humanize : "Aucune date de début de traitement"
+      purchase_order_supply.purchase_delivery_items.first.created_at ? purchase_order_supply.purchase_delivery_items.first.created_at.humanize : "Aucune date de début de traitement"
     elsif purchase_order_supply.treated?
-      purchase_order_supply.parcel_items.last.created_at ? purchase_order_supply.parcel_items.last.created_at.humanize : ""
+      purchase_order_supply.purchase_delivery_items.last.created_at ? purchase_order_supply.purchase_delivery_items.last.created_at.humanize : ""
     elsif purchase_order_supply.was_cancelled?
       purchase_order_supply.cancelled_at ? purchase_order_supply.cancelled_at.humanize : "Aucune date d'annulation"
     end
@@ -90,11 +90,11 @@ module PurchaseOrderSuppliesHelper
   end
   
     
-  def display_purchase_order_supply_associated_parcels(purchase_order_supply)
-    return unless purchase_order_supply.parcels.any?
+  def display_purchase_order_supply_associated_purchase_deliveries(purchase_order_supply)
+    return unless purchase_order_supply.purchase_deliveries.any?
     html = []
-    for parcel in purchase_order_supply.parcels
-      html << "<tr><td>" + link_to( parcel.reference, purchase_order_parcel_path(purchase_order_supply.purchase_order, parcel)) + "</td></tr>"
+    for purchase_delivery in purchase_order_supply.purchase_deliveries
+      html << "<tr><td>" + link_to( purchase_delivery.reference, purchase_order_purchase_delivery_path(purchase_order_supply.purchase_order, purchase_delivery)) + "</td></tr>"
     end
     html << "<tr><td></td></tr>" if html.empty?
     html.compact.join()
@@ -121,9 +121,9 @@ module PurchaseOrderSuppliesHelper
     end
   end
   
-  def display_purchase_order_supply_reshipped_from_parcel(purchase_order_supply)
-    return unless purchase_order_supply.issued_parcel_item
-    link_to purchase_order_supply.issued_parcel_item.parcel.reference, purchase_order_parcel_path(purchase_order_supply.purchase_order, purchase_order_supply.issued_parcel_item.parcel)
+  def display_purchase_order_supply_reshipped_from_purchase_delivery(purchase_order_supply)
+    return unless purchase_order_supply.issued_purchase_delivery_item
+    link_to purchase_order_supply.issued_purchase_delivery_item.purchase_delivery.reference, purchase_order_purchase_delivery_path(purchase_order_supply.purchase_order, purchase_order_supply.issued_purchase_delivery_item.purchase_delivery)
   end
   
   def verify_validity_of_purchase_request_supply(purchase_request_supply)

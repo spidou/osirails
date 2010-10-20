@@ -4,7 +4,7 @@ class PurchasePriorityTest < ActiveSupport::TestCase
  
    context "A Purchase priority with default" do
     setup do
-      @purchase_priority = PurchasePriority.new({:name => "regular", :default => true})
+      @purchase_priority = PurchasePriority.new({:name => "normal", :default => true})
       @purchase_priority.save!
     end
     subject { @purchase_priority }
@@ -12,7 +12,7 @@ class PurchasePriorityTest < ActiveSupport::TestCase
     
     context "when an other purchase priority is set without default" do
       setup do
-        @other_purchase_priority = PurchasePriority.new({:name => "hight"})
+        @other_purchase_priority = PurchasePriority.new({:name => "haute"})
         @other_purchase_priority.save!
       end
       
@@ -27,7 +27,7 @@ class PurchasePriorityTest < ActiveSupport::TestCase
     
     context "when an other purchase priority is set with default" do
       setup do
-        @other_purchase_priority = PurchasePriority.new({:name => "low", :default => true})
+        @other_purchase_priority = PurchasePriority.new({:name => "basse", :default => true})
         @other_purchase_priority.save!
       end
       

@@ -5,9 +5,9 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
   should_have_many :request_order_supplies
   should_have_many :purchase_request_supplies, :through => :request_order_supplies
 
-  should_have_many :parcel_items
-  should_have_many :parcels, :through => :parcel_items
-  should_have_one   :issued_parcel_item
+  should_have_many :purchase_delivery_items
+  should_have_many :purchase_deliveries, :through => :purchase_delivery_items
+  should_have_one   :issued_purchase_delivery_item
   
   should_belong_to :purchase_order, :supply, :canceller
   
@@ -67,11 +67,13 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
       setup do
         @purchase_request = create_purchase_request(:purchase_request_supplies => [{:supply_id => @purchase_order.purchase_order_supplies.first.supply_id,
                                                                                     :expected_quantity => 1000,
-                                                                                    :expected_delivery_date => Date.today + 4.week
+                                                                                    :expected_delivery_date => Date.today + 4.week,
+                                                                                    :purchase_priority_id => purchase_priorities("first_purchase_priority").id
                                                                                   },
                                                                                   { :supply_id => @purchase_order.purchase_order_supplies.last.supply_id,
                                                                                     :expected_quantity => 2000,
-                                                                                    :expected_delivery_date => Date.today + 2.week
+                                                                                    :expected_delivery_date => Date.today + 2.week,
+                                                                                    :purchase_priority_id => purchase_priorities("first_purchase_priority").id
                                                                                   }] )
         @purchase_request.save!
         flunk "purchase request should be saved" if @purchase_request.new_record?
@@ -143,7 +145,7 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
       assert @purchase_order_supply.can_be_cancelled?
     end
     
-    context "which NOT have parcel associated" do  
+    context "which NOT have purchase_delivery associated" do  
       
       should "be untreated" do
         assert @purchase_order_supply.untreated?
@@ -158,16 +160,16 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
       end 
     end
     
-    context "which have not receive parcel associated with remaining quantity" do
+    context "which have not receive purchase_delivery associated with remaining quantity" do
       setup do
-        @parcel = Parcel.new
-        @parcel = build_parcel_item_for(@parcel, @purchase_order)
-        @parcel.parcel_items.first.quantity /= 2 
-        @parcel.save!
+        @purchase_delivery = PurchaseDelivery.new
+        @purchase_delivery = build_purchase_delivery_item_for(@purchase_delivery, @purchase_order)
+        @purchase_delivery.purchase_delivery_items.first.quantity /= 2 
+        @purchase_delivery.save!
       end
       
       teardown do
-        @parcel = nil
+        @purchase_delivery = nil
         @purchase_order_supply = nil
         @purchase_order = nil
       end
@@ -188,12 +190,12 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
         assert !@purchase_order_supply.treated?
       end  
       
-      should "remain quantity for a new parcel" do
-        assert_equal 500, @purchase_order_supply.remaining_quantity_for_parcel
+      should "remain quantity for a new purchase_delivery" do
+        assert_equal 500, @purchase_order_supply.remaining_quantity_for_purchase_delivery
       end
       
       should "return a good total quantity" do
-        assert_equal 500, @purchase_order_supply.count_quantity_in_parcel_items
+        assert_equal 500, @purchase_order_supply.count_quantity_in_purchase_delivery_items
       end
       
       context "which is cancelled" do
@@ -211,8 +213,8 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
           assert !@purchase_order_supply.can_be_cancelled?
         end
         
-        should "put automatically parcel items status to cancelled" do
-          assert @purchase_order_supply.parcel_items.first.cancelled?
+        should "put automatically purchase_delivery items status to cancelled" do
+          assert @purchase_order_supply.purchase_delivery_items.first.cancelled?
         end
       end
       
@@ -231,11 +233,11 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
       end
     end
     
-    context "which have not receive parcel associated withouts remaining quantity" do
+    context "which have not receive purchase_delivery associated withouts remaining quantity" do
       setup do
-        @parcel = Parcel.new
-        @parcel = build_parcel_item_for(@parcel, @purchase_order) 
-        @parcel.save!
+        @purchase_delivery = PurchaseDelivery.new
+        @purchase_delivery = build_purchase_delivery_item_for(@purchase_delivery, @purchase_order) 
+        @purchase_delivery.save!
       end
       
       
@@ -255,21 +257,21 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
         assert !@purchase_order_supply.treated?
       end  
       
-      should "NOT remain quantity for a new parcel" do
-        assert_equal 0, @purchase_order_supply.remaining_quantity_for_parcel
+      should "NOT remain quantity for a new purchase_delivery" do
+        assert_equal 0, @purchase_order_supply.remaining_quantity_for_purchase_delivery
       end
       
       should "return a good total quantity" do
-        assert_equal 1000, @purchase_order_supply.count_quantity_in_parcel_items
+        assert_equal 1000, @purchase_order_supply.count_quantity_in_purchase_delivery_items
       end
     end
     
-    context "which have a receive parcel associated with remaining quantity" do
+    context "which have a receive purchase_delivery associated with remaining quantity" do
       setup do
-        @parcel = Parcel.new
-        @parcel = build_parcel_item_for(@parcel, @purchase_order) 
-        @parcel.parcel_items.first.quantity /= 2 
-        @parcel = put_received_status_for(@parcel)
+        @purchase_delivery = PurchaseDelivery.new
+        @purchase_delivery = build_purchase_delivery_item_for(@purchase_delivery, @purchase_order) 
+        @purchase_delivery.purchase_delivery_items.first.quantity /= 2 
+        @purchase_delivery = put_received_status_for(@purchase_delivery)
       end
       
       should "NOT be able to be cancelled" do
@@ -288,28 +290,28 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
         assert !@purchase_order_supply.treated?
       end  
       
-      should "remain quantity for a new parcel" do
-        assert_equal 500, @purchase_order_supply.remaining_quantity_for_parcel
+      should "remain quantity for a new purchase_delivery" do
+        assert_equal 500, @purchase_order_supply.remaining_quantity_for_purchase_delivery
       end
       
       should "return a good total quantity" do
-        assert_equal 500, @purchase_order_supply.count_quantity_in_parcel_items
+        assert_equal 500, @purchase_order_supply.count_quantity_in_purchase_delivery_items
       end
     end
     
-    context "which have a receive parcel associated without remaining quantity" do
+    context "which have a receive purchase_delivery associated without remaining quantity" do
       setup do
-        @parcel = Parcel.new
-        @parcel = build_parcel_item_for(@parcel, @purchase_order)
-        @parcel = put_received_status_for(@parcel)
+        @purchase_delivery = PurchaseDelivery.new
+        @purchase_delivery = build_purchase_delivery_item_for(@purchase_delivery, @purchase_order)
+        @purchase_delivery = put_received_status_for(@purchase_delivery)
       end
       
-      should "have return false when 'not_receive_associated_parcels?' is called" do
-        assert !@purchase_order_supply.not_receive_associated_parcels?
+      should "have return false when 'not_receive_associated_purchase_deliveries?' is called" do
+        assert !@purchase_order_supply.not_receive_associated_purchase_deliveries?
       end
       
-      should "return true when 'verify_all_parcel_items_are_received?' is called" do
-        assert @purchase_order_supply.verify_all_parcel_items_are_received?
+      should "return true when 'verify_all_purchase_delivery_items_are_received?' is called" do
+        assert @purchase_order_supply.verify_all_purchase_delivery_items_are_received?
       end
       
       should "NOT be able to be cancelled" do
@@ -328,21 +330,21 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
         assert @purchase_order_supply.treated?
       end  
       
-      should "NOT remain quantity for a new parcel" do
-        assert_equal 0, @purchase_order_supply.remaining_quantity_for_parcel
+      should "NOT remain quantity for a new purchase_delivery" do
+        assert_equal 0, @purchase_order_supply.remaining_quantity_for_purchase_delivery
       end
       
       should "return a good total quantity" do
-        assert_equal 1000, @purchase_order_supply.count_quantity_in_parcel_items
+        assert_equal 1000, @purchase_order_supply.count_quantity_in_purchase_delivery_items
       end
       
-      context "when parcel_item is reported and issued_purchase_order_supply is cancelled" do
+      context "when purchase_delivery_item is reported and issued_purchase_order_supply is cancelled" do
         
         setup do
-          @issue_purchase_order_supply = create_purchase_order_supply_reported_for(@parcel.parcel_items.first).reload
+          @issue_purchase_order_supply = create_purchase_order_supply_reported_for(@purchase_delivery.purchase_delivery_items.first).reload
           @issue_purchase_order_supply.cancelled_by_id = users("admin_user").id
           @issue_purchase_order_supply.cancelled_comment = "cancelled issue_purchase_order_supply"
-          @parcel.reload
+          @purchase_delivery.reload
           flunk "issue_purchase_order_supply_should be cancelled" unless @issue_purchase_order_supply.cancel
         end
         
@@ -350,12 +352,12 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
           assert !@issue_purchase_order_supply.can_be_cancelled?
         end
         
-        should "be able to nulify 'issued_at' in parcel item associated" do
-          assert_nil @parcel.parcel_items.first.issued_at
+        should "be able to nulify 'issued_at' in purchase_delivery item associated" do
+          assert_nil @purchase_delivery.purchase_delivery_items.first.issued_at
         end
         
-        should "be able to nulify 'issue_purchase_order_supply_id' in parcel item associated" do
-          assert_nil @parcel.parcel_items.first.issue_purchase_order_supply_id
+        should "be able to nulify 'issue_purchase_order_supply_id' in purchase_delivery item associated" do
+          assert_nil @purchase_delivery.purchase_delivery_items.first.issue_purchase_order_supply_id
         end
       end
     end

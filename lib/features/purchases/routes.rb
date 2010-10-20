@@ -23,8 +23,8 @@ ActionController::Routing::Routes.add_routes do |map|
                                     :action => 'purchase_order_supply_in_one_line', 
                                     :method => :get
   
-  map.parcel_status_partial 'parcel_status_partial',  :controller => 'parcels', 
-                                    :action => 'parcel_status_partial', 
+  map.purchase_delivery_status_partial 'purchase_delivery_status_partial',  :controller => 'purchase_deliveries', 
+                                    :action => 'purchase_delivery_status_partial', 
                                     :method => :get
   
   map.purchase_request_supply_in_one_line 'purchase_request_supply_in_one_line',  :controller => 'purchase_requests', 
@@ -50,26 +50,26 @@ ActionController::Routing::Routes.add_routes do |map|
     order.confirm_form  'confirm_form',   :controller => 'purchase_orders', :action => 'confirm_form'
     order.complete      'complete',       :controller => 'purchase_orders', :action => 'complete', :conditions => { :method => :put }
     order.complete_form 'complete_form',  :controller => 'purchase_orders', :action => 'complete_form'
-    order.resources :parcels do |parcel|
-      parcel.attached_delivery_document 'attached_delivery_document', :controller => 'parcels', :action => 'attached_delivery_document'
-      parcel.alter_status               'alter_status',               :controller => 'parcels', :action => 'alter_status'
-      parcel.process_by_supplier_form   'process_by_supplier_form',   :controller => 'parcels', :action => 'process_by_supplier_form'
-      parcel.process_by_supplier        'process_by_supplier',        :controller => 'parcels', :action => 'process_by_supplier'
-      parcel.ship_form                  'ship_form',                  :controller => 'parcels', :action => 'ship_form'
-      parcel.receive_by_forwarder_form  'receive_by_forwarder_form',  :controller => 'parcels', :action => 'receive_by_forwarder_form'
-      parcel.receive_form               'receive_form',               :controller => 'parcels', :action => 'receive_form'
-      parcel.cancel_form                'cancel_form',                :controller => 'parcels', :action => 'cancel_form'
-      parcel.process_by_supplier        'process_by_supplier',        :controller => 'parcels', :action => "process_by_supplier"
-      parcel.ship                       'ship',                       :controller => 'parcels', :action => "ship"
-      parcel.receive_by_forwarder       'receive_by_forwarder',       :controller => 'parcels', :action => "receive_by_forwarder"
-      parcel.receive                    'receive',                    :controller => 'parcels', :action => "receive"
-      parcel.cancel                     'cancel',                     :controller => 'parcels', :action => "cancel"
+    order.resources :purchase_deliveries do |purchase_delivery|
+      purchase_delivery.attached_delivery_document 'attached_delivery_document', :controller => 'purchase_deliveries', :action => 'attached_delivery_document'
+      purchase_delivery.alter_status               'alter_status',               :controller => 'purchase_deliveries', :action => 'alter_status'
+      purchase_delivery.process_by_supplier_form   'process_by_supplier_form',   :controller => 'purchase_deliveries', :action => 'process_by_supplier_form'
+      purchase_delivery.process_by_supplier        'process_by_supplier',        :controller => 'purchase_deliveries', :action => 'process_by_supplier'
+      purchase_delivery.ship_form                  'ship_form',                  :controller => 'purchase_deliveries', :action => 'ship_form'
+      purchase_delivery.receive_by_forwarder_form  'receive_by_forwarder_form',  :controller => 'purchase_deliveries', :action => 'receive_by_forwarder_form'
+      purchase_delivery.receive_form               'receive_form',               :controller => 'purchase_deliveries', :action => 'receive_form'
+      purchase_delivery.cancel_form                'cancel_form',                :controller => 'purchase_deliveries', :action => 'cancel_form'
+      purchase_delivery.process_by_supplier        'process_by_supplier',        :controller => 'purchase_deliveries', :action => "process_by_supplier"
+      purchase_delivery.ship                       'ship',                       :controller => 'purchase_deliveries', :action => "ship"
+      purchase_delivery.receive_by_forwarder       'receive_by_forwarder',       :controller => 'purchase_deliveries', :action => "receive_by_forwarder"
+      purchase_delivery.receive                    'receive',                    :controller => 'purchase_deliveries', :action => "receive"
+      purchase_delivery.cancel                     'cancel',                     :controller => 'purchase_deliveries', :action => "cancel"
       
-      parcel.resources :parcel_items do |parcel_item|
-        parcel_item.cancel      'cancel',       :controller => 'parcel_items', :action => 'cancel'
-        parcel_item.cancel_form 'cancel_form',  :controller => 'parcel_items', :action => 'cancel_form'
-        parcel_item.report      'report',       :controller => 'parcel_items', :action => 'report'
-        parcel_item.report_form 'report_form',  :controller => 'parcel_items', :action => 'report_form'
+      purchase_delivery.resources :purchase_delivery_items do |purchase_delivery_item|
+        purchase_delivery_item.cancel      'cancel',       :controller => 'purchase_delivery_items', :action => 'cancel'
+        purchase_delivery_item.cancel_form 'cancel_form',  :controller => 'purchase_delivery_items', :action => 'cancel_form'
+        purchase_delivery_item.report      'report',       :controller => 'purchase_delivery_items', :action => 'report'
+        purchase_delivery_item.report_form 'report_form',  :controller => 'purchase_delivery_items', :action => 'report_form'
       end
     end
     order.resources :purchase_order_supplies do |purchase_order_supply|

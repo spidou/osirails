@@ -1,0 +1,23 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
+<% array_of_purchase_delivery_items_to_display_one = [@purchase_delivery_item] %>
+
+<h1>Fourniture du colis</h1>
+<div class="presentation_medium">
+  <h2>Annuler le contenu.</h2>
+  <% form_for [ @purchase_order, @purchase_delivery, @purchase_delivery_item ], :url => { :action => "cancel" } do |f| %>
+    <%= f.error_messages %>
+    <%= render :partial => "purchase_deliveries/array_head" %>
+    <%= render :partial => "purchase_delivery_items/purchase_delivery_item", :collection => array_of_purchase_delivery_items_to_display_one %>
+    <%= render :partial => "purchase_deliveries/array_foot" %>
+    <p>
+      <%= f.label :cancelled_comment %>
+      <%= f.text_area_autoresize :cancelled_comment %>
+    </p>
+    <p>
+      <%= f.form_buttons %>
+    </p>
+  <% end %>
+</div>

@@ -1,0 +1,28 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
+<%= generate_purchase_delivery_contextual_menu_partial(@purchase_order, @purchase_delivery) %>
+
+<h1>Colis</h1>
+<div class="presentation_medium">
+  <%= render :partial => "purchase_deliveries/array_head" %>
+  <%= render :partial => "purchase_deliveries/purchase_delivery", :object => @purchase_delivery, :locals => { :purchase_order => @purchase_order } %>
+  <%= render :partial => "purchase_deliveries/array_foot" %>
+  
+  <h2>Signaler le colis comme "Re&ccedil;u".</h2>
+  <% form_for [@purchase_order, @purchase_delivery], :url => purchase_order_purchase_delivery_alter_status_path(@purchase_order, @purchase_delivery) do |f| %>
+    <% options = purchase_delivery_possible_actions(@purchase_delivery) %>
+    
+    <%= f.label :status, "D&eacute;finir l'état &agrave; &nbsp;" %>
+    <%= f.select(:status, options, {}, {:onchange => "submit();"}) %>
+  <% end %>
+  <% form_for [@purchase_order, @purchase_delivery], :url => { :controller => "purchase_deliveries", :action => "receive" }, :html => { :multipart => true } do |f| %>
+    <%= f.error_messages %>
+    <div class="presentation_in_columns">
+      <%= render :partial => "purchase_deliveries/receive_forms", :object => @purchase_delivery %>
+    </div>
+    
+    <%= f.form_buttons %>
+  <% end %>
+</div>

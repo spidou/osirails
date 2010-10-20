@@ -1,11 +1,12 @@
 class PurchaseOrderSupply < ActiveRecord::Base
+  include ProductBase
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   
   has_many :request_order_supplies
   has_many :purchase_request_supplies, :through => :request_order_supplies
-  has_many :parcel_items
-  has_many :parcels, :through => :parcel_items, :order => 'parcels.status, parcels.cancelled_at DESC, parcels.received_on DESC, parcels.received_by_forwarder_on DESC, parcels.shipped_on DESC, parcels.processing_by_supplier_since DESC'
-  has_one  :issued_parcel_item, :class_name => "ParcelItem", :foreign_key => :issue_purchase_order_supply_id
+  has_many :purchase_delivery_items
+  has_many :purchase_deliveries, :through => :purchase_delivery_items, :order => 'purchase_deliveries.status, purchase_deliveries.cancelled_at DESC, purchase_deliveries.received_on DESC, purchase_deliveries.received_by_forwarder_on DESC, purchase_deliveries.shipped_on DESC, purchase_deliveries.processing_by_supplier_since DESC'
+  has_one  :issued_purchase_delivery_item, :class_name => "PurchaseDeliveryItem", :foreign_key => :issue_purchase_order_supply_id
   
   belongs_to :purchase_order
   belongs_to :supply
@@ -15,10 +16,11 @@ class PurchaseOrderSupply < ActiveRecord::Base
   attr_accessor :purchase_request_supplies_deselected_ids
   attr_accessor :should_destroy
   
-  validates_presence_of :supply_id, :supplier_designation, :supplier_reference
+  validates_presence_of :supplier_designation, :supplier_reference
   validates_presence_of :supply, :if => :supply_id
   validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled_at
   validates_presence_of :canceller, :if => :cancelled_by_id
+  validates_presence_of :description, :if => :comment_line
   
   validate :validates_is_not_cancelled
   
@@ -29,7 +31,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   
   after_save  :automatically_put_purchase_order_status_to_cancelled , :unless => :new_record?
   after_save  :purchase_order_supply_associated_to_report, :unless => :new_record?
-  after_save  :automatically_put_parcel_items_status_to_cancelled, :unless => :new_record?
+  after_save  :automatically_put_purchase_delivery_items_status_to_cancelled, :unless => :new_record?
   
   def should_destroy?
     should_destroy.to_i == 1
@@ -41,18 +43,18 @@ class PurchaseOrderSupply < ActiveRecord::Base
     end
   end
   
-  def automatically_put_parcel_items_status_to_cancelled
-    for parcel_item in parcel_items
-      if parcel_item.can_be_cancelled? && self.cancelled_by_id
-        parcel_item.cancelled_comment = "cancelled"
-        parcel_item.cancelled_by_id = self.cancelled_by_id
-        parcel_item.cancel
+  def automatically_put_purchase_delivery_items_status_to_cancelled
+    for purchase_delivery_item in purchase_delivery_items
+      if purchase_delivery_item.can_be_cancelled? && self.cancelled_by_id
+        purchase_delivery_item.cancelled_comment = "cancelled"
+        purchase_delivery_item.cancelled_by_id = self.cancelled_by_id
+        purchase_delivery_item.cancel
       end
     end
   end
   
   def purchase_order_supply_associated_to_report
-    if (issued_item = issued_parcel_item) && self.cancelled_by_id
+    if (issued_item = issued_purchase_delivery_item) && self.cancelled_by_id
       issued_item.issue_purchase_order_supply_id = nil
       issued_item.issued_at = nil
       issued_item.save
@@ -63,29 +65,41 @@ class PurchaseOrderSupply < ActiveRecord::Base
     self.purchase_order.put_purchase_order_status_to_cancelled
   end
   
-  def remaining_quantity_for_parcel
-    quantity - parcel_items.reject{ |pi| pi.parcel.cancelled? || pi.cancelled? }.collect{ |pi| pi.quantity.to_i }.sum
+  def remaining_quantity_for_purchase_delivery
+    quantity - purchase_delivery_items.reject{ |pi| pi.purchase_delivery.cancelled? || pi.cancelled? }.collect{ |pi| pi.quantity.to_i }.sum
   end
   
-  def verify_all_parcel_items_are_received?
-    parcel_items.each{ |pi| return false unless pi.parcel.cancelled? || pi.cancelled? || pi.parcel.received? }
+  def verify_all_purchase_delivery_items_are_received?
+    purchase_delivery_items.each{ |pi| return false unless pi.purchase_delivery.cancelled? || pi.cancelled? || pi.purchase_delivery.received? }
     true
   end
   
-  def count_quantity_in_parcel_items
-    parcel_items.reject{ |i| i.parcel.cancelled? or i.cancelled? }.collect{ |i| i.quantity.to_i }.sum
+  def count_quantity_in_purchase_delivery_items
+    purchase_delivery_items.reject{ |i| i.purchase_delivery.cancelled? or i.cancelled? }.collect{ |i| i.quantity.to_i }.sum
+  end
+  
+  def existing_supply?
+    supply_id && !comment_line
+  end
+  
+  def unreferenced_supply?
+    !supply_id && !comment_line
+  end
+  
+  def comment_line?
+    !supply_id && comment_line
   end
   
   def untreated?
-    parcel_items.empty?
+    purchase_delivery_items.empty?
   end
   
   def processing_by_supplier?
-    parcel_items.any? && (count_quantity_in_parcel_items != quantity || !verify_all_parcel_items_are_received?)
+    purchase_delivery_items.any? && (count_quantity_in_purchase_delivery_items != quantity || !verify_all_purchase_delivery_items_are_received?)
   end
   
   def treated?
-    parcel_items.any? && count_quantity_in_parcel_items == quantity && verify_all_parcel_items_are_received?
+    purchase_delivery_items.any? && count_quantity_in_purchase_delivery_items == quantity && verify_all_purchase_delivery_items_are_received?
   end
   
   def cancelled?
@@ -96,13 +110,13 @@ class PurchaseOrderSupply < ActiveRecord::Base
     cancelled_at_was
   end
   
-  def not_receive_associated_parcels?
-    parcel_items.each{ |pi| return false if pi.parcel.status == Parcel::STATUS_RECEIVED }
+  def not_receive_associated_purchase_deliveries?
+    purchase_delivery_items.each{ |pi| return false if pi.purchase_delivery.status == PurchaseDelivery::STATUS_RECEIVED }
     true
   end
   
   def can_be_cancelled?
-    !new_record? && !purchase_order.draft? && !purchase_order.completed? && !was_cancelled? && !purchase_order.cancelled? && (untreated? || not_receive_associated_parcels?)
+    !new_record? && !purchase_order.draft? && !purchase_order.completed? && !was_cancelled? && !purchase_order.cancelled? && (untreated? || not_receive_associated_purchase_deliveries?)
   end
   
   def can_be_deleted?
@@ -117,24 +131,39 @@ class PurchaseOrderSupply < ActiveRecord::Base
     false
   end
   
+  def vat=(vat) # for compatibility with product_base.rb
+    self.taxes = vat
+  end
+  
+  def unit_price=(unit_price) # for compatibility with product_base.rb
+    self.fob_unit_price = unit_price
+  end
+  
   def supplier_supply(supplier_id = nil, supply_id = nil)
     supplier_id ||= purchase_order.supplier_id if purchase_order
     supply_id   ||= supply.id if supply
     SupplierSupply.find_by_supplier_id_and_supply_id(supplier_id, supply_id)
   end
   
+  def fob_unit_price
+    self[:fob_unit_price] ||= supplier_supply(supplier_id, supply_id).fob_unit_price.to_f
+  end
+    
   def unit_price_including_tax(supplier_id = purchase_order.supplier, supply_id = supply.id)
     self.fob_unit_price ||= supplier_supply(supplier_id, supply_id).fob_unit_price.to_f
-    self.fob_unit_price.to_f * ( 1.0 + ( self.taxes.to_f / 100.0 ) )
-  end
-  
-  def purchase_order_supply_total
-    self.quantity.to_f * unit_price_including_tax.to_f
+     unit_price_with_prizegiving.to_f * ( 1.0 + ( taxes.to_f / 100.0 ) )
   end
   
   def taxes
     self[:taxes] ||= supplier_supply && supplier_supply.taxes.to_f
   end
+  
+  def amount_taxes
+    total_with_prizegiving.to_f * ( taxes.to_f / 100.0)
+  end
+  
+  alias_method :unit_price, :fob_unit_price
+  alias_method :vat, :taxes # for compatibility with product_base.rb
   
   def not_cancelled_purchase_request_supplies
     PurchaseRequestSupply.all(:include => :purchase_request, :conditions => ['purchase_request_supplies.supply_id = ? AND purchase_request_supplies.cancelled_at IS NULL AND purchase_requests.cancelled_at IS NULL', supply_id])
@@ -167,9 +196,9 @@ class PurchaseOrderSupply < ActiveRecord::Base
     request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id?(purchase_request_supply.id) 
   end
   
-  def are_parcel_or_parcel_items_all_cancelled?
-    for parcel_item in parcel_items
-      return false if !parcel_item.was_cancelled? || !parcel_item.parcel.was_cancelled?
+  def are_purchase_delivery_or_purchase_delivery_items_all_cancelled?
+    for purchase_delivery_item in purchase_delivery_items
+      return false if !purchase_delivery_item.was_cancelled? || !purchase_delivery_item.purchase_delivery.was_cancelled?
     end
     true
   end

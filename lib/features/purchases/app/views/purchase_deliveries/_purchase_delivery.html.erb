@@ -1,0 +1,34 @@
+<tbody class="purchase_delivery">
+  <tr>
+    <td colspan= 13 class="purchase_delivery_summary">
+      <p>
+        <span class="purchase_delivery_label">R&eacute;f&eacute;rence :</span>
+        <span class="purchase_delivery_reference"> <%= display_purchase_delivery_reference(purchase_delivery) %></span>
+        <span class="purchase_delivery_label">&Eacute;tat :</span>
+        <span class="purchase_delivery_status"> <%= display_purchase_delivery_current_status(purchase_delivery) %></span>
+        <span class="purchase_delivery_label">Depuis le : </span>
+        <span class="purchase_delivery_current_status_date"><%= display_purchase_delivery_current_status_date(purchase_delivery) %></span>
+        <% unless (params[:action] == "ship_form" or params[:action] == "receive_by_forwarder_form" or params[:action] == "receive_form" or params[:action] == "receive" or params[:action] == "cancel_form" or params[:action] == "cancel") or purchase_delivery_possible_actions(purchase_delivery).empty? %>
+          <% form_for [purchase_order, purchase_delivery], :url => purchase_order_purchase_delivery_alter_status_path(purchase_order, purchase_delivery) do |f| %>
+            <% options = purchase_delivery_possible_actions(purchase_delivery) %>
+            <ul class="purchase_delivery_choose_status">
+              <li ><%= f.label :status, "D&eacute;finir l'état &agrave; &nbsp;" %></li>
+              <li><%= f.select(:status, options)%></li>
+              <li><%= f.submit "Valider" %></li>
+            </ul>
+          <% end %>
+        <% end %>
+      </p>
+      <% if purchase_delivery.previsional_delivery_date %>
+        <p>
+          <span class="purchase_delivery_label">Livraison pr&eacute;vue le</span>
+          <span class="purchase_delivery_previsional_delivery_date"><%= display_purchase_delivery_previsional_deliveray_date(purchase_delivery) %></span>
+          <span class="purchase_delivery_label"> par </span>
+          <span class="purchase_delivery_conveyance"><%= purchase_delivery.conveyance %></span>
+        </p>
+      <% end %>
+    </td>
+  </tr>
+  <%= render :partial => "purchase_delivery_items/purchase_delivery_item", :collection => purchase_delivery.purchase_delivery_items %>
+</tbody>
+

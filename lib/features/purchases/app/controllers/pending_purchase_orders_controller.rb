@@ -1,6 +1,6 @@
 class PendingPurchaseOrdersController < ApplicationController
   
-  helper :purchase_orders, :parcels
+  helper :purchase_orders, :purchase_deliveries
   
   # GET /pending_purchase_orders
   # GET /pending_purchase_orders?page=:page

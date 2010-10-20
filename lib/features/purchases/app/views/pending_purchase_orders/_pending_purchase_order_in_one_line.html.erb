@@ -1,9 +1,9 @@
 <%
 purchase_order = pending_purchase_order_in_one_line
-parcels = purchase_order.parcels.compact
+purchase_deliveries = purchase_order.purchase_deliveries.compact
 
 even = (pending_purchase_order_in_one_line_counter % 2).zero? ? 'even' : ''
-rowspan = parcels.any? ? "rowspan=\"#{parcels.size}\"" : ''
+rowspan = purchase_deliveries.any? ? "rowspan=\"#{purchase_deliveries.size}\"" : ''
 %>
 
 <tr class="<%= even %>">
@@ -13,7 +13,7 @@ rowspan = parcels.any? ? "rowspan=\"#{parcels.size}\"" : ''
   <td <%= rowspan %>><%= display_purchase_order_current_status_date(purchase_order) %></td>
   <td <%= rowspan %>><%= purchase_order.supplier.address.country_name %></td>
   <td <%= rowspan %>><%= purchase_order.supplier.name %></td>
-  <% if parcels.empty? %>
+  <% if purchase_deliveries.empty? %>
     <td></td>
     <td></td>
     <td></td>
@@ -21,14 +21,14 @@ rowspan = parcels.any? ? "rowspan=\"#{parcels.size}\"" : ''
     <td></td>
     <td></td>
   <% else %>
-    <td><%= parcels.first.reference %></td>
-    <td><%= display_parcel_previsional_deliveray_date(parcels.first) %></td>
-    <td><%= parcels.first.conveyance %></td>
-    <td><%= display_parcel_current_status(parcels.first) %></td>
-    <td><%= display_parcel_current_status_date(parcels.first) %></td>
+    <td><%= purchase_deliveries.first.reference %></td>
+    <td><%= display_purchase_delivery_previsional_deliveray_date(purchase_deliveries.first) %></td>
+    <td><%= purchase_deliveries.first.conveyance %></td>
+    <td><%= display_purchase_delivery_current_status(purchase_deliveries.first) %></td>
+    <td><%= display_purchase_delivery_current_status_date(purchase_deliveries.first) %></td>
     <td>
-      <% if parcels.first.received_by_forwarder_on %>
-        <%= (parcels.first.received_on and parcels.first.awaiting_pick_up) ? ( "A été récupéré" ) : ( parcels.first.awaiting_pick_up == "1" ? "Oui" : "Non" ) %>
+      <% if purchase_deliveries.first.received_by_forwarder_on %>
+        <%= (purchase_deliveries.first.received_on and purchase_deliveries.first.awaiting_pick_up) ? ( "A été récupéré" ) : ( purchase_deliveries.first.awaiting_pick_up == "1" ? "Oui" : "Non" ) %>
       <% end %>
     </td>
   <% end %>
@@ -39,18 +39,18 @@ rowspan = parcels.any? ? "rowspan=\"#{parcels.size}\"" : ''
 </tr>
 
 <%
-for parcel in parcels
-  if parcel != parcels.first 
+for purchase_delivery in purchase_deliveries
+  if purchase_delivery != purchase_deliveries.first 
 %>
     <tr class="<%= even %>">
-      <td><%= parcel.reference %></td>
-      <td><%= display_parcel_previsional_deliveray_date(parcel) %></td>
-      <td><%= parcel.conveyance %></td>
-      <td><%= display_parcel_current_status(parcel) %></td>
-      <td><%= display_parcel_current_status_date(parcel) %></td>
+      <td><%= purchase_delivery.reference %></td>
+      <td><%= display_purchase_delivery_previsional_deliveray_date(purchase_delivery) %></td>
+      <td><%= purchase_delivery.conveyance %></td>
+      <td><%= display_purchase_delivery_current_status(purchase_delivery) %></td>
+      <td><%= display_purchase_delivery_current_status_date(purchase_delivery) %></td>
       <td>
-        <% if parcel.received_by_forwarder_on %>
-          <%= (parcel.received_on and parcel.awaiting_pick_up) ? ( "A été récupéré" ) : ( parcel.awaiting_pick_up == "1" ? "Oui" : "Non" ) %>
+        <% if purchase_delivery.received_by_forwarder_on %>
+          <%= (purchase_delivery.received_on and purchase_delivery.awaiting_pick_up) ? ( "A été récupéré" ) : ( purchase_delivery.awaiting_pick_up == "1" ? "Oui" : "Non" ) %>
         <% end %>
       </td>
     </tr>
