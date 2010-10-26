@@ -17,7 +17,7 @@ counter ||= 1
   
     <td></td>
     
-    <td class="description" colspan="<%= is_form_view? ? 9 : 8 %>">
+    <td class="description" colspan="<%= (is_form_view? and !quotation_request.similar_id) ? 9 : 7 %>">
       <span class="description">
         <% if is_form_view? %>
           <%= f.text_area_autoresize :description, :cols => 55, :class => :input_description, :title => "Entrez une description pour ce produit" %>

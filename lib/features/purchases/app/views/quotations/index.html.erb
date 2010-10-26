@@ -1,0 +1,16 @@
+<%= generate_quotation_contextual_menu_partial %>
+
+<h1>Liste des devis en cours</h1>
+<div>
+  <% if @pending_quotations.empty? %>
+    <p>Aucun devis en cours</p>
+  <% else %>
+    <table>
+      <%= render :partial => "array_head" %>
+      <tbody>
+        <%= render :partial => "quotation_in_one_line", :collection => @pending_quotations %>
+      </tbody>
+    </table>
+    <%= will_paginate @pending_quotations %>
+  <% end %>
+</div>

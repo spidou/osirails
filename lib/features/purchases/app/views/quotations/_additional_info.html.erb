@@ -1,0 +1,48 @@
+<%
+  require_locals form
+  quotation = additional_info
+%>
+<p>
+  <%= form.label :created_at %>
+  <%= strong l(quotation.created_at_was, :format => :short) if quotation.created_at_was %>
+<p>
+<p>
+  <%= form.label :creator %>
+  <%= strong quotation.creator.employee_name if quotation.creator_id_was and quotation.creator %>
+<p>
+<% unless quotation.new_record? %>
+<p>
+  <%= form.label :status %>
+  <%= strong display_quotation_current_status(quotation) %>
+<p>
+<% end %>
+<% if quotation.canceller_id_was and quotation.canceller %>
+<p>
+  <%= form.label :canceller %>
+  <%= strong quotation.canceller.employee_name %>
+</p>
+<% end %>
+<% if quotation.cancelled_at_was %>
+<p>
+  <%= form.label :cancelled_at %>
+  <%= strong l(quotation.cancelled_at_was, :format => :short) %>
+</p>
+<% end %>
+<% if quotation.signed_on_was %>
+<p>
+  <%= form.label :signed_on %>
+  <%= strong l(quotation.signed_on_was, :format => :short) %>
+</p>
+<% end %>
+<% if quotation.sent_on %>
+<p>
+  <%= form.label :sent_on %>
+  <%= strong l(quotation.send_on, :format => :short) %>
+</p>
+<% end %>
+<p>
+  <% if quotation.quotation_request %>
+    <%= form.label :quotation_request %>
+    <%= link_to(quotation_request.quotation_request.reference || "Demande de devis non référencé", quotation_request_path(quotation.quotation_request)) %>
+  <% end %>
+</p>

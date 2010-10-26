@@ -6,7 +6,6 @@ class QuotationRequest < ActiveRecord::Base
   QUOTATIONREQUESTS_PER_PAGE = 15
   
   has_contact :supplier_contact, :accept_from => :supplier_contacts #OPTIMIZE : would be better if could manage Proc in order to be able to add conditions
-  
   has_permissions :as_business_object, :additional_class_methods => [:confirm, :cancel]
   has_reference :prefix => :purchases
   
@@ -24,6 +23,8 @@ class QuotationRequest < ActiveRecord::Base
   has_one :quotation
   has_one :quotation_document, :through => :quotation
   
+  validate :validates_length_of_existing_and_free_quotation_request_supplies
+  
   validates_presence_of :creator_id, :supplier_id
   validates_presence_of :employee_id, :reference, :supplier_contact_id, :if => :confirmed? # OPTIMIZE : would be better if supplier_contact_id was verified directly when calling has_contact
   validates_presence_of :supplier_contact, :if => :supplier_contact_id # OPTIMIZE : would be better if was done directly when calling has_contact
@@ -32,8 +33,6 @@ class QuotationRequest < ActiveRecord::Base
   validates_presence_of :supplier, :if => :supplier_id
   validates_presence_of :employee, :if => :employee_id
   validates_presence_of :canceller, :if => :canceller_id
-  
-  validates_length_of :quotation_request_supplies, :minimum => 1, :message => :length_of
   
   with_options :if => :similar_id do |qr|
     qr.validate :validates_similarity_with_similar
@@ -79,6 +78,10 @@ class QuotationRequest < ActiveRecord::Base
   
   before_destroy :can_be_destroyed?
   
+  def validates_length_of_existing_and_free_quotation_request_supplies
+    errors.add(:quotation_request_supplies, message_error_for_length_of_existing_and_free_quotation_request_supplies) if existing_and_free_quotation_request_supplies.reject(&:should_destroy?).empty?
+  end
+  
   def similar_id_and_new_record?
     similar_id and new_record?
   end
@@ -92,21 +95,27 @@ class QuotationRequest < ActiveRecord::Base
     errors.add(:supplier_id, message_error_for_similarity_of_supplier_between_parents) unless parent.supplier_id == supplier_id
   end
   
+  #TODO retest this method
   def validates_similarity_with_similar
-    similar_qrs = similar.quotation_request_supplies
+    similar_qrs = similar.existing_and_free_quotation_request_supplies
     error_message = message_error_for_similarity_with_similar
-  
-    unless similar_qrs.size == quotation_request_supplies.size
+    unless similar_qrs.size == existing_and_free_quotation_request_supplies.size
       errors.add(:quotation_request_supplies, error_message)
       return
     end
   
-    similar_qrs = similar_qrs.reject do |qrs|
+    similar_qrs.reject! do |qrs|
       quotation_request_supplies.detect do |x|
-        (x.supply_id == qrs.supply_id) and (x.quantity == qrs.quantity) and (x.position == qrs.position) and (x.comment_line == qrs.comment_line) and (x.description == qrs.description)
+        if x.supply_id and qrs.supply_id
+          (x.supply_id == qrs.supply_id) and (x.quantity == qrs.quantity)
+        else
+          (x.designation == qrs.designation) and (x.quantity == qrs.quantity)
+        end
       end
     end
     errors.add(:quotation_request_supplies, error_message) unless similar_qrs.empty?
+    
+    #TODO add a verification for purchase_request_supplies associated
   end
   
   def validates_different_supplier_between_similars
@@ -274,12 +283,37 @@ class QuotationRequest < ActiveRecord::Base
     return list.flatten.uniq
   end
   
+  #TODO test this method
+  def existing_and_free_quotation_request_supplies
+    quotation_request_supplies.collect{ |qrs| qrs if !qrs.comment_line }.compact || []
+  end
+  
+  #TODO test this method
+  def existing_quotation_request_supplies
+    quotation_request_supplies.collect{ |qrs| qrs if !qrs.comment_line and supply_id }.compact || []
+  end
+  
+  #TODO test this method
+  def free_quotation_request_supplies
+    quotation_request_supplies.collect{ |qrs| qrs if !qrs.comment_line and supply_id.nil? }.compact || []
+  end
+  
+  #TODO test this method
+  def comment_line_quotation_request_supplies
+    quotation_request_supplies.reject{ |qrs| qrs if qrs.existing_and_free_quotation_request_supplies }.compact || []
+  end
+  
   def related_quotation_requests
     ([root] + root.children_and_similars).reject{|s| s == self}
   end
   
   def has_a_terminated_quotation_request_related?
-    related_quotation_requests.detect{|rqr| rqr.terminated?} ? true : false
+    related_terminated_quotation_request ? true : false
+  end
+  
+  #TODO test this method
+  def related_terminated_quotation_request
+    related_quotation_requests.detect{|rqr| rqr.terminated?}
   end
   
   def set_to_confirmed
@@ -296,13 +330,19 @@ class QuotationRequest < ActiveRecord::Base
                                           :quantity => attributes[:quantity],
                                           :position => attributes[:position],
                                           :supplier_reference => attributes[:supplier_reference],
-                                          :supplier_designation => attributes[:supplier_designation])
+                                          :supplier_designation => attributes[:supplier_designation],
+                                          :purchase_request_supplies_ids => attributes[:purchase_request_supplies_ids],
+                                          :purchase_request_supplies_deselected_ids => attributes[:purchase_request_supplies_deselected_ids],
+                                          :should_destroy => attributes[:should_destroy])
       else
         qrs = quotation_request_supplies.detect{|qrs| qrs.id == attributes[:id].to_i}
         qrs.quantity = attributes[:quantity]
         qrs.position = attributes[:position]
         qrs.supplier_reference = attributes[:supplier_reference]
         qrs.supplier_designation = attributes[:supplier_designation]
+        qrs.purchase_request_supplies_ids = attributes[:purchase_request_supplies_ids]
+        qrs.purchase_request_supplies_deselected_ids = attributes[:purchase_request_supplies_deselected_ids]
+        qrs.should_destroy = attributes[:should_destroy]
       end
     end
   end
@@ -315,7 +355,8 @@ class QuotationRequest < ActiveRecord::Base
                                           :position => attributes[:position],
                                           :designation => (attributes[:designation]),
                                           :supplier_reference => attributes[:supplier_reference],
-                                          :supplier_designation => attributes[:supplier_designation] )
+                                          :supplier_designation => attributes[:supplier_designation],
+                                          :should_destroy => attributes[:should_destroy])
       else
         qrs = quotation_request_supplies.detect {|t| t.id == attributes[:id].to_i}
         qrs.quantity = attributes[:quantity]
@@ -323,6 +364,7 @@ class QuotationRequest < ActiveRecord::Base
         qrs.designation = qrs.purchase_request_supplies.empty? ? (attributes[:designation]) : nil
         qrs.supplier_reference = attributes[:supplier_reference]
         qrs.supplier_designation = attributes[:supplier_designation]
+        qrs.should_destroy = attributes[:should_destroy]
       end
     end
   end
@@ -333,11 +375,13 @@ class QuotationRequest < ActiveRecord::Base
       if attributes[:id].blank?
         quotation_request_supplies.build( :description => attributes[:description],
                                           :comment_line => true,
-                                          :position => attributes[:position])
+                                          :position => attributes[:position],
+                                          :should_destroy => attributes[:should_destroy])
       else
         qrs = quotation_request_supplies.detect{|t| t.id == attributes[:id].to_i}
         qrs.description = attributes[:description]
         qrs.position = attributes[:position]
+        qrs.should_destroy = attributes[:should_destroy]
       end
     end
   end
@@ -351,8 +395,9 @@ class QuotationRequest < ActiveRecord::Base
   end
   
   def build_copy
-    copy = QuotationRequest.new
-    copy.title = title
+    copy = QuotationRequest.new(:supplier_id => supplier_id,
+                                :title => title,
+                                :supplier_contact_id => supplier_contact_id)
     quotation_request_supplies.each{ |qrs| copy.quotation_request_supplies.build( :supply_id => qrs.supply_id,
                                                                                   :quantity => qrs.quantity,
                                                                                   :position => qrs.position,
@@ -363,8 +408,8 @@ class QuotationRequest < ActiveRecord::Base
   end
   
   def build_prefilled_similar
-    copy = QuotationRequest.new
-    copy.similar_id = similar_id || id  # hidden field
+    copy = QuotationRequest.new(:similar_id => similar_id || id,
+                                :title => title)
     quotation_request_supplies.each{ |qrs|
       copy.quotation_request_supplies.build(:supply_id => qrs.supply_id,
                                             :quantity => qrs.quantity,
@@ -379,10 +424,10 @@ class QuotationRequest < ActiveRecord::Base
   
   def build_prefilled_child
     if can_be_reviewed?
-      copy = QuotationRequest.new
-      copy.parent_id = id # hidden field
-      copy.supplier_id = supplier_id
-      copy.supplier_contact_id = supplier_contact_id
+      copy = QuotationRequest.new(:parent_id => id,
+                                  :supplier_id => supplier_id,
+                                  :title => title,
+                                  :supplier_contact_id => supplier_contact_id)
       quotation_request_supplies.each{ |qrs|
         copy.quotation_request_supplies.build(:supply_id => qrs.supply_id,
                                               :quantity => qrs.quantity,
@@ -466,6 +511,9 @@ class QuotationRequest < ActiveRecord::Base
     end
   end
   
+  def message_error_for_length_of_existing_and_free_quotation_request_supplies
+    message_for_validates("quotation_request_supplies", "length_of_existing_and_free_quotation_request_supplies")
+  end
   
   def message_error_for_has_not_both_parent_id_and_similar_id
     message_for_validates("base", "not_both_parent_id_and_similar_id")

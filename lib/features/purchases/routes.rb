@@ -15,7 +15,29 @@ ActionController::Routing::Routes.add_routes do |map|
   map.quotation_request_supply 'quotation_request_supply', :controller => 'quotation_requests',
                                                            :action => 'quotation_request_supply',
                                                            :method => :get
-  map.resources :quotation_requests
+  
+  map.update_supplier_contacts      'update_supplier_contacts', :controller => 'quotation_requests', :action => 'update_supplier_contacts'
+  map.resources :quotation_requests do |quotation_request|
+    quotation_request.confirm                       'confirm',                        :controller => 'quotation_requests', :action => 'confirm', :conditions => { :method => :put }
+    quotation_request.cancel                        'cancel',                         :controller => 'quotation_requests', :action => 'cancel'
+    quotation_request.cancel_form                   'cancel_form',                    :controller => 'quotation_requests', :action => 'cancel_form'
+    quotation_request.make_copy                     'make_copy',                      :controller => 'quotation_requests', :action => 'make_copy'
+    quotation_request.review                        'review',                         :controller => 'quotation_requests', :action => 'review'
+    quotation_request.send_to_another_supplier      'send_to_another_supplier',       :controller => 'quotation_requests', :action => 'send_to_another_supplier'
+    quotation_request.send_to_another_supplier_form 'send_to_another_supplier_form',  :controller => 'quotation_requests', :action => 'send_to_another_supplier_form'
+  end
+  
+  map.quotation_supply          'quotation_supply',           :controller => 'quotations',  :action => 'quotation_supply', :method => :get
+  map.prepare_for_new_quotation 'quotations/prepare_for_new', :controller => 'quotations',  :action => 'prepare_for_new'
+  
+  map.resources :quotations do |quotation|
+    quotation.sign                          'sign',                           :controller => 'quotations', :action => 'sign', :conditions => { :method => :put }
+    quotation.sign_form                     'sign_form',                      :controller => 'quotations', :action => 'sign_form'
+    quotation.send_to_supplier              'send_to_supplier',               :controller => 'quotations', :action => 'send_to_supplier', :conditions => { :method => :put }
+    quotation.send_form                     'send_to_supplier_form',          :controller => 'quotations', :action => 'send_to_supplier_form'
+    quotation.cancel                        'cancel',                         :controller => 'quotations', :action => 'cancel'
+    quotation.cancel_form                   'cancel_form',                    :controller => 'quotations', :action => 'cancel_form'
+  end
   
   map.parcel_status_partial 'parcel_status_partial',  :controller => 'parcels', 
                                     :action => 'parcel_status_partial', 

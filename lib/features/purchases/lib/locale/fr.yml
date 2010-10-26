@@ -40,6 +40,21 @@ fr:
         issues_quantity: "Quantit&eacute; &agrave; declarer"
         must_be_reshipped: "&Agrave; r&eacute;expedier par le fournisseur"
         send_back_to_supplier: "&Agrave; renvoyer au fournisseur"
+      quotation_request:
+        reference: "Référence"
+        creator: "Créée par"
+        created_at: "Créée le"
+        title: "Intitulé"
+        employee: "Employé chargé du suivi"
+        supplier_name: "Nom du fournisseur"
+        canceller: "Annulé par"
+        cancelled_at: "Annulé le"
+        similar: "Le premier exemplaire de ce devis est la demande de devis suivante"
+        parent: "Cette demande de devis est la modification de la demande de devis suivante"
+        status: "Statut"
+        confirmed_at: "Confirmé le"
+        terminated_on: "Terminé le"
+        revoked_at: "Sans suive depuis le"
       quotation_request_supply:
         name: "Titre"
         description: "Description"
@@ -82,7 +97,7 @@ fr:
               similarity_of_supplier_between_parents: "Le fournisseur ne doit pas changer lors de la modification."
               different_supplier_between_similars: "Cette demande de devis existe déjà pour ce fournisseur, veuillez choisir un autre fournisseur."
             quotation_request_supplies:
-              length_of: "Vous devez choisir au moins une fourniture."
+              length_of_existing_and_free_quotation_request_supplies: "Vous devez choisir au moins une fourniture."
               similarity_with_similar: "La demande de devis n'est pas similaire à celle prise comme modèle."
         quotation:
           attributes:

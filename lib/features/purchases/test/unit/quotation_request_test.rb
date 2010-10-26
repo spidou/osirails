@@ -224,8 +224,9 @@ class QuotationRequestTest < ActiveSupport::TestCase
         
         context 'and which is taking a new comment_line and then is saved' do
           setup do
+            build_existing_quotation_request_supply(@quotation_request)
             flunk 'comment_line_quotation_request_supply_attributes= should success' unless @quotation_request.comment_line_quotation_request_supply_attributes=(@params)
-            flunk '@quotation_request should have one quotation_request_supply' unless @quotation_request.quotation_request_supplies.size == 1
+            flunk '@quotation_request should have one quotation_request_supply' unless @quotation_request.quotation_request_supplies.size == 2
             @quotation_request.save!
           end
           

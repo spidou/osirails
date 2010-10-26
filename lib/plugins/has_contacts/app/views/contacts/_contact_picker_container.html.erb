@@ -1,0 +1,14 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+  <%= javascript_include_tag 'core/has_resources/has_resources' %>
+  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
+<% end %>
+
+<% require_locals contact_list, contact_key, contacts_owners %>
+
+<% form ||= nil %>
+<% force_show_view ||= false %>
+
+<div id="<%= div_id %>">
+  <%= render(:partial => 'contacts/contact_picker', :object => contact_picker_container, :locals => {:contact_list => contact_list, :contact_key => contact_key, :contacts_owners => contacts_owners, :form => form, :force_show_view => force_show_view, :div_id => div_id}) %>
+</div>

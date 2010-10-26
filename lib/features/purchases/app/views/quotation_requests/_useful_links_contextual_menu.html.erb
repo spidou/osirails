@@ -1,5 +1,5 @@
 <% quotation_request = useful_links_contextual_menu %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= quotation_requests_link(:link_text => "Voir tous les demandes de devis") %>
+  <%= quotation_requests_link(:link_text => "Voir toutes les demandes de devis") unless is_index_view? %>
 <% end %>

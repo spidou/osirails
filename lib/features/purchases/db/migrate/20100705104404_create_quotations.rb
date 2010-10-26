@@ -1,7 +1,7 @@
 class CreateQuotations < ActiveRecord::Migration
   def self.up
     create_table :quotations do |t|
-      t.references  :supplier, :forwarder, :creator, :quotation_document, :canceller, :shipper, :quotation_request
+      t.references  :supplier, :forwarder, :depature, :arrival, :creator, :employee, :quotation_document, :canceller, :shipper, :quotation_request, :supplier_contact
       t.integer     :status, :validity_delay
       t.float       :prizegiving, :miscellaneous
       t.string      :reference, :title, :validity_delay_unit

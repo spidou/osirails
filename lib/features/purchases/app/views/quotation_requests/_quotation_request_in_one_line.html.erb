@@ -1,0 +1,15 @@
+<% quotation_request = quotation_request_in_one_line %>
+
+<tr>
+  <td class="reference"><%= display_quotation_request_reference(quotation_request) %></td>
+  <td class="title"><%= quotation_request.title %></td>
+  <td class="created_at"><%= l(quotation_request.created_at, :format => :short) %></td>
+  <td class="supplier"><%= display_quotation_request_supplier_name(quotation_request) %></td>
+  <td class="employee"><%= display_quotation_request_employee_name(quotation_request) %></td>
+  <td class="articles number"><%= quotation_request.existing_and_free_quotation_request_supplies.size %></td>
+  <td class="sent_on">#<%=  %></td>
+  <td class="status"><%= display_quotation_request_current_status(quotation_request) %></td>
+  <td class="purchase_requests"><%= display_quotation_request_purchase_requests_references(quotation_request) %></td>
+  <td class="purchase_order"><%= display_quotation_request_purchase_order_reference(quotation_request) %></td>
+  <td class="actions"><%= display_quotation_request_buttons(quotation_request) %></td>
+</tr>

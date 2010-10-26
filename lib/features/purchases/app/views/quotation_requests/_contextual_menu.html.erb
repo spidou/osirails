@@ -1,9 +1,14 @@
 <% quotation_request = contextual_menu %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_quotation_request_link(:link_text => "Nouvelle demande de devis") unless is_new_view? or params[:action] == "prepare_for_new" %>
-  <%= edit_quotation_request_link(quotation_request, :link_text => "Modifier la demande de devis" ) if quotation_request.can_be_edited? and !is_edit_view? %>
-  <%= delete_quotation_request_link(quotation_request, :link_text => "Supprimer la demande de devis" ) if quotation_request.can_be_destroyed? %>
+  <%= display_quotation_request_confirm_button(quotation_request) if (is_edit_view? or is_show_view?) %>
+  <%= display_quotation_request_add_button unless is_new_view? or (params[:action] == "prepare_for_new") %>
+  <%= display_quotation_request_edit_button(quotation_request) if is_show_view? %>
+  <%= display_quotation_request_cancel_button(quotation_request) if (is_show_view? or is_edit_view?) and !(params[:action] == "cancel_form" or params[:action] == "cancel") %>
+  <%= display_quotation_request_delete_button(quotation_request) if is_show_view? or is_edit_view? %>
+  <%= display_quotation_request_make_copy_button(quotation_request) if is_show_view? or is_edit_view? %>
+  <%= display_quotation_request_review_button(quotation_request) if is_show_view? or is_edit_view? %>
+  <%= display_quotation_request_send_to_another_supplier_button(quotation_request) if is_show_view? or is_edit_view? %>
 <% end %>
 
 <%= render :partial => 'quotation_requests/useful_links_contextual_menu', :object => quotation_request %>

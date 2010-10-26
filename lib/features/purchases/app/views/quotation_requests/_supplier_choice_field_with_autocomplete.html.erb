@@ -1,0 +1,30 @@
+<% supplier ||= nil %>
+<% supplier_owner ||= nil %>
+<% supplier_owner_type ||= nil %>
+<% form ||= nil %>
+
+<% if supplier_owner %>
+  <% supplier_owner_type ||= supplier_owner.class.name.underscore %>
+<% end %>
+
+<% if form %>
+  <%= form.hidden_field :supplier_id %>
+<% else %>
+  <%= hidden_field_tag :supplier_id %>
+<% end %>
+
+<% unless params[:review] %>
+  <% if supplier_owner and form %>
+    <%= custom_text_field_with_auto_complete(:supplier, :name, {  :value => supplier ? supplier.name : "Chercher un fournisseur dans la base" },
+                                                               {  :update_id => "#{(supplier_owner_type + "_") if supplier_owner_type}supplier_id",
+                                                                  :after_update_element => update_supplier_contacts_div("#{supplier_owner_type}_supplier_contact", "$('#{supplier_owner_type}_supplier_id').value", supplier_owner.id)
+                                                                } )
+    %>
+  <% else %>
+    <%= custom_text_field_with_auto_complete(:supplier, :name, {  :value => supplier ? supplier.name : "Chercher un fournisseur dans la base" },
+                                                               {  :update_id => "#{(supplier_owner_type + "_") if supplier_owner_type}supplier_id" } )
+    %>
+  <% end %>
+<% else %>
+  <%= link_to(supplier.name, supplier_path(supplier), :popup => true) %>
+<% end %>

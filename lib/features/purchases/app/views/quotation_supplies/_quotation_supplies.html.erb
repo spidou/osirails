@@ -1,0 +1,56 @@
+<% supplier = quotation.supplier %>
+<table id="quotation_supplies_table">
+  <thead>
+    <tr>
+      <th colspan='2'>Interne</th>
+      <th colspan='2'>Fournisseur</th>
+      <th rowspan='2'>Masse/U</th>
+      <th rowspan='2'>En stock/Seuil</th>
+      <th rowspan='2'>Quantit&eacute;</th>
+      <% if is_form_view? %>
+        <th colspan='3'>Demande(s) d'achat &agrave; satisfaire</th>
+      <% else %>
+        <th>Demande(s) d'achat associ&eacute;e(s)</th>
+      <% end %>
+      <%= "<th rowspan='2'>Actions</th>" if is_form_view? %>
+    </tr>
+    <tr>
+      <th>R&eacute;f&eacute;rence</th>
+      <th>D&eacute;signation</th>
+      <th>R&eacute;f&eacute;rence</th>
+      <th>D&eacute;signation</th>
+      <th>R&eacute;f&eacute;rence</th>
+      <%= "<th>Quantit&eacute;" if is_form_view? %>
+      <%= "<th>S&eacute;lectionner</th>" if is_form_view? %>
+    </tr>
+  </thead>
+  <tbody id="quotation_supplies_body">
+    <%= render :partial => 'quotation_supplies/quotation_supply', :collection => quotation.quotation_supplies.sort_by(&:position), :locals => { :supplier => quotation.supplier, :collection_length => quotation.quotation_supplies.size, :quotation => quotation } %>
+  </tbody>
+  <% if is_form_view? %>
+    <tfoot>
+      <tr class='footer'>
+        <td colspan='11'>
+          <%= hidden_field_tag 'add_this_supply_reference_id' %>
+          <%= custom_text_field_with_auto_complete( :supply, :reference,
+                                                  { :value      => "Cherchez une fourniture dans la base",
+                                                    :size       => 50,
+                                                    :onkeydown  => "if (event.keyCode == 13) { return false; }" },
+                                                  { :update_id  => 'add_this_supply_reference_id',
+                                                    :condition  => "can_add_supply('quotation_supply_body')",
+                                                    :url => auto_complete_for_supply_path}) %>
+          
+          <%= button_to_remote "Ajouter", :update => "quotation_supplies_body",
+                                          :with => "'supply_id='+$('add_this_supply_reference_id').value", 
+                                          :url => quotation_supply_path,
+                                          :html => { :method => :get },
+                                          :position => "bottom",
+                                          :condition => "have_supply_id_in_hidden_field()",
+                                          :complete => "$('add_this_supply_reference_id').value = null;update_up_down_links($('quotation_supplies_body'));"
+          %>
+          <%= display_add_free_quotation_supply_for(quotation) %>
+        </td>
+      </tr>
+    </tfoot>
+  <% end %>
+</table>

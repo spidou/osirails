@@ -1,27 +1,21 @@
+<% supplier_owner ||= nil %>
+<% supplier_choice_only ||= nil %>
+<% supplier ||= nil %>
+<% form ||= nil %>
+
 <% unless params['supplier_id'] %>
-  <% quotation_request = supplier_choice %>
-  <div class="presentation_medium">
-    <p>
-      Vous &ecirc;tes sur la page de cr&eacute;ation de demande de devis.<br/>
-      Pour cr&eacute;er une nouvelle demande de devis, vous devez choisir le fournisseur qui sera associ&eacute; &agrave; cette demande.
-    </p>
-    <p>Pour cette demande, avez-vous affaire &agrave; un fournisseur connu OU &agrave; un nouveau fournisseur ? Si vous ne savez pas, n'h&eacute;sitez pas &agrave; faire une recherche.</p>
-    
-    <h2>1. Fournisseur existant</h2>
-    <% form_for quotation_request, :url => { :action => :new }, :html => { :method => :get } do |form| -%>
-      <div id="purchase_order_search_supplier">
-        <%= hidden_field_tag :supplier_id %>
-        <%= custom_text_field_with_auto_complete(:supplier, :name, { :value => "Chercher un fournisseur dans la base" }, { :update_id => "supplier_id" } ) %>
-        <%= form.submit 'Valider' %>
-      </div>
-    <% end -%>
-    
-    <h2>2. Nouveau Fournisseur</h2>
-    <% form_tag new_supplier_path, :method => :get do %>
+  <% supplier_owner = supplier_choice %>
+    <% if params[:action] == "send_to_another_supplier_form" %>
       <p>
-        <%= hidden_field_tag :purchase_order, 1 %>
-        <%= submit_tag "Cr&eacute;er un nouveau fournisseur" %>
+        Vous êtes sur le point de cr&eacute;er une copie d'une demande de devis pour la soumettre &agrave; un autre fournisseur.<br />
+        Pour cr&eacute;er cette copie vous devez choisir le fournisseur qui sera associ&eacute; &agrave; cette demande.
+      </p>
+    <% else %>
+      <p>
+        Vous &ecirc;tes sur la page de cr&eacute;ation de demande de devis.<br/>
+        Pour cr&eacute;er une nouvelle demande de devis, vous devez choisir le fournisseur qui sera associ&eacute; &agrave; cette demande.
       </p>
     <% end %>
-  </div>
+    <p>Avez-vous affaire &agrave; un fournisseur connu OU &agrave; un nouveau fournisseur ? Si vous ne savez pas, n'h&eacute;sitez pas &agrave; faire une recherche.</p>
+    <%= render :partial => 'quotation_requests/supplier_choice_form', :object => supplier_owner, :locals => { :supplier => supplier, :supplier_choice_only => supplier_choice_only, :form => form, :supplier_owner => supplier_owner } %>
 <% end %>

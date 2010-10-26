@@ -24,7 +24,7 @@ module ContactsHelper
   end
   
   def display_contact_picker(contact_picker, contacts, options = {})
-    render :partial => 'contacts/contact_picker', :object => contact_picker, :locals => options.merge({ :contact_list => contacts })
+    render :partial => 'contacts/contact_picker_container', :object => contact_picker, :locals => options.merge({ :contact_list => contacts })
   end
   
   def display_add_contact_button_for_owner(contacts_owner)
@@ -70,7 +70,7 @@ module ContactsHelper
                                          :locals => { :contact_picker => contact_picker,
                                                       :contacts_owners => contacts_owners,
                                                       :contact_key => contact_key,
-                                                      :options => {:establishment => {:value_method => :id, :text_method => :formatted }} }
+                                                      :options => { :value_method => :id, :text_method => :formatted } }
                                          ))
       page << h("$('#{ div_id }').insert({ bottom: '#{ partial }'})")
       page << "this.parentNode.toggle('appear')"

@@ -55,6 +55,10 @@ menus:
         title: "Gestion des demandes de devis"
         description: "Permet la gestion des demandes de devis"
         position: 3
+      quotations:
+        title: "Gestion des devis"
+        description: "Permet la gestion des devis"
+        position: 4
         
 configurations:
   purchase_request_reference_pattern:
