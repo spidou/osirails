@@ -289,6 +289,7 @@ class QuotationRequestSupplyTest < ActiveSupport::TestCase
       @quotation_request.creator_id = users("admin_user").id
       @quotation_request.supplier_id = supplier.id
       @quotation_request.supplier_contact_id = supplier.contacts.first.id
+      build_existing_quotation_request_supply(@quotation_request)
       build_comment_line_for_quotation_request(@quotation_request, { :description => "Designation for tests" })
       @quotation_request.save!
     

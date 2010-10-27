@@ -1,0 +1,19 @@
+<% quotation = quotation_in_one_line %>
+
+<tr>
+  <td class="reference"><%= display_quotation_reference(quotation) %></td>
+  <td class="external_reference"><%= quotation.external_reference %></td>
+  <td class="title"><%= quotation.title %></td>
+  <td class="supplier"><%= display_quotation_supplier_name(quotation) %></td>
+  <td class="employee"><%= display_quotation_employee_name(quotation) %></td>
+  <td class="received_at"><%= l(quotation.received_at, :format => :short) %></td>
+  <td class="captured_at"><%= l(quotation.captured_at, :format => :short) %></td>
+  <td class="articles number"><%= quotation.existing_and_free_quotation_supplies.size %></td>
+  <td class="total_amount_including_tax amount"><%= quotation.total_amount_including_tax.to_f.to_s(2) %></td>
+  <td class="signed_on">#<%= l(quotation.signed_on, :format => :short) %></td>
+  <td class="status"><%= display_quotation_current_status(quotation) %></td>
+  <td class="quotation_request"><%= display_quotation_quotation_request_reference(quotation) %></td>
+  <td class="purchase_request"><%= display_quotation_purchase_requests_references(quotation) %></td>
+  <td class="purchase_order"><%= display_quotation_purchase_order_reference(quotation) %></td>
+  <td class="actions"><%= display_quotation_buttons(quotation) %></td>
+</tr>

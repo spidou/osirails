@@ -1,0 +1,11 @@
+<%
+collection_length ||= 1
+quotation_supply_counter ||= 0
+quotation_supply_counter += 1
+%>
+
+<% if quotation_supply.existing_supply? %>
+  <%= render :partial => 'quotation_supplies/existing_quotation_supply', :object => quotation_supply, :locals => { :collection_length => collection_length, :counter => quotation_supply_counter, :quotation => quotation } %>
+<% else %>
+  <%= render :partial => 'quotation_supplies/free_quotation_supply', :object => quotation_supply, :locals => { :collection_length => collection_length, :counter => quotation_supply_counter, :quotation => quotation } %>
+<% end %>

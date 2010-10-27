@@ -108,7 +108,7 @@ class PurchaseRequestSupply < ActiveRecord::Base
   end
 
   def self.all_suppliers_for_all_pending_purchase_request_supplies
-    suppliers = all_pending_purchase_request_supplies.collect{ |s| s.supply.suppliers }.flatten.uniq
+    suppliers = all_pending_purchase_request_supplies.select(&:supply_id).collect{ |s| s.supply.suppliers }.flatten.uniq
     suppliers.sort_by{ |s| s.merge_purchase_request_supplies.count }.reverse
   end
   

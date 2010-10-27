@@ -11,14 +11,14 @@
                                                   { :update_id  => 'add_this_supply_reference_id',
                                                     :url => auto_complete_for_supply_reference_path()}) %>
         
-        <%= button_to_remote "Ajouter un article", :update => "purchase_request_supply_form",
-                                      :with => "'supply_id='+$('add_this_supply_reference_id').value", 
-                                      :url => purchase_request_supply_in_one_line_path,
-                                      :html => { :method => :get },
-                                      :position => "bottom",
-                                      :condition => "can_add_request_supply()",
-                                      :complete => "$('add_this_supply_reference_id').value = null;initialize_autoresize_text_areas();"   
-                                      %>
+        <%= button_to_remote "Ajouter un article",  :update => "purchase_request_supply_form",
+                                                    :with => "'supply_id='+$('add_this_supply_reference_id').value", 
+                                                    :url => purchase_request_supply_in_one_line_path,
+                                                    :html => { :method => :get },
+                                                    :position => "bottom",
+                                                    :condition => "have_supply_id_in_hidden_field()",
+                                                    :complete => "$('add_this_supply_reference_id').value = null;initialize_autoresize_text_areas();"
+        %>
         <%= display_add_unreferenced_supply_for(purchase_request)%>
       </td>
     </tr>

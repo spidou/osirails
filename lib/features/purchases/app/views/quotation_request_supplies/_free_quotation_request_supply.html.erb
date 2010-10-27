@@ -8,6 +8,7 @@ counter ||= 1
 <% fields_for "quotation_request[free_quotation_request_supply_attributes][]", quotation_request_supply, :index => nil do |f| %>
   
   <%
+    (f.force_show_view = true) if quotation_request.similar_id
     position        = quotation_request_supply.position.zero? ? counter : quotation_request_supply.position
     move_up_image   = "arrow_up_#{'disable_' if position == 1}16x16.png"
     move_down_image = "arrow_down_#{'disable_' if position == collection_length}16x16.png"
@@ -16,14 +17,11 @@ counter ||= 1
   <tr class="free_quotation_request_supply resource" <%= "style=\"display:none\"" if quotation_request_supply.should_destroy? %>>
     
     <td class="reference">
+      -
     </td>
     
     <td class="designation">
-      <% if is_form_view? %>
-        <%= f.text_field(:designation, :size => 30) %>
-      <% else %>
-        <%= quotation_request_supply.designation %>
-      <% end %>
+      <%= f.form_or_view(f.text_field(:designation, :size => 30), :designation) %>
     </td>
     
     <td class="supplier_reference">
@@ -43,9 +41,11 @@ counter ||= 1
     </td>
     
     <td class="unit_weight">
+      -
     </td>
     
     <td class="stock_quantity threshold" >
+      -
     </td>
     
     <td class="quantity">
@@ -60,9 +60,11 @@ counter ||= 1
       <%= display_unconfirmed_purchase_request_supplies_references(quotation_request_supply) %>
     </td>
     
-    <td class="purchase_request_supplies expected_quantities">
-      <%= display_unconfirmed_purchase_request_supplies_check_boxes(quotation_request_supply, true) %>
-    </td>
+    <% if is_form_view? %>
+      <td class="purchase_request_supplies expected_quantities">
+        <%= display_unconfirmed_purchase_request_supplies_check_boxes(quotation_request_supply, true) %>
+      </td>
+    <% end %>
     
     <% if is_form_view? %>
       <td class="purchase_request_supplies selection">
@@ -71,10 +73,12 @@ counter ||= 1
     
     <% if is_form_view? %>
       <td class="actions">
-        <%= link_to( image_tag( move_up_image, :alt => text_up = "Monter la ligne", :title => text_up, :class => "arrow_up"), "#up", :onclick => "move_up_supply(this);" ) %>
-        <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down_supply(this);" ) %>
-        <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm('Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire.')) remove_line(this)" ) %>
-        <%= f.hidden_field :id %>
+        <% unless f.force_show_view %>
+          <%= link_to( image_tag( move_up_image, :alt => text_up = "Monter la ligne", :title => text_up, :class => "arrow_up"), "#up", :onclick => "move_up_supply(this);" ) %>
+          <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down_supply(this);" ) %>
+          <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm('Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire.')) remove_line(this)" ) %>
+        <% end %>
+        <%= f.hidden_field :id, :class => :quotation_request_supply_id %>
         <%= f.hidden_field :position, :class => :position, :value => position %>
         <%= f.hidden_field :purchase_request_supplies_ids, :value => quotation_request_supply.get_purchase_request_supplies_ids, :class => :purchase_request_supplies_ids %>
         <%= f.hidden_field :purchase_request_supplies_deselected_ids, :value => quotation_request_supply.purchase_request_supplies_deselected_ids, :class => :purchase_request_supplies_deselected_ids %>

@@ -1,0 +1,14 @@
+<% quotation = contextual_menu %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= display_quotation_confirm_button(quotation) if (is_edit_view? or is_show_view?) %>
+  <%= display_quotation_add_button unless is_new_view? or (params[:action] == "prepare_for_new") %>
+  <%= display_quotation_edit_button(quotation) if is_show_view? %>
+  <%= display_quotation_cancel_button(quotation) if (is_show_view? or is_edit_view?) and !(params[:action] == "cancel_form" or params[:action] == "cancel") %>
+  <%= display_quotation_delete_button(quotation) if is_show_view? or is_edit_view? %>
+  <%= display_quotation_copy_button(quotation) if is_show_view? or is_edit_view? %>
+  <%= display_quotation_review_button(quotation) if is_show_view? or is_edit_view? %>
+  <%= display_quotation_send_to_another_supplier_button(quotation) if is_show_view? or is_edit_view? %>
+<% end %>
+
+<%= render :partial => 'quotations/useful_links_contextual_menu', :object => quotation %>

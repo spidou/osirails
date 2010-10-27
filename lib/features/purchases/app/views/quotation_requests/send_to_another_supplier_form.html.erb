@@ -1,0 +1,9 @@
+<% content_for :header do -%>
+  <%= javascript_include_tag 'purchases/purchases' %>
+  <%= stylesheet_link_tag_with_theme_support 'purchases/purchases' %>
+<% end -%>
+
+<%= generate_quotation_request_contextual_menu_partial(@quotation_request) %>
+
+<h1>Envoyer la demande de devis à un autre fournisseur</h1>
+<%= render :partial => 'quotation_requests/quotation_request', :object => @quotation_request %>

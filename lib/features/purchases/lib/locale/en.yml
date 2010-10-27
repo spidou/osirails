@@ -40,6 +40,10 @@ en:
         issues_quantity: "Reportable Quantity"
         must_be_reshipped: "Must be forwarded by the supplier"
         send_back_to_supplier: "Send back to supplier"
+      quotation_request:
+        employee: "Responsible employee"
+        similar: "The first copy of this request for quotation is the following"
+        parent: "The request for quotation is the modification of the following"
       quotation_request_supply:
         name: "Title"
         description: "Description"
@@ -82,7 +86,7 @@ en:
               similarity_of_supplier_between_parents: "The supplier should not change while modification."
               different_supplier_between_similars: "This request for quotation already exist for this supplier, please choose another supplier."
             quotation_request_supplies:
-              length_of: "You must choose at least one supply."
+              length_of_existing_and_free_quotation_request_supplies: "You must choose at least one supply."
               similarity_with_similar: "The request for quotation is not similar to the one taken as model."
         quotation:
           attributes:

@@ -1,5 +1,6 @@
 class QuotationSupply < ActiveRecord::Base
   include ProductBase
+  include PurchasesSuppliesBase
   
   has_permissions :as_business_object
   
@@ -9,18 +10,17 @@ class QuotationSupply < ActiveRecord::Base
   belongs_to :quotation
   belongs_to :supply
   
-  attr_accessor :purchase_supplies_ids
-  attr_accessor :should_destroy
+  attr_accessor :purchase_request_supplies_ids, :purchase_request_supplies_deselected_ids, :should_destroy
   
+#  validates_persistence_of :position, :if => :quotation_locked?
+  
+  validates_presence_of :position
   validates_presence_of :designation, :if => :free_supply?
-  validates_presence_of :supplier_designation
   
   validates_numericality_of :quantity, :unit_price, :greater_than => 0
   validates_numericality_of :taxes, :greater_than_or_equal_to => 0
   
-  def should_destroy?
-    should_destroy.to_i == 1
-  end
+  before_destroy :can_be_destroyed?
   
   def can_be_destroyed?
     !new_record? and quotation and quotation.was_drafted?
@@ -30,12 +30,6 @@ class QuotationSupply < ActiveRecord::Base
     !new_record? and quotation and quotation.was_drafted?
   end
   
-  def supplier_supply(supplier_id = nil, supply_id = nil)
-    supplier_id ||= quotation.supplier_id if quotation
-    supply_id   ||= supply.id if supply
-    SupplierSupply.find_by_supplier_id_and_supply_id(supplier_id, supply_id)
-  end
-
   def taxes # for compatibility with product_base.rb
     self[:taxes]
   end
@@ -53,4 +47,9 @@ class QuotationSupply < ActiveRecord::Base
   def free_supply?
     !existing_supply?
   end
+
+#  #TODO test this method    
+#  def quotation_locked?
+#    quotation and (quotation.signed? or quotation.sent_to_supplier?)
+#  end
 end

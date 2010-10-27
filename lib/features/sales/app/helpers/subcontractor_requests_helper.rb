@@ -23,10 +23,10 @@ module SubcontractorRequestsHelper
     content_tag( :p, link_to_function "Ajouter un travail de sous-traitance" do |page|
       page.insert_html :bottom, :new_subcontractor_requests, :partial  => 'subcontractor_requests/subcontractor_request',
                                                              :object   => survey_step.subcontractor_requests.build
-      page[:new_subcontractor_requests].show if page[:new_subcontractor_requests].visible
-      last_element = page[:new_subcontractor_requests].select('.subcontractor_request').last
+      page["new_subcontractor_requests"].show if page["new_subcontractor_requests"].visible
+      last_element = page["new_subcontractor_requests"].select('.subcontractor_request').last
       last_element.show
-      last_element.visual_effect :highlight
+      last_element.visual_effect "highlight"
       page.call 'initialize_autoresize_text_areas'
     end )
   end

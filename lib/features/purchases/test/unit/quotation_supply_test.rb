@@ -6,8 +6,6 @@ class QuotationSupplyTest < ActiveSupport::TestCase
   
   should_belong_to :quotation, :supply
   
-  should_validate_presence_of :supplier_designation
-  
   context 'A quotation_supply in a new quotation' do
     setup do
       @quotation = Quotation.new

@@ -1,0 +1,25 @@
+<% quotation_request = quotation_request_informations %>
+<% require_locals supplier, f %>
+
+<p>
+  <%= f.label :reference %>
+  <strong><%= quotation_request.reference %></strong>
+</p>
+<p>
+  <%= f.label :title %>
+  <%= f.form_or_view(f.text_field(:title), :title) %>
+</p>
+<p>
+  <div id="quotation_request_search_supplier">
+    <% (f.force_show_view = true) if quotation_request.parent_id %>
+    <%= render :partial => 'supplier_choice_form', :object => quotation_request, :locals => { :supplier => supplier, :form => f } %>
+    <% f.force_show_view = false %>
+    
+    <%= f.hidden_field(:similar_id, :value => quotation_request.similar_id) if quotation_request.similar_id %>
+    <%= f.hidden_field(:parent_id, :value => quotation_request.parent_id) if quotation_request.parent_id %>
+  </div>
+</p>
+<p>
+  <%= f.label :employee_id %>
+  <%= f.form_or_view(collection_select(:quotation_request, :employee_id, Employee.all, :id, :fullname, :prompt => "Veuillez choisir un employé"), :employee, :fullname) %>
+</p>

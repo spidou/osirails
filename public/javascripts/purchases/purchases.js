@@ -1,15 +1,15 @@
-function can_add_supply()
+function can_add_supply(body)
 {
   var supply_id = $('add_this_supply_reference_id').value
   
   if (!supply_id)
     return false;
     
-  var purchase_order_items = $('purchase_order_supply_form').select('tr.resource')
+  var owner_items = $(body).select('tr.resource')
   var id_already_chosen = false
   var is_should_destroy = false
   
-  purchase_order_items.each(function(item) {
+  owner_items.each(function(item) {
     item_id = item.down('.hidden_supply_id').value;
     should_destroy = item.down('.should_destroy').value;
     if (supply_id == item_id) {
@@ -31,7 +31,7 @@ function can_add_supply()
   return true; 
 }
 
-function can_add_request_supply()
+function have_supply_id_in_hidden_field()
 {
   var supply_id = $('add_this_supply_reference_id').value
   
@@ -195,5 +195,9 @@ function unmark_resource_for_destroy_order_supply(element) {
   element.down('.sum').innerHTML = 0;
   element.show();
   refresh_lign(element);
+}
+
+function update_prs_ids(id){
+  $('prs_ids').value = $('purchase_request_supplies').select('.check_boxes').collect(function(item){ if(item.checked){return item.value}}).compact()
 }
 

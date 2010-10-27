@@ -15,9 +15,14 @@ id_attr = "id=\"resource__form_contact_#{contact.id}\"" unless contact.new_recor
         </p>
         <p>
           <%= form.label :has_contact , "Lié à :" %>
-          <%= form.collection_select(:has_contact_id, contacts_owners, options[:establishment][:value_method], options[:establishment][:text_method],
+          <% if contacts_owners.size == 1 %>
+            <strong><%= contacts_owners.first.name %></strong>
+            <%= form.hidden_field :has_contact_id, :value => contacts_owners.first.id %>
+          <% else %>
+            <%= form.collection_select(:has_contact_id, contacts_owners, options[:value_method], options[:text_method],
                                       ( contact_picker.new_record? ? { :include_blank => "Veuillez choisir un établissement", } : {} )) %>
-          <%= form.hidden_field :has_contact_type, :value => "Establishment" %>
+          <% end %>
+          <%= form.hidden_field :has_contact_type, :value => contacts_owners.first.class.base_class.name %>
           <%# that hidden_field is here temporary and will be replaced by another way to choose a has_contact_type in a collection  
           %>
         </p>

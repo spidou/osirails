@@ -1,0 +1,92 @@
+<%
+# this partial should not be called directly, you may call _quotation_supply.html.erb with the appropriate instance of quotation_supply
+quotation_supply = existing_quotation_supply
+unconfirmed_purchase_request_supplies = quotation_supply.unconfirmed_purchase_request_supplies
+supply = quotation_supply.supply
+collection_length ||= 1
+counter ||= 1
+%>
+
+<% fields_for "quotation[existing_quotation_supply_attributes][]", quotation_supply, :index => nil do |f| %>
+
+  <%
+    position        = quotation_supply.position.zero? ? counter : quotation_supply.position
+    move_up_image   = "arrow_up_#{'disable_' if position == 1}16x16.png"
+    move_down_image = "arrow_down_#{'disable_' if position == collection_length}16x16.png"
+  %>
+  
+  <tr class="quotation_supply resource" <%= "style=\"display:none\"" if quotation_supply.should_destroy? %>>
+    <td class="reference">
+      <%= supply.reference %>
+    </td>
+    
+    <td class="designation">
+      <%= supply.designation %>
+    </td>
+    
+    <td class="supplier_reference">
+      <% if is_form_view? %>
+        <%= f.text_field(:supplier_reference, :value => quotation_supply.supplier_reference, :size => 10) %>
+      <% else %>
+        <%= quotation_supply.supplier_reference %>
+      <% end %>
+    </td>
+    
+    <td class="supplier_designation">
+      <% if is_form_view? %>
+        <%= f.text_field(:supplier_designation, :value => quotation_supply.supplier_designation) %>
+      <% else %>
+        <%= quotation_supply.supplier_designation%>
+      <% end %>
+    </td>
+    
+    <td class="unit_weight">
+      <%= quotation_supply.supply.unit_mass.to_s + "&nbsp;Kg" %>
+    </td>
+    
+    <td class="stock_quantity threshold <%= 'warning' if supply.stock_quantity < supply.threshold %>" >
+      <%= supply.stock_quantity.to_i.to_s + "/" + supply.threshold.to_i.to_s %>
+    </td>
+    
+    <td class="quantity">
+      <%= f.form_or_view(f.text_field(:quantity, :size => 3 ), :quantity) %>
+      <%= (f.hidden_field :quantity, :value => quotation_supply.quantity) if f.force_show_view %>
+    </td>
+    
+    <td class="purchase_request_supplies references">
+      <% if is_form_view? and !f.force_show_view %>
+        <%= display_unconfirmed_purchase_request_supplies_references(quotation_supply) %>
+      <% else %>
+        <%= display_associated_purchase_request_supplies_references(quotation_supply) %>
+      <% end %>
+    </td>
+    
+    <% if is_form_view? and !f.force_show_view %>
+      <td class="purchase_supplies expected_quantities">
+        <%= display_unconfirmed_purchase_request_supplies_expected_quantities(quotation_supply) %>
+      </td>
+    <% end %>
+    
+    <% if is_form_view? and !f.force_show_view %>
+      <td class="purchase_supplies selection">
+        <%= display_unconfirmed_purchase_request_supplies_check_boxes(quotation_supply) %>
+      </td>
+    <% end %>
+    
+    <% if is_form_view? %>
+      <td class="actions">
+        <% unless f.force_show_view %>
+          <%= link_to( image_tag( move_up_image, :alt => text_up = "Monter la ligne", :title => text_up, :class => "arrow_up"), "#up", :onclick => "move_up(this);" ) %>
+          <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down(this);" ) %>
+          <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm(\"Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire.\")) remove_line(this)" ) %>
+        <% end %>
+        <%= f.hidden_field :id, :class => :quotation_supply_id %>
+        <%= f.hidden_field :supply_id, :class => :supply_id %>
+        <%= f.hidden_field :position, :class => :position, :value => position %>
+        <%= f.hidden_field :purchase_request_supplies_ids, :value => quotation_supply.get_purchase_request_supplies_ids, :class => :purchase_request_supplies_ids %>
+        <%= f.hidden_field :purchase_request_supplies_deselected_ids, :value => quotation_supply.purchase_request_supplies_deselected_ids, :class => :purchase_request_supplies_deselected_ids %>
+        <%= f.hidden_field :should_destroy, :class => :should_destroy %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>

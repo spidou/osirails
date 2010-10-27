@@ -1,0 +1,26 @@
+<% quotation = quotation_informations %>
+<% require_locals supplier, f %>
+
+<p>
+  <%= f.label :reference %>
+  <strong><%= quotation.reference %></strong>
+</p>
+<p>
+  <%= f.label :title %>
+  <%= f.form_or_view(f.text_field(:title), :title) %>
+</p>
+<p>
+  <div id="quotation_search_supplier">
+    <%= render :partial => 'quotation_requests/supplier_choice_form', :object => quotation, :locals => { :supplier => supplier, :form => f } %>
+  </div>
+</p>
+<p>
+  <%= f.label :employee_id %>
+  <%= f.form_or_view(collection_select(:quotation, :employee_id, Employee.all, :id, :fullname, :prompt => "Veuillez choisir un employé"), :employee, :fullname) %>
+</p>
+<p>
+  <% fields_for "quotation[quotation_document_attributes][]", :quotation_document do |form| %>
+    <%= form.label :quotation_document %>
+    <%= form.file_field :quotation_document %>
+  <% end %>
+</p>

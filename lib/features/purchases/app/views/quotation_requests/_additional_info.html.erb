@@ -1,0 +1,60 @@
+<%
+  require_locals form
+  quotation_request = additional_info
+%>
+<p>
+  <%= form.label :created_at %>
+  <%= strong l(quotation_request.created_at_was, :format => :short) if quotation_request.created_at_was %>
+<p>
+<p>
+  <%= form.label :creator %>
+  <%= strong quotation_request.creator.employee_name if quotation_request.creator_id_was and quotation_request.creator %>
+<p>
+<% unless quotation_request.new_record? %>
+<p>
+  <%= form.label :status %>
+  <%= strong display_quotation_request_current_status(quotation_request) %>
+<p>
+<% end %>
+<% if quotation_request.canceller_id_was and quotation_request.canceller %>
+<p>
+  <%= form.label :canceller %>
+  <%= strong quotation_request.canceller.employee_name %>
+</p>
+<% end %>
+<% if quotation_request.cancelled_at_was %>
+<p>
+  <%= form.label :cancelled_at %>
+  <%= strong l(quotation_request.cancelled_at_was, :format => :short) %>
+</p>
+<% end %>
+<% if quotation_request.confirmed_at_was %>
+<p>
+  <%= form.label :confirmed_at %>
+  <%= strong l(quotation_request.confirmed_at_was, :format => :short) %>
+</p>
+<% end %>
+<% if quotation_request.terminated_on %>
+<p>
+  <%= form.label :terminated_on %>
+  <%= strong l(quotation_request.terminated_on, :format => :short) %>
+</p>
+<% end %>
+<p>
+  <% if quotation_request.similar %>
+    <%= form.label :similar %>
+    <%= link_to(quotation_request.similar.reference, quotation_request_path(quotation_request.similar)) %>
+  <% end %>
+</p>
+<p>
+  <% if quotation_request.parent %>
+    <%= form.label :parent %>
+    <%= link_to(quotation_request.parent.reference, quotation_request_path(quotation_request.parent)) %>
+  <% end %>
+</p>
+<p>
+  <% if quotation_request.related_terminated_quotation_request %>
+    <%= form.label :terminated_quotation_request %>
+    <%= link_to(quotation_request.related_terminated_quotation_request.reference, quotation_request_path(quotation_request.related_terminated_quotation_request)) %>
+  <% end %>
+</p>

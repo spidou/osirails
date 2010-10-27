@@ -1,7 +1,6 @@
 <%= hidden_field_tag "choice", :value => 1 %>
 <%= hidden_field_tag "supplier_id", supplier.id %>
       <h2>Informations</h2>
-      <%= hidden_field_tag 'add_this_supplier_id', supplier.id %>
       <%= f.hidden_field :supplier_id, :value => supplier.id %>
       <div>
         <p>Fournisseur: <strong><%= supplier.name%></strong></p><br>

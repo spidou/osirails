@@ -1,0 +1,37 @@
+<% supplier_owner = supplier_choice_form %>
+<% supplier_owner_type = supplier_owner.class.name.tableize.singularize %>
+<% supplier_choice_only ||= nil %>
+<% supplier ||= nil %>
+<% form ||= nil %>
+
+<% if supplier_choice_only %>
+  <h2>1. Fournisseur existant</h2>
+  <div id="supplier_search">
+    <% form_for supplier_owner, :url => { :action => :new }, :html => { :method => :get } do |form| -%>
+      <%= render :partial => 'quotation_requests/supplier_choice_field_with_autocomplete' %>
+      <%= form.submit 'Valider' %>
+    <% end -%>
+  </div>
+<% else %>
+  <p>
+    <%= form.label :supplier_name %>
+    <% if is_form_view? %>
+      <%= render :partial => 'quotation_requests/supplier_choice_field_with_autocomplete', :locals => { :supplier => supplier, :form => form, :supplier_owner => supplier_owner } %>
+    <% else %>
+      <strong><%= link_to(supplier.name, supplier_path(supplier), :popup => true) %></strong>
+    <% end %>
+  </p>
+<% end -%>
+
+<%= "<h2>2. Nouveau Fournisseur</h2>" if supplier_choice_only %>
+<% if params[:action] == "prepare_for_new" or is_form_view? %>
+  <% #form_tag new_supplier_path, :method => :get do
+    #<p>
+      #hidden_field_tag :supplier_owner_type, supplier_owner_type %>
+      #hidden_field_tag supplier_owner_type.to_sym, 1 %>
+      #submit_tag text %>
+    #</p>
+  #end 
+  %>
+  <%= link_to "Cr&eacute;er un nouveau fournisseur", new_supplier_path, :popup => true %>
+<% end %>

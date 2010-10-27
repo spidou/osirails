@@ -2,7 +2,7 @@ require_dependency 'supplier'
 
 class Supplier
   def all_purchase_request_supplies
-    PurchaseRequestSupply.all_pending_purchase_request_supplies.select{ |s| s.supply.suppliers.include?(self) }
+    PurchaseRequestSupply.all_pending_purchase_request_supplies.select{ |s| s.supply and s.supply.suppliers.include?(self) }.compact
   end
   
   def merge_purchase_request_supplies

@@ -6,12 +6,13 @@ class Quotation < ActiveRecord::Base
   STATUS_CANCELLED  = 2
   STATUS_REVOKED    = 3
   
-  REQUESTS_PER_PAGE = 5
+  QUOTATIONS_PER_PAGE = 15
   
   VALIDITY_DELAY_UNITS = { 'heures' => 'hours',
                            'jours'  => 'days',
                            'mois'   => 'months' }
   
+  has_contact :supplier_contact, :accept_from => :supplier_contacts #OPTIMIZE : would be better if could manage Proc in order to be able to add conditions
   has_permissions :as_business_object
   has_reference :prefix => :purchases
   
@@ -59,6 +60,29 @@ class Quotation < ActiveRecord::Base
   validates_length_of :quotation_supplies, :minimum => 1, :message => :length_of
   
   validates_associated :quotation_supplies, :quotation_document
+  
+  named_scope :pending, :conditions => ["status IS NULL" ],
+                        :order => "created_at DESC"
+  
+  named_scope :signed, :conditions => ["status = ?", STATUS_SIGNED ],
+                        :order => "signed_on DESC"
+  
+  named_scope :sent, :conditions => ["status = ?", STATUS_SENT ],
+                        :order => "sent_on DESC"
+  
+  named_scope :cancelled, :conditions => ["status = ?", STATUS_CANCELLED ],
+                        :order => "cancelled_at DESC"
+                        
+  named_scope :revoked, :conditions => ["status = ?", STATUS_REVOKED ],
+                        :order => "revoked_at DESC"
+  
+  named_scope :terminated, {
+    :joins => 'INNER JOIN quotation ON quotation.quotation_request_id == #{id}',
+    :conditions => ['quotation.status = ? or quotation.status = ?', Quotation::STATUS_SIGNED, Quotation::STATUS_SENT]
+  }
+  
+  named_scope :cancelled, :conditions => ["status = ?", STATUS_CANCELLED ],
+                          :order => "cancelled_at DESC"
   
   before_validation :build_missing_supplier_supplies
   
@@ -214,10 +238,6 @@ class Quotation < ActiveRecord::Base
     false
   end
   
-  def quotation_document_attributes=(quotation_document_attributes)
-    self.quotation_document = PurchaseDocument.new(quotation_document_attributes.first)
-  end
-  
   def build_missing_supplier_supplies
     quotation_supplies.each do |qs|
       unless SupplierSupply.find_by_supplier_id_and_supply_id(supplier_id, qs.supply_id)
@@ -225,7 +245,7 @@ class Quotation < ActiveRecord::Base
                                 :supply_id            => qs.supply_id,
                                 :supplier_reference   => qs.supplier_reference,
                                 :supplier_designation => qs.supplier_designation,
-                                :fob_unit_price       => qs.unit_price,
+                                :fob_unit_price           => qs.unit_price,
                                 :taxes                => qs.taxes)
       end
     end
@@ -243,19 +263,123 @@ class Quotation < ActiveRecord::Base
     end
   end
   
-  def quotation_supplies_attributes=(quotation_supplies_attributes)
-    quotation_supplies_attributes.each do |quotation_supply_attributes|
-      if quotation_supply_attributes[:id].blank?
-        quotation_supplies.build(quotation_supply_attributes)
+  # TODO test this method
+  def existing_quotation_supply_attributes=(existing_qs_attributes)
+    existing_qs_attributes.each do |attributes|
+      if attributes[:id].blank?
+        quotation_supplies.build( :supply_id => attributes[:supply_id],
+                                  :position => attributes[:position],
+                                  :taxes => attributes[:taxes],
+                                  :unit_price => attributes[:unit_price],
+                                  :prizegiving => attributes[:prizegiving],
+                                  :quantity => attributes[:quantity],
+                                  :supplier_reference => attributes[:supplier_reference],
+                                  :supplier_designation => attributes[:supplier_designation],
+                                  :purchase_request_supplies_ids => attributes[:purchase_request_supplies_ids],
+                                  :purchase_request_supplies_deselected_ids => attributes[:purchase_request_supplies_deselected_ids],
+                                  :should_destroy => attributes[:should_destroy] )
       else
-        quotation_supply = quotation_supplies.detect { |t| t.id == quotation_supply_attributes[:id].to_i }
-        quotation_supply.attributes = quotation_supply_attributes
+        qs = quotation_supplies.detect{|qs| qs.id == attributes[:id].to_i}
+        qs.position = attributes[:position]
+        qs.taxes = attributes[:taxes]
+        qs.unit_price = attribute[:unit_price]
+        qs.prizegiving = attributes[:prizegiving]
+        qs.quantity = attributes[:quantity]
+        qs.supplier_reference = attributes[:supplier_reference]
+        qs.supplier_designation = attributes[:supplier_designation]
+        qs.purchase_request_supplies_ids = attributes[:purchase_request_supplies_ids]
+        qs.purchase_request_supplies_deselected_ids = attributes[:purchase_request_supplies_deselected_ids]
+        qs.should_destroy = attributes[:should_destroy]
       end
     end
   end
   
+  # TODO test this method
+  def free_quotation_supply_attributes=(free_qs_attributes)
+    free_qs_attributes.each do |attributes|
+      if attributes[:id].blank?
+        quotation_supplies.build( :quantity => attributes[:quantity],
+                                  :position => attributes[:position],
+                                  :designation => (attributes[:designation]),
+                                  :supplier_reference => attributes[:supplier_reference],
+                                  :supplier_designation => attributes[:supplier_designation],
+                                  :should_destroy => attributes[:should_destroy] )
+      else
+        qs = quotation_supplies.detect {|qs| qs.id == attributes[:id].to_i}
+        qs.quantity = attributes[:quantity]
+        qs.position = attributes[:position]
+        qs.designation = qs.purchase_request_supplies.empty? ? (attributes[:designation]) : nil
+        qs.supplier_reference = attributes[:supplier_reference]
+        qs.supplier_designation = attributes[:supplier_designation]
+        qs.should_destroy = attributes[:should_destroy]
+      end
+    end
+  end
+  
+  #TODO test this method
+  def build_quotation_from_quotation_request(quotation_request)
+    self.supplier = quotation_request.supplier
+    self.supplier_contact_id = quotation_request.supplier_contact_id
+    quotation_request.quotation_request_supplies.each do |qrs|
+      if qrs.id
+        quotation_supplies.build( :supply_id => qrs.supply_id,
+                                  :position => qrs.position,
+                                  :quantity => qrs.quantity,
+                                  :supplier_reference => qrs.supplier_reference,
+                                  :supplier_designation => qrs.supplier_designation,
+                                  :purchase_request_supplies_ids => qrs.purchase_supplies_ids,
+                                  :purchase_request_supplies_deselected_ids => qrs.purchase_request_supply_ids )
+      else
+        quotation_supplies.build( :position => qrs.position,
+                                  :taxes => qrs.taxes,
+                                  :unit_price => qrs.unit_price,
+                                  :prizegiving => qrs.prizegiving,
+                                  :quantity => qrs.quantity,
+                                  :supplier_reference => qrs.supplier_reference,
+                                  :supplier_designation => qrs.supplier_designation,
+                                  :purchase_supplies_ids => qrs.purchase_supplies_ids,
+                                  :purchase_supplies_deselected_ids => qrs.purchase_request_supply_ids )
+      end
+    end
+  end
+  
+  #TODO test this method
   def quotation_document_attributes=(quotation_document_attributes)
-    self.quotation_document = PurchaseDocument.new(quotation_document_attributes.first)
+    self.quotation_document = PurchaseDocument.new( :purchase_document_file_name => quotation_document_attributes.first.first,
+                                                    :purchase_document => quotation_document_attributes.first.last)
+  end
+  
+  #TODO test this method
+  def existing_quotation_supplies
+    quotation_supplies.collect{ |qs| qs if qs.existing_supply? }.compact || []
+  end
+  
+  #TODO test this method
+  def free_quotation_supplies
+    quotation_supplies.collect{ |qs| qs unless qs.existing_supply? }.compact || []
+  end
+  
+  #TODO adapt and completethis method
+  #TODO test this method
+  def build_qs_from_prs(purchase_request_supplies)
+    purchase_request_supplies.collect do |purchase_request_supply|
+      if purchase_request_supply.supply_id
+        supply = Supply.find(purchase_request_supply.supply_id)
+        supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id)
+        self.existing_quotation_supply_attributes=([{ :supply_id            => purchase_request_supply.supply_id, 
+                                                      :quantity             => purchase_request_supply.expected_quantity,
+                                                      :designation          => supply.designation,
+                                                      :supplier_reference   => supplier_supply.supplier_reference,
+                                                      :supplier_designation => supplier_supply.supplier_designation }])
+        quotation_supply = quotation_supplies.last
+      else
+        self.free_quotation_supply_attributes=([{:quantity => purchase_request_supply.expected_quantity }])
+        quotation_supply = quotation_supplies.last
+      end
+      quotation_supply.unconfirmed_purchase_request_supplies.each do |e|
+        quotation_supply.quotation_purchase_request_supplies.build(:purchase_request_supply_id => e.id)
+      end
+    end
   end
   
   
