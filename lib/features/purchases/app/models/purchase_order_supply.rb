@@ -37,6 +37,10 @@ class PurchaseOrderSupply < ActiveRecord::Base
     should_destroy.to_i == 1
   end
   
+  def position
+    self[:position] ||= 0
+  end  
+  
   #TODO test this method
   def validates_is_not_cancelled
     unless can_be_cancelled?
@@ -147,16 +151,16 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def fob_unit_price
-    self[:fob_unit_price] ||= supplier_supply(supplier_id, supply_id).fob_unit_price.to_f
+    self[:fob_unit_price]
   end
     
   def unit_price_including_tax(supplier_id = purchase_order.supplier, supply_id = supply.id)
-    self.fob_unit_price ||= supplier_supply(supplier_id, supply_id).fob_unit_price.to_f
+    self.fob_unit_price ||= (supplier_supply(supplier_id, supply_id) ? supplier_supply(supplier_id, supply_id).fob_unit_price.to_f : self[:fob_unit_price])
      unit_price_with_prizegiving.to_f * ( 1.0 + ( taxes.to_f / 100.0 ) )
   end
   
   def taxes
-    self[:taxes] ||= supplier_supply && supplier_supply.taxes.to_f
+    self[:taxes]
   end
   
   def amount_taxes
@@ -166,8 +170,24 @@ class PurchaseOrderSupply < ActiveRecord::Base
   alias_method :unit_price, :fob_unit_price
   alias_method :vat, :taxes # for compatibility with product_base.rb
   
+  def reference
+    supply ? supply.reference : "-"
+  end
+  
+  def designation
+    supply ? supply.designation : "-"
+  end
+  
+  def stock_quantity
+    supply ? supply.stock_quantity : "-"
+  end
+  
   def not_cancelled_purchase_request_supplies
-    PurchaseRequestSupply.all(:include => :purchase_request, :conditions => ['purchase_request_supplies.supply_id = ? AND purchase_request_supplies.cancelled_at IS NULL AND purchase_requests.cancelled_at IS NULL', supply_id])
+    if (supply_id)
+      PurchaseRequestSupply.all(:include => :purchase_request, :conditions => ['purchase_request_supplies.supply_id = ? AND purchase_request_supplies.cancelled_at IS NULL AND purchase_requests.cancelled_at IS NULL', supply_id])
+    else
+      PurchaseRequestSupply.all(:include => :purchase_request, :conditions => ['purchase_request_supplies.supply_id IS NULL AND purchase_request_supplies.cancelled_at IS NULL AND purchase_requests.cancelled_at IS NULL'])
+    end
   end
   
   def unconfirmed_purchase_request_supplies

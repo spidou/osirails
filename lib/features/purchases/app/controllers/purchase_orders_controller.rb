@@ -1,6 +1,6 @@
 class PurchaseOrdersController < ApplicationController
   
-  helper :purchase_order_supplies, :purchase_deliveries, :purchase_delivery_items
+  helper :purchase_order_supplies, :purchase_deliveries, :purchase_delivery_items, :purchase_request_supplies
   
   # GET /purchase_orders/
   def index
@@ -19,18 +19,35 @@ class PurchaseOrdersController < ApplicationController
     unless params[:choice] or params[:supplier_id]
       @suppliers = PurchaseRequestSupply.all_suppliers_for_all_pending_purchase_request_supplies.paginate(:page => params[:page], :per_page => PurchaseOrder::REQUESTS_PER_PAGE)
     end
+    
+    cookies[:chosen_prs_ids] = nil
+    @purchase_order = PurchaseOrder.new
+    if !params[:supplier_choice]
+      @suppliers = PurchaseRequestSupply.all_suppliers_for_all_pending_purchase_request_supplies.paginate(:page => params[:page], :per_page => QuotationRequest::QUOTATIONREQUESTS_PER_PAGE)
+      @purchase_request_supplies = PurchaseRequestSupply.all.collect{|prs| prs if (!prs.was_cancelled? and (prs.untreated? or prs.during_treatment?))}.compact.sort_by{ |prs| prs.designation }
+    else
+      cookies[:chosen_prs_ids] = params[:purchase_order][:prs_ids] if params[:purchase_order] and params[:purchase_order][:prs_ids]
+      redirect_to :action => :new, :supplier_id => params[:supplier_id] if params[:supplier_id]
+    end
+    
   end
   
   # GET /purchase_orders/new
   # GET /purchase_orders/new?supplier_id=:supplier_id
   def new
-    if params[:supplier_id] and (@supplier = Supplier.find(params[:supplier_id]))
+    if params[:supplier_id] and params[:supplier_id] != ""
+      @supplier = Supplier.find(params[:supplier_id])
       @purchase_order = PurchaseOrder.new(:supplier_id => @supplier.id)
-      @purchase_order.build_with_purchase_request_supplies(@supplier.merge_purchase_request_supplies) if params[:from_purchase_request]
-    elsif params[:supplier_id]
-      redirect_to :action => :prepare_for_new, :choice => 1
+      @purchase_order.purchase_order_payment = PurchaseOrderPayment.new
+      if params[:from_purchase_request]
+        @purchase_order.build_with_purchase_request_supplies(@supplier.merge_purchase_request_supplies)
+      elsif cookies[:chosen_prs_ids]
+        @purchase_order.build_with_purchase_request_supplies(PurchaseRequestSupply.find_then_merge_purchase_request_supplies(cookies[:chosen_prs_ids].split(",").collect(&:to_i)))
+      elsif cookies[:quotation_id] && Quotation.find(cookies[:quotation_id])
+        purchase_request_supplies = []
+      end
     else
-      redirect_to :action => :prepare_for_new
+      redirect_to :action => :prepare_for_new, :supplier_choice => true
     end
   end
   

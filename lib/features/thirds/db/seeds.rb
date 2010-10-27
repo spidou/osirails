@@ -62,12 +62,19 @@ ptl5 = PaymentTimeLimit.create! :name => "0 jours + sans facilité de paiement"
 ptl6 = PaymentTimeLimit.create! :name => "Refus Client"
 
 # default payment method
-pm1 = PaymentMethod.create! :name => "Tout moyen de paiement accordé"
-pm2 = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement/Prélèvement"
-pm3 = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement"
-pm4 = PaymentMethod.create! :name => "CB/Espèces/Chèque"
-pm5 = PaymentMethod.create! :name => "Espèces/Chèque"
-pm6 = PaymentMethod.create! :name => "Refus du Client"
+#pm1 = PaymentMethod.create! :name => "Tout moyen de paiement accordé"
+#pm2 = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement/Prélèvement"
+#pm3 = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement"
+#pm4 = PaymentMethod.create! :name => "CB/Espèces/Chèque"
+#pm5 = PaymentMethod.create! :name => "Espèces/Chèque"
+#pm6 = PaymentMethod.create! :name => "Refus du Client"
+
+pm1 = PaymentMethod.create! :name => "Carte banquaire"
+pm2 = PaymentMethod.create! :name => "Espèces"
+pm3 = PaymentMethod.create! :name => "Chèque"
+pm4 = PaymentMethod.create! :name => "Virement"
+
+
 
 # default customer grades
 CustomerGrade.create! :name => "5/5", :payment_time_limit => ptl1
@@ -82,8 +89,8 @@ CustomerSolvency.create! :name => "100%", :payment_method => pm1
 CustomerSolvency.create! :name => "80%",  :payment_method => pm2
 CustomerSolvency.create! :name => "60%",  :payment_method => pm3
 CustomerSolvency.create! :name => "40%",  :payment_method => pm4
-CustomerSolvency.create! :name => "20%",  :payment_method => pm5
-CustomerSolvency.create! :name => "0%",   :payment_method => pm6
+CustomerSolvency.create! :name => "20%",  :payment_method => pm1
+CustomerSolvency.create! :name => "0%",   :payment_method => pm2
 
 conveyance1 = Conveyance.create! :name => "Avion"
 conveyance2 = Conveyance.create! :name => "Bateau"

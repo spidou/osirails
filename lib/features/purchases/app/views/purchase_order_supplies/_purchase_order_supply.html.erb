@@ -1,0 +1,12 @@
+<%=
+  collection_length ||= 1
+  purchase_order_supply_counter ||= 0
+  purchase_order_supply_counter += 1
+  
+  if purchase_order_supply.comment_line?
+    render :partial => 'purchase_order_supplies/purchase_order_comment_line_in_one_line', :object => purchase_order_supply, :locals => { :supplier => supplier , :counter => purchase_order_supply_counter, :collection_length => collection_length} 
+  else
+    render :partial => 'purchase_order_supplies/purchase_order_supply_in_one_line', :object => purchase_order_supply, :locals => { :supplier => supplier , :counter => purchase_order_supply_counter, :collection_length => collection_length} 
+  end
+%>
+

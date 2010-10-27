@@ -5,7 +5,7 @@ class CreatePurchaseOrderPayments < ActiveRecord::Migration
       t.integer     :number_of_due_dates
       t.float       :deposit_amount
       t.text        :comment
-      t.boolean     :payed, :payment_before_shipment, :payment_on_delivery
+      t.boolean     :paid, :payment_before_shipment, :payment_on_delivery
       
       t.timestamps
     end

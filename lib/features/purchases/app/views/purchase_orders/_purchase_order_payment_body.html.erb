@@ -1,0 +1,43 @@
+<%purchase_order = purchase_order_payment_body%>
+<% fields_for "purchase_order[purchase_order_payment_attributes][]", purchase_order.purchase_order_payment, :index => nil do |f| %>
+ <div class="presentation_in_columns resource">
+  <div>
+    <p>
+      <%= f.label         :deposit_amount%>
+      <%= f.text_field    (:deposit, :class => "deposit", :size => 3, :onchange => "update_deposit_amount(this.up('.root_nav'));") %>%&nbsp;
+      <%= f.text_field    (:deposit_amount, :class => "deposit_amount", :size => 5, :value => purchase_order.calc_deposit_amout.to_f.to_s, :onchange => "update_deposit(this.up('.root_nav'));")  %>&euro;&nbsp; 
+    </p>
+    <p>
+      <label>Balance :</label>
+      <strong><span class="balance"><%= purchase_order.calc_balance.to_f.to_s%></span><span>&euro;</span></strong>
+    </p>
+    <p>
+      <%= f.label :payment_before_shipment%>
+      <%= f.radio_button :payment, "before_shipment" %>
+    </p>
+    <p>
+      <%= f.label :payment_on_delivery%>
+      <%= f.radio_button  :payment, "on_delivery" %>
+    </p>
+    <p>
+      <%= f.label :number_of_due_dates %>
+      <%= f.text_field :number_of_due_dates, :size => 5 %>
+    </p>
+    <p>
+      <%= f.label :paid%>
+      <%= f.check_box :paid %>
+    </p>
+  </div>
+  <div>
+    <p>
+      <%= f.label :deposit_payment_method_id%>
+      <%= f.collection_select :deposit_payment_method_id, PaymentMethod.all, :id, :name %>
+    </p>
+    
+    <p>
+      <%= f.label :balance_payment_method_id %>
+      <%= f.collection_select :balance_payment_method_id, PaymentMethod.all, :id, :name %>
+    </p>
+  </div>
+ </div>
+<% end %>

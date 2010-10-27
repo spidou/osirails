@@ -1,6 +1,7 @@
+<% submit_button = (class_name == "purchase_order") ? "un ordre d'achat" : "une demande de devis" %>
 <% purchase_request_supplies = grouped_by_purchase_request_supplies %>
 <h3>Liste des demandes d'achat</h3>
-<% form_for :quotation_request, :url => { :action => "prepare_for_new", :supplier_choice => true} do |form| %>
+<% form_for class_name.to_sym, :url => { :action => "prepare_for_new", :supplier_choice => true} do |form| %>
   <table>
     <thead>
       <tr>
@@ -21,5 +22,5 @@
     </tbody>
   </table>
   <%= form.hidden_field :prs_ids, :value => "", :id => "prs_ids" %>
-  <%= form.submit 'Générer une demande de devis à partir de la sélection', :onclick => "update_prs_ids(this)" %>
+  <%= form.submit "Générer #{submit_button} à partir de la sélection", :onclick => "update_prs_ids(this)" %>
 <% end %>

@@ -27,7 +27,7 @@
       <% if @purchase_request_supplies.empty? %>
         <p>Il n'y a aucune demande d'achat en attente pour le moment.</p>
       <% else %>
-        <p><%= render :partial => "purchase_request_supplies/grouped_by_purchase_request_supplies", :object => @purchase_request_supplies %></p>
+        <p><%= render :partial => "purchase_request_supplies/grouped_by_purchase_request_supplies", :object => @purchase_request_supplies , :locals => {:class_name => "quotation_request"}%></p>
       <% end %>
     </div>
   </div>

@@ -1,0 +1,2 @@
+<%purchase_order = purchase_order_product_body%>
+ <%= render :partial => "purchase_orders/supplies_by_supplier", :locals => {:f => f, :supplies => purchase_order.supplier.supplies, :supplier => purchase_order.supplier, :purchase_order => purchase_order} %>

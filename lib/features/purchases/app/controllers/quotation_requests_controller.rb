@@ -19,7 +19,7 @@ class QuotationRequestsController < ApplicationController
     @quotation_request = QuotationRequest.new
     if !params[:supplier_choice]
       @suppliers = PurchaseRequestSupply.all_suppliers_for_all_pending_purchase_request_supplies.paginate(:page => params[:page], :per_page => QuotationRequest::QUOTATIONREQUESTS_PER_PAGE)
-      @purchase_request_supplies = PurchaseRequestSupply.all.collect{|prs| prs if (!prs.was_cancelled? and (prs.untreated? or prs.during_treatment?))}.compact.sort_by{ |prs| prs.supply.designation if prs.supply}
+      @purchase_request_supplies = PurchaseRequestSupply.all.collect{|prs| prs if (!prs.was_cancelled? and (prs.untreated? or prs.during_treatment?))}.compact.sort_by{ |prs| prs.designation }
     else
       cookies[:chosen_prs_ids] = params[:quotation_request][:prs_ids] if params[:quotation_request] and params[:quotation_request][:prs_ids]
       redirect_to :action => :new, :supplier_id => params[:supplier_id] if params[:supplier_id]

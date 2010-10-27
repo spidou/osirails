@@ -1,0 +1,59 @@
+  <%
+purchase_order_headers = {  :header => "Informations générales",
+                            :product_body   => "Articles",
+                            :payment_body   => "Conditions d'achat",
+                            :delivery_body   => "Livraisons",
+                            :footer => "Informations supplémentaires"}
+
+purchase_order_errors  = {  :product_body   => (purchase_order.errors.on(:purchase_order_supplies)) ? " errors" : "",
+                            :payment_body   => (purchase_order.errors.on(:purchase_order_payment)) ? " errors" : ""
+}
+%>
+
+<div class="presentation_medium root_nav" id="root_nav">
+  
+  <ul class="purchase_order_nav tab_nav">
+    <li class="purchase_order_header<%= purchase_order_errors[:header]%> selected"><%= purchase_order_headers[:header] %></li>
+    <li class="purchase_order_product_body<%= purchase_order_errors[:product_body]%>"><%= purchase_order_headers[:product_body] %></li>
+    <li class="purchase_order_payment_body<%= purchase_order_errors[:payment_body]%>"><%= purchase_order_headers[:payment_body] %></li>
+    <li class="purchase_order_delivery_body<%= purchase_order_errors[:delivery_body]%>"><%= purchase_order_headers[:delivery_body] %></li>
+    <li class="purchase_order_footer"><%= purchase_order_headers[:footer] %></li>
+  </ul>
+  
+  <% action = purchase_order.new_record? ? :create : :update %>
+  <% method = purchase_order.new_record? ? :put : :post %>
+  <% form_for purchase_order, :url => { :controller => 'purchase_orders', :action => action }, :method => method, :html => { :multipart => true } do |form| %> 
+    
+    <h2 class="purchase_order_header section_nav"><%= purchase_order_headers[:header] %></h2>
+    <div class="purchase_order_header section_nav selected">
+      <%= form.error_messages unless purchase_order_errors[:header].blank? %>
+      <%= render :partial => 'purchase_orders/purchase_order_header', :object => purchase_order, :locals => { :f => form } %>
+    </div>
+    
+    <h2 class="purchase_order_product_body section_nav"><%= purchase_order_headers[:product_body] %> <%= purchase_order.purchase_order_supplies.any? ? "(#{purchase_order.purchase_order_supplies.size})" : '' %></h2>
+    <div class="purchase_order_product_body section_nav">
+      <%= form.error_messages unless purchase_order_errors[:product_body].blank? %>
+      <%= render :partial => 'purchase_orders/purchase_order_product_body', :object => purchase_order, :locals => { :f => form } %>
+    </div>
+    
+    <h2 class="purchase_order_payment_body section_nav"><%= purchase_order_headers[:payment_body] %></h2>
+    <div class="purchase_order_payment_body section_nav">
+      <%= form.error_messages unless purchase_order_errors[:payment_body].blank? %>
+      <%= render :partial => 'purchase_orders/purchase_order_payment_body', :object => purchase_order, :locals => { :f => form } %>
+    </div>
+    
+    <h2 class="purchase_order_delivery_body section_nav"><%= purchase_order_headers[:delivery_body] %></h2>
+    <div class="purchase_order_delivery_body section_nav">
+      <%= form.error_messages unless purchase_order_errors[:delivery_body].blank? %>
+      <%= render :partial => 'purchase_orders/purchase_order_delivery_body', :object => purchase_order, :locals => { :f => form } %>
+    </div>
+    
+    <h2 class="purchase_order_footer section_nav"><%= purchase_order_headers[:footer] %></h2>
+    <div class="purchase_order_footer section_nav">
+      <%= form.error_messages unless purchase_order_errors[:footer].blank? %>
+      <%= render :partial => 'purchase_orders/purchase_order_footer', :object => purchase_order, :locals => { :f => form } %>
+    </div>
+    
+    <%= form.form_buttons %>
+  <% end %>
+</div>

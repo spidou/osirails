@@ -12,12 +12,7 @@ class PurchaseOrder < ActiveRecord::Base
   has_address :address
   has_contact :supplier_contact, :accept_from => :supplier_contacts
   
-  has_many :purchase_order_supplies
-  has_many :existing_and_unreferenced_purchase_order_supplies, :class_name => "PurchaseOrderSupply", :conditions => ["comment_line IS NULL"]
-  has_many :existing_purchase_order_supplies, :class_name => "PurchaseOrderSupply", :conditions => ["supply_id IS NOT NULL AND comment_line IS NULL"]
-  has_many :unreferenced_purchase_order_supplies, :class_name => "PurchaseOrderSupply", :conditions => ["supply_id IS NULL AND comment_line IS NULL"]
-  has_many :comment_lines, :class_name => "PurchaseOrderSupply", :conditions => ["supply_id IS NULL AND comment_line IS NOT NULL"]
-  
+  has_many :purchase_order_supplies, :order => 'position', :dependent => :delete_all
   has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'
   has_many :purchase_delivery_items, :through => :purchase_order_supplies
   has_many :purchase_deliveries, :finder_sql => '
@@ -29,8 +24,9 @@ class PurchaseOrder < ActiveRecord::Base
                                     ON purchase_order_supplies.id = purchase_delivery_items.purchase_order_supply_id
                                     INNER JOIN purchase_deliveries
                                     ON purchase_delivery_items.purchase_delivery_id = purchase_deliveries.id
-                                    ORDER BY purchase_deliveries.status, purchase_deliveries.cancelled_at DESC, purchase_deliveries.received_on DESC, purchase_deliveries.received_by_forwarder_on DESC, purchase_deliveries.shipped_on DESC, purchase_deliveries.processing_by_supplier_since DESC
-                                    '
+                                    ORDER BY purchase_deliveries.status, purchase_deliveries.cancelled_at DESC, purchase_deliveries.received_on DESC, purchase_deliveries.received_by_forwarder_on DESC, purchase_deliveries.shipped_on DESC, purchase_deliveries.processing_by_supplier_since DESC'
+  
+  has_one :purchase_order_payment
   
   belongs_to :invoice_document,   :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
@@ -43,6 +39,8 @@ class PurchaseOrder < ActiveRecord::Base
   validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled?
   validates_presence_of :canceller, :if => :cancelled_by_id
   validates_presence_of :quotation_document, :reference, :if => :confirmed?
+  validates_numericality_of :miscellaneous, :if => :miscellaneous
+  validates_numericality_of :prizegiving, :if => :prizegiving
   validate :validates_length_of_purchase_order_supplies
   
   validates_inclusion_of :status, :in => [ STATUS_DRAFT ], :if => :new_record?
@@ -73,7 +71,7 @@ class PurchaseOrder < ActiveRecord::Base
   before_destroy :can_be_deleted?
   
   def validates_length_of_purchase_order_supplies
-    errors.add(:purchase_order_supplies, "Veuillez sélectionner au moins une fourniture") if purchase_order_supplies.reject(&:should_destroy?).empty?
+    errors.add(:purchase_order_supplies, "Veuillez sélectionner au moins une fourniture") if purchase_order_supplies.reject{|n| n.should_destroy? || n.comment_line}.empty?
   end
   
   def initialize_to_draft
@@ -81,7 +79,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def total_duty
-    purchase_order_existing_supplies.collect(&:total_with_prizegiving).sum
+    existing_and_unreferenced_purchase_order_supplies.collect(&:total_with_prizegiving).sum
   end 
   
   def total_amount_duty
@@ -89,27 +87,35 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def total_taxes
-    purchase_order_existing_supplies.collect(&:amount_taxes).sum
+    existing_and_unreferenced_purchase_order_supplies.collect(&:amount_taxes).sum
   end
   
   def total_price
-    total_amount_duty + miscellaneous + total_taxes
+    total_amount_duty + miscellaneous.to_f + total_taxes
+  end
+    
+  def calc_deposit_amout
+    purchase_order_payment.deposit.to_f / 100.0 * purchase_order_payment.deposit_amount.to_f if purchase_order_payment
+  end
+    
+  def calc_balance
+    total_price.to_f - calc_deposit_amout.to_f
   end
   
-  def total_price
-    cancelled? ? @purchase_order_supplies.collect(&:purchase_order_supply_total).sum : purchase_order_supplies.reject(&:cancelled?).collect(&:purchase_order_supply_total).sum
-  end
-  
-  def purchase_order_existing_supplies
+  def existing_purchase_order_supplies
     purchase_order_supplies.select{|p| p.supply_id && !p.comment_line}
   end
   
-  def purchase_order_unreferenced_supplies
+  def unreferenced_purchase_order_supplies
     purchase_order_supplies.reject{|p| p.supply_id && p.comment_line}
   end
   
-  def purchase_order_comment_lines
+  def comment_lines
     purchase_order_supplies.select{|p| !p.supply_id && p.comment_line}
+  end
+  
+  def existing_and_unreferenced_purchase_order_supplies
+    purchase_order_supplies.select{|p| !p.comment_line}
   end
   
   def draft?
@@ -129,7 +135,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def cancelled?
-    new_record? ? false : ( status==STATUS_CANCELLED ? true : ((purchase_order_supplies.select(&:was_cancelled?).size == purchase_order_supplies.size and (purchase_order_supplies.select(&:was_cancelled?).size != 0) ? true : false)))
+    new_record? ? false : ( status==STATUS_CANCELLED ? true : ((existing_and_unreferenced_purchase_order_supplies.select(&:was_cancelled?).size == existing_and_unreferenced_purchase_order_supplies.size and (existing_and_unreferenced_purchase_order_supplies.select(&:was_cancelled?).size != 0) ? true : false)))
   end
   
   def was_draft?
@@ -149,7 +155,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def was_cancelled?
-    new_record? ? false : (status_was == STATUS_CANCELLED ? true : ((purchase_order_supplies.select(&:was_cancelled?).size == purchase_order_supplies.size and purchase_order_supplies.select(&:was_cancelled?).size != 0) ? true : false))
+    new_record? ? false : (status_was == STATUS_CANCELLED ? true : ((existing_and_unreferenced_purchase_order_supplies.select(&:was_cancelled?).size == existing_and_unreferenced_purchase_order_supplies.size and existing_and_unreferenced_purchase_order_supplies.select(&:was_cancelled?).size != 0) ? true : false))
   end
   
   def can_be_confirmed?
@@ -281,9 +287,29 @@ class PurchaseOrder < ActiveRecord::Base
     end
   end
   
+  def purchase_order_comment_line_attributes=(purchase_order_supply_attributes)
+    purchase_order_supply_attributes.each do |attributes|
+      if attributes[:id].blank?
+        purchase_order_supplies.build({:comment_line => true, :description => attributes[:description], :position => attributes[:position]})
+      else
+        purchase_order_supply = purchase_order_supplies.detect { |t| t.id == attributes[:id].to_i }
+        purchase_order_supply.attributes = {:comment_line => true, :description => attributes[:description], :position => attributes[:position]}
+      end
+    end
+  end
+  
+  def purchase_order_payment_attributes=(purchase_order_payment_attributes)
+    attributes = purchase_order_payment_attributes.first 
+    unless self.purchase_order_payment
+      self.purchase_order_payment = PurchaseOrderPayment.new(attributes)
+    else
+      self.purchase_order_payment.attributes = attributes
+    end
+  end
+  
   def build_supplier_supplies
     purchase_order_supplies.each do |e|
-      unless SupplierSupply.find_by_supply_id_and_supplier_id(e.supply_id, supplier_id)
+      if e.existing_supply? && !SupplierSupply.find_by_supply_id_and_supplier_id(e.supply_id, supplier_id)
         supplier_supplies.build(:supplier_id          => supplier_id,
                                 :supply_id            => e.supply_id,
                                 :supplier_reference   => e.supplier_reference,
@@ -299,8 +325,8 @@ class PurchaseOrder < ActiveRecord::Base
       supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id)
       purchase_order_supply = self.purchase_order_supplies.build({:supply_id      => purchase_request_supply.supply_id, 
                                                                   :quantity       => purchase_request_supply.expected_quantity,
-                                                                  :taxes          => supplier_supply.taxes, 
-                                                                  :fob_unit_price => supplier_supply.fob_unit_price})
+                                                                  :taxes          => supplier_supply ? supplier_supply.taxes : 0.0, 
+                                                                  :fob_unit_price => supplier_supply ? supplier_supply.fob_unit_price : 0.0})
       purchase_order_supply.unconfirmed_purchase_request_supplies.each do |e|
         purchase_order_supply.request_order_supplies.build(:purchase_request_supply_id => e.id)
       end

@@ -1,29 +1,53 @@
   </tbody>
   <tfoot>
     <tr class='footer'>
-      <td colspan='13'></td>
-      <td colspan='3'>TOTAL TTC(&euro;)</td>
+      <td colspan='12'></td>
+      <td colspan='3'></td>
     </tr>
     <tr class='footer'>
-      <td colspan='13'>
+      <td colspan='12' rowspan='6'>
         <%= hidden_field_tag 'add_this_supply_reference_id' %>
         <%= custom_text_field_with_auto_complete( :supply, :reference,
-                                                  { :value      => "Cherchez une fourniture dans la base",
+                                                  { :value      => "Cherchez un article dans la base",
                                                     :size       => 50,
                                                     :onkeydown  => "if (event.keyCode == 13) { return false; }"}, 
                                                   { :update_id  => 'add_this_supply_reference_id',
                                                     :url => auto_complete_for_supply_reference_path(:supplier_id => supplier.id)}) %>
         
-        <%= link_to_remote "Ajouter une fourniture", :update => "purchase_order_supply_form",
+        <%= button_to_remote "Ajouter un article", :update => "purchase_order_supply_form",
                                       :with => "'supply_id='+$('add_this_supply_reference_id').value+'&supplier_id='+$('supplier_id').value", 
                                       :url => purchase_order_supply_in_one_line_path,
                                       :html => { :method => :get },
                                       :position => "bottom",
                                       :condition => "can_add_supply()",
-                                      :complete => "$('add_this_supply_reference_id').value = null"   
+                                      :complete => "$('add_this_supply_reference_id').value = null;update_up_down_links($('purchase_order_supply_form'));"   
         %>
+        <%= display_add_unreferenced_supply_for_(purchase_order)%>
+        <%= display_add_comment_line_for_(purchase_order)%>
       </td>
-      <td colspan='3' id="all_total"><%= display_all_total_price_for_purchase_order_form(purchase_order) %></td>
+      <td colspan="2" class="aggregate_label">Total brut HT :</td>
+      <td colspan="1" id="purchase_order_total_brut_ht" class="purchase_order_total_brut_ht"><%= purchase_order.total_duty.to_f.to_s(2) %></td>
     </tr>
+    <tr class="footer">
+      <td colspan="2" class="aggregate_label">Rem (%) :</td>
+      <td colspan="1" class="purchase_order_prizegiving"><%= text_field_tag "purchase_order[prizegiving]", purchase_order.prizegiving.to_f.to_s(2), :size => 4, :onchange => "update_all_total()", :id => "purchase_order_prizegiving"%></td>
+    </tr>
+    <tr class="footer">
+      <td colspan="2" class="aggregate_label">Net HT (&euro;) :</td>
+      <td colspan="1" id="purchase_order_net_ht" class="purchase_order_net_ht"><%= purchase_order.total_amount_duty.to_f.to_s(2) %></td>
+    </tr>
+    <tr class="footer">
+      <td colspan="2" class="aggregate_label">Frais divers (&euro;) :</td>
+      <td colspan="1" class="purchase_order_miscellaneous"><%= text_field_tag "purchase_order[miscellaneous]",   purchase_order.miscellaneous.to_f.to_s(2), :size => 4, :onchange => "update_all_total()", :id => "purchase_order_miscellaneous"%></td>
+    </tr>
+    <tr class="footer">
+      <td colspan="2" class="aggregate_label">Total taxes (&euro;) :</td>
+      <td colspan="1" id="purchase_order_total_taxes" class="purchase_order_total_taxes"><%= purchase_order.total_taxes.to_f.to_s(2) %></td>
+    </tr>
+    <tr class="footer">
+      <td colspan='2'>Net TTC (&euro;) :</td>
+      <td colspan='2' id="all_total" class="all_total"><%= purchase_order.total_price.to_f.to_s(2) %></td>  
+    </tr> 
   </tfoot>
 </table>
+

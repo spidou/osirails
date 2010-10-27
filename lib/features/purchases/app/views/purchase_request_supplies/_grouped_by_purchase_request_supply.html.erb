@@ -2,14 +2,14 @@
 <% purchase_request_supply = grouped_by_purchase_request_supply %>
 <% supply = purchase_request_supply.supply if purchase_request_supply.supply_id %>
 <tr>
-  <td><%= supply.reference if supply %></td>
-  <td><%= supply.designation if supply %></td>
+  <td><%= purchase_request_supply.reference  %></td>
+  <td><%= purchase_request_supply.designation %></td>
   <td><%= "#{supply.measure.to_f.to_s(2)}&#160;m²" if supply and supply.measure %></td>
   <td><%= "#{supply.unit_mass.to_f.to_s(2)}&#160;kg" if supply and supply.unit_mass %></td>
   <td <%= 'class="warning"' if supply and (supply.stock_quantity < supply.threshold) %>><%= display_supply_stock_and_supply_threshold(purchase_request_supply) if supply %></td>
   <td><%= purchase_request_supply.expected_quantity %></td>
   <td><%= display_associated_purchase_request(purchase_request_supply) %></td>
   <td><%= display_purchase_request_supply_expected_date(purchase_request_supply) %></td>
-  <td>#</td>
+  <td><%= purchase_request_supply.purchase_priority.name %></td>
   <td><%= check_box_tag "prs_#{purchase_request_supply.id}".to_sym, purchase_request_supply.id, false, :class => "check_boxes" %></td>
 </td>

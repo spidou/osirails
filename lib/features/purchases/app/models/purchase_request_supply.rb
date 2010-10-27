@@ -95,7 +95,7 @@ class PurchaseRequestSupply < ActiveRecord::Base
   
   def self.all_pending_purchase_request_supplies
     #OPTIMIZE use a SQL statement
-    PurchaseRequestSupply.all.select{ |s| !s.cancelled? and !s.treated? }
+    PurchaseRequestSupply.all.select{ |s| !s.cancelled? and !s.treated? and s.supply }
   end
   
   def self.pending_and_merged_by_supply_id

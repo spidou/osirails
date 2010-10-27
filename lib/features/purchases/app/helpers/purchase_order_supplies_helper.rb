@@ -131,4 +131,28 @@ module PurchaseOrderSuppliesHelper
     return "Matière première" if supply.type == "Commodity"
     return "Consomable" if supply.type == "Consumable" 
   end
+  
+  def display_add_unreferenced_supply_for_(purchase_order)
+    button_to_function "Ajouter un article non referenc&eacute;" do |page|
+      page.insert_html :bottom, :purchase_order_supply_form, :partial => 'purchase_order_supplies/purchase_order_supply_in_one_line',
+                                                   :object  => purchase_order.purchase_order_supplies.build, :locals => { :purchase_order => purchase_order, :supplier => purchase_order.supplier }
+      
+      last_item = page["purchase_order_supply_form"].select('.unreferenced_supply').last.show.visual_effect "highlight" # :highlight symbol replaced by "highlight" string to relieve to the "undefined method `ascii_only?' for {}:Hash" error, in views
+      page << "initialize_autoresize_text_areas();update_up_down_links($('purchase_order_supply_form'));"
+    end
+  end
+  
+  def display_add_comment_line_for_(purchase_order)
+    purchase_order_supply = purchase_order.purchase_order_supplies.build
+    purchase_order_supply.comment_line = true
+    button_to_function "Ajouter une ligne de commentaire" do |page|
+      page.insert_html :bottom, :purchase_order_supply_form, :partial => 'purchase_order_supplies/purchase_order_comment_line_in_one_line',
+                                                   :object  => purchase_order_supply, :locals => { :purchase_order => purchase_order, :supplier => purchase_order.supplier }
+      
+      last_item = page["purchase_order_supply_form"].select('.comment_line').last.show.visual_effect "highlight" # :highlight symbol replaced by "highlight" string to relieve to the "undefined method `ascii_only?' for {}:Hash" error, in views
+      page << "initialize_autoresize_text_areas();update_up_down_links($('purchase_order_supply_form'));"
+      page << ""
+    end
+  end
+  
 end
