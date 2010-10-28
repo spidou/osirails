@@ -5,9 +5,6 @@ user_admin = User.create! :username => "admin", :password => "admin", :enabled =
 role_admin = Role.create! :name => "admin", :description => "Ce rôle permet d'accéder à toutes les ressources en lecture et en écriture"
 user_admin.roles << role_admin
 
-# default observable function
-WatchableFunction.create!  :function_type => "Commodity", :function_name => "check_stock_quantity", :function_description => "surveiller l'etat du stock", :on_modification => :false, :on_schedule => true
-
 # default number types
 NumberType.create! :name => "Mobile"
 NumberType.create! :name => "Fixe"

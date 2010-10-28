@@ -2,6 +2,7 @@
 *~
 assets
 config/database.yml
+config/email.yml
 config/deploy.rb
 config/deploy/*
 coverage

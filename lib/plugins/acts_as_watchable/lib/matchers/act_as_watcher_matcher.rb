@@ -5,25 +5,25 @@ module ActsAsWatchable
       def act_as_watcher 
         ActAsWatcherMatcher.new
       end
-
+      
       class ActAsWatcherMatcher
         def initialize
           @message = ""
         end
-
+        
         def matches? subject
           @subject = subject
           responds? && implements?
         end
-
+        
         def failure_message
           @message
         end
-
+        
         def description
           "act as watcher"
         end
-
+        
         protected
           def responds?
             [:watcher_email, :watcher_type].each do |method|

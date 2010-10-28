@@ -1,8 +1,9 @@
 class User < ActiveRecord::Base
   
   acts_on_journalization_with :username
-  acts_as_watcher :email_method => :email
-    
+  
+  acts_as_watcher :identifier_method => :username, :email_method => :email
+  
   before_save :username_unicity
   
   # Requires
@@ -112,7 +113,7 @@ class User < ActiveRecord::Base
   end
   
   def email
-    "armoog_s@epitech.net" #implement a method to return mail adress
+    "" #TODO user may have an email address
   end
   
   private

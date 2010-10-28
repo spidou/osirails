@@ -5,7 +5,8 @@ ActionController::Routing::Routes.draw do |map|
   map.home 'home', :controller => 'home', :action => 'index'
   map.search 'search' , :controller => 'search_indexes'
   map.connect 'search_index/update', :controller => 'search_indexes', :action => 'update', :conditions => { :method => :post }
-  map.resources :acts_as_watchables
+  
+  map.resources :watchings
    
   ### COMMONS
 #  map.resources :cities, :collection => {:auto_complete_for_city_name => :get }

@@ -1,0 +1,22 @@
+<% fields_for "watching[watchings_watchable_functions_attributes][]", watchings_watchable_function = watchings_watchable_function_in_one_line , :index => nil do |f| %>
+  <% options = watchable_function_time_unity %>
+  <tr class="watching">
+    <td style="display:none">
+      <%= f.hidden_field :id, :disabled => watchings_watchable_function.new_record? %>
+      <%= f.hidden_field :watching_id, :value => watching.new_record? ? @watching.object_id : @watching.id %>
+      <%= f.hidden_field :watchable_function_id, :class => :watchable_function_id %>
+      <%= f.hidden_field :on_modification, :class => :on_modification, :value => watchings_watchable_function.on_modification ? 1 : 0 %>
+      <%= f.hidden_field :on_schedule, :class => :on_schedule, :value => watchings_watchable_function.on_schedule ? 1 : 0 %>
+    </td>
+    <td class="text"><%= watchings_watchable_function.watchable_function.description %></td>
+    <td>
+      <%= check_box_tag 'watching[watchings_watchable_functions_attributes][][on_modification_tmp]', 1 , watchings_watchable_function.on_modification ? true : false, :class => "on_modification_tmp", :onchange => "update_on_modification(this.up('.resource'))", :disabled => watchings_watchable_function.watchable_function.on_modification ? false : true%>
+    </td>
+    <td>
+      <%= check_box_tag 'watching[watchings_watchable_functions_attributes][][on_schedule_tmp]', 1, watchings_watchable_function.on_schedule ? true : false, :onchange => "disabled_or_enabled_time_unity(this.up('.resource'))", :class => "on_schedule_tmp", :disabled => watchings_watchable_function.watchable_function.on_schedule ? false : true%>
+    </td>
+    <td>
+      <span id=<%= "time_unity_" + watchings_watchable_function.watchable_function_id.to_s %> <%= 'style="display:none"' unless watchings_watchable_function.on_schedule %> > <%= f.select(:time_unity, options, {:disabled => watchings_watchable_function.on_schedule ? false : true}, :index => nil)%></span><span></span>
+    </td>
+  </tr>
+<% end %>

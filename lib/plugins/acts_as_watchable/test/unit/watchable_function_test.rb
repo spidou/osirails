@@ -1,91 +1,81 @@
 require File.dirname(__FILE__) + '/../test_helper.rb'
 
 class WatchableFunctionTest < ActiveRecordTestCase
+  should_have_many :watchings_watchable_functions
+  should_have_many :watchings, :through => :watchings_watchable_functions
   
-  should_have_many :watchables_watchable_functions
-  should_have_many :watchables, :through => :watchables_watchable_functions
+  should_validate_presence_of :watchable_type, :name, :description
   
-  should_validate_presence_of :function_type, :function_name, :function_description
+  should_validate_uniqueness_of :name, :scoped_to => :watchable_type
   
-  context "a new watchable funtion" do
+  context "A new watchable_function" do
     setup do
       @watchable_function = WatchableFunction.new
     end
     
-    context "whithout on_modification and on_schedule" do
+    context "with 'on_modification' and 'on_schedule' at false" do
       setup do
+        flunk "@watchable_function.on_modification should be at false" if @watchable_function.on_modification
+        flunk "@watchable_function.on_schedule should be at false" if @watchable_function.on_schedule
         @watchable_function.valid?
       end
       
-      should "raise an error on on_modification" do
-        assert_not_nil @watchable_function.errors.on(:on_modification)
+      should "have an invalid 'on_modification'" do
+        assert_match I18n.t('activerecord.errors.messages.blank'), @watchable_function.errors.on(:on_modification)
       end
       
-      should "raise an error on on_schedule" do
-        assert_not_nil @watchable_function.errors.on(:on_schedule)
+      should "have an invalid 'on_schedule'" do
+        assert_match I18n.t('activerecord.errors.messages.blank'), @watchable_function.errors.on(:on_schedule)
       end
     end
     
-    context "whith on_modification and on_schedule" do
-      setup do
-        @watchable_function.on_modification = true
-        @watchable_function.on_schedule = true
-        @watchable_function.valid?
-      end
-      
-      should "NOT raise an error on on_modification" do
-        assert_nil @watchable_function.errors.on(:on_modification)
-      end
-      
-      should "NOT raise an error on on_schedule" do
-        assert_nil @watchable_function.errors.on(:on_schedule)
-      end
-    end
-    
-    context "whith on_modification and whithout on_schedule" do
+    context "with 'on_modification' and 'on_schedule' at true" do
       setup do
         @watchable_function.on_modification = true
         @watchable_function.on_schedule = true
         @watchable_function.valid?
       end
       
-      should "NOT raise an error on on_modification" do
+      should "have a valid 'on_modification'" do
         assert_nil @watchable_function.errors.on(:on_modification)
       end
       
-      should "NOT raise an error on on_schedule" do
+      should "have a valid 'on_schedule'" do
         assert_nil @watchable_function.errors.on(:on_schedule)
       end
     end
     
-    context "whithout on_modification and whith on_schedule" do
+    context "with only 'on_modification' at true" do
       setup do
         @watchable_function.on_modification = true
+        @watchable_function.on_schedule = false
+        @watchable_function.valid?
+      end
+      
+      should "have a valid 'on_modification'" do
+        assert_nil @watchable_function.errors.on(:on_modification)
+      end
+      
+      should "have a valid 'on_schedule'" do
+        assert_nil @watchable_function.errors.on(:on_schedule)
+      end
+    end
+    
+    context "with only 'on_schedule' at true" do
+      setup do
+        @watchable_function.on_modification = false
         @watchable_function.on_schedule = true
         @watchable_function.valid?
       end
       
-      should "NOT raise an error on on_modification" do
+      should "have a valid 'on_modification'" do
         assert_nil @watchable_function.errors.on(:on_modification)
       end
       
-      should "NOT raise an error on on_schedule" do
+      should "have a valid 'on_schedule'" do
         assert_nil @watchable_function.errors.on(:on_schedule)
       end
     end
-    
   end
   
 end
-
-
-
-
-
-
-
-
-
-
-
-

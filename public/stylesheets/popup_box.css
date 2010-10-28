@@ -1,33 +1,11 @@
-/*
- popup.js
-*/
-
 #popup_menu_actions{
-    -moz-background-clip:border;
-    -moz-background-inline-policy:continuous;
-    -moz-background-origin:padding;
-    -moz-border-radius-bottomleft:0;
-    -moz-border-radius-bottomright:0;
-    -moz-border-radius-topleft:10px;
-    -moz-border-radius-topright:10px;
-    background:white repeat scroll 0 0;
-    bforder-left:1px solid #747473;
-    borfder-right:1px solid #747473;
-    border-top:1px solid #747473;
-    padding:4px 5px 0;
-    position:absolute;
-    right:0;
-    text-align:center;
-    top:-1.8em;
-}
-
-div.popup {
-  max-width: 600px;
-  border: 1px solid red;
-  padding: 5px;
+  -moz-border-radius: 7px 7px 0 0;
   background-color: white;
-  /* The following properties should not be changed */
+  border-top: 1px solid #747473;
+  padding: 4px 5px 0;
   position: absolute;
+  right: 0;
+  top:-1.8em;
 }
 
 #popup_overlay {
@@ -38,13 +16,4 @@ div.popup {
   left: 0;
   width: 100%;
   height: 500px;
-}
-
-span.popup_link, a.popup_link {
-  cursor: pointer;
-  border-bottom: 1px dotted;
-}
-
-.popup_draghandle {
-  cursor: move;
 }

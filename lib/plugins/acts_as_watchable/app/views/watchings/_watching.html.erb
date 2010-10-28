@@ -1,0 +1,42 @@
+<%= display_popup_menu_actions %>
+
+<div>
+  <div class="presentation_medium resource">
+    <% remote_form_for(watching, :update => "content_popup_box", :html => { :multipart => true }) do |f| %>
+      <%= f.error_messages %>
+      
+      <h3>Choisissez dans quel(s) cas vous souhaitez recevoir une notification</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>À la modification</th>
+            <th>À intervalle régulier</th>
+            <th>Fréquence des vérifications</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="watching">
+            <td class="text">À chaque modification effectuée sur cet objet</td>
+            <td><%= check_box_tag 'watching[all_changes_tmp]',1, watching.all_changes ? true : false, :onchange => "update_all_changes(this.up('.resource'))", :class => 'all_changes_tmp' %></td>
+            <td>-</td>
+            <td>-</td>
+          </tr>
+          <%= render(:partial => 'watchings_watchable_function_in_one_line', :collection => watching.watchings_watchable_functions, :locals => { :watching => watching }) %>
+        </tbody>
+      </table>
+      
+      <p>Les notifications seront envoyées à <%= strong watching.watcher.watcher_identifier %> <em>(<%= watching.watcher.watcher_email || "aucune adresse e-mail trouvée" %>)</em></p>
+      
+      <div style="display:none">
+        <%= hidden_field_tag :return_uri, @return_uri %>
+        <%# f.hidden_field :id %>  
+        <%= f.hidden_field :watchable_type %>
+        <%= f.hidden_field :watchable_id %>
+        <%= f.hidden_field :watcher_id %>
+        <%= f.hidden_field :all_changes, :value => watching.all_changes ? 1 : 0, :class => 'all_changes' %> 
+      </div>
+      <%= f.form_buttons %>
+    <% end %>
+  </div>
+</div>

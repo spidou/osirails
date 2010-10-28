@@ -324,7 +324,7 @@ class Supply < ActiveRecord::Base
     end
   end
   
-  def check_stock_quantity
+  def stock_quantity_smaller_than_threshold?
     stock_quantity <= threshold
   end
   

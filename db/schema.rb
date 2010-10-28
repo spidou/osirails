@@ -1476,27 +1476,35 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
   end
 
   create_table "watchable_functions", :force => true do |t|
-    t.string  "function_type"
-    t.string  "function_name"
-    t.string  "function_description"
+    t.string  "watchable_type"
+    t.string  "name"
+    t.string  "description"
     t.boolean "on_modification"
     t.boolean "on_schedule"
   end
 
-  create_table "watchables", :force => true do |t|
-    t.integer "has_watchable_id"
-    t.string  "has_watchable_type"
+  add_index "watchable_functions", ["name", "watchable_type"], :name => "index_watchable_functions_on_name_and_watchable_type", :unique => true
+
+  create_table "watchings", :force => true do |t|
+    t.integer "watchable_id"
+    t.string  "watchable_type"
     t.integer "watcher_id"
     t.boolean "all_changes"
   end
 
-  create_table "watchables_watchable_functions", :force => true do |t|
-    t.integer "watchable_id"
+  add_index "watchings", ["watchable_id", "watchable_type", "watcher_id"], :name => "unique_index_watchings", :unique => true
+  add_index "watchings", ["watchable_id", "watchable_type"], :name => "index_watchings_on_watchable_id_and_watchable_type"
+  add_index "watchings", ["watcher_id"], :name => "index_watchings_on_watcher_id"
+
+  create_table "watchings_watchable_functions", :force => true do |t|
+    t.integer "watching_id"
     t.integer "watchable_function_id"
     t.boolean "on_modification"
     t.boolean "on_schedule"
     t.string  "time_quantity"
     t.string  "time_unity"
   end
+
+  add_index "watchings_watchable_functions", ["watching_id", "watchable_function_id"], :name => "unique_index_watchings_watchable_functions", :unique => true
 
 end

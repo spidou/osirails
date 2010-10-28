@@ -1,1 +1,2 @@
 test/*.log
+test/database.yml

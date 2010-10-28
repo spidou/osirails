@@ -1,7 +1,8 @@
 class Commodity < Supply
   has_permissions :as_business_object, :class_methods => [:list, :view, :add, :edit, :delete, :disable, :enable]
   has_reference   :symbols => [ :supply_sub_category ], :prefix => :logistics
-  acts_as_watchable
+  
+  acts_as_watchable :identifier_method => :designation
   
   belongs_to :supply_sub_category, :class_name => "CommoditySubCategory", :counter_cache => :supplies_count
   

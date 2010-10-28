@@ -1,0 +1,14 @@
+<p>
+  Des modifications ont été effectuées sur la <%= @object.class.human_name %> <strong><%= @object.watchable_identifier %></strong><br/>
+  <ul>
+  <% @object.changes.each do |key, value| %>
+    <% if !value.first.blank? && !value.last.blank? %>
+      <%= "<li>#{key} changé de #{value.first} à #{value.last}</li>" %>
+    <% elsif value.first.blank? && !value.last.blank? %>
+      <%= "<li>#{key} ajouté (nouvelle valeur: #{value.last})</li>" %>
+    <% elsif !value.first.blank? && value.last.blank? %>
+      <%= "<li>#{key} supprimé (ancienne valeur: #{value.first})</li>" %>
+    <% end %>
+  <% end %>
+  </ul>
+</p>

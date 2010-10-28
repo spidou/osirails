@@ -1,6 +1,6 @@
 class School < ActiveRecord::Base
   belongs_to :district
-    
+  
   has_many :teachers, :as => :has_person, :class_name => "Person"
   
   attr_accessor :should_update, :should_destroy
@@ -10,7 +10,7 @@ class School < ActiveRecord::Base
   def should_destroy?
     should_destroy.to_i == 1
   end
-
+  
   def should_update?
     should_update.to_i == 1
   end

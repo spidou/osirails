@@ -57,6 +57,7 @@ Rails::Initializer.run do |config|
   end
   
   config.plugin_paths = Dir["#{RAILS_ROOT}/{lib,vendor}/{features,plugins}"]
+  
   config.action_mailer.perform_deliveries = false
 
   # Force all environments to use the same logger level

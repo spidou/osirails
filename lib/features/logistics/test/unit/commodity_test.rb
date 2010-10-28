@@ -6,6 +6,7 @@ class CommodityTest < ActiveSupport::TestCase
   #has_reference   :symbols => [ :supply_sub_category ], :prefix => :logistics
   
   should_act_as_watchable
+  
   should_belong_to :supply_sub_category
   
   context "A commodity" do

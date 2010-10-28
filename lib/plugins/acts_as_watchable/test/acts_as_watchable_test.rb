@@ -1,79 +1,134 @@
-require 'test/unit'
 require File.join(File.dirname(__FILE__), 'test_helper')
 
 class ActsAsWatchableTest < ActiveRecordTestCase
   
-  #assert_raise and nothing_raised pour la methode et l'argument'
-  context "A Person whih implement acts_as_watcher" do
-    should "raise an error when argument is bad" do
-      assert_raise ArgumentError do
-        Person.acts_as_watcher :email_methode => :email
-      end
-    end
-    should "not raise an error when argument is good" do
-      assert_nothing_raised ArgumentError do
-        Person.acts_as_watcher :email_method => :email
-      end
+  setup do
+    %w(district person school).each do |file_name|
+      load "fixtures/#{file_name}.rb" 
     end
     
-    should "raise an error when mail method is bad" do
-      assert_raise ArgumentError do
-        Person.acts_as_watcher :email_methode => :emaile
-      end
+    %w(watchable_function watching watchings_watchable_function).each do |file_name|
+      load "#{RAILS_ROOT}/../app/models/#{file_name}.rb" 
     end
-    should "not raise an error when mail method is good" do
-      assert_nothing_raised ArgumentError do
-        Person.acts_as_watcher :email_method => :email
-      end
-    end
-    
-    should "not raise an error when argument and mail method is good" do
-      assert_nothing_raised ArgumentError do
-        Person.acts_as_watcher :email_method => :email
-      end
-    end
-    
   end
   
+  teardown do
+    %w(District Person School WatchableFunction Watching WatchingsWatchableFunction).each do |constant|
+      Object.send(:remove_const, constant.to_sym) if Object.const_defined?(constant)
+    end
+    ActsAsWatchable.send(:remove_const, "WatcherClassName") if ActsAsWatchable.const_defined?("WatcherClassName")
+  end
   
-  context "With Person implement ActsAsWatchable" do
+  ## ActsAsWatcher tests
+  context "An active_record model which implements acts_as_watcher" do
+    context "without the :email_method argument" do
+      setup do
+        # nothing to do
+      end
+      
+      should "raise an argument error" do
+        assert_raise ArgumentError do
+          Person.acts_as_watcher
+        end
+      end
+    end
+    
+    context "with the :email_method argument" do
+      setup do
+        # nothing to do
+      end
+      
+      should "not raise an error" do
+        assert_nothing_raised do
+          Person.acts_as_watcher :email_method => :email
+        end
+      end
+    end
+    
+    context "" do # just to handle setup for the following test
+      setup do
+        flunk "Watching should not have an association named 'watcher' #{Watching.reflect_on_association(:watcher).inspect}" if Watching.reflect_on_association(:watcher)
+        Person.acts_as_watcher :email_method => :email
+      end
+      
+      should "provide to Watching a belongs_to association called 'watcher'" do
+        assert_not_nil Watching.reflect_on_association(:watcher)
+        assert_equal :belongs_to, Watching.reflect_on_association(:watcher).macro
+      end
+    end
+  end
+  
+  context "Given a first active_record model implements acts_as_watcher, another active_record model" do
     setup do
       Person.acts_as_watcher :email_method => :email
     end
-  
-    context "a new person" do
-      setup do
-        @person = Person.new
-      end
-      
-      should "return this watcher type" do
-        assert_equal "Person", @person.watcher_type
-      end
-        
-      should "be able to call email_method" do
-        assert @person.respond_to? "watcher_email"
+    
+    should "NOT be able to implement acts_as_watcher" do
+      assert_raise ActsAsWatchable::ActsAsWatchableMultipleCallError do
+        School.acts_as_watcher :email_method => :email
       end
     end
   end
   
-  context "With DISTRIC implement ActsAsWatchable" do
+  context "An instance of acts_as_watcher model" do
     setup do
+      Person.acts_as_watcher :identifier_method => :identifier, :email_method => :email
+      @person = Person.new
+      
+      flunk "@person.identifier should return 'this is me'" unless @person.identifier == 'this is me'
+      flunk "@person.email should return 'foo@bar.com'" unless @person.email == 'foo@bar.com'
+    end
+    
+    should "have a valid watcher_identifier" do
+      assert_equal 'this is me', @person.watcher_identifier
+    end
+    
+    should "have a valid watcher_email" do
+      assert_equal 'foo@bar.com', @person.watcher_email
+    end
+    
+    should "have a valid watcher_type" do
+      assert_equal 'Person', @person.watcher_type
+    end
+  end
+  
+  
+  ## ActsAsWatchable tests
+  context "A instance of acts_as_watchable model" do
+    setup do
+      District.acts_as_watchable :identifier_method => :identifier
+      @district = District.new
+      
+      flunk "@district.identifier should return 'yeah this is me'" unless @district.identifier == 'yeah this is me'
+    end
+    
+    should "have 0 watchable_functions" do
+      assert_equal [], @district.watchable_functions
+    end
+    
+    should "have 0 watchable_function_ids" do
+      assert_equal [], @district.watchable_function_ids
+    end
+    
+    should "have a valid watchable_identifier" do
+      assert_equal 'yeah this is me', @district.watchable_identifier
+    end
+    
+    should "have 0 watchings" do
+      assert_equal [], @district.watchings
+    end
+    
+    should "have 0 all_changes_watchings" do
+      assert_equal [], @district.all_changes_watchings
+    end
+  end
+  
+  context "Given that the model District implements acts_as_watchable," do
+    #TODO these following test need to be reviewed
+    #TODO check if the sent emails are well-formed
+    setup do
+      Person.acts_as_watcher :email_method => :email
       District.acts_as_watchable
-      Person.acts_as_watcher :email_method => :email
-    end
-    
-     context "a new district" do
-      setup do
-        @dupark = District.new
-      end
-      
-      should "not have watchable" do
-        assert_equal [], @dupark.watchables
-      end
-      
-      should "not have all_changes_watchables" do
-        assert_equal [], @dupark.all_changes_watchables
-      end
     end
     
     context "a district" do
@@ -85,15 +140,15 @@ class ActsAsWatchableTest < ActiveRecordTestCase
         setup do
           @person = create_a_person
           @district = put_observation_on(@district, @person)
-          flunk "should have at least a watchable" unless @district.watchables.size
-        end
-
-        should "be able to link the good user watcher" do
-          assert_equal @person, @district.watchables.first.watcher
+          flunk "should have at least 1 watching" unless @district.watchings.size
         end
         
-        should "have empty watchable_function collection" do 
-          assert @district.watchables.first.watchable_functions.empty?
+        should "be able to link the good user watcher" do
+          assert_equal @person, @district.watchings.first.watcher
+        end
+        
+        should "have empty watchable_function collection" do
+          assert @district.watchings.first.watchable_functions.empty?
         end
         
         context "when there are modification on area" do
@@ -101,20 +156,21 @@ class ActsAsWatchableTest < ActiveRecordTestCase
             @district.area = 2000
             ActionMailer::Base.deliveries = []
           end
+          
           should "detect changes when use 'attributes_changed?'" do
             assert @district.attributes_changed?(["area"])
           end
           
           context "when @district is save" do
             setup do
-              @district.area = 2000
               @district.save!
             end
-            should "send one mail" do
-              assert_equal 1,  ActionMailer::Base.deliveries.size
-            end 
+            
+            should "send 1 email" do
+              assert_equal 1, ActionMailer::Base.deliveries.size
+            end
           end
-                    
+          
         end
       end
       
@@ -123,32 +179,32 @@ class ActsAsWatchableTest < ActiveRecordTestCase
           @person = create_a_person
           @district = put_observation_on(@district, @person)
           @district = put_relation_on_a_modification_watchable_function_for(@district)
-          flunk "should have at least a watchable function" unless @district.watchables.first.watchables_watchable_functions.size >= 1
+          flunk "should have at least 1 watching_function" unless @district.watchings.first.watchings_watchable_functions.size >= 1
         end
         
         should "be able to verify function 'can_execute_instance_method'" do
-          assert @district.can_execute_instance_method?(@district.watchables.first.watchables_watchable_functions.first)
+          assert @district.can_execute_instance_method?(@district.watchings.first.watchings_watchable_functions.first.watchable_function)
         end
-
+        
         context "when there are no modification execute_instance_method" do
           should "return false" do
-            assert !@district.execute_instance_method(@district.watchables.first.watchables_watchable_functions.first)
+            assert !@district.execute_instance_method(@district.watchings.first.watchings_watchable_functions.first.watchable_function)
           end
         end
         
         context "when there are a modification" do
           setup do
             ActionMailer::Base.deliveries = []
-            @watchable = @district.watchables.first
-            @watchable.all_changes = false
-            @watchable.save!
+            @watching = @district.watchings.first
+            @watching.all_changes = false
+            @watching.save!
             @district.area = 300
-            flunk "area should be changed" unless @district.changed?
-            flunk "should have 1 'on_modification_watchable_function'" unless @district.watchables.first.on_modification_watchable_functions.size == 1
+            flunk "area should have changed" unless @district.changed?
+            flunk "should have 1 'on_modification_watchable_function'" unless @district.watchings.first.on_modification_watchable_functions.size == 1
           end
           
           should "return true when call should_deliver_email_for?(function)" do
-            assert @district.send "should_deliver_email_for?", @district.watchables.first.watchables_watchable_functions.first
+            assert @district.send("should_deliver_email_for?", @district.watchings.first.watchings_watchable_functions.first.watchable_function)
           end
           
           context "when district is saved" do
@@ -157,28 +213,28 @@ class ActsAsWatchableTest < ActiveRecordTestCase
               @district.save!
             end
             
-            should "send one mail" do
+            should "send 1 email" do
               assert_equal 1,  ActionMailer::Base.deliveries.size
-            end 
+            end
             
-            should "call super function and continue update" do
+            should "update record successfully after sending email" do
               assert_equal 300, @district.area_was
             end
-          end   
+          end
         end
         
         context "when district is saved whith modification on an other attribute" do
           setup do
             ActionMailer::Base.deliveries = []
-            @watchable = @district.watchables.first
-            @watchable.all_changes = false
-            @watchable.save!
-            @watchable = @district.watchables.first
+            @watching = @district.watchings.first
+            @watching.all_changes = false
+            @watching.save!
+            @watching = @district.watchings.first
             @district.name = 'toto'
             @district.save!
           end
             
-          should "not send mail" do
+          should "NOT send any email" do
             assert ActionMailer::Base.deliveries.empty?
           end 
         end 
@@ -187,8 +243,10 @@ class ActsAsWatchableTest < ActiveRecordTestCase
       
     end
   end
- 
+  
   context "A watcher which observe a function on schedule" do
+    #TODO these following test need to be reviewed
+    #TODO check if the sent emails are well-formed
     setup do
       District.acts_as_watchable
       Person.acts_as_watcher :email_method => :email
@@ -199,23 +257,25 @@ class ActsAsWatchableTest < ActiveRecordTestCase
     
     context "a district which have observable_function" do
       setup do
-        @function = create_a_scheduled_watchable_function
+        @watchable_function = create_a_watchable_function(:name             => 'area_is_too_short?',
+                                                          :on_schedule      => true,
+                                                          :on_modification  => false)
         put_schedule_observation_on(@district, @person)
-        @district = put_relation_on_a_schedule_watchable_function_for(@district, @function)
+        @district = put_relation_on_a_schedule_watchable_function_for(@district, @watchable_function)
       end 
       
-      should "have @function on this watchable_functions collection" do
-        assert_equal @function, @district.watchable_functions.first 
+      should "have @watchable_function on this watchable_functions collection" do
+        assert_equal @watchable_function, @district.watchable_functions.first 
       end
       
       context "when a cron is started and observable function return false" do
         setup do
           flunk "observable function should return false" if @district.area_is_too_short?
           flunk "ActionMailer::Base.deliveries should be empty" if ActionMailer::Base.deliveries.any?
-          @district.deliver_email_for @district.watchables.first.watchables_watchable_functions.first, @district.watchables.first
+          @district.deliver_email_for(@watchable_function, @district.watchings.first)
         end
         
-        should "not send mail" do
+        should "NOT send any email" do
           assert ActionMailer::Base.deliveries.empty?
         end
       end
@@ -226,22 +286,14 @@ class ActsAsWatchableTest < ActiveRecordTestCase
           @district.save!
           flunk "observable function should return true" unless @district.area_is_too_short?
           ActionMailer::Base.deliveries = []
-          @district.deliver_email_for  @district.watchables.first.watchables_watchable_functions.first, @district.watchables.first
+          @district.deliver_email_for(@watchable_function, @district.watchings.first)
         end
         
-        should "send mail" do
+        should "send 1 email" do
           assert ActionMailer::Base.deliveries.any?
         end
       end
-       
     end
-    
   end
    
 end
-
-
-
-
-
-

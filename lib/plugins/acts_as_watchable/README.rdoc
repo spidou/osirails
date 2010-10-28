@@ -3,118 +3,96 @@
 * Environment: under Rails 2.1.0 and ruby 1.8.7, not tested above
 
 == Bugs & Feedback
-Bug reports and feedback are welcome via armoog_s (at) epitech (dot) net
+Bug reports and feedback are welcome via http://github.com/spidou/osirails
 
 == Overview
-Acts_as_watchable is a active_record plugin, that lets you watch a model, and received mail
-when there are modification on this model.
-You can also watch function on modification of the model 
-or watch function periodicaly with a schedule system based on Cron.
+Acts_as_watchable is an active_record plugin, that lets you watch a model, and
+received email when there are modification on this model.
+Notifications can be triggered when you bring changes on the record or
+periodically thanks to a cron plugin (http://github.com/javan/whenever)
 
-First there are the model which implement Acts_as_watcher, this model is the observer like an User
-Next there are the model which implement Act_as_watchable, this model is observed by Acts_as_watcher
+First there is the model which implement acts_as_watcher, like User.
+Next there are the models which implement act_as_watchable
 
 == Setup
 
 First:
-	
-  $ script/plugin install path_to_acts_watchable_folder
+
+  $ script/plugin install path_to_acts_watchable_plugin
   
-To add the watchables, watchables_watchable_functions and watchable_functions tables to your 
-project, run the following command:
+To add the acts_as_watchables tables to your project, run the following command:
 
   $ script/generate acts_as_watchable_migration
   
 Then migrate your project database:
-  
+
   $ rake db:migrate
-
-To use cron 
-
-	intall whenever gem at http://github.com/javan/whenever
-	
-	$ wheneverize => create a schedule.rb in config folder
-	$ whenever => interpreting code in schedule.rb and display in cron format
   
-Next :
-	require file and folder
+Install whenever:
 
-	copy in your_app_images_path => acts_as_watchable_folder_path/public/images/*
-	copy in your_app_javascripts_path => acts_as_watchable_folder_path/public/javascripts/*
-	copy in your_app_config_path => acts_as_watchable_folder_path/config/email.yml
-	copy in your_app_config_initializers_path => acts_as_watchable_folder_path/config/initialisers/email.rb
-	
-	modify your routes.rb with   acts_as_watchable_folder_path/config/routes.rb
-	modify your schedule.rb with   acts_as_watchable_folder_path/config/schedule.rb
-	
+	gem install whenever
+
+Update your crontab file
+  
+  whenever --update-crontab
+  
+Add the following line in your routes.rb:
+
+  map.resources :watchings
+  
 == Basic usage
 
 Models you want to be the Observer will call the <tt>acts_as_watcher</tt> method,
 delivered with a mandatory parameter.
 
-Exemple: 
+Example:
 	
-	class User < ActiveRecord::Base
-      acts_as_watcher :email_method => :name_of_the_method_which_will_return_the_mail_adress_of_the_user
-    end
-	
-Models you want to Observe  will call the <tt>acts_as_watchable</tt> method,
+  class User < ActiveRecord::Base
+    acts_as_watcher :email_method => :method_which_will_return_the_user_email
+  end
 
-Exemple: 
-	
-	class PurchaseOrder < ActiveRecord::Base
-      acts_as_watchable
-    end
 
-For each call of the `save` method (after a `create` or a `update` call) on
-an ActiveRecord object, a mail should be delivered if there are a modification on the object.
+Models you want to Observe will call the <tt>acts_as_watchable</tt> method,
+
+Example:
+	
+	class Customer < ActiveRecord::Base
+    acts_as_watchable
+  end
 
 == In view
 
-The plugin delive some helper method, that yout can use in your view
+The plugin deliver some helper method, that yout can use in your view
 
-Exemple:
+Example:
 
-For displaying acts_as_watchable buttons in your view you should call
- => display_acts_as_watchable_buttons(object)
+For displaying a watching button in your view you can use the helper <tt>watching_button</tt>
+This helper method display a link to create a new watching or edit existant watching
 
-this helper method display a link to create a new watchable or edit existant watchable
-
----------
- 
- When you you put :all_changes to true
- 
- you should receveid notification for all changes when you watch an object.
- 
-----------
 
 == watchable function usage
 
-If you want to observe a particularity function or context. You should 
-be create a watchable_function
+If you want to observe a particular function or context. You should create a watchable_function
 
-Exemple:
-	WatchableFunction.create!  :function_type => "PurchaseOrder", :function_name => "confirmed?", :function_description => "send a notification when purchase_order is confirmed", :on_modification => :true (if you want call this function when save method is called), :on_schedule => true (if you want call this function when cron is started)
+Example:
+	WatchableFunction.create! :watchable_type   => "Commodity",
+	                          :name             => "stock_quantity_smaller_than_threshold?",
+	                          :description      => "Is the stock quantity smaller than the threshold?",
+	                          :on_modification  => :true,
+	                          :on_schedule      => true
 
 	in new or edit view you can set this function in on_modification or on_schedule
 	this method must return true or false
 	
 for watchable function you must create a mail template in your view folder like
 	
-	purchase_orders/confirmed?.html.erb
-	this template will call when your method respond true 
-    In this template if you want to have a default footer
-    add this line in the bottom of your template : <% @footer %>
-     
+	commodities/stock_quantity_smaller_than_threshold?.html.erb
+	
 == Test
 
-	for call all test
 	$ rake acts_as_watchable:test
 	
-	for call units test
-	$ rake acts_as_watchable:test:units
-	
-This plugin is delivered with 2 shoulda_macro
+The plugin provide 2 shoulda macros:
 
 -> should_act_as_watcher for test if model which observe implement acts_as_watcher
--> should_act_as_watcheable for test if model which is observed implement acts_as_watchable
+-> should_act_as_watchable for test if model which is observed implement acts_as_watchable

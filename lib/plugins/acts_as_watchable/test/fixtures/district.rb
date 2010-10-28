@@ -8,6 +8,10 @@ class District < ActiveRecord::Base
     "#{self.class.name} #{id}: #{name}"
   end
   
+  def identifier
+    'yeah this is me'
+  end
+  
   def save_schools
     schools.each do |s|
       if s.should_destroy?

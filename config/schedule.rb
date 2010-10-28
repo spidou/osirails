@@ -19,19 +19,26 @@
 
 # Learn more: http://github.com/javan/whenever
 
-every 1.minutes do
-  runner "WatchableSchedule.execute_function(WatchablesWatchableFunction::MINUTLY_UNITY)", :environment => "development"
+#every 1.minute do
+#  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::MINUTLY_UNITY)", :environment => "development"
+#end
+
+every 1.hour do
+  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::HOURLY_UNITY)", :environment => "development"
 end
 
-every 1.hours do
-  runner "WatchableSchedule.execute_function(WatchablesWatchableFunction::HOURLY_UNITY)", :environment => "development"
+every 1.day do
+  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::DAILY_UNITY)", :environment => "development"
 end
 
-every 1.days do
-  runner "WatchableSchedule.execute_function(WatchablesWatchableFunction::DAILY_UNITY)", :environment => "development"
+every 1.week do
+  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::WEEKLY_UNITY)", :environment => "development"
 end
 
-every 1.weeks do
-  runner "WatchableSchedule.execute_function(WatchablesWatchableFunction::WEEKLY_UNITY)", :environment => "development"
+every 1.month do
+  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::MONTHLY_UNITY)", :environment => "development"
 end
 
+every 1.year do
+  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::YEARLY_UNITY)", :environment => "development"
+end

@@ -11,10 +11,6 @@ version: 0.1
 #    - 0.1
 #    - 0.2
 menus:
-  acts_as_watchables: 
-    title: Observer un object
-    description: 'Observer tous les attributs d un object ou une fonction'
-    hidden: true
   home:
     title: Accueil
     description: "Page d'accueil de l'intranet"
@@ -90,6 +86,10 @@ menus:
         title: Modules
         description: Gestion des modules
         position: 7
+  watchings:
+    title: Observer un objet
+    description: "Observer les changements sur un objet"
+    hidden: true
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  
