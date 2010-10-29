@@ -1,2 +1,34 @@
 <%purchase_order = purchase_order_footer%>
+<% unless is_form_view?%>
+  <div>
+    <p>
+      <label>R&eacute;f&eacute;rence de l'ordre d'achat :</label>
+      <strong><%= purchase_order.reference%></strong>
+    </p>
+    <p>
+      <label>Cr&eacute;&eacute;e le :</label>
+      <strong><%= l(purchase_order.created_at, :format => :short)%></strong>
+    </p>
+    <p>
+      <label>Valid&eacute; le :</label>
+      <strong><%= l(purchase_order.confirmed_on, :format => :short) if  purchase_order.confirmed_on %></strong>
+    </p>
+    <p>
+      <label>R&eacute;f&eacute;rence devis :</label>
+      <strong>#</strong>
+    </p>
+    <p>
+      <label>Devis sign&eacute; envoy&eacute; le :</label>
+      <strong>#</strong>
+    </p>
+    <p>
+      <label>Envoy&eacute; &agrave; :</label>
+      <strong>#</strong>
+    </p>
+    <p>
+      <label>Etat actuel :</label>
+      <strong>#</strong>
+    </p>
+  </div>
+<% end %>
 

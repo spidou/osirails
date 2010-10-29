@@ -192,4 +192,13 @@ module PurchaseOrdersHelper
     return "Consomable" if supply.type == "Consumable" 
   end
   
+  def display_supplier_updater_for(purchase_order)
+     button_to_remote "Mettre &agrave; jour", :update => "supplier_updater",
+                                      :with => "'supplier_id='+$('tmp_supplier_id').value", 
+                                      :url => update_purchase_order_supplier_path,
+                                      :html => { :method => :get },
+                                      :condition => "($('tmp_supplier_id').value != '') && ($('tmp_supplier_id').value != $('supplier_id').value)",
+                                      :complete => "$('supplier_id').value = $('tmp_supplier_id').value;$('tmp_supplier_id').value = null;"   
+  end
+  
 end

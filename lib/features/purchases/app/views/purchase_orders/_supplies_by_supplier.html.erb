@@ -1,11 +1,3 @@
-<%= hidden_field_tag "choice", :value => 1 %>
-<%= hidden_field_tag "supplier_id", supplier.id %>
-      <h2>Informations</h2>
-      <%= f.hidden_field :supplier_id, :value => supplier.id %>
-      <div>
-        <p>Fournisseur: <strong><%= supplier.name%></strong></p><br>
-      </div>
- 
-      <h2>Listes des fournitures</h2>
-      <%= render :partial => 'purchase_order_supplies/purchase_order_supplies',  :locals => { :purchase_order => purchase_order, :supplier => supplier}  %>
+<h2>Listes des fournitures</h2>
+  <%= render :partial => 'purchase_order_supplies/purchase_order_supplies',  :locals => { :purchase_order => purchase_order, :supplier => supplier}  %>
 

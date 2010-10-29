@@ -9,7 +9,7 @@ class PurchaseOrder < ActiveRecord::Base
   
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   has_reference :prefix => :purchases
-  has_address :address
+  has_address :supplier_address
   has_contact :supplier_contact, :accept_from => :supplier_contacts
   
   has_many :purchase_order_supplies, :order => 'position', :dependent => :delete_all
@@ -30,6 +30,7 @@ class PurchaseOrder < ActiveRecord::Base
   
   belongs_to :invoice_document,   :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
+  belongs_to :delivery_document,  :class_name => "PurchaseDocument"
   belongs_to :user
   belongs_to :canceller, :class_name => "User", :foreign_key => :cancelled_by_id
   belongs_to :supplier
@@ -39,10 +40,20 @@ class PurchaseOrder < ActiveRecord::Base
   validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled?
   validates_presence_of :canceller, :if => :cancelled_by_id
   validates_presence_of :quotation_document, :reference, :if => :confirmed?
+  validates_presence_of :purchased_on, :unless => :expected_delivery?
+  validates_presence_of :purchased_on, :if => :completed?
   validates_numericality_of :miscellaneous, :if => :miscellaneous
   validates_numericality_of :prizegiving, :if => :prizegiving
-  validate :validates_length_of_purchase_order_supplies
+  validates_persistence_of  :purchased_on
+  validates_persistence_of  :expected_delivery
   
+  validate :validates_length_of_purchase_order_supplies
+  validate :validates_existing_and_unreferenced_purchase_order_supplies
+  validate :validates_comment_lines
+  
+  validates_date :purchased_on, :on_or_before => Date.today,
+                                :if => :purchased_on
+                                
   validates_inclusion_of :status, :in => [ STATUS_DRAFT ], :if => :new_record?
   validates_inclusion_of :status, :in => [ STATUS_DRAFT, STATUS_CONFIRMED ], :if => :was_draft?
   validates_inclusion_of :status, :in => [ STATUS_CONFIRMED, STATUS_PROCESSING_BY_SUPPLIER, STATUS_CANCELLED ], :if => :was_confirmed?
@@ -50,9 +61,11 @@ class PurchaseOrder < ActiveRecord::Base
   validates_inclusion_of :status, :in => [ STATUS_COMPLETED ], :if => :was_completed?
   validates_inclusion_of :status, :in => [ STATUS_CANCELLED ], :if => :was_cancelled?
   
-  validates_associated :purchase_order_supplies, :supplier_supplies
+  validates_associated :supplier_supplies
   validates_associated :invoice_document, :if => :completed?
   validates_associated :quotation_document, :if => :confirmed?
+  validates_associated :invoice_document, :unless => :expected_delivery?
+  validates_associated :purchase_order_payment
   
   named_scope :pending, :conditions => ["purchase_orders.status = ? OR purchase_orders.status = ? OR purchase_orders.status = ?", STATUS_DRAFT, STATUS_CONFIRMED, STATUS_PROCESSING_BY_SUPPLIER ],
                         :order => "purchase_orders.created_at DESC"
@@ -67,8 +80,18 @@ class PurchaseOrder < ActiveRecord::Base
   
   after_save :save_purchase_order_supplies, :save_supplier_supplies, :save_request_order_supplies
   after_save :destroy_request_order_supplies_deselected
-
+  after_save :save_purchase_order_payment
+  after_save  :automatically_put_purchase_order_status_to_completed
+    
   before_destroy :can_be_deleted?
+  
+  def validates_existing_and_unreferenced_purchase_order_supplies
+    self.existing_and_unreferenced_purchase_order_supplies.each(&:valid?)
+  end
+  
+  def validates_comment_lines
+    self.comment_lines.each(&:valid?)
+  end
   
   def validates_length_of_purchase_order_supplies
     errors.add(:purchase_order_supplies, "Veuillez sélectionner au moins une fourniture") if purchase_order_supplies.reject{|n| n.should_destroy? || n.comment_line}.empty?
@@ -76,6 +99,10 @@ class PurchaseOrder < ActiveRecord::Base
   
   def initialize_to_draft
     self.status = STATUS_DRAFT
+  end
+  
+  def supplier_contacts
+    supplier ? supplier.contacts : []
   end
   
   def total_duty
@@ -94,12 +121,12 @@ class PurchaseOrder < ActiveRecord::Base
     total_amount_duty + miscellaneous.to_f + total_taxes
   end
     
-  def calc_deposit_amout
-    purchase_order_payment.deposit.to_f / 100.0 * purchase_order_payment.deposit_amount.to_f if purchase_order_payment
+  def calc_deposit
+    #((self.purchase_order_payment.deposit_amount.to_f / total_price.to_f) * 100.0) if purchase_order_payment
   end
     
   def calc_balance
-    total_price.to_f - calc_deposit_amout.to_f
+    (total_price.to_f - self.purchase_order_payment.deposit_amount.to_f)
   end
   
   def existing_purchase_order_supplies
@@ -117,6 +144,10 @@ class PurchaseOrder < ActiveRecord::Base
   def existing_and_unreferenced_purchase_order_supplies
     purchase_order_supplies.select{|p| !p.comment_line}
   end
+  
+  def expected_delivery?
+    expected_delivery
+  end 
   
   def draft?
     status == STATUS_DRAFT
@@ -167,7 +198,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def can_be_completed?
-    are_all_purchase_order_supplies_treated? && (was_confirmed? || was_processing_by_supplier?)
+    (!expected_delivery && !completed?) || (are_all_purchase_order_supplies_treated? && (was_confirmed? || was_processing_by_supplier?))
   end
   
   def can_be_cancelled?
@@ -218,6 +249,7 @@ class PurchaseOrder < ActiveRecord::Base
   
   def complete
     if can_be_completed?
+      update_reference unless expected_delivery?
       self.completed_on = Time.now
       self.status = STATUS_COMPLETED
       return self.save
@@ -259,6 +291,10 @@ class PurchaseOrder < ActiveRecord::Base
   
   def quotation_document_attributes=(quotation_document_attributes)
     self.quotation_document = PurchaseDocument.new(quotation_document_attributes.first)
+  end
+  
+  def delivery_document_attributes=(delivery_document_attributes)
+    self.delivery_document = PurchaseDocument.new(delivery_document_attributes.first)
   end
   
   def invoice_document_attributes=(invoice_document_attributes)
@@ -326,11 +362,22 @@ class PurchaseOrder < ActiveRecord::Base
       purchase_order_supply = self.purchase_order_supplies.build({:supply_id      => purchase_request_supply.supply_id, 
                                                                   :quantity       => purchase_request_supply.expected_quantity,
                                                                   :taxes          => supplier_supply ? supplier_supply.taxes : 0.0, 
-                                                                  :fob_unit_price => supplier_supply ? supplier_supply.fob_unit_price : 0.0})
+                                                                  :fob_unit_price => supplier_supply ? supplier_supply.fob_unit_price : 0.0,
+                                                                  :unreferenced_request_supply => purchase_request_supply.supply_id ? nil : purchase_request_supply.id})
       purchase_order_supply.unconfirmed_purchase_request_supplies.each do |e|
         purchase_order_supply.request_order_supplies.build(:purchase_request_supply_id => e.id)
       end
     end
+  end
+  
+  def automatically_put_purchase_order_status_to_completed
+    if !expected_delivery && can_be_completed?
+      self.complete
+    end
+  end
+
+  def save_purchase_order_payment
+    self.purchase_order_payment.save(false)
   end
   
   def save_request_order_supplies

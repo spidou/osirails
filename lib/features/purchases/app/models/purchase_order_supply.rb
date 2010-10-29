@@ -15,17 +15,19 @@ class PurchaseOrderSupply < ActiveRecord::Base
   attr_accessor :purchase_request_supplies_ids
   attr_accessor :purchase_request_supplies_deselected_ids
   attr_accessor :should_destroy
+  attr_accessor :unreferenced_request_supply
   
-  validates_presence_of :supplier_designation, :supplier_reference
+  #validates_presence_of :supplier_designation, :supplier_reference, :unless => :comment_line
   validates_presence_of :supply, :if => :supply_id
   validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled_at
   validates_presence_of :canceller, :if => :cancelled_by_id
   validates_presence_of :description, :if => :comment_line
   
   validate :validates_is_not_cancelled
+  validate :validates_designation_and_reference_of_supplier
   
-  validates_numericality_of :quantity, :fob_unit_price , :greater_than => 0
-  validates_numericality_of :taxes, :greater_than_or_equal_to => 0
+  validates_numericality_of :quantity, :fob_unit_price , :greater_than => 0, :unless => :comment_line
+  validates_numericality_of :taxes, :greater_than_or_equal_to => 0, :unless => :comment_line
   
   validates_associated :request_order_supplies
   
@@ -40,6 +42,15 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def position
     self[:position] ||= 0
   end  
+  
+  def validates_designation_and_reference_of_supplier
+    unless comment_line?
+      unless existing_supply? 
+        errors.add(:supplier_designation, "est requis") if (supplier_designation == "" && supplier_reference == "")
+        errors.add(:supplier_reference, "est requis") if (supplier_designation == "" && supplier_reference == "")
+      end
+    end
+  end
   
   #TODO test this method
   def validates_is_not_cancelled
@@ -154,7 +165,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
     self[:fob_unit_price]
   end
     
-  def unit_price_including_tax(supplier_id = purchase_order.supplier, supply_id = supply.id)
+  def unit_price_including_tax(supplier_id = purchase_order.supplier, supply_id = supply ? supply.id : nil)
     self.fob_unit_price ||= (supplier_supply(supplier_id, supply_id) ? supplier_supply(supplier_id, supply_id).fob_unit_price.to_f : self[:fob_unit_price])
      unit_price_with_prizegiving.to_f * ( 1.0 + ( taxes.to_f / 100.0 ) )
   end
@@ -186,7 +197,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
     if (supply_id)
       PurchaseRequestSupply.all(:include => :purchase_request, :conditions => ['purchase_request_supplies.supply_id = ? AND purchase_request_supplies.cancelled_at IS NULL AND purchase_requests.cancelled_at IS NULL', supply_id])
     else
-      PurchaseRequestSupply.all(:include => :purchase_request, :conditions => ['purchase_request_supplies.supply_id IS NULL AND purchase_request_supplies.cancelled_at IS NULL AND purchase_requests.cancelled_at IS NULL'])
+      PurchaseRequestSupply.all(:include => :purchase_request, :conditions => ['purchase_request_supplies.id = ? AND purchase_request_supplies.supply_id IS NULL AND purchase_request_supplies.cancelled_at IS NULL AND purchase_requests.cancelled_at IS NULL', self.unreferenced_request_supply])
     end
   end
   

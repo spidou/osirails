@@ -17,29 +17,28 @@ counter ||= 1
 
   <tr class='<%="purchase_order_supply resource #{class_name}"  %>' style="<%= 'display:none' if purchase_order_supply.should_destroy? %>"> 
     <td style="display:none;">
-      <%= f.hidden_field :supply_id, :class => :hidden_supply_id %>
       <%= f.hidden_field :comment_line %>
       <%= f.hidden_field :id %>
-      <%= f.hidden_field :purchase_request_supplies_ids, :value => purchase_order_supply.get_purchase_request_supplies_ids, :class => :purchase_request_supplies_ids %>
       <%= f.hidden_field :should_destroy, :class => :should_destroy %>
       <%= f.hidden_field :position, :class => :position, :value => position %>
-      <%= f.hidden_field :purchase_request_supplies_deselected_ids, :class => :purchase_request_supplies_deselected_ids, :value => purchase_order_supply.purchase_request_supplies_deselected_ids %>
     </td>
     <td></td>
     <td colspan=4>
       <% if f.form_view? %>
-         <%= f.text_area_autoresize :description %>
+         <%= f.text_area_autoresize :description, :index => nil %>
       <% else %>
         <%= purchase_order_supply.description %>
       <% end %>
     </td>
-    <td colspan=9></td>
+    <td colspan=<%= is_form_view? ? "'9'" : "'7'"%> ></td>
     <td>
+        <% if is_form_view?%>
+          <%= link_to( image_tag( move_up_image, :alt => text_up = "Monter la ligne", :title => text_up, :class => "arrow_up"), "#up", :onclick => "move_up(this);" ) %>
+          <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down(this);" ) %>
+        <%end%>
       <% if purchase_order_supply.new_record?%>
-        <%= link_to( image_tag( move_up_image, :alt => text_up = "Monter la ligne", :title => text_up, :class => "arrow_up"), "#up", :onclick => "move_up(this);" ) %>
-        <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down(this);" ) %>
         <%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')){this.up('.resource').remove(); update_all_total();}") %>
-      <% else %>
+      <% elsif is_form_view? %>
         <%= link_to_function image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr? Attention, les modifications seront appliquées à la soumission du formulaire.')){ mark_resource_for_destroy_order_supply(this.up('.resource'));}" %>
       <% end %>
     </td>

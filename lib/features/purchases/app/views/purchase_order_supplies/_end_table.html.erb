@@ -1,11 +1,8 @@
   </tbody>
   <tfoot>
     <tr class='footer'>
-      <td colspan='12'></td>
-      <td colspan='3'></td>
-    </tr>
-    <tr class='footer'>
-      <td colspan='12' rowspan='6'>
+      <td colspan= <%= is_form_view? ? "'13'" : "'11'"%>  rowspan='6'>
+       <% if is_form_view?%>
         <%= hidden_field_tag 'add_this_supply_reference_id' %>
         <%= custom_text_field_with_auto_complete( :supply, :reference,
                                                   { :value      => "Cherchez un article dans la base",
@@ -24,29 +21,30 @@
         %>
         <%= display_add_unreferenced_supply_for_(purchase_order)%>
         <%= display_add_comment_line_for_(purchase_order)%>
+        <% end %>
       </td>
       <td colspan="2" class="aggregate_label">Total brut HT :</td>
-      <td colspan="1" id="purchase_order_total_brut_ht" class="purchase_order_total_brut_ht"><%= purchase_order.total_duty.to_f.to_s(2) %></td>
+      <td colspan="1" id="purchase_order_total_brut_ht" class="purchase_order_total_brut_ht amount"><%= purchase_order.total_duty.to_f.to_s(2) %></td>
     </tr>
     <tr class="footer">
       <td colspan="2" class="aggregate_label">Rem (%) :</td>
-      <td colspan="1" class="purchase_order_prizegiving"><%= text_field_tag "purchase_order[prizegiving]", purchase_order.prizegiving.to_f.to_s(2), :size => 4, :onchange => "update_all_total()", :id => "purchase_order_prizegiving"%></td>
+      <td colspan="1" class="purchase_order_prizegiving amount"><%= is_form_view? ? text_field_tag ("purchase_order[prizegiving]", purchase_order.prizegiving.to_f.to_s(2), :size => 4, :onchange => "update_all_total()", :id => "purchase_order_prizegiving") : purchase_order.prizegiving.to_f.to_s(2)%></td>
     </tr>
     <tr class="footer">
       <td colspan="2" class="aggregate_label">Net HT (&euro;) :</td>
-      <td colspan="1" id="purchase_order_net_ht" class="purchase_order_net_ht"><%= purchase_order.total_amount_duty.to_f.to_s(2) %></td>
+      <td colspan="1" id="purchase_order_net_ht" class="purchase_order_net_ht amount"><%= purchase_order.total_amount_duty.to_f.to_s(2) %></td>
     </tr>
     <tr class="footer">
       <td colspan="2" class="aggregate_label">Frais divers (&euro;) :</td>
-      <td colspan="1" class="purchase_order_miscellaneous"><%= text_field_tag "purchase_order[miscellaneous]",   purchase_order.miscellaneous.to_f.to_s(2), :size => 4, :onchange => "update_all_total()", :id => "purchase_order_miscellaneous"%></td>
+      <td colspan="1" class="purchase_order_miscellaneous amount"><%= is_form_view? ? (text_field_tag "purchase_order[miscellaneous]",   purchase_order.miscellaneous.to_f.to_s(2), :size => 4, :onchange => "update_all_total()", :id => "purchase_order_miscellaneous") : purchase_order.miscellaneous.to_f.to_s(2) %></td>
     </tr>
     <tr class="footer">
       <td colspan="2" class="aggregate_label">Total taxes (&euro;) :</td>
-      <td colspan="1" id="purchase_order_total_taxes" class="purchase_order_total_taxes"><%= purchase_order.total_taxes.to_f.to_s(2) %></td>
+      <td colspan="1" id="purchase_order_total_taxes" class="purchase_order_total_taxes amount"><%= purchase_order.total_taxes.to_f.to_s(2) %></td>
     </tr>
     <tr class="footer">
       <td colspan='2'>Net TTC (&euro;) :</td>
-      <td colspan='2' id="all_total" class="all_total"><%= purchase_order.total_price.to_f.to_s(2) %></td>  
+      <td colspan='2' id="all_total" class="all_total amount"><%= purchase_order.total_price.to_f.to_s(2) %></td>  
     </tr> 
   </tfoot>
 </table>

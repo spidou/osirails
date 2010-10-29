@@ -11,6 +11,7 @@ module PurchaseOrderSuppliesHelper
   end
   
   def display_supply_show_button(supply, message = nil)
+    return "" unless supply
     text = "Voir les détails de cette fourniture"
     message ||= " #{text}"
     url = send("#{supply.class.name.underscore}_path", supply)
@@ -32,7 +33,7 @@ module PurchaseOrderSuppliesHelper
   end
   
   def display_supply_reference(supply)
-    return "" unless supply.reference
+    return "-" unless supply 
     supply.type == "Consumable" ? url = consumable_path(supply) : url = commodity_path(supply)
     link_to( supply.reference, url, :popup => true )
   end

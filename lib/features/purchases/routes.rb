@@ -64,6 +64,10 @@ ActionController::Routing::Routes.add_routes do |map|
                                     :action => 'purchase_order_supply_in_one_line', 
                                     :method => :get
   
+  map.update_purchase_order_supplier 'update_purchase_order_supplier',  :controller => 'purchase_orders', 
+                                    :action => 'update_purchase_order_supplier', 
+                                    :method => :get
+  
   map.pending_purchase_orders 'purchase_orders/pending', :controller => 'pending_purchase_orders', :action => 'index'
   
   map.closed_purchase_orders  'purchase_orders/closed',  :controller => 'closed_purchase_orders',  :action => 'index'

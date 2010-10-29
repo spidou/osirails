@@ -6,7 +6,8 @@ purchase_order_headers = {  :header => "Informations générales",
                             :footer => "Informations supplémentaires"}
 
 purchase_order_errors  = {  :product_body   => (purchase_order.errors.on(:purchase_order_supplies)) ? " errors" : "",
-                            :payment_body   => (purchase_order.errors.on(:purchase_order_payment)) ? " errors" : ""
+                            :payment_body   => (purchase_order.errors.on(:purchase_order_payment)) ? " errors" : "",
+                            :header         => (purchase_order.errors.on(:invoice_document) || purchase_order.errors.on(:purchased_on)) ? " errors" : ""
 }
 %>
 

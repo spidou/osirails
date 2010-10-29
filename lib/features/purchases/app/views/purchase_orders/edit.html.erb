@@ -1,11 +1,11 @@
 <% content_for :header do -%>
   <%= javascript_include_tag 'purchases/purchases' %>
+  <%= javascript_include_tag 'sales/sales' %>
   <%= stylesheet_link_tag_with_theme_support 'purchases/purchases' %>
 <% end -%>
 
 <%= generate_purchase_order_contextual_menu_partial(@purchase_order) %>
 
 <h1>&eacute;dition de l'ordre d'achat</h1>
-<div>
-   <%= render :partial => "purchase_orders/supplies_by_supplier", :locals => {:supplies => @purchase_order.supplier.supplies, :supplier => @purchase_order.supplier, :purchase_order => @purchase_order} %>
-</div>
+<%= render :partial => "purchase_orders/purchase_order_tab", :locals => {:purchase_order => @purchase_order} %>
+

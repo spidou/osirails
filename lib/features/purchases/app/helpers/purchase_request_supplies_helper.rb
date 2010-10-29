@@ -1,7 +1,7 @@
 module PurchaseRequestSuppliesHelper
   
   def verify_validity_of_purchase_request_supply(purchase_request_supply)
-    return image_tag('warning_14x14.png', :alt => "warning", :title => "Cette demande d'achat est associ&eacute;e &agrave; un ordre d'achat qui est d&eacute;j&agrave; confirm&eacute; vous devez le d&eacute;s&eacute;lectionn&eacute; ou supprim&eacute; la fourniture pour pouvoir confimer votre demande de devis.") if purchase_request_supply.confirmed_purchase_order_supply
+    return image_tag('warning_14x14.png', :alt => "warning", :title => "Cette demande d'achat est associ&eacute;e &agrave; un ordre d'achat qui est d&eacute;j&agrave; confirm&eacute; vous devez le d&eacute;s&eacute;lectionn&eacute; ou supprim&eacute; la fourniture pour pouvoir confimer votre demande de devis.") if purchase_request_supply.confirmed_purchase_order_supply && is_form_view?
     "" 
   end
   
@@ -17,6 +17,14 @@ module PurchaseRequestSuppliesHelper
     html = []
     owner.unconfirmed_purchase_request_supplies.each do |purchase_request_supply|
       html << purchase_request_supply.expected_quantity.to_s
+    end
+    html.join("<br />")
+  end
+  
+  def display_unconfirmed_purchase_request_supplies_priorities(owner)
+    html = []
+    owner.unconfirmed_purchase_request_supplies.each do |purchase_request_supply|
+      html << purchase_request_supply.purchase_priority.name
     end
     html.join("<br />")
   end

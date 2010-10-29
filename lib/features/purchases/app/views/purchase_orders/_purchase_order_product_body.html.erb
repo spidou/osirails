@@ -1,2 +1,15 @@
 <%purchase_order = purchase_order_product_body%>
+<div class="presentation_in_columns">
+   <p>
+    <%= f.label :purchase_document, "Devis signé :" %>
+    <%if is_form_view?%>
+      <% fields_for "purchase_order[quotation_document_attributes][]", PurchaseDocument.new do |f| %>
+          <%= f.file_field :purchase_document %>
+      <% end %>
+    <% else %>
+      <%= link_to image_tag ("download_16x16.png", :alt => "Facture", :title => "facture de l'ordre d'achat" ),
+          purchase_order_attached_quotation_document_path(@purchase_order) %>
+    <% end %>
+    </p>
+</div>
  <%= render :partial => "purchase_orders/supplies_by_supplier", :locals => {:f => f, :supplies => purchase_order.supplier.supplies, :supplier => purchase_order.supplier, :purchase_order => purchase_order} %>

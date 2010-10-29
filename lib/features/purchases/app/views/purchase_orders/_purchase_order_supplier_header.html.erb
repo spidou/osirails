@@ -1,0 +1,41 @@
+<div class="presentation_in_columns">
+      <% unless is_form_view?%>
+      <div> 
+        <p>
+          <%= label :supplier, "Fournisseur"%>
+          <strong><%= purchase_order.supplier.name%></strong>
+        </p>
+      </div>
+      <% end %>
+      <div> 
+        <p>
+          <%= label :city_name, "Ville"%>
+          <strong><%= purchase_order.supplier.address.city_name%></strong>
+        </p>
+      </div>
+      <div>
+        <p> 
+          <%= label :country_name, "Pays"%>
+          <strong><%= purchase_order.supplier.address.country_name%></strong> 
+        </p>
+      </div>
+    <br /> <br />  
+</div>
+<div class="presentation_in_columns">
+    <div>
+      <h3>Adresse </h3>
+      <%= render :partial => 'addresses/address_form', :object => purchase_order.supplier_address || purchase_order.build_supplier_address(purchase_order.supplier.address.attributes), :locals => { :address_owner => purchase_order } %>
+    </div>
+    <div></div>
+    <% if purchase_order.supplier %>
+    <div>
+       <h3>Contact</h3>
+      <% if is_form_view? %>
+        <%= label :select_contacts, "À l'attention de" %>
+        <%= display_contact_picker(purchase_order, purchase_order.supplier.contacts, :contact_key => 'supplier_contact', :contacts_owners => [purchase_order.supplier], :div_id => "purchase_order_supplier_contact") %>
+      <% else %>
+        <%= display_contact(purchase_order.supplier_contact) if purchase_order.supplier_contact_id %>
+      <% end %>
+    </div>
+    <% end %>  
+</div>

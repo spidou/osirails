@@ -1,6 +1,6 @@
 class PurchaseOrdersController < ApplicationController
   
-  helper :purchase_order_supplies, :purchase_deliveries, :purchase_delivery_items, :purchase_request_supplies
+  helper :purchase_order_supplies, :purchase_deliveries, :purchase_delivery_items, :purchase_request_supplies, :numbers, :contacts
   
   # GET /purchase_orders/
   def index
@@ -47,13 +47,14 @@ class PurchaseOrdersController < ApplicationController
         purchase_request_supplies = []
       end
     else
-      redirect_to :action => :prepare_for_new, :supplier_choice => true
+      redirect_to :action => :prepare_for_new
     end
   end
   
   # GET /purchase_orders/:purchase_order_id/edit
   def edit
     @purchase_order = PurchaseOrder.find(params[:id])
+    @supplier = @purchase_order.supplier
     error_access_page(412) unless @purchase_order.can_be_edited?
   end
   
@@ -114,6 +115,12 @@ class PurchaseOrdersController < ApplicationController
     @purchase_order_supply = PurchaseOrderSupply.new(:supply_id => @supply.id)
     render :partial => 'purchase_order_supplies/purchase_order_supply_in_one_line', :object => @purchase_order_supply,
                                                                                     :locals => {:supplier => @supplier}
+  end
+  
+   def update_purchase_order_supplier
+    @supplier = Supplier.find(params[:supplier_id])
+    @purchase_order = PurchaseOrder.new(:supplier_id => @supplier.id)
+    render :partial => 'purchase_orders/purchase_order_supplier_header', :locals => {:purchase_order => @purchase_order}
   end
   
   # GET /purchase_orders/:purchase_order_id

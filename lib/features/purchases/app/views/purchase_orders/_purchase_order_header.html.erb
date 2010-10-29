@@ -1,2 +1,58 @@
 <%purchase_order = purchase_order_header%>
+<%= hidden_field_tag "choice", :value => 1 %>
+<%= f.hidden_field :supplier_id, :value => purchase_order.supplier_id, :id => "supplier_id" %>
+
+<h2>Informations</h2>
+  <div id="purchase_order_search_supplier">
+    <br />
+    <p>
+      <%= label :expected_delivery , 'Livraison pr&eacute;vue(s)?'%>
+      <% if is_form_view?%>
+        <%= f.check_box :expected_delivery %>
+        <span class='help_text'>(Ne pas cocher si les articles sont d&eacute;j&agrave; en votre possession, attention si vous cocher cette case vous devez planifier une livraison avant de cl&ocirc;turer l'ordre d'achat)</span>
+      <%else%>
+          <%=  purchase_order.expected_delivery? ? "oui" : "non" %>
+      <%end%>
+    </p>
+    <p>
+      <%= label :purchased_on , "date d'achat"%>
+      <% if is_form_view?%>
+        <%= calendar_date_field_tag 'purchase_order', 'purchased_on' %>
+      <%else%>
+         <%= l(purchase_order.purchased_on, :format => :short) if purchase_order.purchased_on %>
+      <%end%>
+    </p>
+    <p>
+      <%= f.label :purchase_document, "Bon de livraison :" %>
+      <% if is_form_view? %>
+        <% fields_for "purchase_order[delivery_document_attributes][]", PurchaseDocument.new do |f| %>
+          <%= f.file_field :purchase_document %>
+        <% end %>
+      <% elsif purchase_order.invoice_document%>
+          <%= link_to image_tag ("download_16x16.png", :alt => "Facture", :title => "facture de l'ordre d'achat" ), purchase_order_attached_invoice_document_path(@purchase_order) %>
+      <% end %>
+    </p>
+    <p>
+      <%= f.label :purchase_document, "Bon de livraison :" %>
+      <% if is_form_view? %>
+        <% fields_for "purchase_order[invoice_document_attributes][]", PurchaseDocument.new do |f| %>
+          <%= f.file_field :purchase_document %>
+        <% end %>
+      <% elsif purchase_order.invoice_document%>
+        <%= link_to image_tag ("download_16x16.png", :alt => "Facture", :title => "facture de l'ordre d'achat" ), purchase_order_attached_invoice_document_path(@purchase_order) %>
+      <% end %>
+    </p>
+    <% if is_form_view?%>
+      <br />
+      <%= hidden_field_tag :tmp_supplier_id, :id => "tmp_supplier_id"%>
+      <%= label :supplier, 'Fournisseur'%>
+      <%= custom_text_field_with_auto_complete(:supplier, :name, { :value => purchase_order.supplier.name}, { :update_id => "tmp_supplier_id" } ) %>
+      <%= display_supplier_updater_for(purchase_order)%>
+    <%end%>
+  </div>
+  
+<br/>
+<div id='supplier_updater'>
+  <%= render :partial => 'purchase_orders/purchase_order_supplier_header', :locals => { :purchase_order => purchase_order } %>
+</div>
 

@@ -1,78 +1,11 @@
-<% content_for :header do %>
-  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
-<% end %>
+<% content_for :header do -%>
+  <%= javascript_include_tag 'purchases/purchases' %>
+  <%= javascript_include_tag 'sales/sales' %>
+  <%= stylesheet_link_tag_with_theme_support 'purchases/purchases' %>
+<% end -%>
 
 <%= generate_purchase_order_contextual_menu_partial(@purchase_order) %>
 
-<h1>Ordre d'achat</h1>
-<div class="presentation_medium">
-  <h2>Informations</h2>
-  <div class="presentation_in_columns">
-    <div>
-      <p>
-        <label>R&eacute;f&eacute;rence :</label> 
-        <strong><%= display_purchase_order_reference(@purchase_order) %></strong>
-      </p>
-      <p>
-        <label>Fournisseur :</label> 
-        <strong><%= display_purchase_order_supplier_name(@purchase_order) %></strong>
-      </p>
-      <%= "<p><label>Validé le :</label> <strong>#{@purchase_order.confirmed_on.humanize}</strong></p>" if (@purchase_order.confirmed_on and @purchase_order.status != PurchaseOrder::STATUS_CONFIRMED) %>
-      <%= "<p><label>En traitement depuis le :</label> <strong>#{@purchase_order.processing_by_supplier_since.humanize}</strong></p>" if (@purchase_order.processing_by_supplier_since and @purchase_order.status != PurchaseOrder::STATUS_PROCESSING_BY_SUPPLIER) %>
-      <%= "<p><label>Terminé le :</label> <strong>#{@purchase_order.completed_on.humanize}</strong></p>" if (@purchase_order.completed_on and @purchase_order.status != PurchaseOrder::STATUS_COMPLETED) %>
-      <%= ("<p><label>Annulé le :</label> <strong>#{@purchase_order.cancelled_at.humanize}</strong></p>") if (@purchase_order.was_cancelled? and @purchase_order.status != PurchaseOrder::STATUS_CANCELLED) %>
-      <p>
-        <label>Statut en cours :</label> 
-        <strong><%= display_purchase_order_current_status(@purchase_order) %></strong> depuis le <strong><%= display_purchase_order_current_status_date(@purchase_order) %></strong>
-      </p> 
-    </div>
-    <div >
-        <p>
-          <label>Cr&eacute;&eacute; par :</label> 
-          <strong><%= display_purchase_order_creator(@purchase_order) %></strong> depuis le <strong><%= @purchase_order.created_at.humanize %></strong>
-        </p>
-        <p>
-          <label>Origine :</label>
-          <strong><%= @purchase_order.supplier.address.country_name.to_s %></strong>
-        </p>
-    </div>
-    <div>
-      <% if @purchase_order.quotation_document %>
-        <p>
-          <label>Devis :</label>
-          <%= link_to image_tag ("download_16x16.png", :alt => "devis", :title => "devis de l'ordre d'achat"),
-          purchase_order_attached_quotation_document_path(@purchase_order) %>
-        </p>
-      <% end %>
-      <% if @purchase_order.invoice_document %>
-        <p>
-          <label>Facture :</label>
-          <%= link_to image_tag ("download_16x16.png", :alt => "Facture", :title => "facture de l'ordre d'achat" ),
-          purchase_order_attached_invoice_document_path(@purchase_order) %>
-        </p>
-      <% end %>
-    </div>
-  </div>
-  <% unless @purchase_order.status == PurchaseOrder::STATUS_DRAFT %>
-  
-    <h2>Liste des colis</h2>
-    <% if @purchase_order.can_add_purchase_delivery? %>
-      <p><%= link_to @purchase_order.purchase_deliveries.empty? ? ("Poursuivre l'ordre d'achats") : ("Ajouter une livraison"), new_purchase_order_purchase_delivery_path(@purchase_order) %></p>
-    <% end%>
-    
-    <% if @purchase_order.purchase_deliveries.count > 0 %>
-        <%= render :partial => "purchase_deliveries/array_head" %>
-        <%= render :partial => "purchase_deliveries/purchase_delivery", :collection => @purchase_order.purchase_deliveries, :locals => { :purchase_order => @purchase_order } %>
-        <%= render :partial => "purchase_deliveries/array_foot" %>
-    <% end %>
-  <% end %>
-  
-  <h2>Liste des fournitures commandées</h2>
-  
-  <table class="no_nth">
-      <%= render :partial => "purchase_order_supplies/array_head" %>
-    <tbody>
-      <%= render :partial => "purchase_order_supplies/purchase_order_supply_in_one_line_for_view", :collection => @purchase_order.purchase_order_supplies %>
-    </tbody>
-  </table>
-</div>
+<h1>&eacute;dition de l'ordre d'achat</h1>
+<%= render :partial => "purchase_orders/purchase_order_tab", :locals => {:purchase_order => @purchase_order} %>
+
