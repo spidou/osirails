@@ -12,6 +12,9 @@ require 'test_help'
 require 'shoulda'
 require 'mocha'
 
+# Tests use english locale for error messages
+I18n.locale = :en
+
 # Plugin has_reference
 require File.dirname(__FILE__) + '/../lib/plugins/has_reference/test/unit/has_reference_test'
 

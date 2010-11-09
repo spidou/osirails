@@ -313,7 +313,7 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
 
   create_table "delivery_note_items", :force => true do |t|
     t.integer  "delivery_note_id"
-    t.integer  "quote_item_id"
+    t.integer  "end_product_id"
     t.integer  "quantity"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -348,7 +348,7 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
   add_index "delivery_notes", ["reference"], :name => "index_delivery_notes_on_reference", :unique => true
 
   create_table "delivery_steps", :force => true do |t|
-    t.integer  "pre_invoicing_step_id"
+    t.integer  "production_step_id"
     t.string   "status"
     t.datetime "started_at"
     t.datetime "finished_at"
@@ -806,6 +806,28 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
     t.datetime "updated_at"
   end
 
+  create_table "manufacturing_progresses", :force => true do |t|
+    t.integer  "manufacturing_step_id"
+    t.integer  "end_product_id"
+    t.integer  "progression"
+    t.integer  "building_quantity"
+    t.integer  "built_quantity"
+    t.integer  "available_to_deliver_quantity"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "manufacturing_steps", :force => true do |t|
+    t.integer  "production_step_id"
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.date     "manufacturing_started_on"
+    t.date     "manufacturing_finished_on"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "memorandums", :force => true do |t|
     t.integer  "user_id"
     t.string   "title"
@@ -997,15 +1019,6 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
     t.datetime "updated_at"
   end
 
-  create_table "pre_invoicing_steps", :force => true do |t|
-    t.integer  "order_id"
-    t.string   "status"
-    t.datetime "started_at"
-    t.datetime "finished_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "premia", :force => true do |t|
     t.integer  "employee_id"
     t.date     "date"
@@ -1070,24 +1083,11 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
   add_index "product_reference_categories", ["name", "type"], :name => "index_product_reference_categories_on_name_and_type", :unique => true
   add_index "product_reference_categories", ["reference"], :name => "index_product_reference_categories_on_reference", :unique => true
 
-  create_table "production_progresses", :force => true do |t|
-    t.integer  "production_step_id"
-    t.integer  "product_id"
-    t.integer  "progression"
-    t.integer  "building_quantity"
-    t.integer  "built_quantity"
-    t.integer  "available_to_deliver_quantity"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "production_steps", :force => true do |t|
-    t.integer  "pre_invoicing_step_id"
+    t.integer  "order_id"
     t.string   "status"
     t.datetime "started_at"
     t.datetime "finished_at"
-    t.date     "begining_production_on"
-    t.date     "ending_production_on"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

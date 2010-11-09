@@ -160,14 +160,14 @@ fr:
         reference: "Référence"
       product_reference_sub_category:
         product_reference_category: "Famille parente"
-      production_step:
-        begining_production_on: "Entrée en production le"
-        ending_production_on: "Sortie en production le"
-      production_progress:
+      manufacturing_step:
+        manufacturing_started_on: "Début de la fabrication"
+        manufacturing_finished_on: "Fin de la fabrication"
+      manufacturing_progress:
         progression: "Progression"
-        building_quantity: "Quantitée produits en production"
-        built_quantity: "Quantitée produits terminées"
-        available_to_deliver_quantity: "Quantitée produits livrables"
+        building_quantity: "Quantité de produits en fabrication"
+        built_quantity: "Quantité de produits terminées"
+        available_to_deliver_quantity: "Quantité de produits livrables"
       quote:
         validity_delay: "Période de validité"
         validity_delay_unit: "Unité de période de validité"
@@ -235,9 +235,19 @@ fr:
               on_or_after: "ne doit pas être AVANT la date d'émission du bon de livraion&#160;({{restriction}})"
         delivery_note:
           attributes:
+            base:
+              cant_be_confirmed: "Le Bon de Livraison n'est pas prêt à être validé"
+              cant_be_cancelled: "Le Bon de Livraison n'est pas prêt à être annulé"
+              cant_be_signed: "Le Bon de Livraison n'est pas prêt à être signé"
             signed_on:
               on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
               on_or_after: "ne doit pas être AVANT la date d'émission du BL&#160;({{restriction}})"
+            delivery_interventions:
+              unconfirmed: "Il est impossible de créer une intervention à partir d'un Bon de Livraison non validé"
+              pending: "Il est impossible de créer une nouvelle intervention pour l'instant pour ce Bon de Livraison"
+              delivered: "Il n'est plus possible de créer une intervention pour ce Bon de Livraison"
+            delivery_note_items:
+              blank: "Vous devez choisir au moins 1 produit à livrer"
         dunning:
           attributes:
             date:
@@ -275,22 +285,22 @@ fr:
             signed_on:
               on_or_after: "ne doit pas être AVANT la date d'envoi du Bon à tirer&#160;({{restriction}})"
               on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
-        production_step:
+        manufacturing_step:
           attributes:
-            begining_production_on:
-              blank: "est requis si ending_production_on est present"
-            ending_production_on:
-              blank: "n'est pas requis tant que progression total different de 100%"
-        production_progress:
+            manufacturing_started_on:
+              blank: "est requise si la date de fin de fabrication est spéficiée ou si la fabrication a commencé"
+            manufacturing_finished_on:
+              blank: "est requise lorsque tous les produits sont terminés"
+              not_blank: "ne peut pas être spécifiée tant que tous les produits ne sont pas terminées"
+        manufacturing_progress:
           attributes:
             progression:
-              inclusion: "ne doit pas etre a 100% si la quantit&eautee; de ({{restriction}}) est differente de la quantit&eacute;e de produit total"
+              max: "ne peut pas être à 100% si tous les produits ne sont pas terminés"
+              not_max: "doit être à 100% si tous les produits sont terminés"
             building_quantity:
-              inclusion: "doit etre compris entre 0 et ({{restriction}})"
+              invalid_sum: "La somme des produits 'en cours de fabrication' et 'terminés' doit être comprise entre 0 et {{quantity}}"
             built_quantity:
-              inclusion: "doit etre compris entre 0 et ({{restriction}})"
-            available_to_deliver_quantity:
-              inclusion: "doit etre compris entre 0 et ({{restriction}})"
+              invalid_sum: "La somme des produits 'en cours de fabrication' et 'terminés' doit être comprise entre 0 et {{quantity}}"
         quote:
           attributes:
             cancelled_on:

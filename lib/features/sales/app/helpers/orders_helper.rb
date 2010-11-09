@@ -30,8 +30,8 @@ module OrdersHelper
     render :partial => 'press_proofs/contextual_menu'
   end
   
-  def generate_pre_invoicing_step_contextual_menu_partial
-    render :partial => 'pre_invoicing_step/contextual_menu'
+  def generate_production_step_contextual_menu_partial
+    render :partial => 'production_step/contextual_menu'
   end
   
   def generate_delivery_note_contextual_menu_partial
@@ -81,8 +81,8 @@ module OrdersHelper
     content_tag( :p, message + ( edit_order || "" ), :class => "order_deadline #{status}" )
   end
   
-  def display_interventions_town_for(order)
-    order.ship_to_addresses.collect{|s|s.address.city_name}.join('<br />')
+  def display_intervention_cities_for(order)
+    order.ship_to_addresses.collect{ |s| s.address.city_name }.join('<br/>')
   end
   
 end

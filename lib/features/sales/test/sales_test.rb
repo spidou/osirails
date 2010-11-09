@@ -47,35 +47,16 @@ class Test::Unit::TestCase
     return ProductReference.create!( :product_reference_sub_category_id => product_reference_categories(:child).id, :name => "Default Product Reference" )
   end
   
-  def create_default_end_product(order = nil)
-    product_reference = create_default_product_reference
+  def create_default_end_product(order = nil, params = {})
+    product_reference = ProductReference.find_by_id(params[:product_reference_id]) || create_default_product_reference
     order ||= create_default_order
     
-    return order.end_products.create!( :product_reference_id  => product_reference.id,
-                                       :name                  => "Default End Product",
-                                       :quantity              => 1,
-                                       :prizegiving           => 0 )
-  end
-  
-  def build_default_end_product_for(step, params = {})
-    end_product_attributes = { :product_reference_id => ProductReference.first.id,
-                               :name                 => "Name",
-                               :description          => "Description",
-                               :dimensions           => "Dimensions",
-                               :quantity             => 1 }.merge(params)
-    step.end_product_attributes=( [end_product_attributes] )
+    product_attributes = { :product_reference_id  => product_reference.id,
+                           :name                  => "Default End Product",
+                           :quantity              => 1,
+                           :prizegiving           => 0 }.merge(params)
     
-    end_product_attributes.each do |key, value|
-      flunk "<#{value}> expected but was \n<#{step.order.end_products.last.send(key)}>\nThese two values should be equal" unless step.order.end_products.last.send(key) == value
-    end
-    return step.order.end_products.last
-  end
-    
-  def create_default_end_product_for(step, params = {})
-    build_default_end_product_for(step, params)
-    step.save!
-    flunk "order should have 1 end_product" unless step.order.end_products.count == 1
-    return step.order.end_products.first
+    return order.end_products.create!(product_attributes)
   end
   
   ## QUOTE METHODS
@@ -124,8 +105,29 @@ class Test::Unit::TestCase
     return quote
   end
   
+  ## PRODUCTION STEP
+  def manufacture_and_make_deliverable_all_end_products_for(order)
+    manufacturing_step = order.production_step.manufacturing_step
+    manufacturing_step.build_manufacturing_progresses_from_end_products
+    
+    manufacturing_step.manufacturing_progresses.each do |mp|
+      mp.attributes = { :built_quantity => mp.end_product.quantity,
+                        :progression    => 100,
+                        :available_to_deliver_quantity => mp.end_product.quantity }
+    end
+    
+    manufacturing_step.attributes = { :manufacturing_started_on  => Date.today,
+                                      :manufacturing_finished_on => Date.today }
+    
+    manufacturing_step.save!
+  end
+  
   ## DELIVERY_NOTE METHODS
   def create_valid_delivery_note_for(order, delivery_note_type = nil)
+    # setup production step
+    manufacture_and_make_deliverable_all_end_products_for(order)
+    order.reload
+    
     address = Address.create( :street_name       => "Street Name",
                               :country_name      => "Country",
                               :city_name         => "City",
@@ -140,10 +142,8 @@ class Test::Unit::TestCase
     dn.delivery_note_contact_id = order.all_contacts.first.id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
-    dn.associated_quote.quote_items.each do |ref|
-      dn.delivery_note_items.build(:quote_item_id => ref.id,
-                                   :quantity      => ref.quantity)
-    end
+    dn.build_missing_delivery_note_items_from_ready_to_deliver_end_products
+    dn.delivery_note_items.each{ |item| item.quantity = item.end_product.quantity }
     dn.save!
     
     flunk "order should have all its end_products delivered or scheduled" unless order.all_is_delivered_or_scheduled?
@@ -151,6 +151,9 @@ class Test::Unit::TestCase
   end
   
   def create_valid_partial_delivery_note_for(order, delivery_note_type = nil)
+    # setup production step
+    manufacture_and_make_deliverable_all_end_products_for(order)
+    
     address = Address.create( :street_name       => "Street Name",
                               :country_name      => "Country",
                               :city_name         => "City",
@@ -166,10 +169,11 @@ class Test::Unit::TestCase
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     count = 0
-    dn.associated_quote.quote_items.each do |ref|
+    dn.signed_quote.end_products.each do |end_product|
       break if count == 2
-      dn.delivery_note_items.build(:quote_item_id => ref.id,
-                                   :quantity      => ref.quantity)
+      dn.delivery_note_items.build(:order_id       => order.id,
+                                   :end_product_id => end_product.id,
+                                   :quantity       => end_product.quantity)
       count += 1
     end
     dn.save!
@@ -310,7 +314,7 @@ class Test::Unit::TestCase
     invoice.published_on        = Date.today
     
     invoice.deposit         = 40
-    invoice.deposit_amount  = invoice.associated_quote.net_to_paid * 0.4
+    invoice.deposit_amount  = invoice.signed_quote.net_to_paid * 0.4
     invoice.deposit_vat     = 19.6
     invoice.deposit_comment = "This is a deposit invoice."
     invoice.build_or_update_free_item_for_deposit_invoice

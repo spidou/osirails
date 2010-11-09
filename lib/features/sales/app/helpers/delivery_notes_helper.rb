@@ -44,7 +44,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "add_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             new_order_pre_invoicing_step_delivery_step_delivery_note_path(order))
+             new_order_production_step_delivery_step_delivery_note_path(order))
   end
   
   def display_delivery_note_show_button(order, delivery_note, message = nil)
@@ -54,7 +54,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "view_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note) )
+             order_production_step_delivery_step_delivery_note_path(order, delivery_note) )
   end
   
   def display_delivery_note_preview_button(order, delivery_note, message = nil)
@@ -64,7 +64,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "preview_16x16.gif",
                         :alt => text,
                         :title => text ) + message,
-             order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf) )
+             order_production_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf) )
   end
   
   def display_delivery_note_show_pdf_button(order, delivery_note, message = nil)
@@ -74,7 +74,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf) )
+             order_production_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf) )
   end
   
   def display_delivery_note_edit_button(order, delivery_note, message = nil)
@@ -84,7 +84,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "edit_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             edit_order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note) )
+             edit_order_production_step_delivery_step_delivery_note_path(order, delivery_note) )
   end
   
   def display_delivery_note_delete_button(order, delivery_note, message = nil)
@@ -94,7 +94,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "delete_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note), :method => :delete, :confirm => "Êtes vous sûr?") 
+             order_production_step_delivery_step_delivery_note_path(order, delivery_note), :method => :delete, :confirm => "Êtes vous sûr?") 
   end
   
   def display_delivery_note_confirm_button(order, delivery_note, message = nil)
@@ -104,7 +104,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "confirm_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_pre_invoicing_step_delivery_step_delivery_note_confirm_path(order, delivery_note),
+             order_production_step_delivery_step_delivery_note_confirm_path(order, delivery_note),
              :confirm => "Êtes-vous sûr ?\nCeci aura pour effet de générer un numéro unique pour le bon de livraison et vous ne pourrez plus le modifier." )
   end
   
@@ -115,7 +115,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "schedule_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_pre_invoicing_step_delivery_step_delivery_note_schedule_form_path(order, delivery_note) )
+             order_production_step_delivery_step_delivery_note_schedule_form_path(order, delivery_note) )
   end
   
   def display_delivery_note_realize_button(order, delivery_note, message = nil)
@@ -125,7 +125,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "realize_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_pre_invoicing_step_delivery_step_delivery_note_realize_form_path(order, delivery_note) )
+             order_production_step_delivery_step_delivery_note_realize_form_path(order, delivery_note) )
   end
   
   def display_delivery_note_cancel_button(order, delivery_note, message = nil)
@@ -135,7 +135,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "cancel_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_pre_invoicing_step_delivery_step_delivery_note_cancel_path(order, delivery_note),
+             order_production_step_delivery_step_delivery_note_cancel_path(order, delivery_note),
              :confirm => "Êtes-vous sûr ?" )
   end
   
@@ -146,7 +146,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "sign_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_pre_invoicing_step_delivery_step_delivery_note_sign_form_path(order, delivery_note) )
+             order_production_step_delivery_step_delivery_note_sign_form_path(order, delivery_note) )
   end
   
   def display_delivery_note_download_attachment_button(order, delivery_note, message = nil)
@@ -156,7 +156,7 @@ module DeliveryNotesHelper
     link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_pre_invoicing_step_delivery_step_delivery_note_attachment_path(order, delivery_note) )
+             order_production_step_delivery_step_delivery_note_attachment_path(order, delivery_note) )
   end
   
   def status_text(delivery_note)

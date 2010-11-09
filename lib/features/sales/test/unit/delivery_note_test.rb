@@ -10,13 +10,13 @@ class DeliveryNoteTest < ActiveSupport::TestCase
   should_belong_to :order, :creator, :delivery_note_type
   
   should_have_many :delivery_note_items, :dependent => :destroy
-  should_have_many :quote_items,         :through   => :delivery_note_items
+  should_have_many :end_products,        :through   => :delivery_note_items
   
   should_have_many :delivery_interventions
   should_have_one  :pending_delivery_intervention
   should_have_one  :delivered_delivery_intervention
   
-  should_validate_presence_of :delivery_note_items, :ship_to_address
+  should_validate_presence_of :ship_to_address
   should_validate_presence_of :order, :creator, :delivery_note_type, :delivery_note_contact, :with_foreign_key => :default
   
   should_not_allow_values_for :status, 0, 1, 100, "string"
@@ -24,15 +24,20 @@ class DeliveryNoteTest < ActiveSupport::TestCase
   
   should_not_allow_mass_assignment_of :status, :reference, :confirmed_at, :cancelled_at
   
-  context "In an order WITHOUT a signed quote" do
-    #TODO assert a new delivery_note cannot be added
+  context "In an order without signed_quote, a new delivery_note" do
+    setup do
+      @order = create_default_order
+      flunk "@order should not have a signed_quote" if @order.signed_quote
+      
+      @dn = @order.delivery_notes.build
+    end
+    
+    should "NOT be able to be added" do
+      assert !@dn.can_be_added?
+    end
   end
   
-  context "In an order with a signed quote and 1 'full' delivery_note" do
-    #TODO assert a new delivery_note cannot be added if delivery_note is uncomplete, confirmed or signed
-  end
-  
-  context "In an order with a signed quote" do
+  context "In an order with signed_quote" do
     setup do
       @order = create_default_order
       @signed_quote = create_signed_quote_for(@order)
@@ -49,104 +54,94 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       
       flunk "@valid_address should be valid"       unless @valid_address.valid?
       flunk "@invalid_address should NOT be valid" if @invalid_address.valid?
+      
+      flunk "@order should have a signed_quote" unless @order.signed_quote
     end
     
-    teardown do
-      @order = @signed_quote = @attachment = nil
-      @invalid_address = @valid_address = nil
-    end
-    
-    #TODO this context have been adapted from old code, but it should be reviewed to be adapted for the real shoulda way to write test
-    context "a new and empty delivery_note" do
+    context "and 0 ready_to_deliver_end_products, a new delivery_note" do
       setup do
-        @dn = @order.delivery_notes.build # the object must be clear to perform the test, so don't add any attributes on that object
-        @dn.valid?
+        flunk "@order should have 0 ready_to_deliver_end_products" if @order.ready_to_deliver_end_products_and_quantities.any?
+        @dn = @order.delivery_notes.build
       end
       
-      teardown do
-        @dn = nil
+      should "NOT be able to added" do
+        assert !@dn.can_be_added?
+      end
+    end
+    
+    context "and all products ready to be delivered, a new and empty delivery_note" do
+      setup do
+        manufacture_and_make_deliverable_all_end_products_for(@order)
+        flunk "@order should have any ready_to_deliver_end_products" if @order.ready_to_deliver_end_products_and_quantities.empty?
+        
+        @dn = @order.delivery_notes.build # the object must be clear to perform the test, so don't add any attributes on that object
+        @end_product = @signed_quote.end_products(true).first
       end
       
       should "be able to be added" do
-        assert @dn.can_be_added?, "@dn.order.all_is_delivered_or_scheduled? => #{@dn.order.all_is_delivered_or_scheduled?}"
+        assert @dn.can_be_added?
       end
     
-      should "have a ship_to_address" do
-        assert @dn.errors.invalid?(:ship_to_address), "ship_to_address should NOT be a valid because it's nil"
-      
-        @dn.ship_to_address = @invalid_address
-        @dn.valid?
-        assert @dn.errors.invalid?(:ship_to_address), "ship_to_address should NOT be valid"
-        
-        @dn.ship_to_address = @valid_address
-        @dn.valid?
-        assert !@dn.errors.invalid?(:ship_to_address), "ship_to_address should be valid"
+      should "have a signed_quote" do
+        assert_equal @signed_quote, @dn.signed_quote, "delivery_note should have a signed_quote"
       end
       
-      should "have an associated quote" do
-        assert_not_nil @dn.associated_quote, "delivery_note should have an associated_quote"
-        assert @dn.associated_quote.instance_of?(Quote), "associated_quote should be an instance of Quote"
-      end
-      
-      should "have valid delivery_note_items" do
-        assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because it's empty"
-        
-        # when a quote_item_id is wrong
-        @dn.delivery_note_items.build(:quote_item_id => 0)
-        @dn.valid?
-        assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quote_item_id is wrong"
-        assert !@dn.delivery_note_items.first.errors.invalid?(:quote_item_id), "quote_item_id should be valid"
-        assert @dn.delivery_note_items.first.errors.invalid?(:quote_item), "quote_item should NOT be valid because quote_item_id is wrong"
-        
-        # when a quote_item is invalid
-        @dn.delivery_note_items = []
-        @dn.delivery_note_items.build.quote_item = QuoteItem.new # assuming QuoteItem.new returns an invalid record
-        @dn.valid?
-        assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quote_item is invalid"
-        assert @dn.delivery_note_items.first.errors.invalid?(:quote_item_id), "quote_item_id should NOT be valid because it's an invalid record"
-        
-        # when a quantity is nil
-        @dn.delivery_note_items = []
-        @dn.delivery_note_items.build(:quote_item_id => @dn.associated_quote.quote_items.first.id)
-        @dn.valid?
-        assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quantity is nil"
-        assert @dn.delivery_note_items.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's nil"
-        
-        # when a quantity is not in range
-        @dn.delivery_note_items.first.quantity = @dn.associated_quote.quote_items.first.quantity + 1
-        @dn.valid?
-        assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quantity is out of range (too big)"
-        assert @dn.delivery_note_items.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's out of range (too big)"
-        
-        @dn.delivery_note_items.first.quantity = -1
-        @dn.valid?
-        assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quantity is out of range (too small)"
-        assert @dn.delivery_note_items.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's out of range (too small)"
-        
-        # when a quantity is not a number
-        @dn.delivery_note_items.first.quantity = "not a number"
-        @dn.valid?
-        assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quantity is not a number"
-        assert @dn.delivery_note_items.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's not a number"
-        
-        # when all is ok
-        @dn.delivery_note_items = []
-        @dn.associated_quote.quote_items.each do |ref|
-          @dn.delivery_note_items.build(:quote_item_id => ref.id, :quantity => ref.quantity)
+      context "with 0 delivery_note_items" do
+        setup do
+          flunk "@dn should have 0 delivery_note_items" if @dn.delivery_note_items.any?
+          @dn.valid?
         end
-        assert_equal @dn.associated_quote.quote_items.size,
-                     @dn.delivery_note_items.size, "delivery_note_items should be at the good size"
-        @dn.valid?
-        assert !@dn.errors.invalid?(:delivery_note_items), "delivery_note_items should be valid"
+        
+        should "have invalid delivery_note_items" do
+          assert_match /You have to choose at least 1 product for delivery/, @dn.errors.on(:delivery_note_items)
+        end
       end
       
-      should "have a valid status" do
-        @dn = create_valid_delivery_note_for(@order)
+      context "with 1 invalid delivery_note_item" do
+        setup do
+          flunk "@end_product.quantity should not be greater than or equal to 100" if @end_product.quantity >= 100
+          @dn_item = @dn.delivery_note_items.build(:order_id        => @order.id,
+                                                   :end_product_id  => @end_product.id,
+                                                   :quantity        => 100)
+          flunk "@dn_item should be invalid" if @dn_item.valid?
+          
+          @dn.valid?
+        end
         
-        assert_nil @dn.status, "@dn.status should be nil"
-        assert @dn.uncomplete?, "delivery_note should be uncomplete"
-        @dn.valid?
-        assert !@dn.errors.invalid?(:status), "status should be valid"
+        should "have invalid delivery_note_items" do
+          # this is a hack to pass through the double error message
+          flunk "@dn.errors.on(:delivery_note_items) should have 1 uniq error" if @dn.errors.on(:delivery_note_items).uniq.many?
+          assert_match /is invalid/, @dn.errors.on(:delivery_note_items).first
+        end
+      end
+      
+      context "with 1 valid delivery_note_item" do
+        setup do
+          @dn_item = @dn.delivery_note_items.build(:order_id        => @order.id,
+                                                   :end_product_id  => @end_product.id,
+                                                   :quantity        => @end_product.quantity)
+          flunk "@dn_item should be valid > #{@dn_item.errors.inspect}" unless @dn_item.valid?
+        end
+        
+        should "have valid delivery_note_items" do
+          assert_nil @dn.errors.on(:delivery_note_items)
+        end
+      end
+    end
+    
+    context "and all products delivered or scheduled, a new delivery_note" do
+      setup do
+        @first_dn = create_valid_delivery_note_for(@order)
+        confirm_delivery_note(@first_dn)
+        sign_delivery_note(@first_dn)
+        
+        flunk "@order should have all its products already delivered or scheduled" unless @order.all_is_delivered_or_scheduled?
+        
+        @dn = @order.delivery_notes.build
+      end
+      
+      should "NOT be able to be added" do
+        assert !@dn.can_be_added?
       end
     end
     
@@ -157,10 +152,6 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         
         @dn.valid?
         flunk "@dn should be uncomplete" unless @dn.was_uncomplete?
-      end
-      
-      teardown do
-        @dn = nil
       end
       
       should "have a good 'status' value" do
@@ -236,10 +227,6 @@ class DeliveryNoteTest < ActiveSupport::TestCase
           flunk "@dn should have a pending_delivery_intervention" unless @dn.pending_delivery_intervention
         end
       
-        teardown do
-          @intervention = nil
-        end
-        
         should "be able to be scheduled" do
           assert @dn.can_be_scheduled?
         end
@@ -271,10 +258,6 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         @dn.valid?
         flunk "@dn should be confirmed" unless @dn.was_confirmed?
         flunk "delivery_note should NOT have a pending delivery_intervention" unless @dn.pending_delivery_intervention.nil?
-      end
-      
-      teardown do
-        @dn = nil
       end
       
       subject{ @dn }
@@ -355,10 +338,6 @@ class DeliveryNoteTest < ActiveSupport::TestCase
           flunk "@dn should have a pending_delivery_intervention" unless @dn.pending_delivery_intervention
         end
       
-        teardown do
-          @intervention = nil
-        end
-        
         should "be able to be scheduled" do
           assert @dn.can_be_scheduled?
         end
@@ -389,10 +368,6 @@ class DeliveryNoteTest < ActiveSupport::TestCase
           flunk "@dn should have a delivered_delivery_intervention" unless @dn.delivered_delivery_intervention
         end
       
-        teardown do
-          @intervention = nil
-        end
-        
         should "NOT be able to be scheduled" do
           assert !@dn.can_be_scheduled?
         end
@@ -432,10 +407,6 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         
         @dn.valid?
         flunk "@dn should be cancelled" unless @dn.was_cancelled?
-      end
-      
-      teardown do
-        @dn = nil
       end
       
       should "have a good 'status' value" do
@@ -510,10 +481,6 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         
         @dn.valid?
         flunk "@dn should be signed" unless @dn.was_signed?
-      end
-      
-      teardown do
-        @dn = nil
       end
       
       should "have a good 'status' value" do
@@ -693,9 +660,10 @@ class DeliveryNoteTest < ActiveSupport::TestCase
     def update_delivery_note_items_by_adding_item
       @dn.delivery_note_items.reload
       
-      ref = @signed_quote.quote_items.last
-      @dn.delivery_note_items.build(:quote_item_id => ref.id,
-                                                         :quantity => ref.quantity)
+      end_product = @signed_quote.end_products(true).last
+      @dn.delivery_note_items.build(:order_id       => @order.id,
+                                    :end_product_id => end_product.id,
+                                    :quantity       => end_product.quantity)
       @dn.valid?
     end
     

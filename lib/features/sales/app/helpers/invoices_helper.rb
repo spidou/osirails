@@ -252,43 +252,28 @@ module InvoicesHelper
   
   def display_delay_of_paiment_for(invoice)
     delay = invoice.due_dates.last.date - invoice.sended_on if invoice.sended_on
-    "#{delay} Jour(s)"
+    "#{delay} jour(s)"
   end
   
   def display_delay_of_upcoming_due_date_paiment_for(invoice)
+    return "" unless invoice.upcoming_due_date
+    
     delay = Date.today - invoice.upcoming_due_date.date
     if delay < 0
-      return " (J-#{delay * -1})" 
+      return " (J#{delay})"   # J-10
     elsif delay > 0
-      return " (J+#{delay})"
+      return " (J+#{delay})"  # J+10
     elsif delay == 0
-      return " (Jours J)"
-    end  
+      return " (Jour J)"
+    end
   end
   
   def display_delivery_notes_references_for(invoice)
-    invoice.order.delivery_notes.collect(&:reference).join("<br>")
+    invoice.delivery_notes.collect(&:reference).join("<br/>")
   end
   
   def display_state_of_delivery_notes_references_for(invoice)
-    invoice.order.delivery_notes.collect{|n| n.signed? ? "oui":"non"}.join("<br>")
-  end
-  
-  def set_tr_class_name_for(invoice)
-    return ""  unless invoice.published_on
-    
-    date_of_publishing = invoice.published_on 
-    delay = ((invoice.upcoming_due_date.date - date_of_publishing) / 3)
-    limit = invoice.upcoming_due_date.date
-    
-    first_third_date = date_of_publishing + delay
-    second_third_date = date_of_publishing + (2 * delay)
-    actual_date = Date.today 
-
-    return ""  if (actual_date <= first_third_date) 
-    return "low_priority"  if ((actual_date > first_third_date) && (actual_date < second_third_date)) 
-    return "medium_priority"  if ((actual_date > second_third_date) && (actual_date < limit))
-    return "high_priority"     if (actual_date >= limit)
+    invoice.delivery_notes.collect{ |n| n.signed? ? "Oui" : "Non" }.join("<br/>")
   end
   
 end

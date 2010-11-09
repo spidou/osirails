@@ -23,8 +23,7 @@ class SubcontractorRequest < ActiveRecord::Base
                                                      :message      => "Le devis scanné ne doit pas avoir une taille supérieure à 5 MB"
   end
   
-  validates_persistence_of :survey_step_id, :subcontractor_id
-  validates_persistence_of :attachment, :if => :attachment
+  validates_persistence_of :survey_step_id
   
   attr_accessor :should_destroy, :should_update
   

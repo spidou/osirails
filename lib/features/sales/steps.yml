@@ -12,12 +12,12 @@ steps:
       press_proof:
         title: BAT
         position: 3
-  pre_invoicing:
-    title: SAS de facturation
+  production:
+    title: Production
     position: 2
     children:
-      production:
-        title: Production
+      manufacturing:
+        title: Fabrication
         position: 1
       delivery:
         title: Livraison

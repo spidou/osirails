@@ -92,10 +92,10 @@ en:
         product_reference_sub_category: "Subcategory"
       product_reference_sub_category:
         product_reference_category: "Parent category"
-      production_step:
-        begining_production_on: "Production begining on"
-        ending_production_on: "Production ending on"
-      production_progress:
+      manufacturing_step:
+        manufacturing_started_on: "Manufacturing started on"
+        manufacturing_finished_on: "Manufacturing ended on"
+      manufacturing_progress:
         progression: "Progression"
         building_quantity: "Building quantity"
         built_quantity: "Built quantity"
@@ -134,9 +134,19 @@ en:
               on_or_after: "must not be BEFORE the delivery note publication date&#160;({{restriction}})"
         delivery_note:
           attributes:
+            base:
+              cant_be_confirmed: "This Delivery Note is not ready to be validated"
+              cant_be_cancelled: "This Delivery Note is not ready to be cancelled"
+              cant_be_signed: "This Delivery Note is not ready to be signed"
             signed_on:
               on_or_before: "must not be AFTER today&#160;({{restriction}})"
               on_or_after: "must not be BEFORE the delivery note publication date&#160;({{restriction}})"
+            delivery_interventions:
+              unconfirmed: "It not possible to create an intervention for a non-validated Delivery Note"
+              pending: "It is not possible to create a new intervention for this Delivery Note for the moment"
+              delivered: "It is not possible anymore to create an intervention for this Delivery Note"
+            delivery_note_items:
+              blank: "You have to choose at least 1 product for delivery"
         dunning:
           attributes:
             date:
@@ -174,22 +184,22 @@ en:
             signed_on:
               on_or_after: "must not be BEFORE the press proof send date&#160;({{restriction}})"
               on_or_before: "must not be AFTER today&#160;({{restriction}})"
-        production_step:
+        manufacturing_step:
           attributes:
-            begining_production_on:
-              blank: "is required if there are ending_production"
-            ending_production_on:
-              blank: "is not required while global progression different to 100%"
-        production_progress:
+            manufacturing_started_on:
+              blank: "can't be blank if manufacturing end date is specified or manufacturing has started"
+            manufacturing_finished_on:
+              blank: "can't be blank if all products are finished"
+              not_blank: "can not be specified unless all products are completely finished"
+        manufacturing_progress:
           attributes:
             progression:
-              inclusion: "should not be to 100% si quantity of ({{restriction}}) is different of product total quantity"
+              max: "cannot be at 100% if all products are not finished"
+              not_max: "have to be at 100% if all products are finished"
             building_quantity:
-              inclusion: "should be between 0 and ({{restriction}})"
+              invalid_sum: "Sum of 'building' and 'build' products must be between 0 and {{quantity}}"
             built_quantity:
-              inclusion: "should be between 0 and ({{restriction}})"
-            available_to_deliver_quantity:
-              inclusion: "should be between 0 and ({{restriction}})"
+              invalid_sum: "Sum of 'building' and 'build' products must be between 0 and {{quantity}}"
         quote:
           attributes:
             cancelled_on:

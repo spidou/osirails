@@ -14,7 +14,12 @@ class PressProofStepController < ApplicationController
   end
   
   def update
-    # TODO
+    if @step.update_attributes(params[:press_proof_step])
+      flash[:notice] = "Les modifications ont été enregistrées avec succès"
+      redirect_to :action => :edit
+    else
+      render :action => :edit
+    end
   end
   
 end

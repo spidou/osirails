@@ -26,7 +26,7 @@
           <td><%= dn.delivered_delivery_intervention.delivery_at.humanize %></td>
           <td><%= dn.signed_on.humanize %></td>
           <td><%= "#{dn.number_of_delivered_pieces} / #{dn.number_of_pieces}" %></td>
-          <td><%= dn.associated_quote.number_of_pieces %></td>
+          <td><%= dn.signed_quote.number_of_pieces %></td>
           <td><%= display_transform_delivery_note_in_invoice(dn) %></td>
         </tr>
       <% end %>

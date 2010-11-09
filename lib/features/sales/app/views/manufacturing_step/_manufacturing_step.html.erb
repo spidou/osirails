@@ -1,0 +1,58 @@
+<%= order_header %>
+
+<h1>Fabrication</h1>
+<div class="presentation_medium">
+  <p>
+    L'étape "Fabrication" permet d'établir de mettre à jour l'avancement de la fabrication sur chaque produit de la commande.<br/>
+    La signature du devis est nécessaire pour commencer la fabrication.
+  </p>
+  <p>
+    L'étape "Fabrication" est automatiquement clôturée lorsque tous les produits sont fabriqués et livrables.
+  </p>
+  <hr/>
+  
+  <% if manufacturing_step.end_products.any? %>
+    <% form_for(manufacturing_step, :url => { :controller => "manufacturing_step", :action => "update" }) do |f| %>
+      <%= f.error_messages %>
+      <p>
+        <%= f.label :manufacturing_started_on %>
+        <% if f.form_view? %>
+          <%= f.calendar_date_select(:manufacturing_started_on, { :disabled => manufacturing_step.manufacturing_started_on_was }) %>
+        <% else %>
+          <%= strong l(manufacturing_step.manufacturing_started_on, :format => :long) %>
+        <% end %>
+      </p>
+      <p>
+        <%= f.label :manufacturing_finished_on %>
+        <% if f.form_view? %>
+          <%= f.calendar_date_select(:manufacturing_finished_on) %>
+        <% else %>
+          <%= strong l(manufacturing_step.manufacturing_finished_on, :format => :long) %>
+        <% end %>
+      </p>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>R&eacute;f. produit</th>
+            <th>D&eacute;signation produit</th>
+            <th>Qt&eacute;<br/>&agrave; produire</th>
+            <th>Qt&eacute; produits<br/>en cours de fabrication</th>
+            <th>Qt&eacute; produits<br/>termin&eacute;s</th>
+            <th>Avancement global<br/>de la fabrication (%)</th>
+            <th>Qt&eacute; produits<br/>livrables</th>
+            <% if manufacturing_step.errors.on(:manufacturing_progresses) %>
+              <th>Erreurs</th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render :partial => 'manufacturing_step/manufacturing_progress', :collection => manufacturing_step.manufacturing_progresses,
+                                                                              :locals     => { :manufacturing_step => manufacturing_step } %>
+        </tbody>
+      </table>
+      
+      <%= f.form_buttons %>
+    <% end %>
+  <% end %>
+</div>

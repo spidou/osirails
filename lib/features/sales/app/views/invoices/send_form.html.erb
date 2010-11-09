@@ -17,8 +17,7 @@
       <%= form.label :send_invoice_method_id %>
       <%= form.collection_select :send_invoice_method_id, SendInvoiceMethod.all, :id, :name, :include_blank => true %>
     </p>
-    <p>
-      <%= form.submit "Valider" %>
-    </p>
+    
+    <%= form.form_buttons %>
   <% end %>
 </div>

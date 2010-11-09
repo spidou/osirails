@@ -1,26 +1,12 @@
 class ProductionStepController < ApplicationController
-  acts_as_step_controller
-  helper :production_steps
-  
+  acts_as_step_controller :sham => true
+
   def index
-  end
-  
-  def show  
-    @order
-  end
-  
-  def edit
-    @order
-  end
-  
-  def update
-    @production_step = @order.pre_invoicing_step.production_step
-    if (@production_step.update_attributes(params[:production_step]))
-      flash[:notice] = "production modifié avec succès"
-      redirect_to order_pre_invoicing_step_production_step_path(@order)
+    if @order.production_step.terminated?
+      step_to_display = @order.production_step.children_steps.last
     else
-      render :action => :edit
-    end 
+      step_to_display = @order.production_step.children_steps.select{ |s| !s.terminated? }.first # there is at least one child unterminated if the parent step is not terminated
+    end
+    redirect_to send(step_to_display.original_step.path)
   end
-  
 end

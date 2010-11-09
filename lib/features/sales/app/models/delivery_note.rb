@@ -17,7 +17,7 @@ class DeliveryNote < ActiveRecord::Base
   belongs_to :delivery_note_type
   
   has_many :delivery_note_items, :dependent => :destroy
-  has_many :quote_items,         :through   => :delivery_note_items
+  has_many :end_products,        :through   => :delivery_note_items
   
   has_many :delivery_interventions, :order => "created_at DESC"
   has_one  :pending_delivery_intervention,    :class_name => "DeliveryIntervention", :conditions => [ 'delivered IS NULL AND cancelled_at IS NULL and postponed IS NULL' ], :order => "created_at DESC"
@@ -31,7 +31,7 @@ class DeliveryNote < ActiveRecord::Base
   
   named_scope :actives, :conditions => [ 'status IS NULL or status != ?', STATUS_CANCELLED ]
   
-  validates_presence_of :delivery_note_items, :ship_to_address
+  validates_presence_of :ship_to_address
   validates_presence_of :order_id, :creator_id, :delivery_note_type_id
   validates_presence_of :order,               :if => :order_id
   validates_presence_of :creator,             :if => :creator_id
@@ -58,32 +58,32 @@ class DeliveryNote < ActiveRecord::Base
   validates_persistence_of :cancelled_at, :delivery_interventions, :status,           :if => :cancelled_at_was
   validates_persistence_of :signed_on, :attachment, :delivery_interventions, :status, :if => :signed_on_was
   
-  validates_associated  :delivery_note_items, :quote_items, :delivery_interventions
+  validates_associated  :delivery_note_items, :end_products, :delivery_interventions
   
-  validate :validates_delivery_interventions, :validates_number_of_pieces
+  validate :validates_delivery_interventions, :validates_presence_of_delivery_note_items
   
-  before_update   :save_delivery_note_items
-  before_destroy  :can_be_destroyed?
+  before_destroy :can_be_destroyed?
+  
+  after_save :save_delivery_note_items
   
   attr_protected :status, :reference, :confirmed_at, :cancelled_at
   
   def validates_presence_of_attachment # the method validates_attachment_presence of paperclip seems to be broken when using conditions
     if attachment.nil? or attachment.instance.attachment_file_name.blank? or attachment.instance.attachment_file_size.blank? or attachment.instance.attachment_content_type.blank?
-      errors.add(:attachment, "est requis")
+      errors.add(:attachment, errors.generate_message(:attachment, :blank))
     end
   end
   
   def validates_delivery_interventions
     if has_new_delivery_interventions?
-      errors.add(:delivery_interventions, "Il est impossible de créer une intervention à partir d'un Bon de Livraison non validé") unless confirmed?
-      errors.add(:delivery_interventions, "Il est impossible de créer une nouvelle intervention pour l'instant pour ce Bon de Livraison") if pending_delivery_intervention
-      errors.add(:delivery_interventions, "Il n'est plus possible de créer une intervention pour ce Bon de Livraison") if delivered_delivery_intervention
+      errors.add(:delivery_interventions, errors.generate_message(:delivery_interventions, :unconfirmed)) unless confirmed?
+      errors.add(:delivery_interventions, errors.generate_message(:delivery_interventions, :pending))     if pending_delivery_intervention
+      errors.add(:delivery_interventions, errors.generate_message(:delivery_interventions, :delivered))   if delivered_delivery_intervention
     end
   end
   
-  def validates_number_of_pieces
-    return if delivery_note_items.empty?
-    errors.add(:delivery_note_items, "Les produits à livrer doivent compter au moins une quantité supérieure à 0") unless number_of_pieces > 0
+  def validates_presence_of_delivery_note_items
+    errors.add(:delivery_note_items, errors.generate_message(:delivery_note_items, :blank)) if delivery_note_items.reject(&:should_destroy?).empty?
   end
   
   def has_new_delivery_interventions?
@@ -100,22 +100,29 @@ class DeliveryNote < ActiveRecord::Base
     billed? ? invoice.was_confirmed? : false
   end
   
-  def associated_quote
-    order ? order.signed_quote : nil
+  def signed_quote
+    order and order.signed_quote
   end
   
-  def build_delivery_note_items_from_signed_quote
-    return unless associated_quote
-    associated_quote.product_quote_items.each do |quote_item|
-      item = self.delivery_note_items.build(:quote_item_id => quote_item.id, :order_id => self.order_id)
-      item.quantity = item.remaining_quantity_to_deliver
+  #TODO test this method
+  def ready_to_deliver_end_products_and_quantities
+    order ? order.ready_to_deliver_end_products_and_quantities : []
+  end
+  
+  #TODO test this method
+  def build_missing_delivery_note_items_from_ready_to_deliver_end_products
+    ready_to_deliver_end_products_and_quantities.each do |hash|
+      unless item = delivery_note_items.detect{ |i| i.end_product_id == hash[:end_product_id] }
+        item = delivery_note_items.build(:order_id        => self.order_id,
+                                         :end_product_id  => hash[:end_product_id])
+      end
     end
   end
   
   def delivery_note_item_attributes=(delivery_note_item_attributes)
     delivery_note_item_attributes.each do |attributes|
       if attributes[:id].blank?
-        delivery_note_items.build(attributes)
+        delivery_note_items.build(attributes) unless attributes[:quantity].to_i.zero?
       else
         delivery_note_item = delivery_note_items.detect { |x| x.id == attributes[:id].to_i }
         delivery_note_item.attributes = attributes
@@ -124,8 +131,12 @@ class DeliveryNote < ActiveRecord::Base
   end
   
   def save_delivery_note_items
-    delivery_note_items.each do |x|
-      x.save(false)
+    delivery_note_items.each do |item|
+      if item.should_destroy?
+        item.destroy
+      else
+        item.save(false)
+      end
     end
   end
   
@@ -171,7 +182,7 @@ class DeliveryNote < ActiveRecord::Base
   end
   
   def can_be_added?
-    order and order.signed_quote and !order.all_is_delivered_or_scheduled?
+    signed_quote and ready_to_deliver_end_products_and_quantities.any? and !order.all_is_delivered_or_scheduled?
   end
   
   def can_be_edited?
@@ -214,7 +225,7 @@ class DeliveryNote < ActiveRecord::Base
       self.status = STATUS_CONFIRMED
       self.save
     else
-      errors.add(:base, "Le Bon de Livraison n'est pas prêt à être validé")
+      errors.add(:base, errors.generate_message(:base, :cant_be_confirmed))
       false
     end
   end
@@ -225,7 +236,7 @@ class DeliveryNote < ActiveRecord::Base
       self.status = STATUS_CANCELLED
       self.save
     else
-      errors.add(:base, "Le Bon de Livraison n'est pas prêt à être annulé")
+      errors.add(:base, errors.generate_message(:base, :cant_be_cancelled))
       false
     end
   end
@@ -235,7 +246,7 @@ class DeliveryNote < ActiveRecord::Base
       self.status = STATUS_SIGNED
       self.save
     else
-      errors.add(:base, "Le Bon de Livraison n'est pas prêt à être signé")
+      errors.add(:base, errors.generate_message(:base, :cant_be_signed))
       false
     end
   end

@@ -459,7 +459,7 @@ ul#graphic_items li p {
   display: none;
 }
 
-#spool .spool_item:hover{
+#spool .spool_item:hover {
   background-color: #ecc48b;
 }
 
@@ -467,7 +467,7 @@ ul#graphic_items li p {
   display: block;
 }
 
-.spool_warning{
+.spool_warning {
   position: relative;
 	border:solid 1px #F1BD73;
 	background:#F6E8CF;
@@ -476,21 +476,39 @@ ul#graphic_items li p {
 	padding:10px;
 }
 
-/* table_color */
+/* PRIORITIES */
 
-.low_priority{
-   background-color: #F4FE64;      
+table tr.high_priority { 
+  background-color: #FE6464;
+  color: white;
 }
 
-.medium_priority{
-   background-color: #FEAC64; 
+table tr.high_priority a { 
+  color: white;
+  text-decoration: underline;
 }
 
-.high_priority{ 
-   background-color: #FE6464;
+table tr.medium_priority {
+  background-color: #FEAC64; 
 }
 
-.no_style{
-   color: #1A1A1A;  
+table tr.medium_priority a {
+  color: inherit;
+  text-decoration: underline;
 }
 
+table tr.low_priority {
+}
+
+table tr.low_priority a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+table tr.very_low_priority {
+}
+
+table tr.very_low_priority a {
+  color: inherit;
+  text-decoration: underline;
+}

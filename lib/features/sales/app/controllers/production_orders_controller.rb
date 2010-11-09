@@ -1,8 +1,7 @@
 class ProductionOrdersController < ApplicationController
-  include AdjustPdf
-  helper :orders, :production_steps
+  helper :orders, :manufacturing_steps
   
-  # GET /sales/production_managements/
+  # GET /production_orders
   def index
     @orders = ProductionStep.orders
   end
