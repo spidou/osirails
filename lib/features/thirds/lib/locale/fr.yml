@@ -5,7 +5,7 @@ fr:
       activity_sector_reference: "Code NAF"
       custom_activity_sector: "Secteur d'activité personnalisé"
       customer: "Client"
-      customer_grade: "Note client"
+      customer_grade: "Note relation client"
       customer_solvency: "Solvabilité client"
       establishment: "Établissement"
       establishment_type: "Type d'établissement"
@@ -18,33 +18,59 @@ fr:
       third: "Tiers"
       third_type: "Type de tiers"
     attributes: 
-      third:
+      third: &third_attributes
         name: "Raison Sociale"
         legal_form: "Forme juridique"
         website: "Site Internet"
         created_at: "Créé le"
         creator: "Créé par"
       customer:
+        <<: *third_attributes
         factor: "Société d'affacturage"
+        customer_grade: "Note relationnelle"  
         customer_solvency: "Degré de solvabilité"
-        customer_grade: "Note relation client"  
+        brand_names: "Enseignes"
       supplier:
+        <<: *third_attributes
         activity_sector_reference: "Code NAF"
+      head_office:
+        name: "Nom du siège social"
+        establishment_type: "Type d'établissement"
+        siret_number: "N° SIRET du siège social"
+        activity_sector_reference: "Secteur d'activité"
+        full_address: "Adresse du siège social"
       establishment:
         name: "Nom de l'enseigne"
         establishment_type: "Type d'établissement"
-        activity_sector_reference: "Code NAF"
-        phone: "Tél"
-        fax: "Fax"
         siret_number: "N° SIRET"
+        activity_sector_reference: "Secteur d'activité"
+        full_address: "Adresse de l'établissement"
       factor:
         name: "Nom"
         fullname: "Nom complet"
   integrated_search:
     attributes:
       customer:
-        name: "Nom du client"
         bill_to_address:
           formatted: "Adresse de facturation"
+      customer_grade:
+        name: "Note relationnelle"
+      customer_solvency:
+        name: "Degré de solvabilité"
       activity_sector_reference:
-        get_activity_sector_name: "Secteur d'activité" 
+        code: "Code NAF"
+        get_activity_sector_name: "Secteur d'activité"
+      legal_form:
+        name: "Forme juridique"
+      factor:
+        name_and_fullname: "Société d'affacturage"
+    filters:
+      customer:
+        head_office: "Siège social"
+        head_office_name: "Nom du siège social"
+        head_office_siret_number: "SIRET du siège social"
+        head_office_activity_sector_reference_code: "Code NAF"
+        head_office_activity_sector_reference_name: "Nom du secteur d'activité"
+        head_office_phone: "Téléphone"
+        head_office_fax: "Fax"
+        bill_to_address: "Adresse de facturation"

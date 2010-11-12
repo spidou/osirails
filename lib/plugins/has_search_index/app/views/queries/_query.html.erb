@@ -22,30 +22,30 @@
   <fieldset>
     <%= toggle_options_legend %>
     <div>
-    <% if page_config[:group].any? %>
-      <div class='inline_div'> 
-        <%= form.label :group %>
-        <%= render :partial => 'shared/sortable_selects',
-                   :locals => {:selected => query.group || [], :all => page_config[:group], :suffix => 'group'}%>
-      </div>
-    <% end %>
-    
     <% if page_config[:columns].any? %>
       <div class='inline_div'>
-        <%= form.label :columns %>
+        <%= simple_label :query, :columns %>
         <%= render :partial => 'shared/sortable_selects',
                    :locals => {:selected => query.columns || [], :all => page_config[:columns], :suffix => 'columns'}%>
       </div>
     <% end %>
     
+    <% if page_config[:group].any? %>
+      <div class='inline_div'> 
+        <%= simple_label :query, :group %>
+        <%= render :partial => 'shared/sortable_selects',
+                   :locals => {:selected => query.group || [], :all => page_config[:group], :suffix => 'group'}%>
+      </div>
+    <% end %>
+    
     <% if page_config[:order].any? %>
       <div class='inline_div'>
-        <%= form.label :order %>
+        <%= simple_label :query, :order %>
         <div>
-          <%= render :partial => "shared/order_option", :collection => query.order || [], :locals => {:page_config => page_config}%>
+          <%= render :partial => "shared/order_option", :collection => query.order || [], :locals => { :page_config => page_config } %>
         </div>
         <div class='add_order_link'>
-          <%= add_order_link(page_config)%>
+          <%= add_order_link(page_config) %>
         </div>
       </div>
     <% end %>
@@ -59,8 +59,8 @@
     </div>
   </fieldset>
   
-  <%= hidden_field_tag('return_uri', @return_uri)%>
-  <%= hidden_field_tag('query[page_name]', query.page_name)%>
+  <%= hidden_field_tag('return_uri', @return_uri) %>
+  <%= hidden_field_tag('query[page_name]', query.page_name) %>
   
   <%= form.form_buttons(:onclick => "validSelectOptions('group columns');") %>
 <% end %>

@@ -5,7 +5,9 @@ en:
     attributes:
       query:
         public_access: "Public"
+        per_page: "Items per page"
         search_type: "the result must match with"
+        columns: "Shown columns"
         group: "Group by"
         order: "Sort by"
     errors:
@@ -35,10 +37,10 @@ en:
   form:
     query:
       new:
-        h1: "New report"
+        h1: "New custom report"
         cancel_link: "Cancel report create"
       edit:
-        h1: "Edit the report"
+        h1: "Edit the custom report"
         cancel_link: "Cancel report update"
       link:
   link:
@@ -50,13 +52,13 @@ en:
       title: "Cancel modifications"
     new:
       name: "Create"
-      title: "Create a new report"
+      title: "Create a new custom report"
     edit:
       name: "Edit"
-      title: "Update the report"
+      title: "Update the custom report"
     delete:
       name: "Delete"
-      title: "Delete the report"
+      title: "Delete the custom report"
     toggle:
       title: "Show/Hide advanced options"
     add_order:

@@ -10,9 +10,10 @@ class ActivitySectorReference < ActiveRecord::Base
   
   validates_format_of :code, :with => /^[0-9]{2}\.[0-9]{2}[A-Z]$/
 
-  has_search_index :only_attributes     => [:code],
-                   :additional_attributes => {:get_activity_sector_name => :string},
-                   :only_relationships  => [:activity_sector, :custom_activity_sector]
+  has_search_index :only_attributes       => [ :id, :code ],
+                   :additional_attributes => { :get_activity_sector_name => :string },
+                   :only_relationships    => [ :activity_sector, :custom_activity_sector ],
+                   :identifier            => :code_and_short_name
   
   def code=(code)
     super(code.is_a?(String) ? code.upcase : code)

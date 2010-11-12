@@ -39,6 +39,19 @@ fr:
         password_confirmation: "Confirmation du mot de passe"
         enabled: "Compte activé ?"
         last_connection: "Dernière connexion"
+        last_activity: "Dernière activité"
         roles: "Rôles"
         force_password_expiration: "Demander à l'utilisateur un nouveau mot de passe à sa prochaine connexion"
-        
+  integrated_search:
+    attributes:
+      user:
+        roles:
+          name: "Rôles"
+        employee:
+          fullname: "Nom de l'employé"
+    filters:
+        user:
+          roles: "Rôles"
+    page_names:      
+      user:
+        user_index: "Les utilisateurs"

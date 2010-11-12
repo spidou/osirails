@@ -42,3 +42,9 @@ en:
         event_type: "Type"
         status: "Tool status"
         provider_actor: "Provider representative"
+  integrated_search:
+    page_names:      
+      commodity:
+        commodity_index: "Commodities"
+      consumable:
+        consumable_index: "Consumables"

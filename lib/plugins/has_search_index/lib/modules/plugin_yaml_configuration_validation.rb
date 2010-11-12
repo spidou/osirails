@@ -1,4 +1,3 @@
-
 module HasSearchIndex
   require 'yaml'
   

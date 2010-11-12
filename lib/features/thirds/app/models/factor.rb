@@ -9,8 +9,9 @@ class Factor < ActiveRecord::Base
   # for pagination : number of instances by index page
   FACTORS_PER_PAGE = 15
   
-  has_search_index :only_attributes => [:name, :fullname],
-                   :only_relationships => [:customers]
+  has_search_index :only_attributes     => [ :id, :name, :fullname ],
+                   :only_relationships  => [ :customers ],
+                   :identifier          => :name_and_fullname
   
   def name_and_fullname
     "#{name} (#{fullname})"

@@ -129,6 +129,10 @@ table tr.group td:not(.actions) {
   font-weight: bold;
 }
 
+table tr > td.selector {
+  width: 0px;
+}
+
 table tr > td.text,
 table tr > td.text input[type=text] {
   text-align: left !important;

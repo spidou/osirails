@@ -98,10 +98,14 @@ module HasSearchIndex
       options.delete(:except_attributes)
       options.delete(:only_attributes)
       
+      #DELETEME This feature has been commented because it doesn't seem to take in account
+      #         methods which are defined after the call of 'has_search_index' in the model.
+      #         So, for now, if the method doesn't exist, we will have an error
+      #         on running instead of on starting up server.
       # Check identifer # TODO test
-      message  = "#{ error_prefix } :indentifier is wrong: "
-      message += "expected to be a valid method or attribute"
-      raise ArgumentError, message unless self.respond_to?(options[:identifier]) if options[:identifier]
+      # message  = "#{ error_prefix } :identifier is wrong: "
+      # message += "expected to be a valid method or attribute"
+      # raise ArgumentError, message unless self.respond_to?(options[:identifier]) if options[:identifier]
       
       # Prepare additional_attributes
       message  = "#{error_prefix} :additional_attributes is wrong: "

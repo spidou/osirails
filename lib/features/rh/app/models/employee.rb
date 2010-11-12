@@ -70,7 +70,8 @@ class Employee < ActiveRecord::Base
   
   validate :validates_responsible_job_limit
   
-  has_search_index  :only_attributes => [:first_name, :last_name, :email, :society_email, :birth_date, :social_security_number]
+  has_search_index  :only_attributes       => [ :first_name, :last_name, :email, :society_email, :birth_date, :social_security_number ],
+                    :additional_attributes => { :fullname => :string }
   
   # papercilp plugin validations
   with_options :if => :avatar do |v|

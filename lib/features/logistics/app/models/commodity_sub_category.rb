@@ -10,7 +10,7 @@ class CommoditySubCategory < SupplySubCategory
   
   validates_persistence_of :supply_category_id
   
-  has_search_index  :only_attributes    => [ :reference, :name, :id ],
+  has_search_index  :only_attributes    => [ :id, :reference, :name ],
                     :only_relationships => [ :supply_category, :supplies ],
                     :identifier         => :name
 end

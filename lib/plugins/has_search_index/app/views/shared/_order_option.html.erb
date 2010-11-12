@@ -1,12 +1,12 @@
 <%
   require_locals page_config
-  attributes = page_config[:order].map {|n| HasSearchIndex.get_order_attribute(n)}
-  direction = order_option ? HasSearchIndex.get_order_direction(order_option) : 'asc'
+  attributes = page_config[:order].map{ |n| HasSearchIndex.get_order_attribute(n) }
+  direction  = order_option ? HasSearchIndex.get_order_direction(order_option) : 'asc'
   attribute  = order_option ? HasSearchIndex.get_order_attribute(order_option) : nil
 %>
 
 <p class='order'>
-  <%= select_tag('query[order][][attribute]', options_for_select(attributes, attribute))%>
-  <%= select_tag('query[order][][direction]',options_for_select([['Décroissant','desc'],['Croissant','asc']], direction))%>
-  <%= link_to_function(image_tag('delete_16x16.png'),"this.up('.order').remove()")%>
+  <%= select_tag('query[order][][attribute]', options_for_select(attributes, attribute)) %>
+  <%= select_tag('query[order][][direction]', options_for_select([ ['Décroissant', 'desc'], ['Croissant', 'asc'] ], direction)) %>
+  <%= link_to_function(image_tag('delete_16x16.png'), "this.up('.order').remove()") %>
 </p>

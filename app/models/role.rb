@@ -27,7 +27,8 @@ class Role < ActiveRecord::Base
   # Callbacks
   after_create :create_bo_permissions, :create_instance_permissions
   
-  has_search_index :only_attributes => [:name, :description] if Object.const_defined?("HasSearchIndex")
+  has_search_index :only_attributes => [ :id, :name, :description],
+                   :identifier      => :name                        if Object.const_defined?("HasSearchIndex")
                     
   private
     def create_bo_permissions

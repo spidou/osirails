@@ -1,57 +1,62 @@
+conf_filters: &filters
+  filters:
+    - reference
+    - name
+    - supply_category: supply_sub_category.supply_category.id
+    - supply_sub_category: supply_sub_category.name # don't use 'id' because it's inconsistent (sub_category names are not unique, so we can't choose exactly a sub_category with only its name)
+    - designation
+    - measure
+    - unit_mass
+    - average_unit_price
+    - average_measure_price
+conf_columns: &columns
+  columns:
+    - reference
+    - designation
+    - measure
+    - unit_mass
+    - average_unit_price
+    - average_measure_price
+conf_group: &group
+  group:
+    - supply_sub_category.supply_category.name
+    - supply_sub_category.name
+conf_order: &order
+  order:
+    - supply_sub_category.supply_category.name
+    - supply_sub_category.name
+    - reference
+    - designation
+    - average_unit_price
+    - average_measure_price
 conf_pagination: &pagination
   per_page:
     - 50
     - 100
     - 200
-    
+
 advanced_consumable:
-  columns:
-    - reference
-    - designation
-    - measure
-    - unit_mass
-    - average_unit_price
-    - average_measure_price
-  filters:
-    - reference
-    - name
-  order:
-    - supply_sub_category.supply_category.name
-    - supply_sub_category.name
+  <<: *filters
+  <<: *columns
+  <<: *group
+  <<: *order
   <<: *pagination
     
 consumable_index:
-  filters:
-    - reference
-    - name
+  <<: *filters
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
   quick_search:
     - reference
     - name
-  columns:
-    - reference
+    - supply_sub_category.supply_category.name
+    - supply_sub_category.name
     - designation
-    - measure
-    - unit_mass
-    - average_unit_price
-    - average_measure_price
-  group:
-    - supply_sub_category.supply_category.name
-    - supply_sub_category.name
-  order:
-    - supply_sub_category.supply_category.name
-    - supply_sub_category.name
-  <<: *pagination
   default_query:
-    columns:
-      - reference
-      - designation
-      - measure
-      - unit_mass
-      - average_unit_price
-      - average_measure_price
-    group:
-      - supply_sub_category.supply_category.name
-      - supply_sub_category.name
+    <<: *columns
+    <<: *group
     order:
       - supply_sub_category.supply_category.name
       - supply_sub_category.name

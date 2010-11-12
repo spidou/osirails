@@ -1,6 +1,7 @@
 fr:     
   activerecord:
     models: 
+      supply: "Fourniture"
       commodity: "Matière première"
       commodity_category: "Catégorie de matière première"
       commodity_sub_category: "Sous-catégorie de matière première"
@@ -17,7 +18,6 @@ fr:
       stock_output: "Sortie de stock"
       supplier_supply: "Fourniture fournisseur"
       #supplies_supply_size:
-      supply: "Fourniture"
       #supply_categories_supply_size:
       supply_category: "Catégorie de fourniture"
       supply_size: "Grandeur"
@@ -32,13 +32,21 @@ fr:
         commodity_category: "Appartient à"
       consumable_category: 
         consumable_category: "Appartient à"
-      supply_category:
+      supply_category: &supply_category
         name: "Nom"
         reference: "Référence"
-      supply_sub_category:
+      commodity_category:
+        <<: *supply_category
+      consumable_category:
+        <<: *supply_category
+      supply_sub_category: &supply_sub_category
         supply_category: "Famille"
         unit_measure: "Grandeur/U"
-      supply:
+      commodity_sub_category:
+        <<: *supply_sub_category
+      consumable_sub_category:
+        <<: *supply_sub_category
+      supply: &supply
         supply_category: "Famille"
         supply_sub_category: "Sous-famille"
         name: "Type"
@@ -56,6 +64,10 @@ fr:
         stock_value: "Valeur totale"
         stock_mass: "Poids total"
         average_unit_value: "Valeur unitaire moyenne"
+      commodity:
+        <<: *supply
+      consumable:
+        <<: *supply
       supplier_supply:
         supplier: "Fournisseur"
         supplier_reference: "Référence fournisseur"
@@ -93,4 +105,22 @@ fr:
         provider_actor: "Représentant prestataire"
         start_date: "Date de début"
         end_date: "Date de fin"
-        comment: "Commentaire"        
+        comment: "Commentaire"
+  integrated_search:
+    attributes:
+      commodity_category:
+        name: "Famille"
+      commodity_sub_category:
+        name: "Sous-Famille"
+      consumable_category:
+        name: "Famille"
+      consumable_sub_category:
+        name: "Sous-Famille"
+      commodity:
+        supply_category: "Famille"           # for alias on filters
+        supply_sub_category: "Sous-Famille"  # for alias on filters
+    page_names:      
+      commodity:
+        commodity_index: "Les matières premières"
+      consumable:
+        consumable_index: "Les consommables"

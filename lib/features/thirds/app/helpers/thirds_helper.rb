@@ -16,4 +16,12 @@ module ThirdsHelper
 #                                    "contacts.last_name",
 #                                    "iban.*"] )
 #  end
+  
+  def query_td_for_name_in_customer(content)
+    content_tag(:td, link_to(content, @query_object))
+  end
+  
+  def query_td_content_for_brand_names_in_customer
+    @query_object.brand_names.join(', ')
+  end
 end

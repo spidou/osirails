@@ -71,11 +71,14 @@ module ActionView
       #                               order:
       #                                 title: "Nom du projet"
       #
-      def simple_label(class_or_text, method = nil, options = {})
-        if class_or_text.is_a?(Symbol)
-          text = i18n_label(class_or_text.to_s.camelize.constantize,method)
+      def simple_label(class_name, method = nil, options = {})
+        if class_name.is_a?(Symbol)
+          raise ArgumentError, "#simple_label expected a 'method'" if method.blank?
+          text = i18n_label(class_name.to_s.camelize.constantize, method)
+        elsif class_name.is_a?(String)
+          text = class_name
         else
-          text = class_or_text
+          raise ArgumentError, "#simple_label expected a Symbol or String as 'class_name', but was <#{class_name.class.name}>"
         end
         content_tag :label, text, options
       end
@@ -201,7 +204,7 @@ module ActionView
       end
       
       private
-        def i18n_label(klass,method)
+        def i18n_label(klass, method)
           key = method.to_s.gsub(/_id(s)?$/,"")
           if klass.respond_to?(:human_attribute_name)
             text = klass.human_attribute_name(key)

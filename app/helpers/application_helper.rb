@@ -233,12 +233,12 @@ module ApplicationHelper
   end
   
   def query_thead_tr_with_context_menu(content, th_content)
-    content = content_tag(:th, th_content) + content
+    content = content_tag(:th, th_content, :class => :selector) + content
     content_tag(:tr, content)
   end
   
   def query_tr_with_context_menu(content, object, html_class, options = {})
-    content = content_tag(:td, context_menu(object, html_class, options)) + content
+    content = content_tag(:td, context_menu(object, html_class, options), :class => :selector) + content
     content_tag(:tr, content, :class => html_class)
   end
   

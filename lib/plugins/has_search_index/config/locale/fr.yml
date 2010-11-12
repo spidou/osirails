@@ -6,10 +6,10 @@ fr:
       query: 
         name: "Nom"
         public_access: "Public"
-        per_page: "Par page"
+        per_page: "Éléments par page"
         search_type: "Le résultat doit correspondre à"
         criteria: "Critères"
-        columns: "Colonnes"
+        columns: "Colonnes à afficher"
         group: "Grouper par"
         order: "Ordonner par"
     errors:
@@ -39,10 +39,10 @@ fr:
   form:
     query:
       new:
-        h1: "Nouveau rapport"
+        h1: "Nouveau rapport personnalisé"
         cancel_link: "Annuler la création du rapport"
       edit:
-        h1: "Modifier le rapport"
+        h1: "Modifier le rapport personnalisé"
         cancel_link: "Annuler l'édition du rapport"
   link:
     apply:
@@ -53,13 +53,13 @@ fr:
       title: "Annuler les modifications effectuées"
     new:
       name: "Créer"
-      title: "Sauvegarder en tant que nouveau rapport"
+      title: "Sauvegarder en tant que nouveau rapport personnalisé"
     edit:
       name: "Modifier"
-      title: "Sauvegarder en modifiant le rapport"
+      title: "Modifier le rapport personnalisé"
     delete:
       name: "Supprimer"
-      title: "Supprimer la requête définitivement"
+      title: "Supprimer le rapport personnalisé"
     toggle:
       title: "Afficher/Cacher les options avancées"
     add_order:

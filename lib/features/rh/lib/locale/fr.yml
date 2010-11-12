@@ -123,9 +123,9 @@ fr:
         id: "Civilité"
     page_names:      
       employee:
-        employee_index: "Tous les employés actifs"
+        employee_index: "Les employés actifs"
       job:
-        job_index: "Toutes les fiches de poste"
+        job_index: "Les fiches de poste"
     filters:
       civility:
         name: "Nom"

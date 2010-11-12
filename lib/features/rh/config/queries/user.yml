@@ -1,45 +1,43 @@
-advanced_user:
-  user_index:
+conf_filters: &filters
   filters:
     - username
+    - roles.id
+    - employee_fullname: employee.fullname
     - enabled
     - last_connection
     - last_activity
+conf_columns: &columns
   columns:
-    - employee.fullname
     - username
+    - roles.name
+    - employee.fullname
     - enabled
     - last_connection
     - last_activity
-  group:
-    - enabled
-  per_page:
-    - 5
-    - 10
-  search_type: and
-  default_query:
-    search_type: and
-    
-user_index:
-  filters:
-  columns:
-    - employee.fullname
-    - username
-    - enabled
-    - last_connection
-    - last_activity
-  group:
-    - enabled
+conf_order: &order
   order:
     - enabled
     - username
-  per_page:
-    - 5
-    - 10
-  search_type:
+    - employee.fullname
+    - last_connection
+    - last_activity
+
+advanced_user:
+  <<: *filters
+  <<: *columns
+  <<: *order
+
+user_index:
+  <<: *filters
+  <<: *columns
+  <<: *order
+  quick_search:
+    - username
+    - roles.name
+    - employee.fullname
   default_query:
-    columns:
+    <<: *columns
     order:
-      - 'username:asc'
       - 'enabled:desc'
-    search_type: and
+      - username
+    per_page: 25

@@ -6,13 +6,13 @@ class Job < ActiveRecord::Base
   
   belongs_to :service
   
-  named_scope :with_responsibility, :conditions => ["responsible=true"]
+  named_scope :with_responsibility, :conditions => ["responsible = ?", true]
   
   journalize :identifier_method => :name
   
   validates_uniqueness_of :name
   
-  has_search_index :only_attributes => [:name, :id],
+  has_search_index :only_attributes => [:id, :name, :responsible, :mission, :activity, :goal],
                    :identifier => :name
   
   # for pagination : number of instances by index page

@@ -79,9 +79,9 @@ en:
         id: "Civility"
     page_names:      
       employee:
-        employee_index: "All working employees"
+        employee_index: "Working employees"
       job:
-        job_index: "All jobs"
+        job_index: "Jobs"
     filters:
       civility:
         name: "Name"

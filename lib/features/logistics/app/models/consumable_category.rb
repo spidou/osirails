@@ -4,6 +4,7 @@ class ConsumableCategory < SupplyCategory
   
   has_many :sub_categories, :class_name => "ConsumableSubCategory", :foreign_key => :supply_category_id
   
-  has_search_index  :only_attributes    => [ :reference, :name ],
-                    :only_relationships => [ :sub_categories ]
+  has_search_index  :only_attributes    => [ :id, :reference, :name ],
+                    :only_relationships => [ :sub_categories ],
+                    :identifier         => :name
 end

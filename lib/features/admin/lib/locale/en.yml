@@ -19,3 +19,14 @@ en:
         username: "User account name"
         enabled: "Enabled account ?"
         force_password_expiration: "Ask user for a new password on next login"
+  integrated_search:
+    attributes:
+      user:
+        roles:
+          name: "Roles"
+    filters:
+        user:
+          roles: "Roles"
+    page_names:      
+      user:
+        user_index: "Users"

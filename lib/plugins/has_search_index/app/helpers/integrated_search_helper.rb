@@ -73,7 +73,7 @@ module IntegratedSearchHelper
     return if @page_name =~ /^advanced/ || !@can_quick_search
     
     submit_function = remote_function({
-      :url    => params.reject {|k,v| k.to_s == 'key_word'},
+      :url    => params.reject{ |k,v| k.to_s == 'key_word' },
       :method => :get,
       :update => @class_for_ajax_update,
       :with   => "'key_word=' + this.up().down('INPUT').value"
@@ -114,7 +114,7 @@ module IntegratedSearchHelper
   # Method to prepare collection to be used with 'options_for_select'
   # 
   def prepare_for_options(collection)
-    collection.map {|n| n && [humanize(n), n] }
+    collection.map{ |n| n && [humanize(n), n] }
   end
   
   # Method to create a link permitting to modify pagination option with Ajax
@@ -205,7 +205,7 @@ module IntegratedSearchHelper
   ## Take in account actions columns
   #
   def generate_table_header(query)
-    query_thead(query.columns.map {|column| query_th(column, query.order)}.join)
+    query_thead(query.columns.map{ |column| query_th(column, query.order) }.join)
   end
   
   # Methods to generate a table body from a query
@@ -214,7 +214,7 @@ module IntegratedSearchHelper
     content = if group && group.any?
       generate_grouped_table_rows(records, columns, group)
     else
-      query_tbody(records.map {|record| generate_table_row(record, columns)}.join)
+      query_tbody(records.map{ |record| generate_table_row(record, columns) }.join)
     end
   
     content
@@ -227,7 +227,7 @@ module IntegratedSearchHelper
   def generate_grouped_table_rows(records, columns, group_list)
     grouped_records(records, group_list).map do |group|
       group_row = query_group_tr(group.first, columns)
-      rows      = group.last.map {|record| generate_table_row(record, columns)}.join
+      rows      = group.last.map{ |record| generate_table_row(record, columns) }.join
       query_tbody("#{ group_row }#{ rows }")
     end
   end
@@ -237,7 +237,7 @@ module IntegratedSearchHelper
   #
   def generate_table_row(record, columns)
     @query_object = record
-    content = columns.map {|column| query_td(column)}.join
+    content = columns.map{ |column| query_td(column) }.join
     query_tr(content)
   end
   
@@ -245,7 +245,7 @@ module IntegratedSearchHelper
   ########################### criteria ############################
   
   def generate_attribute_chooser
-    drop_down_menu_content ||= @organized_filters.map {|n| generate_menu(n)}  ## cache that part to avoid resource wasting for each new criteria
+    drop_down_menu_content ||= @organized_filters.map{ |n| generate_menu(n) }  ## cache that part to avoid resource wasting for each new criteria
     drop_down_menu = content_tag(:div, display_menu_link, :class => 'attribute') +
                      content_tag(:ul, drop_down_menu_content, :style => 'display:none;', :class => 'attribute_chooser')
     content_tag(:tr, :class => 'criterion') do
@@ -264,8 +264,8 @@ module IntegratedSearchHelper
     else
       group    = elements.first
       paths    = elements.last
-      active   = paths.select {|n| n.is_a?(String) && n.match(/.id$/)}.any?
-      sub_menu = paths.map {|sub_paths| generate_menu(sub_paths, selected)}.join
+      active   = paths.select{ |n| n.is_a?(String) && n.match(/.id$/) }.any?
+      sub_menu = paths.map{ |sub_paths| generate_menu(sub_paths, selected) }.join
       menu_li("#{ content_tag(:ul, sub_menu, :style => 'display:none') if sub_menu.any? }#{ apply_group_link(group, active) }", :class => ("sub_menu" if sub_menu.any?))
     end  
   end
@@ -442,6 +442,7 @@ module IntegratedSearchHelper
     #
     def translate_from(attribute_with_path, for_filters = false)
       model = @query.subject_model.constantize
+      
       if attribute_with_path.include?('.') && attribute_with_path.split('.').last != 'id'
         parts        = attribute_with_path.split('.')
         relationship = parts.at(-2)
@@ -450,10 +451,11 @@ module IntegratedSearchHelper
       else
         attribute    = attribute_with_path
       end
-      unless for_filters
-        translate_with_priority(attribute_with_path, attribute, model)
-      else
+      
+      if for_filters
         translate_filters_with_priority(attribute_with_path, attribute, model)
+      else
+        translate_with_priority(attribute_with_path, attribute, model)
       end
     end
     
@@ -467,7 +469,9 @@ module IntegratedSearchHelper
     # Method to make an attribute human readable using i18n and humanize method
     #
     def humanize_as_filter(attribute)
-      translate_from(attribute, for_filters = true).gsub(' ', '&nbsp;')
+      translation = translate_from(attribute, for_filters = true)
+      raise Exception, "#humanize_as_filter expected a String, but has a <#{translation.class.name}> when trying to translate <'#{attribute}'> => #{translation.inspect}" unless translation.is_a?(String)
+      translation.gsub(' ', '&nbsp;')
     end
     
     # Method to get header content with or without sort feature
@@ -505,7 +509,7 @@ module IntegratedSearchHelper
     end
     
     def with_sort?(column, order)
-      order.map {|n| HasSearchIndex.get_order_attribute(n) }.include?(column)
+      order.map{ |n| HasSearchIndex.get_order_attribute(n) }.include?(column)
     end
       
     def records_with_or_without_paginate(query, page)
@@ -584,7 +588,7 @@ module IntegratedSearchHelper
     
     def query_table(content)
       helper = "query_table"
-      override_for(helper) ? send(override_for(helper), content) : content_tag(:table, content, :id => 'tabletest')
+      override_for(helper) ? send(override_for(helper), content) : content_tag(:table, content)
     end
     
     def query_thead(content)
