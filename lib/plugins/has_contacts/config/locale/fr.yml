@@ -1,6 +1,6 @@
-fr:     
+fr:
   activerecord:
-    attributes: 
+    attributes:
       contact:
         gender: "Genre"
         first_name: "Prénom"

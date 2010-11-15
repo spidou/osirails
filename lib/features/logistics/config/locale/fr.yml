@@ -1,6 +1,6 @@
-fr:     
+fr:
   activerecord:
-    models: 
+    models:
       supply: "Fourniture"
       commodity: "Matière première"
       commodity_category: "Catégorie de matière première"
@@ -119,7 +119,7 @@ fr:
       commodity:
         supply_category: "Famille"           # for alias on filters
         supply_sub_category: "Sous-Famille"  # for alias on filters
-    page_names:      
+    page_names:
       commodity:
         commodity_index: "Les matières premières"
       consumable:

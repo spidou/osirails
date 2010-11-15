@@ -1,6 +1,4 @@
-# add some methods to ApplicationController
-#
-module IntegratedSearchApplicationController
+module SearchController
 
   def build_query_for(page_name, page_params = params, *types, &block)
     @page_name           = page_name.to_s
@@ -56,12 +54,19 @@ module IntegratedSearchApplicationController
       end
     end
     
-    if page_params[:key_word]
-      @query.quick_search_value = page_params[:key_word] unless page_params[:key_word].blank?
+    if page_params[:keyword]
+      @query.quick_search_value = page_params[:keyword] unless page_params[:keyword].blank?
     end
     
     @class_for_ajax_update = 'integrated_search'
     @query_render_options  = { 
+      :partial => "shared/filtered_table_container",
+      :object => @query,
+      :locals => { :page_name => @page_name, :page => page_params[:page] }
+    }
+    
+    #@query_render_options_for_ajax = @query_render_options.merge({ :partial => "shared/filtered_table" })
+    @query_render_options_for_ajax = { 
       :partial => "shared/filtered_table",
       :object => @query,
       :locals => { :page_name => @page_name, :page => page_params[:page] }
@@ -73,7 +78,7 @@ module IntegratedSearchApplicationController
       respond_to do |format|
         lambda do |f|
           yield(f) if block_given?
-          format.js { render( @query_render_options ) }
+          format.js { render( @query_render_options_for_ajax ) }
           format.html
         end.call(format)
       end
@@ -84,6 +89,6 @@ end
 
 # Set it all up.
 if Object.const_defined?("ActionController")
-  ActionController::Base.send(:include, IntegratedSearchApplicationController)
+  ActionController::Base.send(:include, SearchController)
   ActionController::Base.send(:helper, :integrated_search)
 end

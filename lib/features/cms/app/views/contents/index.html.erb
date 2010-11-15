@@ -5,21 +5,22 @@
 <h1>Liste des contenus</h1>
 
 <div>
-<% unless @contents.empty? %>
-  <table>
-    <tr>
-      <th>Titre du menu</th> 
-      <th>Titre de la page</th>
-      <th>Description de la page</th>
-      <th>Actions</th>
-    </tr>
-
-      <%= show_contents(@contents) %>
-
-  </table>
-  <%= will_paginate @contents %>
-<% else %>
-<p>Aucun contenu</p>
-<% end %>
-
+  <% unless @contents.empty? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Titre du menu</th> 
+          <th>Titre de la page</th>
+          <th>Description de la page</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= show_contents(@contents) %>
+      </tbody>
+    </table>
+    <%= will_paginate @contents %>
+  <% else %>
+    <p>Aucun contenu</p>
+  <% end %>
 </div>

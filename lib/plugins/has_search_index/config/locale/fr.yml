@@ -1,10 +1,10 @@
 fr:
   activerecord:
-    models: 
+    models:
       query: "Rapport"
-    attributes: 
-      query: 
-        name: "Nom"
+    attributes:
+      query:
+        name: "Nom du rapport"
         public_access: "Public"
         per_page: "Éléments par page"
         search_type: "Le résultat doit correspondre à"
@@ -76,17 +76,23 @@ fr:
       title: "Supprimer un critère"
   view:
     quick_search:
+      default: "Recherche rapide ..."
       title: "Rechercher"
     paginate_per_page: "Par page"
     paginate_all: "Tout"
-    search_for: "Respecter"
     no_result: "Aucun résultat correspondant à la recherche"
-    search_type:
+    search_for: "Le résultat doit correspondre à"
+    search_types:
       and: 'tous les critères'
-      or: 'Au moins un critère'
-      not: 'Aucun critère'
+      or: 'au moins un des critères'
+      not: 'aucun des critères'
     advanced_search:
       model_select:
         h2: "Que recherchez vous ?"
         default: "Veuillez choisir une catégorie"
       criteria_h2: "Précisez votre recherche"
+    content:
+      td:
+        boolean_true: "Oui"
+        boolean_false: "Non"
+      undefined_group_name: "Non défini"

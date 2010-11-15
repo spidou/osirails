@@ -242,7 +242,8 @@ class FeatureManager
       ActionController::Base.prepend_view_path(File.join(@path, 'app', 'views'))
       
       # load i18n feature files
-      I18n.load_path += Dir[ File.join(@path, 'lib', 'locale', '*.{rb,yml}') ]
+      I18n.load_path += Dir[ File.join(@path, 'config', 'locale', '*.{rb,yml}') ]
+      I18n.reload!
     end
     
     def load_libs

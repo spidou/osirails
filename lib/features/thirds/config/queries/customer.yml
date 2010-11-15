@@ -23,7 +23,7 @@ conf_group: &group
     - legal_form.name
     - factor.name
     - customer_grade.name
-    - customer_solvency.name 
+    - customer_solvency.name
 conf_order: &order
   order:
     - name

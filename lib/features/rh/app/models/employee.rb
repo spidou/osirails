@@ -10,9 +10,6 @@ class Employee < ActiveRecord::Base
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
   
-  # for pagination : number of instances by index page
-  EMPLOYEES_PER_PAGE = 15
-  
   named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
   
   has_attached_file :avatar, 

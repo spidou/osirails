@@ -4,6 +4,7 @@ en:
       query: "Report"
     attributes:
       query:
+        name: "Report name"
         public_access: "Public"
         per_page: "Items per page"
         search_type: "the result must match with"
@@ -75,17 +76,23 @@ en:
       title: "Delete criterion"
   view:
     quick_search:
+      default: "Quick search..."
       title: "Search"
     paginate_per_page: "Per page"
     paginate_all: "All"
-    search_for: "Match"
     no_result: "No result found"
-    search_type:
-      and: 'all criteria'
-      or: 'At least one criterion'
-      not: 'no criterion'
+    search_for: "Match"
+    search_types:
+      and: 'all of the following'
+      or: 'any of the following'
+      not: 'none of the following'
     advanced_search:
       model_select:
         h2: "What are you searching for ?"
         default: "Please choose a category"
       criteria_h2: "Precise your search"
+    content:
+      td:
+        boolean_true: "Yes"
+        boolean_false: "No"
+      undefined_group_name: "Undefined"

@@ -1,5 +1,3 @@
 <p>
-  <strong><%= premium.amount %> &euro;</strong>
-  <%= "le #{premium.date.humanize}" unless premium.date.nil? %>
-  <%= h("(#{premium.remark})")%> 
+  <strong><%= premium.amount %> &euro;</strong> <%= "le #{l(premium.date, :format => :long)}" if premium.date %> <%= h("(#{premium.remark})")%> 
 </p>

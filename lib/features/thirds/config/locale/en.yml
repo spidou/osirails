@@ -1,6 +1,6 @@
-en:     
+en:
   activerecord:
-    attributes: 
+    attributes:
       third:
         name: "Corporate name"
         creator: "Created by"

@@ -47,7 +47,7 @@ module IntegratedSearchHelper
     }
     
     content_tag(:div, :class => 'cancel_link') do
-      link_to_remote("#{ I18n.t('link.reset.name') } X",
+      link_to_remote("#{ I18n.t('link.reset.name') }",
         remote_options,
         :title => I18n.t('link.reset.title'),
         :class => 'reset_query_link',
@@ -57,10 +57,12 @@ module IntegratedSearchHelper
   end
   
   def toggle_form_link(visible = true)
+    quick_search_visible_class = should_render_quick_search? && !visible ? 'quick_search_visible' : ''
+    
     link = content_tag(
       :span, nil,
       :onclick => "toggleIntegratedForm('#{ @page_name }', this)",
-      :class   => "toggle_integrated_form",
+      :class   => "toggle_integrated_form #{quick_search_visible_class}",
       :title   => I18n.t('link.toggle.title')
     )
                        
@@ -70,19 +72,27 @@ module IntegratedSearchHelper
   end
   
   def quick_search(visible = true)
-    return if @page_name =~ /^advanced/ || !@can_quick_search
+    return unless should_render_quick_search?
+    
+    restore_value = I18n.t('view.quick_search.default')
+    visible_class = visible ? '' : 'hidden'
     
     submit_function = remote_function({
-      :url    => params.reject{ |k,v| k.to_s == 'key_word' },
+      :url    => params.reject{ |k,v| k.to_s == 'keyword' },
       :method => :get,
       :update => @class_for_ajax_update,
-      :with   => "'key_word=' + this.up().down('INPUT').value"
+      :with   => "'keyword=' + this.up().down('INPUT').value"
     })
   
-    content  = text_field_tag(nil, @query.quick_search_value, :onkeypress => "if(event.which == Event.KEY_RETURN){ #{ submit_function }; return false }")
+    content  = text_field_tag(nil, @query.quick_search_value || restore_value,
+                                   :onkeypress   => "if(event.which == Event.KEY_RETURN){ #{ submit_function }; return false }",
+                                   :restoreValue => restore_value,
+                                   :style        => @query.quick_search_value ? '' : 'color: grey; font-style: italic;',
+                                   :onfocus      => "if (this.value == this.getAttribute('restoreValue')) { this.value=''; this.style.color='inherit'; this.style.fontStyle='inherit' } else { select() }",
+                                   :onblur       => "if (this.value == '' || this.value == this.getAttribute('restoreValue')) { this.value = this.getAttribute('restoreValue'); this.style.color='grey'; this.style.fontStyle='italic' } else { this.selectionStart = 0 }")
     content += link_to_function(nil, submit_function, :title => I18n.t('view.quick_search.title'))
     
-    content_tag(:span, content, :class => 'quick_search_inputs', :style => ("display:none;" unless visible))
+    content_tag(:div, content, :class => "quick_search_inputs #{visible_class}")
   end
   
   def links(query)
@@ -105,7 +115,7 @@ module IntegratedSearchHelper
     
     content_tag(:div, :class => 'pagination per_pages') do
       [content_tag(:span, "#{ I18n.t('view.paginate_per_page') } : ")] + per_pages.map do |per_page|
-        query.per_page == per_page ? content_tag(:span, paginate_text(per_page), :class => 'current') : content_tag(:span, paginate_link(per_page))
+        query.per_page.to_s == per_page.to_s ? content_tag(:span, paginate_text(per_page), :class => 'current') : content_tag(:span, paginate_link(per_page))
       end
     end
   end
@@ -198,7 +208,10 @@ module IntegratedSearchHelper
       :method_for_remote_link => :get,
       :remote                 => { :update => @class_for_ajax_update }
     }
-    "#{ will_paginate(records, options) if with_paginate?(query)} #{ paginate_per_page(query) }"
+    
+    content_tag :div, :class => :pagination_container do
+      "#{ will_paginate(records, options) if with_paginate?(query) } #{ paginate_per_page(query) }"
+    end
   end
   
   # Methods to generate header from columns
@@ -248,7 +261,7 @@ module IntegratedSearchHelper
     drop_down_menu_content ||= @organized_filters.map{ |n| generate_menu(n) }  ## cache that part to avoid resource wasting for each new criteria
     drop_down_menu = content_tag(:div, display_menu_link, :class => 'attribute') +
                      content_tag(:ul, drop_down_menu_content, :style => 'display:none;', :class => 'attribute_chooser')
-    content_tag(:tr, :class => 'criterion') do
+    content_tag(:tr, :class => 'criterion new_criterion') do
       [content_tag(:td, drop_down_menu),
        content_tag(:td, tag(:span, :class =>'inputs'))]
     end
@@ -267,11 +280,9 @@ module IntegratedSearchHelper
       active   = paths.select{ |n| n.is_a?(String) && n.match(/.id$/) }.any?
       sub_menu = paths.map{ |sub_paths| generate_menu(sub_paths, selected) }.join
       menu_li("#{ content_tag(:ul, sub_menu, :style => 'display:none') if sub_menu.any? }#{ apply_group_link(group, active) }", :class => ("sub_menu" if sub_menu.any?))
-    end  
+    end
   end
   
-  # # TODO manage here Globalization I18n
-  #
   def apply_attribute_link(path)
     attribute_alias = get_alias(path)
     attribute  = get_attribute(path)
@@ -392,6 +403,9 @@ module IntegratedSearchHelper
   ###################### Private methods ########################
   
   private
+    def should_render_quick_search?
+      @can_quick_search && !(@page_name =~ /^advanced/)
+    end
     
     # Methods to get attribute translation respecting a translate sources priority
     # +absolute+ means it use the page subject_model and the attribute full path
@@ -498,11 +512,11 @@ module IntegratedSearchHelper
       alt       = I18n.t("link.reverse_order.#{direction}")
       image_tag("search/#{ main }#{ direction }_arrow.png",  :alt => alt, :title => alt)
     end
-    #
+    
     def column_with_direction(column, order)
       order.detect { |n| n =~ Regexp.new("^#{ column }:(desc|asc)$")}
     end
-    #
+    
     def reverse_direction_for(column, order)
       column = column_with_direction(column, order)
       return column =~ /desc$/ ? column.gsub('desc','asc') : column.gsub('asc','desc')
@@ -607,8 +621,7 @@ module IntegratedSearchHelper
       content = query_th_content(column, order)
       override_for(helper) ? send(override_for(helper), content) : content_tag(:th, content)
     end
-
-    # TODO manage here Globalization I18n
+    
     def query_th_content(column, order)
       helper = "query_th_content_for_#{ column.gsub('.','_') }"
       override_for(helper) ? send(override_for(helper), column, order) : header_with_or_without_sort(column, order)
@@ -630,7 +643,6 @@ module IntegratedSearchHelper
       override_for(helper) ? send(override_for(helper), content) : content_tag(:td, content)
     end
     
-    # TODO manage here Globalization I18n
     def query_td_content(attribute)
       helper = "query_td_content_for_#{ attribute.gsub('.','_') }"
       data   = override_for(helper) ? send(override_for(helper)) : get_nested(@query_object, attribute)
@@ -643,7 +655,7 @@ module IntegratedSearchHelper
         when "date", "datetime"
           data.humanize
         when "boolean"
-          [1, true].include?(data) ? 'Oui' : 'Non' 
+          [1, true].include?(data) ? I18n.t("view.content.td.boolean_true") : I18n.t("view.content.boolean_false")
         else
           data
       end
@@ -661,11 +673,9 @@ module IntegratedSearchHelper
       override_for(helper) ? send(override_for(helper), content) : content_tag(:td, content, :colspan => columns.size, :class => 'group')
     end
     
-    # TODO manage here Globalization I18n
-    #
     def query_group_td_content(group_by)
       helper = "query_group_td_content"
-      content = group_by.map! {|n| n.blank? ? 'Non définis' : n }.join(' → ')
+      content = group_by.map!{ |n| n.blank? ? I18n.t('view.content.undefined_group_name') : n }.join(' → ')
       override_for(helper) ? send(override_for(helper), group_by) : content_tag(:span, content, :onclick => "toggleGroup(this);", :class => 'not-collapsed')
     end
   

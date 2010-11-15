@@ -1,6 +1,6 @@
 fr:
   activerecord:
-    models: 
+    models:
       checking: "Pointage"
       civility: "Civilité"
       employee: "Employé"
@@ -14,7 +14,7 @@ fr:
       leave_type: "Type de congé"
       premium: "Prime"
       salary: "Salaire"
-    attributes: 
+    attributes:
       checking:
         employee: "Employé"
         date: "Date"
@@ -22,7 +22,7 @@ fr:
         absence_comment: "Commentaire"
         overtime_hours: "Heures supplémentaires"
         overtime_comment: "Commentaire"
-      employee: 
+      employee:
         address: "Adresse postale"
         numbers: "Numéros"
         number: "Numéro"
@@ -121,7 +121,7 @@ fr:
       civility:
         name: "Civilité"
         id: "Civilité"
-    page_names:      
+    page_names:
       employee:
         employee_index: "Les employés actifs"
       job:
