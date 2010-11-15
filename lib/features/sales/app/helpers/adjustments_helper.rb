@@ -4,7 +4,7 @@ module AdjustmentsHelper
     id = due_date.was_paid? ? '' : " id=\"new_adjustments_for_due_date_#{due_date.id}\""
     
     html = "<div class=\"adjustments\"#{id}>"
-    html << render(:partial => 'adjustments/adjustment', :collection => due_date.adjustments, :locals => { :due_date => due_date })
+    html << render(:partial => 'adjustments/adjustment', :collection => due_date.adjustments, :locals => { :due_date => due_date }) unless due_date.adjustments.empty?
     html << '</div>'
   end
   

@@ -47,18 +47,6 @@ class ToolEvent < ActiveRecord::Base
   after_update :save_event
   before_validation :prepare_event, :modify_end_date
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:name]             = "Désignation :"
-  @@form_labels[:event_type]       = "Type :"
-  @@form_labels[:status]           = "Status de l'équipement :"
-  @@form_labels[:internal_actor]   = "Acteur interne :"
-  @@form_labels[:provider_society] = "Entreprise prestataire :"
-  @@form_labels[:provider_actor]   = "Représentant prestataire :"
-  @@form_labels[:start_date]       = "Date de début :"
-  @@form_labels[:end_date]         = "Date de fin :"
-  @@form_labels[:comment]          = "Commentaire :"
-  
   def calendar_duration
     return nil if event_type == INCIDENT
     return 0 if [end_date, start_date].include? nil

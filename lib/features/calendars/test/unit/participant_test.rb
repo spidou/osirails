@@ -10,7 +10,7 @@ class ParticipantTest < ActiveSupport::TestCase
   end
 
   def test_belongs_to_event
-    assert_equal participants(:normal).event, events(:normal),
+    assert_equal participants(:normal_participant).event, events(:two_hours_ago),
       "This Participant should belongs to this Event"
   end
 end

@@ -2,9 +2,9 @@
 <% if (leave_request.was_refused_by_responsible? and LeaveRequest.can_check?(current_user)) or (leave_request.was_refused_by_director? and LeaveRequest.can_close?(current_user)) %>
   <tr>
     <td><%=h leave_request.employee.fullname %></td>
-    <td><%= leave_request.start_date.strftime("%A %d %B %Y") %></td>
-    <td><%= leave_request.end_date.strftime("%A %d %B %Y") %></td>
-    <td><%= leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+    <td><%= l(leave_request.start_date, :format => :long_ordinal) %></td>
+    <td><%= l(leave_request.end_date, :format => :long_ordinal) %></td>
+    <td><%= l(leave_request.submitted_at) %></td>
     <td><%= view_status(leave_request) %></td>
     <td>
       <% if leave_request.was_refused_by_responsible? %>

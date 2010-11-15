@@ -1,6 +1,9 @@
 require File.dirname(__FILE__) + '/../has_address_test'
 
 class AddressTest < ActiveSupport::TestCase
+  should_journalize :attributes        => [ :street_name, :city_name, :country_name, :zip_code ],
+                    :identifier_method => :formatted
+
   def test_presence_of_street_name
     assert_no_difference 'Address.count' do
       address = Address.create

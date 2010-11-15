@@ -1,6 +1,6 @@
 ## Manage the override of each features
 ## OPTIMIZE Move this block of code to a better place
-#if RAILS_ENV == 'development'
+#if Rails.env.development?
 #  features = Dir.open("#{RAILS_ROOT}/lib/features")
 #  features.sort.each do |dir|
 #    next if dir.starts_with?('.') or !File.directory?("#{RAILS_ROOT}/lib/features/#{dir}")
@@ -16,12 +16,14 @@
 class ApplicationController < ActionController::Base
   include Osirails::ContextualMenu
   
-  helper :all # include all helpers, all the time
+  set_journalization_actor
+  
+  helper :all, :journalization # include all helpers, all the time
   layout "default"
   
   # Filters
-  before_filter :configure_model, :authenticate, :select_theme, :initialize_contextual_menu, :select_time_zone
-  before_filter :load_features_overrides if RAILS_ENV == "development"
+  before_filter :configure_model, :authenticate, :select_theme, :initialize_contextual_menu, :select_time_zone, :select_language
+  before_filter :load_features_overrides if Rails.env.development?
   
   # Password will not displayed in log files
   filter_parameter_logging "password"
@@ -188,6 +190,11 @@ class ApplicationController < ActionController::Base
     def select_time_zone
       #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
       Time.zone = ConfigurationManager.admin_society_identity_configuration_time_zone
+    end
+    
+    def select_language
+      #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
+      I18n.default_locale = ConfigurationManager.admin_society_identity_configuration_choosen_language
     end
     
     # this method permits to load the 'overrides.rb' file for each feature before each loaded page in the browser.

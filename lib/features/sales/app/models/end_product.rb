@@ -23,6 +23,8 @@ class EndProduct < Product
   
   acts_as_list :scope => :order
   
+  journalize :identifier_method => :name
+  
   validates_presence_of :product_reference_id, :order_id
   validates_presence_of :product_reference, :if => :product_reference_id
   validates_presence_of :order,             :if => :order_id
@@ -43,9 +45,6 @@ class EndProduct < Product
   after_save :save_checklist_responses
   
   END_PRODUCTS_PER_PAGE = 15
-  
-  @@form_labels[:product_reference] = "Produit référence :"
-  @@form_labels[:quantity]          = "Quantité :"
   
   def name
     self[:name] ||= product_reference ? product_reference.designation : nil

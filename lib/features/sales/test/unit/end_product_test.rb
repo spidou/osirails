@@ -8,6 +8,8 @@ class EndProductTest < ActiveSupport::TestCase
   should_validate_presence_of :product_reference, :order, :with_foreign_key => :default
   
   should_validate_numericality_of :quantity, :prizegiving
+  
+  should_journalize :identifier_method => :name
 
   # TODO  
   #validates_numericality_of :vat, :if => Proc.new{ |p| p.quote_items.reject{ |i| i.quote.cancelled? }.any? } # run validation if product is associated with at least 1 quote_item which provide from a non-cancelled quote

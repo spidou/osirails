@@ -9,6 +9,8 @@ class QuotesController < ApplicationController
   
   acts_as_step_controller :step_name => :quote_step, :skip_edit_redirection => true
   
+  set_journalization_actor [:create, :update, :confirm, :send_to_customer, :sign]
+  
   # GET /orders/:order_id/:step/quotes/:id
   # GET /orders/:order_id/:step/quotes/:id.xml
   # GET /orders/:order_id/:step/quotes/:id.pdf

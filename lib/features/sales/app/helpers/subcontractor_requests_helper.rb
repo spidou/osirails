@@ -15,7 +15,7 @@ module SubcontractorRequestsHelper
   def render_new_subcontractor_requests_list(survey_step)
     collection = survey_step.subcontractor_requests.select(&:new_record?)
     html =  "<div class=\"new_records\" id=\"new_subcontractor_requests\">"
-    html << render(:partial => 'subcontractor_requests/subcontractor_request', :collection => collection)
+    html << render(:partial => 'subcontractor_requests/subcontractor_request', :collection => collection) unless collection.empty?
     html << "</div>"
   end
   

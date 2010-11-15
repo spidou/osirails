@@ -40,7 +40,7 @@ module ShipToAddressesHelper
       new_establishments = order.customer.establishments.select{ |contact| contact.new_record? }
       html =  "<div class=\"resource_group establishment_group new_records\" id=\"new_establishments\" #{"style=\"display:none\"" if new_establishments.empty?}>"
       html << "  <h1>Nouveaux établissements</h1>"
-      html << render(:partial => 'establishments/establishment', :collection => new_establishments, :locals => { :establishments_owner => order })
+      html << render(:partial => 'establishments/establishment', :collection => new_establishments, :locals => { :establishments_owner => order }) unless new_establishments.empty?
       html << "</div>"
     end
 end

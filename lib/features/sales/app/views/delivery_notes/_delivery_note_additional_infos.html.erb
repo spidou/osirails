@@ -1,6 +1,7 @@
 <%
 require_locals form
 delivery_note = delivery_note_additional_infos
+employee = delivery_note.creator.employee
 %>
 
 <p>
@@ -10,7 +11,7 @@ delivery_note = delivery_note_additional_infos
 
 <p>
   <%= form.label :creator %>
-  <%= link_to delivery_note.creator.employee_name, employee_path(delivery_note.creator.employee) %>
+  <%= link_to delivery_note.creator.employee_name, employee ? employee_path(employee) : user_path(delivery_note.creator) %>
 </p>
 
 <p>

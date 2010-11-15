@@ -1,3 +1,3 @@
 class OrderFormType < ActiveRecord::Base
-  has_many :order_forms
+  journalize :identifier_method => :name
 end

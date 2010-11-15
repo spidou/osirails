@@ -43,6 +43,7 @@ excess_quote_items    = quote.product_quote_items.select{ |q| q.end_product.nil?
       <%= t.tab :body,                    "Corps",                    :class    => quote_errors[:body] %>
       <%= t.tab :footer,                  "Conditions commerciales",  :class    => quote_errors[:footer] %>
       <%= t.tab :additional_informations, "Informations supplémentaires" %>
+      <%= t.tab :history,                 "Historique",               :disabled => @quote.new_record? %>
     <% end %>
     
     <% action = quote.new_record? ? :create : :update %>
@@ -66,6 +67,11 @@ excess_quote_items    = quote.product_quote_items.select{ |q| q.end_product.nil?
       
       <% t.content_for :additional_informations do %>
         <%= render :partial => 'quote_additional_infos', :object => quote, :locals => { :form => form } %>
+      <% end %>
+      
+      <% t.content_for :history do %>
+        <%= render :partial => 'quote_additional_infos', :object => quote, :locals => { :form => form } %>
+        <%= display_journals_list(@quote) unless @quote.new_record? %>
       <% end %>
 
       <%= form.form_buttons %>

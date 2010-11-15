@@ -11,16 +11,6 @@ class SurveyIntervention < ActiveRecord::Base
   
   attr_accessor :should_destroy, :should_update, :should_create
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:start_date]                  = 'Le :'
-  @@form_labels[:duration_hours]              = 'Pendant :'
-  @@form_labels[:internal_actor]              = 'Responsable :'
-  @@form_labels[:contact]                     = 'Contact sur place :'
-  @@form_labels[:comment]                     = 'Commentaire :'
-  @@form_labels[:documents]                   = 'Documents :'
-  @@form_labels[:survey_intervention_contact] = 'Contact :'
-  
   def should_destroy?
     should_destroy.to_i == 1
   end

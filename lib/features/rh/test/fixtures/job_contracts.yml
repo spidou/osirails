@@ -1,4 +1,4 @@
-john_doe_job_contract:
-  employee: john_doe
+normal_job_contract:
+  employee: powerful_user
   employee_state: freelance
   job_contract_type: cdi

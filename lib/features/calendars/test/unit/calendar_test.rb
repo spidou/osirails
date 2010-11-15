@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../calendars_test'
 
 class CalendarTest < ActiveSupport::TestCase
   def setup
-    @good_calendar = calendars(:normal)
+    @good_calendar = calendars(:normal_calendar)
     
     @calendar = Calendar.new
     @calendar.valid?
@@ -21,7 +21,7 @@ class CalendarTest < ActiveSupport::TestCase
   end
 
   def test_has_many_event_categories
-    assert_equal @good_calendar.event_categories, [event_categories(:normal)],
+    assert_equal @good_calendar.event_categories, [event_categories(:normal_event_category)],
       "This Calendar should have this EventCategory"
   end
 

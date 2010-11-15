@@ -4,7 +4,7 @@ module ActionView
   module Helpers
     module FormOptionsHelper
       def collection_select_with_indentation(object, method, collection, value_method, text_method, options = {}, html_options = {})
-        InstanceTag.new(object, method, self, nil, options.delete(:object)).to_collection_select_tag_with_indentation(collection, value_method, text_method, options, html_options)
+        InstanceTag.new(object, method, self, options.delete(:object)).to_collection_select_tag_with_indentation(collection, value_method, text_method, options, html_options)
       end
       
       def options_from_collection_for_select_with_indentation(collection, value_method, text_method, options, selected = nil)
@@ -40,70 +40,44 @@ module ActionView
         
         last_option = Struct.new("LastOptionForCollectionSelect", value_method, text_method).new(options[:last_option_value], options[:last_option_text])
         collection = collection + [ last_option ]
-        InstanceTag.new(object_name, method_name, self, nil, options.delete(:object)).to_collection_select_tag_with_custom_choice(choice_method_name, collection, value_method, text_method, options, select_options, text_field_options, link_options)
+        InstanceTag.new(object_name, method_name, self, options.delete(:object)).to_collection_select_tag_with_custom_choice(choice_method_name, collection, value_method, text_method, options, select_options, text_field_options, link_options)
       end
       
-      # HACKED METHOD (by Mathieu FONTAINE)
-      # Returns a label tag tailored for labelling an input field for a specified attribute (identified by +method+) on an object
-      # assigned to the template (identified by +object+). The text of label will default to the attribute name unless you specify
-      # it explicitly. Additional options on the label tag can be passed as a hash with +options+. These options will be tagged
-      # onto the HTML as an HTML element attribute as in the example shown.
-      #
-      # ==== Examples
-      #   label(:post, :title)
-      #   # => <label for="post_title">Title</label>
-      #
-      #
-      # ###############
-      #   Class Post
-      #     cattr_reader :form_labels
-      #     @@form_labels[:title] = "A short title :"
-      #     @@form_labels[:group] = "Groups :"
-      #   end
-      #   
-      #   label(:post, :title)
-      #   # => <label for="post_title">A short title :</label> # if form_labels[:symbol] is defined in the model
-      #   
-      #   label(:post, :sub_title)
-      #   # => <label for="post_sub_title">Sub title</label> # if form_labels[:symbol] is not defined, the 'method_name' is humanized
-      #   
-      #   label(:post, :group_ids)
-      #   # => <label for="post_sub_title">Groups :</label> # if form_labels[:symbol] ends with '_id' or '_ids', the symbol is checked without these characters
-      # ###############
-      # 
-      # ###############
-      #   Class Tag
-      #     cattr_reader :form_labels
-      #     @@form_labels[:name] = ""
-      #   end
-      #   
-      #   fields_for "posts[tag_attributes][]", post do |f|
-      #     f.label(:name, :index => nil)
-      #   end
-      #   # => <label name="posts[tag_attributes][][name]"></label>
-      # ###############
-      # 
-      #
       def label(object_name, method, text = nil, options = {})
-        ###### hack by Mathieu FONTAINE
-        if text.kind_of?(Hash) # if text is omitted and the third argument is actuallay an option for label tag, so we merge the third arg with the options hash, and we flash the 'text' argument.
-          options.merge(text)
-          text = nil
-        elsif !text.kind_of?(String) and !text.kind_of?(NilClass)
-          raise "Unexpected type: 'text' must be either String or Hash. text = #{text.class.name}"
-        end
+        ###### hack by Ronnie Heritiana RABENANDRASANA for I18n management
         if text.nil?
-          key = method.to_s.gsub(/_id(s)?$/,"").to_sym
-          if options[:object].class.respond_to?("form_labels") and !options[:object].class.form_labels[key].nil?
-            text = options[:object].class.form_labels[key]
-          else
-            text = "#{key.to_s}:"
-          end
-          text = text.gsub(" :", "&#160;:") # &#160; => indivisible space
+          text = i18n_label(options[:object].class,method)
         end
         ###### end hack
         
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_label_tag(text, options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_label_tag(text, options)
+      end
+      
+      # Creates a label without the default 'for' attribute option that raises a
+      # warning when using the method 'label' without a corresponding object id,
+      # such as labels not called inside a 'form_for'
+      #
+      # ==== Example
+      #   <%= simple_label 'Your text' %>
+      #   # => <label>Your text</label>
+      # 
+      # By passing a class and a method, I18n is managed
+      # ==== Example 
+      #   <%= simple_label :order, :title %>
+      #   # => <label>Nom du projet&nbsp;:</label>
+      #   thanks to yml file => fr:
+      #                           activerecord:
+      #                             attributes:
+      #                               order:
+      #                                 title: "Nom du projet"
+      #
+      def simple_label(class_or_text, method = nil, options = {})
+        if class_or_text.is_a?(Symbol)
+          text = i18n_label(class_or_text.to_s.camelize.constantize,method)
+        else
+          text = class_or_text
+        end
+        content_tag :label, text, options
       end
       
       # Creates a strong tag
@@ -208,7 +182,7 @@ module ActionView
         options[:cols] ||= 60
         options[:class] = "#{options[:class]}#{options[:class].blank? ? '' : ' '}autoresize_text_area";
         options[:style] = "#{options[:style]}#{options[:style].blank? ? '' : ';'}overflow: hidden";
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_text_area_tag(options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_text_area_tag(options)
       end
       
       alias_method :text_area_autoresize, :autoresize_text_area
@@ -217,7 +191,7 @@ module ActionView
         options[:output_format]   ||= "%Y-%m-%d"
         text_field_options[:size] ||= 10
         
-        InstanceTag.new(object_name, method_name, self, nil, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
+        InstanceTag.new(object_name, method_name, self, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
       end
       
       def calendar_datetime_field_tag(object_name, method_name, options = {}, text_field_options = {})
@@ -225,8 +199,19 @@ module ActionView
         options[:output_format]   ||= "%Y-%m-%d %H:%M:%S"
         text_field_options[:size] ||= 17
         
-        InstanceTag.new(object_name, method_name, self, nil, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
+        InstanceTag.new(object_name, method_name, self, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
       end
+      
+      private
+        def i18n_label(klass,method)
+          key = method.to_s.gsub(/_id(s)?$/,"")
+          if klass.respond_to?(:human_attribute_name)
+            text = klass.human_attribute_name(key)
+          else
+            text = "#{key}"
+          end
+          text = (text + I18n.t('label_separator')).gsub(" :", "&#160;:") # &#160; => indivisible space
+        end
     end
     
     class InstanceTag #:nodoc:
@@ -268,7 +253,7 @@ module ActionView
         targetted_textfield_id              = "#{formatted_textfield_id}#{options[:disabled] ? '_for_disabled_calendar' : ''}"
         hidden_field_for_disabled_calendar  = options[:disabled] ? hidden_field_tag("#{formatted_textfield_id}_for_disabled_calendar", nil, :disabled => true) : ''
         
-        InstanceTag.new(@object_name, @method_name, self, nil, options.delete(:object)).to_input_field_tag("text", text_field_options) +
+        InstanceTag.new(@object_name, @method_name, self, options.delete(:object)).to_input_field_tag("text", text_field_options) +
           image_tag("calendar.png", {:id => "#{@object_name}_#{@method_name}_#{options[:index]}_trigger", :class => "calendar-trigger"}) +
           javascript_tag("Calendar.setup({range       : [#{options[:start_year]},#{options[:end_year]}],
                                           ifFormat    : '#{options[:output_format]}', 
@@ -309,7 +294,7 @@ module ActionView
         ) +
         content_tag_without_error_wrapping(
           #OPTIMIZE we shouldn't have to manually add the brackets '[]' after the object_name, but the call of 'to_collection_select_tag_with_custom_choice' remove end brackets to the object_name
-          :div, InstanceTag.new("#{@object_name}[]", choice_method_name, self, nil, @object).to_input_field_tag("text", text_field_options.merge(show_select ? { :value => '' } : {})) +
+          :div, InstanceTag.new("#{@object_name}[]", choice_method_name, self, @object).to_input_field_tag("text", text_field_options.merge(show_select ? { :value => '' } : {})) +
                 link_to_function_without_error_wrapping(link_options.delete(:content), link_options.delete(:function), link_options),
           :class => "#{choice_method_name}_input_container",
           :style => show_select ? 'display:none' : ''

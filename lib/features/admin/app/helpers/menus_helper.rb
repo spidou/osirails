@@ -98,10 +98,10 @@ module MenusHelper
   # be used by +get_structured_menus_permissions+
   #
   def get_check_box(permission, method)
-    checked_class = permission.send(method.name) ? '' : 'unchecked'
+    checked_class = permission.send(method.p_name) ? '' : 'unchecked'
     name    = "permissions[#{ permission.id }][#{ method.name }]"
     result  = "<label for='#{ name }' class='method #{ checked_class }'>#{ method.name.humanize }</label> "
-    result += check_box_tag(name, 1, permission.send(method.name),
+    result += check_box_tag(name, 1, permission.send(method.p_name),
                             :class   => 'check_boxes',
                             :onClick => 'tick_children(this);')
     result += "<input name='#{ name }' value='0' type='hidden'"

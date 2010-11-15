@@ -1,0 +1,5 @@
+fr:
+  activerecord:
+    errors:
+      messages:
+        has_changed: "a été modifié"

@@ -79,10 +79,8 @@ class Invoice < ActiveRecord::Base
   with_options :if => Proc.new{ |i| i.created_at_was and i.confirmed? } do |x|
     x.validates_presence_of :confirmed_at, :published_on, :reference
     
-    x.validates_date :confirmed_at, :on_or_after         => :created_at,
-                                    :on_or_after_message => "ne doit pas être AVANT la date de création de la facture&#160;(%s)"
-    x.validates_date :published_on, :on_or_after         => Proc.new{ |i| i.associated_quote.signed_on },
-                                    :on_or_after_message => "ne doit pas être AVANT la date de signature du devis&#160;(%s)"
+    x.validates_date :confirmed_at, :on_or_after => :created_at
+    x.validates_date :published_on, :on_or_after => Proc.new{ |i| i.associated_quote.signed_on }
   end
   
   # when invoice is CONFIRMED
@@ -99,9 +97,8 @@ class Invoice < ActiveRecord::Base
   with_options :if => Proc.new{ |i| i.confirmed_at_was and i.cancelled? } do |x|
     x.validates_presence_of :cancelled_at, :cancelled_comment, :cancelled_by_id
     x.validates_presence_of :cancelled_by, :if => :cancelled_by_id
-    
     x.validates_date :cancelled_at, :on_or_after         => :published_on,
-                                    :on_or_after_message => "ne doit pas être AVANT la date d'émission de la facture&#160;(%s)"
+                                    :on_or_after_message => :message_for_validates_date_cancelled_at_on_or_after_while_confirmed
   end
   
   ### while invoice SENDING
@@ -109,10 +106,8 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :sended_on, :send_invoice_method_id
     x.validates_presence_of :send_invoice_method, :if => :send_invoice_method_id
     
-    x.validates_date :sended_on,  :on_or_after         => :published_on,
-                                  :on_or_after_message => "ne doit pas être AVANT la date d'émission de la facture&#160;(%s)"
-    x.validates_date :sended_on,  :on_or_before        => Date.today,
-                                  :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    x.validates_date :sended_on,  :on_or_after  => :published_on
+    x.validates_date :sended_on,  :on_or_before => Date.today
   end
   
   # when invoice is CANCELLED
@@ -151,7 +146,7 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :cancelled_by, :if => :cancelled_by_id
     
     x.validates_date :cancelled_at, :on_or_after         => :sended_on,
-                                    :on_or_after_message => "ne doit pas être AVANT la date d'envoi de la facture&#160;(%s)"
+                                    :on_or_after_message => :message_for_validates_date_cancelled_at_on_or_after_while_sended
   end
   
   ### while invoice ABANDONNING
@@ -160,7 +155,7 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :abandoned_by, :if => :abandoned_by_id
     
     x.validates_date :abandoned_on, :on_or_after         => :sended_on,
-                                    :on_or_after_message => "ne doit pas être AVANT la date d'envoi de la facture&#160;(%s)"
+                                    :on_or_after_message => :message_for_validates_date_abandoned_on_on_or_after_while_sended
   end
   
   ### while invoice FACTORING_PAYING
@@ -208,7 +203,7 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :factoring_balance_paid_on
     
     x.validates_date :factoring_balance_paid_on, :on_or_after         => :factoring_recovered_on,
-                                                 :on_or_after_message => "ne doit pas être AVANT la date de définancement de la facture&#160;(%s)"
+                                                 :on_or_after_message => :message_for_validates_date_factoring_balance_paid_on_on_or_after_while_abandoned
   end
   
   # when invoice is FACTORING_PAID
@@ -225,8 +220,7 @@ class Invoice < ActiveRecord::Base
   with_options :if => Proc.new{ |i| i.factoring_paid_on_was and i.factoring_recovered? } do |x|
     x.validates_presence_of :factoring_recovered_on, :factoring_recovered_comment
     
-    x.validates_date :factoring_recovered_on, :on_or_after         => :factoring_paid_on,
-                                              :on_or_after_message => "ne doit pas être AVANT la date de réglement par le factor de la facture&#160;(%s)"
+    x.validates_date :factoring_recovered_on, :on_or_after => :factoring_paid_on
   end
   
   ### while invoice FACTORING_BALANCE_PAYING
@@ -234,7 +228,7 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :factoring_balance_paid_on
     
     x.validates_date :factoring_balance_paid_on, :on_or_after         => :factoring_paid_on,
-                                                 :on_or_after_message => "ne doit pas être AVANT la date de règlement par le factor de la facture&#160;(%s)"
+                                                 :on_or_after_message => :message_for_validates_date_factoring_balance_paid_on_on_or_after_while_factoring_paid
   end
   
   # when invoice is FACTORING_RECOVERED
@@ -253,7 +247,7 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :abandoned_by, :if => :abandoned_by_id
     
     x.validates_date :abandoned_on, :on_or_after         => :factoring_recovered_on,
-                                    :on_or_after_message => "ne doit pas être AVANT la date de définancement de la facture&#160;(%s)"
+                                    :on_or_after_message => :message_for_validates_date_abandoned_on_on_or_after_while_factoring_recovered
   end
   
   ### while invoice FACTORING_BALANCE_PAYING
@@ -261,7 +255,7 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :factoring_balance_paid_on
     
     x.validates_date :factoring_balance_paid_on, :on_or_after         => :factoring_recovered_on,
-                                                 :on_or_after_message => "ne doit pas être AVANT la date de définancement de la facture&#160;(%s)"
+                                                 :on_or_after_message => :message_for_validates_date_factoring_balance_paid_on_on_or_after_on_while_factoring_recovered
   end
   
   # when invoice is FACTORING_BALANCE_PAID
@@ -329,30 +323,6 @@ class Invoice < ActiveRecord::Base
   has_search_index :only_attributes    => [ :reference, :status, :published_on, :sended_on, :abandoned_on, :factoring_recovered_on, :factoring_balance_paid_on ],
                    :only_relationships => [ :factor, :invoice_type ]#,:order] #TODO add :order to relationships list when bug #60 will be resolved.
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:reference]                   = 'Référence :'
-  @@form_labels[:created_at]                  = 'Créée le :'
-  @@form_labels[:creator]                     = 'Par :'
-  @@form_labels[:status]                      = 'État actuel :'
-  @@form_labels[:invoice_type]                = 'Type de facture :'
-  @@form_labels[:published_on]                = "Date d'émission :"
-  @@form_labels[:factor]                      = 'Factor :'
-  @@form_labels[:sended_on]                   = 'Envoyée au client le :'
-  @@form_labels[:send_invoice_method]         = 'Par :'
-  @@form_labels[:cancelled_at]                = 'Annulée le :'
-  @@form_labels[:cancelled_by]                = 'Par :'
-  @@form_labels[:cancelled_comment]           = 'Indiquer la raison de cette annulation :'
-  @@form_labels[:abandoned_on]                = 'Abandonée le :'
-  @@form_labels[:abandoned_by]                = 'Par :'
-  @@form_labels[:abandoned_comment]           = "Indiquer la raison de l'abandon :"
-  @@form_labels[:net_to_paid]                 = 'Montant total de la facture :'
-  @@form_labels[:factoring_paid_on]           = 'Financement du Factor le :'
-  @@form_labels[:factoring_recovered_on]      = 'Définancement du Factor le :'
-  @@form_labels[:factoring_recovered_comment] = 'Indiquer la raison du définancement :'
-  @@form_labels[:factoring_balance_paid_on]   = 'Solde Factor reçu le :'
-  @@form_labels[:delivery_note_invoices]      = 'Bons de livraison associés :'
-  
   def validates_presence_of_associated_quote
     errors.add(:associated_quote, "La facture doit être associée à un devis signé, mais celui-ci n'est pas présent.") unless associated_quote
   end
@@ -400,9 +370,9 @@ class Invoice < ActiveRecord::Base
   
   def validates_presence_of_deposit_attributes
     return true unless deposit_invoice?
-    errors.add(:deposit, ActiveRecord::Errors::default_error_messages[:not_a_number]) unless deposit and deposit > 0
-    errors.add(:deposit_amount, ActiveRecord::Errors::default_error_messages[:not_a_number]) unless deposit_amount and deposit_amount > 0
-    errors.add(:deposit_vat, ActiveRecord::Errors::default_error_messages[:not_a_number]) unless deposit_vat and deposit_vat > 0
+    errors.add(:deposit, I18n.t('activerecord.errors.messages.not_a_number')) unless deposit and deposit > 0
+    errors.add(:deposit_amount, I18n.t('activerecord.errors.messages.not_a_number')) unless deposit_amount and deposit_amount > 0
+    errors.add(:deposit_vat, I18n.t('activerecord.errors.messages.not_a_number')) unless deposit_vat and deposit_vat > 0
   end
   
   def validates_invoice_type
@@ -422,7 +392,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def validates_uniqueness_of_due_dates_with_factorised_invoice
-    errors.add(:due_dates, "Une facture factorisée ne peut avoir qu'une seule échéance") if factorised? and due_dates.reject(&:should_destroy?).size > 1 #TODO reject(&:should_destroy?) have just been added => write or modify tests for that method to take it in account
+    errors.add(:due_dates, "Une facture factorisée ne peut avoir qu'une seule échéance") if factorised? and due_dates.reject(&:should_destroy?).many? #TODO reject(&:should_destroy?) have just been added => write or modify tests for that method to take it in account
   end
   
   #TODO write tests
@@ -471,7 +441,7 @@ class Invoice < ActiveRecord::Base
       for payment in due_date.payments
         if payment.paid_on
           payment.errors.add(:paid_on, "ne doit pas être AVANT la date d'émission de la facture&#160;(#{self.published_on.humanize})") if payment.paid_on < published_on
-          payment.errors.add(:paid_on, "ne doit pas être APRÈS aujourd'hui&#160;(#{Date.today.humanize})") if payment.paid_on > Date.today
+          payment.errors.add(:paid_on, "ne doit pas être APRÈS aujourd'hui&#160;(#{Date.today.humanize})") if payment.paid_on.future?
         end
       end
       
@@ -488,9 +458,9 @@ class Invoice < ActiveRecord::Base
     for due_date in due_dates
       for payment in due_date.payments
         unless payment.payment_method_id
-          payment.errors.add(:payment_method_id, ActiveRecord::Errors::default_error_messages[:blank])
+          payment.errors.add(:payment_method_id, I18n.t('activerecord.errors.messages.blank'))
         else
-          payment.errors.add(:payment_method, ActiveRecord::Errors::default_error_messages[:blank]) unless payment.payment_method
+          payment.errors.add(:payment_method, I18n.t('activerecord.errors.messages.blank')) unless payment.payment_method
         end
       end
       
@@ -1068,4 +1038,37 @@ class Invoice < ActiveRecord::Base
   def order_and_customer_contacts
     order ? order.all_contacts_and_customer_contacts : []
   end
+  
+  def message_for_validates_date_cancelled_at_on_or_after_while_confirmed
+    message_for_validates_date("cancelled_at", "on_or_after", "while_confirmed", self.published_on)
+  end
+  
+  def message_for_validates_date_cancelled_at_on_or_after_while_sended
+    message_for_validates_date("cancelled_at", "on_or_after", "while_sended", self.sended_on)
+  end
+  
+  def message_for_validates_date_abandoned_on_on_or_after_while_sended
+    message_for_validates_date("abandoned_on", "on_or_after", "while_sended", self.sended_on)
+  end
+  
+  def message_for_validates_date_abandoned_on_on_or_after_while_factoring_recovered
+    message_for_validates_date("abandoned_on", "on_or_after", "while_factoring_recovered", self.factoring_recovered_on)
+  end
+  
+  def message_for_validates_date_factoring_balance_paid_on_on_or_after_while_abandoned
+    message_for_validates_date("factoring_balance_paid_on", "on_or_after", "while_abandoned", self.factoring_recovered_on)
+  end
+  
+  def message_for_validates_date_factoring_balance_paid_on_on_or_after_while_factoring_paid
+    message_for_validates_date("factoring_balance_paid_on", "on_or_after", "while_factoring_paid", self.factoring_paid_on)
+  end
+  
+  def message_for_validates_date_factoring_balance_paid_on_on_or_after_on_while_factoring_recovered
+    message_for_validates_date("factoring_balance_paid_on", "on_or_after", "while_factoring_recovered", self.factoring_recovered_on)
+  end
+    
+  private
+    def message_for_validates_date(attribute, error_type, context, restriction)
+      I18n.t("activerecord.errors.models.invoice.attributes.#{attribute}.#{error_type}.#{context}", :restriction => restriction)
+    end
 end

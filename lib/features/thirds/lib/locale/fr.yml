@@ -1,0 +1,42 @@
+fr:     
+  activerecord:
+    models: 
+      activity_sector: "Secteur d'activité"
+      activity_sector_reference: "Code NAF"
+      custom_activity_sector: "Secteur d'activité personnalisé"
+      customer: "Client"
+      customer_grade: "Note client"
+      customer_solvency: "Solvabilité client"
+      establishment: "Établissement"
+      establishment_type: "Type d'établissement"
+      factor: "Société d'affacturage"
+      head_office: "Siège social"
+      legal_form: "Forme juridique"
+      payment_method: "Moyen de paiement"
+      payment_time_limit: "Durée limite de paiement"
+      supplier: "Fournisseur"
+      third: "Tiers"
+      third_type: "Type de tiers"
+    attributes: 
+      third:
+        name: "Raison Sociale"
+        legal_form: "Forme juridique"
+        website: "Site Internet"
+        created_at: "Créé le"
+        creator: "Créé par"
+      customer:
+        factor: "Société d'affacturage"
+        customer_solvency: "Degré de solvabilité"
+        customer_grade: "Note relation client"  
+      supplier:
+        activity_sector_reference: "Code NAF"
+      establishment:
+        name: "Nom de l'enseigne"
+        establishment_type: "Type d'établissement"
+        activity_sector_reference: "Code NAF"
+        phone: "Tél"
+        fax: "Fax"
+        siret_number: "N° SIRET"
+      factor:
+        name: "Nom"
+        fullname: "Nom complet"

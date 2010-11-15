@@ -95,7 +95,7 @@ module HasPermissions
     end
     
     def setup_has_permissions_model options = {}
-      return unless !defined?(self.permissions_association_options) or RAILS_ENV == "development" # allow multiple calls only in development
+      return unless !defined?(self.permissions_association_options) or Rails.env.development? # allow multiple calls only in development
       
       cattr_accessor :permissions_association_options
       
@@ -221,7 +221,7 @@ module HasPermissions
               else
                 raise "[has_permissions] I don't know what to do with that : object => #{object}:#{object.class}; user_or_role => #{user_or_role}:#{user_or_role.class}'"
               end
-              return_value ||= perm.send(action) unless perm.nil?
+              return_value ||= perm.send("#{action}?") unless perm.nil?
             end
             
             return_value

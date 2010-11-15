@@ -81,6 +81,11 @@
   <%= label_tag 'admin_society_identity_configuration_choosen_theme', @descriptions["admin_society_identity_configuration_choosen_theme"] %>
   <%= choosen_theme("admin_society_identity_configuration_choosen_theme", @parameters["admin_society_identity_configuration_choosen_theme"]) %>
 </p>
+<h2>Langue</h2>
+<p>
+  <%= label_tag 'admin_society_identity_configuration_choosen_language', @descriptions["admin_society_identity_configuration_choosen_language"] %>
+  <%= choosen_language("admin_society_identity_configuration_choosen_language", @parameters["admin_society_identity_configuration_choosen_language"]) %>
+</p>
 
   <% if is_form_view? %>
     <p class="form_buttons">

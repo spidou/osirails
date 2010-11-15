@@ -4,8 +4,6 @@ module SiretNumber
     klass.validates_format_of :siret_number, :with        => /^([0-9]{9}|[0-9]{14})$/,
                                              :allow_blank => true,
                                              :message     => "Le numéro SIRET doit comporter 9 ou 14 chiffres"
-    
-    klass.form_labels.merge!({ :siret_number => "N° SIRET :" })
   end
   
   def formatted_siret_number

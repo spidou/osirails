@@ -12,12 +12,7 @@ class Content < ActiveRecord::Base
   
   # for pagination : number of instances by index page
   CONTENTS_PER_PAGE = 15
-  
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:title]       = "Titre :"
-  @@form_labels[:description] = "Description :"
-  
+
   before_save :delete_duplicate_contributors
   
   def menu_attributes=(menu_attributes)

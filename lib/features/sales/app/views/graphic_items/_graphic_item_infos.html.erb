@@ -58,12 +58,12 @@ graphic_item = graphic_item_infos
       <%= image_tag graphic_item.current_image.url(:thumb) %>
     </div>
     <div class="details">
-      <h1><%= graphic_item.class.form_labels[:image] %></h1>
+      <h1><%= graphic_item.class.human_attribute_name("image") %></h1>
       <%= link_to form.strong("Télécharger"), graphic_item.current_image.url %>
       <% unless is_form_view? %>
         / <%= display_graphic_item_summary_image_spool_actions(graphic_item) %>
       <% end %>
-      <h1><%= graphic_item.class.form_labels[:source] %></h1>
+      <h1><%= graphic_item.class.human_attribute_name("source") %></h1>
       <% if graphic_item.current_version.source_file_name %>
         <%= link_to form.strong("Télécharger"), graphic_item.current_source.url %>
         <% unless is_form_view? %>

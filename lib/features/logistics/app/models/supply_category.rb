@@ -15,11 +15,6 @@ class SupplyCategory < ActiveRecord::Base
   
   before_destroy :can_be_destroyed?
    
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:reference] = "Référence :"
-  @@form_labels[:name]      = "Nom :"
-  
   def enabled?
     enabled
   end

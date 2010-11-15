@@ -1,6 +1,8 @@
 require 'test/test_helper'
 
 class ServiceTest < ActiveSupport::TestCase
+  should_journalize :identifier_method => :name
+  
   def setup
     @parent = services(:parent)
     @child = services(:child)
