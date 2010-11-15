@@ -20,7 +20,7 @@ end_product_errors  = { :details    => end_product.errors.empty? ? '' : ' errors
     
     <p class="end_product_summary">
       <% unless end_product.new_record? %>
-        <span class="end_product_position"><%= end_product_counter %></span>
+        <span class="end_product_position"><%= end_product_counter + 1 %></span>
         <span class="end_product_label">Nom :</span> <span class="end_product_name"><%= end_product.name_was %></span>
         <span class="end_product_label">Côtes :</span> <span class="end_product_dimensions"><%= end_product.dimensions_was %></span>
         <span class="end_product_label">Qté :</span> <span class="end_product_quantity"><%= end_product.quantity_was %></span>
@@ -47,7 +47,7 @@ end_product_errors  = { :details    => end_product.errors.empty? ? '' : ' errors
         </p>
         <p>
           <%= form.label :description %>
-          <%= form.text_area_autoresize :description, :value => end_product.description %>
+          <%= form.text_area_autoresize :description, :value => end_product.description, :index => nil %>
         </p>
         <p>
           <%= form.label :quantity %>
