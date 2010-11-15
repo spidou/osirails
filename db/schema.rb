@@ -1417,12 +1417,12 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
     t.integer  "creator_id"
     t.string   "type"
     t.string   "name"
-    t.string   "siret_number"
     t.string   "website"
     t.boolean  "activated",                    :default => true
     t.date     "company_created_at"
     t.date     "collaboration_started_at"
     t.integer  "activity_sector_reference_id"
+    t.string   "siret_number"
     t.integer  "factor_id"
     t.integer  "customer_solvency_id"
     t.integer  "customer_grade_id"

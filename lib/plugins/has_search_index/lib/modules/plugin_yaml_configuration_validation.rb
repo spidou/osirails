@@ -2,8 +2,8 @@ module HasSearchIndex
   require 'yaml'
   
   def self.define_html_pages_options_for(page_name, options, error_prefix)
-    page_options  = HasSearchIndex::HTML_PAGES_OPTIONS[page_name.to_sym] || {}
     default_query = options.delete(:default_query)
+    page_options  = HasSearchIndex::HTML_PAGES_OPTIONS[page_name.to_sym] || {}
     page_options.merge!(options)
     page_options[:default_query] ||= default_query
     

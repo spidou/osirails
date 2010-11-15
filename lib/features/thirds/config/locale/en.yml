@@ -17,3 +17,8 @@ en:
           formatted: "Bill to address"
       activity_sector_reference:
         get_activity_sector_name: "Activity sector name"
+    page_names:      
+      customer:
+        customer_index: "Customers"
+      supplier:
+        supplier_index: "Suppliers"

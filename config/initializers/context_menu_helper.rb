@@ -1,8 +1,42 @@
+require 'integrated_search_helper' # remove that line if trying to externalize and make a plugin for 'context-menu'
+
 require 'action_view/helpers/tag_helper'
 require 'action_view/helpers/form_tag_helper'
 
 module ActionView
   module Helpers
+    
+    class ContextMenu
+      attr_accessor :template
+      
+      def initialize(template, &block)
+        raise ArgumentError, "Missing block" unless block_given?
+        
+        @template = template
+        @template.concat("<ul>", block.binding)
+        yield self
+        @template.concat('</ul>', block.binding)
+      end
+      
+      def entry(content)
+        @template.content_tag(:li, content) unless content.blank?
+      end
+      
+      def submenu(*args, &block)
+        raise ArgumentError, "Missing block" unless block_given?
+        
+        title = @template.link_to(args.first, {}, :class => "submenu", :href => "#")
+        
+        content = "<ul>"
+        @template.capture(&block).split("\n").each { |c| content << self.entry(c) unless c.blank? }
+        content << "</ul>"
+        
+        if content != "<ul></ul>"
+          @template.concat( @template.content_tag(:li, title + content, :class => "folder"), block.binding )
+        end
+      end
+    end
+    
     # Makes a HTML item selectable by right click, associated with a ruby object and a context menu available with 
     # left click. Must be called into a HTML item that accepts a checkbox inside as it is delivered with a checkbox
     # whose name (indicating the ruby object class name) and value (the object id) are sended.
@@ -65,30 +99,31 @@ module ActionView
     #     True by default, this option permit to display the checkbox selection.
     #
     def context_menu(object, selectable_item_html_class, options = {})
-      options = {:display_checkbox => true, :allow_multiple_selection => true}.merge(options)
+      options = { :display_checkbox => true,
+                  :allow_multiple_selection => true }.merge(options)
       
       @context_menu_classes ||= []
-      klass                   = object.class
-      html                    = ""
+      klass, html = object.class, ""
       
       #OPTIMIZE those three following addition in html are repeated after each call of context_menu whereas a simple call for these three are enough
       # for a same object. Conditions were deleted because it caused trouble when Ajax was used.
       
 #      unless @context_menu_classes.include?(klass)
-#        html << javascript_tag("new ContextMenu('#{ context_menu_path(:authenticity_token => form_authenticity_token) }', '#{selectable_item_html_class}')")
+#        html << javascript_tag("new ContextMenu('#{context_menu_path(:authenticity_token => form_authenticity_token)}', '#{selectable_item_html_class}')")
 #        html << hidden_field_tag("#{klass.name.underscore}_single_selection_template", options[:single_selection_template]) if options[:single_selection_template]
 #        html << hidden_field_tag("#{klass.name.underscore}_multiple_selection_template", options[:multiple_selection_template]) if options[:multiple_selection_template]
 #        @context_menu_classes << klass
 #      end
-
-      html << javascript_tag("new ContextMenu('#{ context_menu_path(:authenticity_token => form_authenticity_token) }', '#{selectable_item_html_class}')")
+      
+      html << javascript_tag("new ContextMenu('#{context_menu_path(:authenticity_token => form_authenticity_token)}', '#{selectable_item_html_class}')")
       html << hidden_field_tag("#{klass.name.underscore}_single_selection_template", options[:single_selection_template]) if options[:single_selection_template]
-      html << hidden_field_tag("#{klass.name.underscore}_multiple_selection_template", options[:multiple_selection_template]) if options[:multiple_selection_template]   
+      html << hidden_field_tag("#{klass.name.underscore}_multiple_selection_template", options[:multiple_selection_template]) if options[:multiple_selection_template]
+      
       # end OPTIMIZE
       
-      html << check_box_tag("#{object.class.name.underscore}_ids[]", object.id, false, 
-                            { :id => nil, 
-                              :class => options[:allow_multiple_selection] ? nil : 'context-menu-single-selection', 
+      html << check_box_tag("#{object.class.name.underscore}_ids[]", object.id, false,
+                            { :id => nil,
+                              :class => options[:allow_multiple_selection] ? nil : 'context-menu-single-selection',
                               :style => options[:display_checkbox] ? nil : "display:none" })
       html
     end
@@ -136,34 +171,32 @@ module ActionView
       ContextMenu.new(@template, &block)
     end
     
-    class ContextMenu
-      attr_accessor :template
+    private
+      #### move these 2 following methods if trying to externalize and make a plugin for 'context-menu'
       
-      def initialize(template, &block)
-        raise ArgumentError, "Missing block" unless block_given?
+      ## This method override an original behaviour (integrated_search_helper.rb on has_search_index plugin)
+      #  to automatically add the context-menu into auto-generated table from has_search_index.
+      #  This behaviour can be disabled by setting @hide_selector_column at true in the controller
+      def query_thead_tr_with_context_menu(content)
+        return query_thead_tr_without_context_menu(content) if @hide_selector_column
         
-        @template = template
-        @template.concat("<ul>", block.binding)
-        yield self
-        @template.concat('</ul>', block.binding)
+        helper = "query_thead_tr"
+        content = content_tag(:th, toggle_selectable_items_link(image_tag('confirm_16x16.png'), @page_model.underscore)) + content # add th element at first
+        
+        override_for(helper) ? send(override_for(helper), content) : content_tag(:tr, content)
       end
+      alias_method_chain :query_thead_tr, :context_menu
       
-      def entry(content)
-        @template.content_tag(:li, content)
+      ## same as #query_thead_tr_with_context_menu
+      def query_tr_with_context_menu(content)
+        helper = "query_tr"
+        html_class = "#{@page_model.underscore}_tr"
+        style = @hide_selector_column == true ? "display:none" : ""
+        
+        content = content_tag(:td, context_menu(@query_object, html_class), :class => :selector, :style => style) + content # add td element at first
+        override_for(helper) ? send(override_for(helper), content) : content_tag(:tr, content, :class => html_class)
       end
-      
-      def submenu(*args, &block)
-        raise ArgumentError, "Missing block" unless block_given?
-        
-        title = @template.link_to(args.first, {}, :class => "submenu", :href => "#")
-        
-        content = "<ul>"
-        @template.capture(&block).split("\n").each { |c| content << self.entry(c) unless c.blank? }
-        content << "</ul>"
-        
-        @template.concat( @template.content_tag(:li, title + content, :class => "folder"), block.binding )
-      end
-    end
+      alias_method_chain :query_tr, :context_menu
   end
 end
 

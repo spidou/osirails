@@ -1,7 +1,7 @@
 # Load application configuration
 begin
   FeatureManager.loaded_feature_paths.each do |feature_path|
-    Dir.glob(File.join(feature_path, "**", "config", "queries", "*.yml")).each do |yml_path|
+    Dir.glob(File.join(feature_path, "config", "queries", "*.yml")).each do |yml_path|
       HasSearchIndex.load_page_options_from(yml_path)
     end
   end

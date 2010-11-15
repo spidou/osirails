@@ -177,6 +177,20 @@ hr {
   -moz-box-shadow: 0px 1px 7px rgba(0,0,0,0.4), 0px -1px 7px rgba(0,0,0,0.4);
 }
 
+/* IMAGES */
+a[data-icon] {
+  background-repeat: no-repeat;
+  background-position: 1px 50%;
+  padding-left: 16px !important;
+}
+
+a[data-icon=new]    { background-image: url("/themes/emr/images/new.png"); }
+a[data-icon=show]   { background-image: url("/themes/emr/images/show.png"); }
+a[data-icon=edit]   { background-image: url("/themes/emr/images/edit.png"); }
+a[data-icon=delete] { background-image: url("/themes/emr/images/delete.png"); }
+a[data-icon=index]  { background-image: url("/themes/emr/images/index.png"); }
+/* END IMAGES */
+
 /* FIELDSET & LEGEND */
 fieldset:not(no-style) {
 	margin-top: 0.8em;
@@ -192,6 +206,7 @@ fieldset:not(no-style) > legend {
 }
 
 /*/////////////END OF GENERICS TAGS////////////////////*/
+
 /*/////////////////////////////////////////////////////
 					BANNER
 ////////////////////////////////////////////////////*/

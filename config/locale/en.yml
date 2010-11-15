@@ -44,3 +44,11 @@ en:
         body:
           one: "The following field is not valid:"
           other: "The following fields are not valid:"
+  
+  view:
+    links:
+      show: "Show"
+      edit: "Edit"
+      delete: "Delete"
+      index: "List"
+      confirm: "Are you sure?"

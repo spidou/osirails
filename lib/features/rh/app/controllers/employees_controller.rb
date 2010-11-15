@@ -5,6 +5,7 @@ class EmployeesController < ApplicationController
   
   # GET /employees
   def index
+    @hide_selector_column = true
     build_query_for(:employee_index)
   end
   

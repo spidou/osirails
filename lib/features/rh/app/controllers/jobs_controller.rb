@@ -1,6 +1,7 @@
 class JobsController < ApplicationController
   
   def index
+    @hide_selector_column = true
     build_query_for(:job_index)
   end
   

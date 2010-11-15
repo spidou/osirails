@@ -50,8 +50,8 @@ advanced_customer:
     - head_office.activity_sector_reference.id
     - head_office.activity_sector_reference.code
     - head_office.activity_sector_reference.get_activity_sector_name
-    - head_office_phone: head_office.phone.formatted
-    - head_office_fax: head_office.fax.formatted
+    - head_office_phone: head_office.phone.number
+    - head_office_fax: head_office.fax.number
     - bill_to_address: bill_to_address.formatted
     - factor.id
     - customer_grade.id
@@ -69,8 +69,8 @@ customer_index:
     - head_office_name: head_office.name
     - head_office_siret_number: head_office.siret_number
     - head_office_activity_sector_reference: head_office.activity_sector_reference.id
-    - head_office_phone: head_office.phone.formatted
-    - head_office_fax: head_office.fax.formatted
+    - head_office_phone: head_office.phone.number
+    - head_office_fax: head_office.fax.number
     - factor.id
     - customer_grade.id
     - customer_solvency.id
@@ -83,8 +83,8 @@ customer_index:
     - legal_form.name
     - head_office.name
     - head_office.siret_number
-    - head_office.phone.formatted
-    - head_office.fax.formatted
+    - head_office.phone.number
+    - head_office.fax.number
   default_query:
     columns:
       - name

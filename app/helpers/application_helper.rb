@@ -232,16 +232,6 @@ module ApplicationHelper
     Array.new(length).map{chars[rand(chars.size)]}.join
   end
   
-  def query_thead_tr_with_context_menu(content, th_content)
-    content = content_tag(:th, th_content, :class => :selector) + content
-    content_tag(:tr, content)
-  end
-  
-  def query_tr_with_context_menu(content, object, html_class, options = {})
-    content = content_tag(:td, context_menu(object, html_class, options), :class => :selector) + content
-    content_tag(:tr, content, :class => html_class)
-  end
-  
   METHOD_MATCH = /_link$/
   # Creates dynamic helpers to generate standard links in all page
   # These dynamic helpers are based on RESTful path methods generated from routes
@@ -269,7 +259,7 @@ module ApplicationHelper
   #   <%= new_user_link( :link_text => "Add a user" ) %>
   # 
   def method_missing(method, *args)
-    # did somebody tried to use a dynamic link helper?
+    # did somebody try to use a dynamic link helper?
     return super(method, *args) unless method.to_s =~ METHOD_MATCH
     
     # retrieve objects and options hash into args array
@@ -297,20 +287,25 @@ module ApplicationHelper
     # define what is the permission method name according to the given method
     if model_name != model_name.singularize       # users
       permission_name = :list
+      icon_name = :index
       model_name = model_name.singularize
     
     elsif path_name.match(/^(formatted_)?new_/)   # new_user    | formatted_new_user
       permission_name = :add
+      icon_name = :new
     
     elsif path_name.match(/^(formatted_)?edit_/)  # edit_user   | formatted_edit_user
       permission_name = :edit
+      icon_name = :edit
     
     elsif path_name.match(/^delete_/)             # delete_user
       permission_name = :delete
+      icon_name = :delete
       path_name = path_name.gsub("delete_","")    # the prefix "delete_" is removed because it doesn't match to any path method name
 
     elsif path_name.match(/^(formatted_)?/)       # user       | formatted_user  | great_model |  formatted_great_model
       permission_name = :view
+      icon_name = :show
     
     else
       raise NameError, "'#{method}' seems to be a dynamic helper link, but it has an unexpected form. Maybe you misspelled it? "
@@ -321,13 +316,14 @@ module ApplicationHelper
 	  has_model_permission      = model.respond_to?("business_object?") ? model.send("can_#{permission_name}?", current_user) : true
 	  has_controller_permission = controller.current_menu.send("can_access?", current_user)
     
+    # default html_options
+    html_options = { 'data-icon' => icon_name }.merge(options.delete(:html_options) || {})
+    
     # default options
 	  options = { :link_text    => default_title = dynamic_link_catcher_default_link_text(permission_name, model_name.tableize),
-	              :image_tag    => image_tag( "#{permission_name}_16x16.png",
-	                                          :title => default_title,
-	                                          :alt => default_title ),
+	              :image_tag    => nil,
                 :options      => {},
-                :html_options => {}
+                :html_options => html_options
               }.merge(options)
     
     # return the correspondong link_to tag if permissions are allowing that!

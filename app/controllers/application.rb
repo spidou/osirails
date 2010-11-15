@@ -51,17 +51,17 @@ class ApplicationController < ActionController::Base
   end
   
   def context_menu
-    class_name_and_object_ids = params.detect{|h| h.first.end_with?("_ids")}
-    class_name                = class_name_and_object_ids.first.gsub("_ids", "").camelize
-    underscored_class_name    = class_name.underscore
-    object_id                 = class_name_and_object_ids.last.first
-    controller_folder_name    = self.class.name.gsub("Controller","").underscore
-    @ids                      = class_name_and_object_ids.last
-    choice                    = @ids.many? ? "multiple" : "single"
+    class_name_and_object_ids = params.detect{ |h| h.first.end_with?("_ids") }            # ["resource_ids", ["1"]]
+    class_name                = class_name_and_object_ids.first.gsub("_ids", "").camelize # "Resource"
+    underscored_class_name    = class_name.underscore                                     # "resource"
+    object_id                 = class_name_and_object_ids.last.first                      # "1"
+    controller_folder_name    = self.class.name.gsub("Controller","").underscore          # "resources"
+    @ids                      = class_name_and_object_ids.last                            # ["1"]
+    choice                    = @ids.many? ? "multiple" : "single"                        # "single"
     
-    controller_template = "#{controller_folder_name}/#{underscored_class_name}_context_menu_#{choice}_selection"
-    model_template      = "shared/#{underscored_class_name}_context_menu_#{choice}_selection"
-    default_template    = "shared/context_menu_#{choice}_selection"
+    controller_template = "#{controller_folder_name}/#{underscored_class_name}_context_menu_#{choice}_selection" # resources/resource_context_menu_single_selection
+    model_template      = "shared/#{underscored_class_name}_context_menu_#{choice}_selection"                    # shared/resource_context_menu_single_selection
+    default_template    = "shared/context_menu_#{choice}_selection"                                              # shared/context_menu_single_selection
     
     template   = params["#{underscored_class_name}_#{choice}_selection_template".to_sym]
     template ||= controller_template if template_exists?(controller_template)
@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
     template ||= default_template
     
     @object = class_name.constantize.find(object_id)
-
+    
     render :template => template, :layout => false
   end
     
@@ -86,8 +86,8 @@ class ApplicationController < ActionController::Base
 
     # This method return the feature name
     def feature_name(file)
-      file = file.split("/").slice(0...-3).join('/')
-      yaml = YAML.load(File.open(file+'/config.yml'))
+      file_name = file.split("/").slice(0...-3).join('/') + '/config.yml'
+      yaml = YAML.load(File.open(file_name))
       yaml['name']
     end
 

@@ -1,3 +1,5 @@
+<%= stylesheet_link_tag_with_theme_support 'rh/employees' %>
+
 <% add_contextual_menu_item :possible_actions do %>
   <%= new_employee_link(:link_text => "Nouvel employé") %>
 <% end %>
@@ -6,7 +8,7 @@
   <%= actives_employees_link(params[:all_employees]) %>
 <% end %>
 
-<h1><%= title_for_search %></h1><!--Tous les employ&eacute;s--> 
+<h1><%= title_for_search %></h1>
 
 <div>
   <%= table_for_search %>

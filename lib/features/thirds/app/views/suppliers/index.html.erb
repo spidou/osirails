@@ -2,36 +2,8 @@
   <%= new_supplier_link(:link_text => "Nouveau fournisseur") %>
 <% end %>
 
-<h1>Les fournisseurs</h1>
+<h1><%= title_for_search %></h1> 
 
 <div>
-  <% unless @suppliers.empty? %>
-    <table>
-      <thead>
-        <tr>
-          <th>Raison sociale</th>
-          <th>Forme juridique</th>
-          <th>Secteurs d'activités</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for supplier in @suppliers %>
-          <tr>
-            <td class="name text"><%= supplier.name %></td>
-            <td class="legal_form text"><%= supplier.legal_form.name %></td>
-            <td class="activity_sector_reference text"><%= supplier.activity_sector_reference.get_activity_sector.name if supplier.activity_sector_reference %></td>
-            <td class="actions">
-              <%= supplier_link(supplier, :link_text => "") %> 
-              <%= edit_supplier_link(supplier, :link_text => "") %>
-              <%= delete_supplier_link(supplier, :link_text => "") %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-    <%= will_paginate @suppliers %>
-  <% else %>
-    <p>Aucun fournisseur n'a été trouvé</p>
-  <% end %>
+  <%= table_for_search %>
 </div>

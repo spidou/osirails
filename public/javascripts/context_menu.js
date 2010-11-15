@@ -15,13 +15,13 @@ var contextMenu;
 
 ContextMenu = Class.create();
 ContextMenu.prototype = {
-	initialize: function (url, selectableItemHtmlClass) {
+  initialize: function (url, selectableItemHtmlClass) {
     if(!anyContextMenu) {
       contextMenu = this;
-	    this.identifier = 'context-menu';
-	    this.url = url;
-	    this.lastSelectedForContextMenu = null;
-	    
+      this.identifier = 'context-menu';
+      this.url = url;
+      this.lastSelectedForContextMenu = null;
+      
       if (!this.getIdentifier()) {
         var menu = document.createElement("div");
         menu.setAttribute("id", this.identifier);
@@ -44,18 +44,18 @@ ContextMenu.prototype = {
 	tagSelectableItems: function(){
 	  selectableItemsHtmlClasses.each(function(s) {
       var items = $$('.'+s);
-      
+
       items.each(function(i) {
         i.addClassName('hascontextmenu');
       });
     });
-	},
+  },
   
   hideMenu: function() {
-    Element.hide(this.identifier);
+    Element.fade(this.identifier, {duration: 0.3});
   },
-	
-	showMenu: function(e) {
+  
+  showMenu: function(e) {
     var mouse_x = Event.pointerX(e);
     var mouse_y = Event.pointerY(e);
     var render_x = mouse_x;
@@ -67,55 +67,56 @@ ContextMenu.prototype = {
     var window_height;
     var max_width;
     var max_height;
-
+    
     this.getIdentifier().style['left'] = (render_x + 'px');
-    this.getIdentifier().style['top'] = (render_y + 'px');		
+    this.getIdentifier().style['top'] = (render_y + 'px');
     Element.update(this.identifier, '');
 
-    new Ajax.Updater({success:this.identifier}, this.url, 
-    {asynchronous:true,
-     evalScripts:true,
-     parameters:Form.serialize(this.getFormAncestorItem()),
-     onComplete:function(request){
-		   dims = contextMenu.getIdentifier().getDimensions();
-		   menu_width = dims.width;
-		   menu_height = dims.height;
-		   max_width = mouse_x + 2*menu_width;
-		   max_height = mouse_y + menu_height;
-	
-		   var ws = getWindow_size();
-		   window_width = ws.width;
-		   window_height = ws.height;
-	
-		   /* display the menu above and/or to the left of the click if needed */
-		   if (max_width > window_width) {
-		     render_x -= menu_width;
-		     contextMenu.getIdentifier().addClassName('reverse-x');
-		   } else {
-			   contextMenu.getIdentifier().removeClassName('reverse-x');
-		   }
-		   if (max_height > window_height) {
-		     render_y -= menu_height;
-		     contextMenu.getIdentifier().addClassName('reverse-y');
-		   } else {
-			   contextMenu.getIdentifier().removeClassName('reverse-y');
-		   }
-		   if (render_x <= 0) render_x = 1;
-		   if (render_y <= 0) render_y = 1;
-		   contextMenu.getIdentifier().style['left'] = (render_x + 'px');
-		   contextMenu.getIdentifier().style['top'] = (render_y + 'px');
-		   
-       Effect.Appear(contextMenu.identifier, {duration: 0.20});
-       if (window.parseStylesheets) { window.parseStylesheets(); } // IE
-    }})
+    new Ajax.Updater({success:this.identifier}, this.url, {
+      asynchronous:true,
+      evalScripts:true,
+      parameters:Form.serialize(this.getFormAncestorItem()),
+      onComplete:function(request){
+        dims = contextMenu.getIdentifier().getDimensions();
+        menu_width = dims.width;
+        menu_height = dims.height;
+        max_width = mouse_x + 2*menu_width;
+        max_height = mouse_y + menu_height;
+        
+        var ws = getWindow_size();
+        window_width = ws.width;
+        window_height = ws.height;
+        
+        /* display the menu above and/or to the left of the click if needed */
+        if (max_width > window_width) {
+          render_x -= menu_width;
+          contextMenu.getIdentifier().addClassName('reverse-x');
+        } else {
+          contextMenu.getIdentifier().removeClassName('reverse-x');
+        }
+        if (max_height > window_height) {
+          render_y -= menu_height;
+          contextMenu.getIdentifier().addClassName('reverse-y');
+        } else {
+          contextMenu.getIdentifier().removeClassName('reverse-y');
+        }
+        if (render_x <= 0) render_x = 1;
+        if (render_y <= 0) render_y = 1;
+        contextMenu.getIdentifier().style['left'] = (render_x + 'px');
+        contextMenu.getIdentifier().style['top'] = (render_y + 'px');
+        
+        Effect.Appear(contextMenu.identifier, {duration: 0.20});
+        if (window.parseStylesheets) { window.parseStylesheets(); } // IE
+      }
+    })
   },
   
   clickListener: function(e){
-	  this.hideMenu();
-	  if (Event.element(e).tagName == 'A') { return; }
+    this.hideMenu();
+    if (Event.element(e).tagName == 'A') { return; }
     if (window.opera && e.altKey) {	return; }
-    if (Event.isLeftClick(e) || (navigator.appVersion.match(/\bMSIE\b/))) {     
-	    var selectableItem = this.getSelectableItem(Event.element(e));
+    if (Event.isLeftClick(e) || (navigator.appVersion.match(/\bMSIE\b/))) {
+      var selectableItem = this.getSelectableItem(Event.element(e));
       if (selectableItem!=null && selectableItem!=document && selectableItem.hasClassName('hascontextmenu')) {
         // a row was clicked, check if the click was on checkbox
         var box = Event.element(e);
@@ -146,7 +147,7 @@ ContextMenu.prototype = {
               var inputReference = this.getAllSelectedCheckboxes()[0];
               if(this.getAssociatedCheckbox(selectableItem).name == inputReference.name){
                 var toggling = false;
-                var boxes = this.getFormAncestorItem().descendants().findAll(function(n) { return n.tagName == 'INPUT' && n.type == 'checkbox' && n.name == inputReference.name})            
+                var boxes = this.getFormAncestorItem().descendants().findAll(function(n) { return n.tagName == 'INPUT' && n.type == 'checkbox' && n.name == inputReference.name})
                 for (i=0; i<boxes.length; i++) {
                   if (toggling || this.getSelectableItem(boxes[i])==selectableItem) {
                     this.addSelection(this.getSelectableItem(boxes[i]), true);
@@ -156,7 +157,7 @@ ContextMenu.prototype = {
                   }
                 }
               } else {
-                this.newSelection(selectableItem);         
+                this.newSelection(selectableItem);
               }
             } 
           } else {
@@ -175,24 +176,23 @@ ContextMenu.prototype = {
         }
       }
     }
-    else{
-    }
+    else{}
   },
   
   rightClickListener: function(e) {
-	  this.hideMenu();
-	  // do not show the context menu on links
-	  if (Event.element(e).tagName == 'A') { return; }
-	  // right-click simulated by Alt+Click with Opera
-	  if (window.opera && !e.altKey) { return; }
-	  var selectableItem = this.getSelectableItem(Event.element(e));
-	  if (selectableItem == document || selectableItem == undefined  || !selectableItem.hasClassName('hascontextmenu')) { return; }
-	  Event.stop(e);
-	  if (!this.isSelected(selectableItem)) {
-		  this.unselectAll();
-		  this.addSelection(selectableItem);
-	  }
-	  this.showMenu(e);
+    this.hideMenu();
+    // do not show the context menu on links
+    if (Event.element(e).tagName == 'A') { return; }
+    // right-click simulated by Alt+Click with Opera
+    if (window.opera && !e.altKey) { return; }
+    var selectableItem = this.getSelectableItem(Event.element(e));
+    if (selectableItem == document || selectableItem == undefined  || !selectableItem.hasClassName('hascontextmenu')) { return; }
+    Event.stop(e);
+    if (!this.isSelected(selectableItem)) {
+      this.unselectAll();
+      this.addSelection(selectableItem);
+    }
+    this.showMenu(e);
   },
   
   unselectAll: function() {
@@ -219,7 +219,7 @@ ContextMenu.prototype = {
   getAssociatedCheckbox: function(object) {
     return object.descendants().find(function(c) { return c.tagName == 'INPUT' && c.type == 'checkbox' && contextMenu.getSelectableItem(object) == contextMenu.getSelectableItem(c)});
   },
-
+  
   getSelectableItem: function(object) {
     if (object.hasClassName('hascontextmenu')){
       return object;
@@ -231,15 +231,15 @@ ContextMenu.prototype = {
   isSelected: function(selectableItem) {
     return selectableItem.hasClassName('context-menu-selection');
   },
-
+  
   checkSelectionBox: function(selectableItem, checked) {
     this.getAssociatedCheckbox(selectableItem).checked = checked;
   },
-
+  
   addSelection: function(selectableItem) {
     this.addSelection(selectableItem, false);
   },
-
+  
   addSelection: function(selectableItem, cancel) {
     if(!selectableItem.hasClassName('context-menu-selection')){
       if(this.getAssociatedCheckbox(selectableItem).hasClassName('context-menu-single-selection')){
@@ -253,7 +253,7 @@ ContextMenu.prototype = {
       }
     }
   },
-
+  
   removeSelection: function(selectableItem) {
     selectableItem.removeClassName('context-menu-selection');
     this.checkSelectionBox(selectableItem, false);
@@ -261,9 +261,9 @@ ContextMenu.prototype = {
   
   newSelection: function(selectableItem) {
     this.unselectAll();
-    this.addSelection(selectableItem);     
+    this.addSelection(selectableItem);
   },
-
+  
   toggleSelection: function(selectableItem) {
     if (this.isSelected(selectableItem)) {
       this.removeSelection(selectableItem);
@@ -271,7 +271,7 @@ ContextMenu.prototype = {
       this.addSelection(selectableItem);
     }
   },
-
+  
   clearDocumentSelection: function() {
     if (document.selection) {
       document.selection.clear(); // IE
@@ -282,17 +282,17 @@ ContextMenu.prototype = {
 }
 
 function toggleSelectableItems(selectableItemsClass) {
-	var boxes = contextMenu.getFormAncestorItem().descendants().findAll(function(n) { return n.tagName == 'INPUT' && n.type == 'checkbox' && n.name == selectableItemsClass+'_ids[]' });
-	var all_checked = true;
-	for (i = 0; i < boxes.length; i++) { if (boxes[i].checked == false) { all_checked = false; break; } }
-	contextMenu.unselectAll();
-	if(!all_checked){
-	  for (i = 0; i < boxes.length; i++) {
-	    selectableItem = contextMenu.getSelectableItem(boxes[i]);
-		  contextMenu.addSelection(selectableItem, true);
-	    contextMenu.lastSelectedForContextMenu = selectableItem;
-	  }
-	}
+  var boxes = contextMenu.getFormAncestorItem().descendants().findAll(function(n) { return n.tagName == 'INPUT' && n.type == 'checkbox' && n.name == selectableItemsClass+'_ids[]' });
+  var all_checked = true;
+  for (i = 0; i < boxes.length; i++) { if (boxes[i].checked == false) { all_checked = false; break; } }
+  contextMenu.unselectAll();
+  if(!all_checked){
+    for (i = 0; i < boxes.length; i++) {
+      selectableItem = contextMenu.getSelectableItem(boxes[i]);
+      contextMenu.addSelection(selectableItem, true);
+      contextMenu.lastSelectedForContextMenu = selectableItem;
+    }
+  }
 }
 
 function getWindow_size() {

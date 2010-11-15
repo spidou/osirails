@@ -119,7 +119,11 @@ fr:
       commodity:
         supply_category: "Famille"           # for alias on filters
         supply_sub_category: "Sous-Famille"  # for alias on filters
-    page_names:
+        humanized_supply_sizes: "Spécificités"
+    filters:
+      commodity:
+        humanized_supply_sizes: "Spécificités (dimensions, etc.)"
+    page_names:      
       commodity:
         commodity_index: "Les matières premières"
       consumable:

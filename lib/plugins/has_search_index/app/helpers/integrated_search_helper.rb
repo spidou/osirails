@@ -157,11 +157,11 @@ module IntegratedSearchHelper
   end
   
   def page_default_name
-    I18n.t("integrated_search.page_names.#{ @query.subject_model.downcase }.#{ @page_name }", :default => @page_name.humanize)
+    I18n.t("integrated_search.page_names.#{ @query.subject_model.downcase }.#{ @page_name }", :default => @page_name)
   end
   
   def title_for_search
-    (@query.name||page_default_name).titleize
+    (@query.name || page_default_name).humanize
   end
   
   def table_for_search
@@ -170,17 +170,17 @@ module IntegratedSearchHelper
     
     if @query.name
       add_contextual_menu_item(:personalized_queries) do 
-        link_to("#{ image_tag('view_16x16.png') } #{ page_default_name }", :p => @page_name)
+        link_to(page_default_name.humanize, { :p => @page_name }, 'data-icon' => :index)
       end
     end
     
     saved_queries.each do |saved_query|
       add_contextual_menu_item(:personalized_queries) do
-        link_to("#{ image_tag('view_16x16.png') } #{ saved_query.name }", :query_id => saved_query.id)
+        link_to(saved_query.name, { :query_id => saved_query.id }, 'data-icon' => :index)
       end
     end
     
-    render(@query_render_options)
+    render(@query_render_options) # @query_render_options is defined in has_search_index_initializer.rb
   end
   
   #################################################################
@@ -584,21 +584,21 @@ module IntegratedSearchHelper
       arg.is_a?(Hash) ? arg.values.first : arg
     end
     
-  ##########################################################################################
-  ##########################################################################################
-  # 
-  #  Methods below can be overrided in helpers, defining method with name matching pattern as described:
-  #
-  ## => query_MARKUP[_content][_for_COLUMN]_in_[PAGE_NAME|MODEL]
-  #
-  #
-  # -> MARKUP        = [table, thead, tbody, thead_tr, tr, group_tr, th, td, group_td]
-  # -> COLUMN        = attribute with dash to replace dot.
-  # -> PAGE_NAME     = Query's +page_name+
-  # -> MODEL         = Query's +subject_model+
-  # -> [_content]    = used only for [td, th, group_td], permit to override those tag's content
-  # -> [_for_COLUMN] = mandatory for [td, th, group_td], permit to identify a column
-  #
+    ##########################################################################################
+    ##########################################################################################
+    # 
+    #  Methods below can be overrided in helpers, defining method with name matching pattern as described:
+    #
+    ## => query_MARKUP[_content][_for_COLUMN]_in_[PAGE_NAME|MODEL]
+    #
+    #
+    # -> MARKUP        = [table, thead, tbody, thead_tr, tr, group_tr, th, td, group_td]
+    # -> COLUMN        = attribute with dash to replace dot.
+    # -> PAGE_NAME     = Query's +page_name+
+    # -> MODEL         = Query's +subject_model+
+    # -> [_content]    = used only for [td, th, group_td], permit to override those tag's content
+    # -> [_for_COLUMN] = mandatory for [td, th, group_td], permit to identify a column
+    #
     
     def query_table(content)
       helper = "query_table"
@@ -638,9 +638,10 @@ module IntegratedSearchHelper
     end
     
     def query_td(attribute)
-      helper = "query_td_for_#{ attribute.gsub('.','_') }"
+      underscored_attribute = attribute.gsub('.','_')
+      helper = "query_td_for_#{underscored_attribute}"
       content = query_td_content(attribute)
-      override_for(helper) ? send(override_for(helper), content) : content_tag(:td, content)
+      override_for(helper) ? send(override_for(helper), content) : content_tag(:td, content, 'data-attribute' => underscored_attribute)
     end
     
     def query_td_content(attribute)
@@ -691,6 +692,10 @@ module IntegratedSearchHelper
         return nil
       end
     end
-  ##########################################################################################
-  ##########################################################################################
+    ##########################################################################################
+    ##########################################################################################
+end
+
+if Object.const_defined?("ActionView")
+  ActionView::Helpers.send(:include, IntegratedSearchHelper)
 end

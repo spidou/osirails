@@ -1,5 +1,5 @@
 <% display_context_menu do |c| %>
-  <%= c.entry send("#{@object.class.name.underscore}_link", @object, :link_text => "Voir", :image_tag => nil, :html_options => {:class => "icon-view"}) %>
-  <%= c.entry send("edit_#{@object.class.name.underscore}_link", @object, :link_text => "Modifier ", :image_tag => nil, :html_options => {:class => "icon-edit"}) %>
-  <%= c.entry send("delete_#{@object.class.name.underscore}_link", @object, :link_text => "Supprimer ", :image_tag => nil, :html_options => {:class => "icon-delete"}) %>
+  <%= c.entry send("#{@object.class.name.underscore}_link", @object, :link_text => I18n.t("view.links.show")) %>
+  <%= c.entry send("edit_#{@object.class.name.underscore}_link", @object, :link_text => I18n.t("view.links.edit")) %>
+  <%= c.entry send("delete_#{@object.class.name.underscore}_link", @object, :link_text => I18n.t("view.links.delete")) %>
 <% end %>

@@ -1,17 +1,20 @@
 module SearchController
 
   def build_query_for(page_name, page_params = params, *types, &block)
-    @page_name           = page_name.to_s
+    @page_name = page_name.to_s
+    raise Exception, "No query configuration have been found for '#{@page_name}'. You'll find an example of configuration into the file: 'has_search_index/model.example.yml'" unless HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym]
+    
     @page_configuration  = HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym].clone
+    @page_model          = @page_configuration[:model]
     default_query        = @page_configuration[:default_query]
-    @organized_filters ||= HasSearchIndex.organized_filters(@page_configuration[:filters], @page_configuration[:model])
+    @organized_filters ||= HasSearchIndex.organized_filters(@page_configuration[:filters], @page_model)
     @can_be_cancelled    = page_params.keys.include_any?(['query', 'per_page', 'order_column', 'criteria'])
     @can_quick_search    = @page_configuration[:quick_search].any?
     
     @data_types = { @page_name => {} }
     @page_configuration[:filters].each do |filter|
       attribute = filter.is_a?(Hash) ? filter.values.first : filter
-      @data_types[@page_name][attribute] = HasSearchIndex.get_nested_attribute_type(@page_configuration[:model], filter)
+      @data_types[@page_name][attribute] = HasSearchIndex.get_nested_attribute_type(@page_model, filter)
     end
     
     @query = Query.find(page_params[:query_id]) unless page_params[:query_id].blank? rescue nil
@@ -90,5 +93,4 @@ end
 # Set it all up.
 if Object.const_defined?("ActionController")
   ActionController::Base.send(:include, SearchController)
-  ActionController::Base.send(:helper, :integrated_search)
 end

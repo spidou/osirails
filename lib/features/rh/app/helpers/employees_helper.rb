@@ -19,7 +19,7 @@ module EmployeesHelper
     return unless Employee.can_view?(current_user)
     message = "Voir tous les employés"
     message += " inactifs" if view_inactives
-    link_to(image_tag("view_16x16.png", :alt => message, :title => message) + " #{message}", employees_path(:all_employees => !view_inactives))
+    link_to(message, employees_path(:all_employees => !view_inactives), 'data-icon' => :index)
   end
   
   #########################################################################################
@@ -100,14 +100,6 @@ module EmployeesHelper
     content_tag(:span, :class => 'not-collapsed', :onclick => "toggleGroup(this);") do   
       group_by.map {|n| "#{ translate(@query.group.at(group_by.index(n))) } #{ content_tag(:span, n, :style => 'color:#555;') }"}.join(' et ')
     end
-  end
-  
-  def query_thead_tr_in_employee_index(content)
-    query_thead_tr_with_context_menu(content, toggle_selectable_items_link(image_tag("confirm_16x16.png"), "employee"))
-  end
-  
-  def query_tr_in_employee_index(content)
-    query_tr_with_context_menu(content, @query_object, "employee_tr")
   end
   
   def translate(attr)
