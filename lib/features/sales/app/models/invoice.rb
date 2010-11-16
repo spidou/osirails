@@ -362,7 +362,7 @@ class Invoice < ActiveRecord::Base
       errors.add(:delivery_note_invoices, "Une facture d'#{invoice_type_text} ne peut pas être associée à un Bon de Livraison") unless delivery_note_invoices.empty?
     elsif status_invoice?
       errors.add(:delivery_note_invoices, "Une facture de situation doit être associée à au moins 1 Bon de Livraison") if delivery_note_invoices.empty?
-      errors.add(:delivery_note_invoices, "Une facture de situation ne doit PAS être associée à l'ensemble des Bons de Livraison restants à facturer. Vous devez changer le type de facture et choisir la facture de solde") if order.all_is_delivered? and associated_to_all_unbilled_delivery_notes?
+      errors.add(:delivery_note_invoices, "Une facture de situation ne doit PAS être associée à l'ensemble des Bons de Livraison restants à facturer. Vous devez soit changer le type de facture, soit retirer les BL associés en trop") if order.all_is_delivered? and associated_to_all_unbilled_delivery_notes?
     elsif balance_invoice?
       errors.add(:delivery_note_invoices, "Une facture de solde doit absolument être associée à l'ensemble des Bons de Livraison restants à facturer") unless associated_to_all_unbilled_delivery_notes?
     end

@@ -3,6 +3,10 @@
   <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
 <% end -%>
 
+<% display_user_spool_in_contextual_menu %>
+
+<%= generate_graphic_items_contextual_menu_partial %>
+
 <%
   graphic_item_errors  = { :informations => graphic_item.errors.on(:product_id) || graphic_item.errors.on(:product) ||
                                             graphic_item.errors.on(:name) || graphic_item.errors.on(:description) ||

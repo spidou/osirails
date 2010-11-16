@@ -2,11 +2,13 @@
   <%= new_order_link(:link_text => "Nouveau dossier") if Order.can_add?(current_user) %>
 <% end %>
 
-<% add_contextual_menu_item :useful_links do %>
-  <%= link_to(image_tag("list_16x16.png", :alt => text = "Voir les dossiers en cours", :title => text) + " " + text, in_progress_orders_path) if Order.can_list?(current_user) %>
-  <%= link_to(image_tag("list_16x16.png", :alt => text = "Voir les dossiers en étude commerciale", :title => text) + " " + text, commercial_orders_path) if Order.can_list?(current_user) %>
-  <%= link_to(image_tag("list_16x16.png", :alt => text = "Voir les dossiers en SAS de facturation", :title => text) + " " + text, pre_invoicing_orders_path) if Order.can_list?(current_user) %>
-  <%= link_to(image_tag("list_16x16.png", :alt => text = "Voir les dossiers en facturation", :title => text) + " " + text, invoicing_orders_path) if Order.can_list?(current_user) %>
-  <%= link_to(image_tag("list_16x16.png", :alt => text = "Voir les dossiers clôturés", :title => text) + " " + text, closed_orders_path) if Order.can_list?(current_user) %>
-  <%= link_to(image_tag("list_16x16.png", :alt => text = "Voir les dossiers archivés", :title => text) + " " + text, archived_orders_path) if Order.can_list?(current_user) %>
+<% if Order.can_list?(current_user) %>
+  <% add_contextual_menu_item :useful_links do %>
+    <%= link_to("Voir les dossiers en cours", in_progress_orders_path, 'data-icon' => :index) %>
+    <%= link_to("Voir les dossiers en étude commerciale", commercial_orders_path, 'data-icon' => :index) %>
+    <%= link_to("Voir les dossiers en SAS de facturation", pre_invoicing_orders_path, 'data-icon' => :index) %>
+    <%= link_to("Voir les dossiers en facturation", invoicing_orders_path, 'data-icon' => :index) %>
+    <%= link_to("Voir les dossiers clôturés", closed_orders_path, 'data-icon' => :index) %>
+    <%= link_to("Voir les dossiers archivés", archived_orders_path, 'data-icon' => :index) %>
+  <% end %>
 <% end %>

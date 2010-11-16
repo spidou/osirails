@@ -92,7 +92,6 @@ fr:
         default: "Veuillez choisir une catégorie"
       criteria_h2: "Précisez votre recherche"
     content:
-      td:
-        boolean_true: "Oui"
-        boolean_false: "Non"
+      boolean_true: "Oui"
+      boolean_false: "Non"
       undefined_group_name: "Non défini"

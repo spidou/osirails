@@ -7,6 +7,7 @@
   <table>
     <thead>
       <tr>
+        <th><%= toggle_selectable_items_link(image_tag('confirm_16x16.png'), 'delivery_note') %></th>
         <th>Réf.</th>
         <th>Émis&nbsp;le</th>
         <th>Ville</th>
@@ -14,12 +15,12 @@
         <th>Signé&nbsp;le</th>
         <th>Qté&nbsp;produits<br/>facturables&#160;/&#160;livrés</th>
         <th>Qté&nbsp;produits<br/>total&nbsp;(devis)</th>
-        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <% for dn in delivery_notes %>
-        <tr>
+        <tr class="delivery_note">
+          <td><%= context_menu(dn, 'delivery_note') %></td>
           <td><%= dn.reference %></td>
           <td><%= dn.published_on.humanize %></td>
           <td><%= dn.ship_to_address.city_name %></td>
@@ -27,7 +28,6 @@
           <td><%= dn.signed_on.humanize %></td>
           <td><%= "#{dn.number_of_delivered_pieces} / #{dn.number_of_pieces}" %></td>
           <td><%= dn.associated_quote.number_of_pieces %></td>
-          <td><%= display_transform_delivery_note_in_invoice(dn) %></td>
         </tr>
       <% end %>
     </tbody>

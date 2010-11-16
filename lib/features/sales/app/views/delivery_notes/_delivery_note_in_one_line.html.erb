@@ -1,7 +1,7 @@
 <%
 delivery_note = delivery_note_in_one_line
 order         = delivery_note.order
-status        = status_text(delivery_note)
+status        = delivery_note_status_text(delivery_note)
 
 all_interventions = delivery_note.delivery_interventions.reject(&:new_record?)
 
@@ -16,6 +16,7 @@ odd_or_even = delivery_note_in_one_line_counter.odd? ? "odd" : "even"
 %>
 
 <tr class="delivery_note <%= odd_or_even %> <%= tr_class %>" title="<%= status %>">
+  <td class="selector" <%= rowspan %>><%= context_menu(delivery_note, 'delivery_note') %></td>
   <td class="reference" <%= rowspan %>><%= delivery_note.reference %></td>
   <td class="published_on" <%= rowspan %>><%= delivery_note.published_on.humanize if delivery_note.published_on %></td>
   <td class="delivery_note_type" <%= rowspan %>><%= delivery_note.delivery_note_type.title %></td>
@@ -30,9 +31,6 @@ odd_or_even = delivery_note_in_one_line_counter.odd? ? "odd" : "even"
   <td class="number_of_pieces" <%= rowspan %> ><%= "#{delivery_note.number_of_delivered_pieces} / #{delivery_note.number_of_pieces}" if delivery_note.delivered_delivery_intervention %></td>
   <td class="signed_on" <%= rowspan %> ><%= delivery_note.signed_on.humanize if delivery_note.signed_on %></td>
   <td class="status" <%= rowspan %> ><%= status %></td>
-  <td class="actions" <%= rowspan %>>
-    <%= display_delivery_note_action_buttons(@order, delivery_note) %>
-  </td>
 </tr>
 
 <% for intervention in interventions %>

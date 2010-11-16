@@ -1,7 +1,7 @@
 <% add_contextual_menu_item :order do %>
   <%= edit_order_link(@order) %>
-  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir les infos du dossier", :title => list_text) + " " + list_text, order_informations_path(@order)) if Order.can_list?(current_user) %>
+  <%= link_to("Synthèse", order_informations_path(@order), 'data-icon' => :show) if Order.can_view?(current_user) %>
   
   <%= new_order_link(:link_text => "Nouveau dossier") if Order.can_add?(current_user) %>
-  <%= link_to(image_tag("list_16x16.png", :alt => list_text = "Voir tous les dossiers", :title => list_text) + " " + list_text, in_progress_orders_path) if Order.can_list?(current_user) %>
+  <%= link_to("Voir tous les dossiers en cours", in_progress_orders_path, 'data-icon' => :index) if Order.can_list?(current_user) %>
 <% end %>

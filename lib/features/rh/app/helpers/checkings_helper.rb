@@ -49,19 +49,17 @@ module CheckingsHelper
     html += "'"
   end
   
-  def cancel_image
-    image_tag("cancel_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage")
+  def cancel_checking_link(checking, message = nil)
+    return unless Checking.can_cancel?(current_user) and checking.can_be_cancelled?
+    link_to(message || "Annuler ce pointage",
+            cancel_checking_path(checking), :confirm => "Êtes-vous sûr ?",
+            'data-icon' => :cancel)
   end
   
-  def override_image
-    image_tag("edit_16x16.png", :alt => "Corriger ce pointage",:title => "Corriger ce pointage")
-  end
-  
-  def cancel_checking_link(checking)
-    link_to(cancel_image, cancel_checking_path(checking), :confirm => "Êtes-vous sûr ?") if checking.can_be_cancelled? and Checking.can_cancel?(current_user)
-  end
-  
-  def override_checking_link(checking)
-    link_to(override_image, override_form_checking_path(checking)) if checking.can_be_overrided? and Checking.can_override?(current_user)
+  def override_checking_link(checking, message = nil)
+    return unless Checking.can_override?(current_user) and checking.can_be_overrided?
+    link_to(message || "Corriger ce pointage",
+            override_checking_path(checking), :confirm => "Êtes-vous sûr ?",
+            'data-icon' => :edit)
   end
 end

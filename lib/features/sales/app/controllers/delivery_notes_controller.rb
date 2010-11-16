@@ -4,6 +4,8 @@ class DeliveryNotesController < ApplicationController
   
   acts_as_step_controller :step_name => :delivery_step, :skip_edit_redirection => true
   
+  skip_before_filter :lookup_step_environment, :only => [:context_menu]
+  
   before_filter :find_delivery_note
   before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]
   

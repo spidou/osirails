@@ -22,12 +22,28 @@ module OrdersHelper
     render :partial => 'commercial_step/contextual_menu'
   end
   
+  def generate_survey_step_contextual_menu_partial
+    render :partial => 'survey_step/contextual_menu'
+  end
+  
+  def generate_quote_step_contextual_menu_partial
+    render :partial => 'quote_step/contextual_menu'
+  end
+  
+  def generate_press_proof_step_contextual_menu_partial
+    render :partial => 'press_proof_step/contextual_menu'
+  end
+  
   def generate_quote_contextual_menu_partial
     render :partial => 'quotes/contextual_menu'
   end
   
   def generate_press_proof_contextual_menu_partial
     render :partial => 'press_proofs/contextual_menu'
+  end
+  
+  def generate_graphic_items_contextual_menu_partial
+    render :partial => 'graphic_items/contextual_menu'
   end
   
   def generate_pre_invoicing_step_contextual_menu_partial
@@ -50,16 +66,6 @@ module OrdersHelper
     render(:partial => 'orders/customer_overview', :locals => { :order => @order }) if @order.new_record?
   end
   
-  def edit_order_link(order, message = nil, title = nil)
-    return unless Order.can_edit?(current_user) and order # and order.can_be_edited?
-    text = "Modifier le dossier"
-    message ||= " #{text}"
-    link_to( image_tag( "edit_16x16.png",
-                        :alt    => title || text,
-                        :title  => title || text ) + message,
-             edit_order_path(order) )
-  end
-  
   def remaining_time_before_delivery(order)
     status = order.critical_status
     
@@ -77,7 +83,7 @@ module OrdersHelper
       return
     end
     
-    edit_order = edit_order_link(order, "", "Modifier la date prévisionnelle de livraison")
+    edit_order = edit_order_link(order, :link_text => '', :html_options => { :title => "Modifier la date prévisionnelle de livraison" })
     content_tag( :p, message + ( edit_order || "" ), :class => "order_deadline #{status}" )
   end
   

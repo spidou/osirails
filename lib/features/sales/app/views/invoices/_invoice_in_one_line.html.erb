@@ -1,11 +1,12 @@
 <%
 invoice = invoice_in_one_line
-status  = status_text(invoice)
+status  = invoice_status_text(invoice)
 
 due_date = invoice.upcoming_due_date || invoice.due_dates.last
 %>
 
 <tr class="invoice <%= invoice.status %>_invoice" title="<%= h(status) %>">
+  <td class="selector"><%= context_menu(invoice, 'invoice') %></td>
   <td class="reference"><%= invoice.reference %></td>
   <td class="published_on"><%= invoice.published_on.humanize if invoice.published_on and invoice.confirmed_at %></td>
   <td class="invoice_type"><%= invoice.invoice_type.title %></td>
@@ -19,5 +20,4 @@ due_date = invoice.upcoming_due_date || invoice.due_dates.last
   <% end %>
   <td class="totally_paid_on"><%= invoice.was_totally_paid_on.humanize if invoice.was_totally_paid? %></td>
   <td class="status"><%= status %></td>
-  <td class="actions"><%= display_invoice_action_buttons(@order, invoice) %></td>
 </tr>

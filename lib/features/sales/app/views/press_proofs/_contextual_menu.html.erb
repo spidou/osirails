@@ -1,25 +1,9 @@
 <% add_contextual_menu_item :press_proof do %>
-  <%= display_press_proof_add_button(@order) unless is_new_view? %>
-  <%= display_press_proof_show_button(@order, @press_proof) unless is_show_view? %>
-  <%= display_press_proof_preview_button(@order, @press_proof) %>
-  <%= display_press_proof_show_pdf_button(@order, @press_proof) %>
-  <%= display_press_proof_edit_button(@order, @press_proof) unless is_edit_view? %>
-  <%= display_press_proof_signed_button(@order, @press_proof) %>
-  
-  <%= display_press_proof_confirm_button(@order, @press_proof) %>
-  <%= display_press_proof_send_button(@order, @press_proof) %>
-  <%= display_dunning_add_button(@order, @press_proof) %>
-  <%= display_press_proof_sign_button(@order, @press_proof) %>
-  <%= display_press_proof_cancel_button(@order, @press_proof) %>
-  <%= display_press_proof_revoke_button(@order, @press_proof) %>
-  <%= display_press_proof_destroy_button(@order, @press_proof) %>
-  <%= display_press_proof_list_button(@step) %>
+  <% press_proof_action_buttons(@press_proof).each do |button| %>
+    <%= button %>
+  <% end %>
 <% end %>
 
-<% add_contextual_menu_item :graphic_items do %>
-  <%= new_graphic_item_link(Mockup) %>
-  <%= graphic_items_link(Mockup) %>
-  
-  <%= new_graphic_item_link(GraphicDocument) %>
-  <%= graphic_items_link(GraphicDocument) %>
-<% end %>
+<%= generate_press_proof_step_contextual_menu_partial %>
+
+<%= generate_graphic_items_contextual_menu_partial %>

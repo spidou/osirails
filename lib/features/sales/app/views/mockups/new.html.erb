@@ -1,10 +1,4 @@
 <%= order_header %>
 
-<% add_contextual_menu_item :useful_links do %>
-	<%= graphic_items_link(Mockup) %>
-<% end %>
-
-<% display_user_spool_in_contextual_menu %>
-
 <h1>Nouvelle maquette</h1>
 <%= render :partial => "graphic_items/graphic_item", :object => @mockup %>

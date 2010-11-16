@@ -92,7 +92,6 @@ en:
         default: "Please choose a category"
       criteria_h2: "Precise your search"
     content:
-      td:
-        boolean_true: "Yes"
-        boolean_false: "No"
+      boolean_true: "Yes"
+      boolean_false: "No"
       undefined_group_name: "Undefined"

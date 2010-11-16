@@ -42,8 +42,8 @@
             <%= generate_absence_and_overtime_td(checking) %>
             <td>
               <%= edit_checking_link(checking, :link_text => "") if checking.can_be_edited? %>
-              <%= override_checking_link(checking) %>
-              <%= cancel_checking_link(checking) %>
+              <%= cancel_checking_link(checking, "") %>
+              <%= override_checking_link(checking, "") %>
               <%= delete_checking_link(checking, :link_text => "") %>
             </td>
           </tr>

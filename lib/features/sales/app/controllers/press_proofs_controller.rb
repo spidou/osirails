@@ -3,6 +3,8 @@ class PressProofsController < ApplicationController
   
   acts_as_step_controller :step_name => :press_proof_step, :skip_edit_redirection => true
   
+  skip_before_filter :lookup_step_environment, :only => [:context_menu]
+  
   before_filter :load_order_mockups, :only => [ :new, :create, :edit, :update ]
   
   # GET /orders/:order_id/:step/press_proofs

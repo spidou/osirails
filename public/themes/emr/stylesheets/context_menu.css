@@ -15,12 +15,10 @@
 
 #context-menu ul {
   width:150px;
-  border-top:1px solid #ddd;
-  border-left:1px solid #ddd;
-  border-bottom:1px solid #777;
-  border-right:1px solid #777;
+  border: 1px solid #777;
   background:white;
   list-style:none;
+  -moz-box-shadow: 2px 3px 4px rgba(0,0,0,0.3);
 }
 
 #context-menu li {
@@ -28,6 +26,15 @@
   padding:1px;
   z-index:39;
 }
+
+#context-menu li.title {
+  border-bottom: 1px solid #777;
+  background-color: #ddd;
+  color: #2A5685;
+  font-weight: bold;
+  text-align: center;
+}
+
 #context-menu li.folder ul { position:absolute; left:168px; /* IE6 */ top:-2px; }
 #context-menu li.folder>ul { left:148px; }
 

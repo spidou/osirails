@@ -656,7 +656,7 @@ module IntegratedSearchHelper
         when "date", "datetime"
           data.humanize
         when "boolean"
-          [1, true].include?(data) ? I18n.t("view.content.td.boolean_true") : I18n.t("view.content.boolean_false")
+          [1, true].include?(data) ? I18n.t("view.content.boolean_true") : I18n.t("view.content.boolean_false")
         else
           data
       end

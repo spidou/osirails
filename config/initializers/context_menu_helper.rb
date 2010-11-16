@@ -18,21 +18,25 @@ module ActionView
         @template.concat('</ul>', block.binding)
       end
       
+      def title(content)
+        @template.content_tag(:li, content, :class => :title) unless content.blank?
+      end
+      
       def entry(content)
-        @template.content_tag(:li, content) unless content.blank?
+        @template.content_tag(:li, content, :class => :entry) unless content.blank?
       end
       
       def submenu(*args, &block)
         raise ArgumentError, "Missing block" unless block_given?
         
-        title = @template.link_to(args.first, {}, :class => "submenu", :href => "#")
+        title = @template.link_to(args.first, {}, :class => :submenu, :href => "#")
         
         content = "<ul>"
         @template.capture(&block).split("\n").each { |c| content << self.entry(c) unless c.blank? }
         content << "</ul>"
         
         if content != "<ul></ul>"
-          @template.concat( @template.content_tag(:li, title + content, :class => "folder"), block.binding )
+          @template.concat( @template.content_tag(:li, title + content, :class => :folder), block.binding )
         end
       end
     end

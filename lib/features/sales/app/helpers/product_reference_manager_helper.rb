@@ -9,7 +9,7 @@ module ProductReferenceManagerHelper
       option = { :display => "all"}
     end
     
-    link_to( image_tag("view_16x16.png", :alt => text, :title => text) + " #{text}", product_reference_manager_path(option))
+    link_to(text, product_reference_manager_path(option), 'data-icon' => :index)
   end
   
   # This method permit to make a counter for category
@@ -84,18 +84,18 @@ module ProductReferenceManagerHelper
   
   # override the default method to display custom images
   def new_product_reference_category_link_overrided(options = {})
-    text = "Nouvelle famille de produit référence"#"New product reference category"
+    text = "Nouvelle famille"#"New product reference category"
     options = { :link_text => text,
-                :image_tag => image_tag("category_16x16.png", :alt => text, :title => text)
+                :html_options => { 'data-icon' => :new_category }
               }.merge(options)
     new_product_reference_category_link(options)
   end
   
   # override the default method to display custom images
   def new_product_reference_sub_category_link_overrided(options = {})
-    text = "Nouvelle sous-famille de produit référence"#"New product reference sub category"
+    text = "Nouvelle sous-famille"#"New product reference sub category"
     options = { :link_text => text,
-                :image_tag => image_tag("category_16x16.png", :alt => text, :title => text)
+                :html_options => { 'data-icon' => :new_sub_category }
               }.merge(options)
     new_product_reference_sub_category_link(options)
   end
@@ -104,7 +104,7 @@ module ProductReferenceManagerHelper
   def new_product_reference_link_overrided(options = {})
     text = "Nouveau produit référence"#"New product reference"
     options = { :link_text => text,
-                :image_tag => image_tag("reference_16x16.png", :alt => text, :title => text)
+                :html_options => { 'data-icon' => :new_product_reference }
               }.merge(options)
     new_product_reference_link(options)
   end

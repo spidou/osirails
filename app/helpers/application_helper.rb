@@ -192,7 +192,8 @@ module ApplicationHelper
   #   add_contextual_menu_item(:section_name, :position => 2, :item)
   #
   def add_contextual_menu_item(section, *args, &block)
-    options = (args.first.is_a?(Hash) ? args.shift : {:force_not_list => false, :position => :last})
+    default_options = { :force_not_list => false, :position => :last }
+    options = (args.first.is_a?(Hash) ? default_options.merge(args.shift) : default_options)
     items   = block_given? ? capture(&block).split("\n") : args.dup
     
     items.each do |item|
