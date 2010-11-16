@@ -86,6 +86,10 @@ menus:
         title: Modules
         description: Gestion des modules
         position: 7
+  watchings:
+    title: Observer un objet
+    description: "Observer les changements sur un objet"
+    hidden: true
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  

@@ -1,5 +1,8 @@
 class User < ActiveRecord::Base
+  
   acts_on_journalization_with :username
+  
+  acts_as_watcher :identifier_method => :username, :email_method => :email
   
   before_save :username_unicity
   
@@ -103,7 +106,11 @@ class User < ActiveRecord::Base
   def can_be_destroyed?
     true #TODO check if the user can be destroyed...
   end
-
+  
+  def email
+    "" #TODO user may have an email address
+  end
+  
   private
     def change_password_updated_at
       if force_password_expiration?

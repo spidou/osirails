@@ -5,6 +5,8 @@ ActionController::Routing::Routes.draw do |map|
   
   map.context_menu ':controller/context_menu', :action => 'context_menu'
   
+  map.resources :watchings
+  
   ### COMMONS
 #  map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
 #  map.resources :contacts, :collection => {:auto_complete_for_contact_name => :get}

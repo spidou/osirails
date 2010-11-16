@@ -1,0 +1,6 @@
+first_watchable_function: # for validates_uniqueness_of
+  watchable_type: Watchable
+  name: function_name
+  description: My first watchable function
+  on_modification: true
+  on_schedule: true

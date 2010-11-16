@@ -14,11 +14,20 @@ config.action_view.debug_rjs                         = true
 config.action_controller.perform_caching             = false
 
 # Don't care if the mailer can't send
-config.action_mailer.raise_delivery_errors = false
+#config.action_mailer.raise_delivery_errors = false
 
-# Mail configuration
-# config.action_mailer.smtp_settings = {
-#   :address => "localhost.localdomain",
-#   :port => 25,
-#   :domain => "localdomain",
-# }
+### Mail configuration to use with sendmail
+#config.action_mailer.delivery_method = :sendmail
+#config.action_mailer.smtp_settings = {
+#  :address => "smtp.mobius.re",
+#  :port => 25,
+#  :domain => 'www.mobius.re'
+#}
+#
+#config.action_mailer.perform_deliveries = true 
+#config.action_mailer.raise_delivery_errors = true
+#config.action_mailer.default_charset = "utf-8"
+#config.action_mailer.default_content_type = "text/html"
+#config.action_mailer.default_mime_version = "1.0"
+#config.action_mailer.default_implicit_parts_order = [ "text/html", "text/plain"]
+###

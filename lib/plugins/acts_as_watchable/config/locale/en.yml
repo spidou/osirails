@@ -1,0 +1,12 @@
+en:
+  activerecord:
+    errors:
+      models:
+        watchings_watchable_function:
+          attributes:
+            on_modification:
+                is_not_blank: "should be blank"
+                is_blank: "may be chosen"
+            on_schedule:
+                is_not_blank: "should be blank"
+                is_blank: "may be chosen"

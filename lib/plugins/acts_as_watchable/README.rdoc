@@ -1,0 +1,98 @@
+= Acts_as_watchable(v0.1.1)
+
+* Environment: under Rails 2.1.0 and ruby 1.8.7, not tested above
+
+== Bugs & Feedback
+Bug reports and feedback are welcome via http://github.com/spidou/osirails
+
+== Overview
+Acts_as_watchable is an active_record plugin, that lets you watch a model, and
+received email when there are modification on this model.
+Notifications can be triggered when you bring changes on the record or
+periodically thanks to a cron plugin (http://github.com/javan/whenever)
+
+First there is the model which implement acts_as_watcher, like User.
+Next there are the models which implement act_as_watchable
+
+== Setup
+
+First:
+
+  $ script/plugin install path_to_acts_watchable_plugin
+  
+To add the acts_as_watchables tables to your project, run the following command:
+
+  $ script/generate acts_as_watchable_migration
+  
+Then migrate your project database:
+
+  $ rake db:migrate
+  
+Install whenever:
+
+	gem install whenever
+
+Update your crontab file
+  
+  whenever --update-crontab
+  
+Add the following line in your routes.rb:
+
+  map.resources :watchings
+  
+== Basic usage
+
+Models you want to be the Observer will call the <tt>acts_as_watcher</tt> method,
+delivered with a mandatory parameter.
+
+Example:
+	
+  class User < ActiveRecord::Base
+    acts_as_watcher :email_method => :method_which_will_return_the_user_email
+  end
+
+
+Models you want to Observe will call the <tt>acts_as_watchable</tt> method,
+
+Example:
+	
+	class Customer < ActiveRecord::Base
+    acts_as_watchable
+  end
+
+== In view
+
+The plugin deliver some helper method, that yout can use in your view
+
+Example:
+
+For displaying a watching button in your view you can use the helper <tt>watching_button</tt>
+This helper method display a link to create a new watching or edit existant watching
+
+
+== watchable function usage
+
+If you want to observe a particular function or context. You should create a watchable_function
+
+Example:
+	WatchableFunction.create! :watchable_type   => "Commodity",
+	                          :name             => "stock_quantity_smaller_than_threshold?",
+	                          :description      => "Is the stock quantity smaller than the threshold?",
+	                          :on_modification  => :true,
+	                          :on_schedule      => true
+
+	in new or edit view you can set this function in on_modification or on_schedule
+	this method must return true or false
+	
+for watchable function you must create a mail template in your view folder like
+	
+	commodities/stock_quantity_smaller_than_threshold?.html.erb
+	
+== Test
+
+	$ rake acts_as_watchable:test
+	
+The plugin provide 2 shoulda macros:
+
+-> should_act_as_watcher for test if model which observe implement acts_as_watcher
+-> should_act_as_watchable for test if model which is observed implement acts_as_watchable

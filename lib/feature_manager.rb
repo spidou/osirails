@@ -241,6 +241,9 @@ class FeatureManager
       # load views
       ActionController::Base.prepend_view_path(File.join(@path, 'app', 'views'))
       
+      # load views for action_mailer
+      ActionMailer::Base.template_root = ActionController::Base.view_paths
+      
       # load i18n feature files
       I18n.load_path += Dir[ File.join(@path, 'config', 'locale', '*.{rb,yml}') ]
       I18n.reload!

@@ -1,0 +1,12 @@
+fr:
+  activerecord:
+    errors:
+      models:
+        watchings_watchable_function:
+          attributes:
+            on_modification:
+                is_not_blank: "ne doit pas être choisi"
+                is_blank: "devrait être choisi"
+            on_schedule:
+                is_not_blank: "ne doit pas être choisi"
+                is_blank: "devrait être choisi"

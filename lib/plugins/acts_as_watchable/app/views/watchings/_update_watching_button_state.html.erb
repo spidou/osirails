@@ -1,0 +1,2 @@
+<span id="watching_button_holder_for_update" style="display:none;"><%= watching_link(watchable) %></span>
+<%= javascript_tag("update_acts_as_watchable_buttons('watching_#{watchable.class.name.underscore}_#{watchable.id}');") %>

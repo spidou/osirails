@@ -1,7 +1,6 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
   has_address :address
-  
   has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
   
   has_numbers
@@ -334,6 +333,10 @@ class Employee < ActiveRecord::Base
     else
       self.iban.attributes = iban_attributes
     end 
+  end
+  
+  def mail
+    "armoog_s@epitech.net"
   end
   
   private

@@ -1,0 +1,7 @@
+mysql:
+  adapter: mysql
+  username: root
+  password: 
+  encoding: utf8
+  database: acts_as_watchable_unit_test
+  socket: /var/run/mysqld/mysqld.sock
