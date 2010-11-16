@@ -43,8 +43,8 @@ class DeliveryNote < ActiveRecord::Base
   with_options :if => :signed? do |dn|
     dn.validates_presence_of :signed_on
     
-    dn.validates_date :signed_on, :on_or_before         => Date.today,
-                                  :on_or_after          => :published_on
+    dn.validates_date :signed_on, :on_or_before => Date.today,
+                                  :on_or_after  => :published_on
     
     dn.validate :validates_presence_of_attachment
   end

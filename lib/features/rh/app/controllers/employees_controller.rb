@@ -5,8 +5,8 @@ class EmployeesController < ApplicationController
   
   # GET /employees
   def index
-    paginate_options = { :page => params[:page], :per_page => Employee::EMPLOYEES_PER_PAGE }
-    @employees = params['all_employees'] || false ? Employee.all.paginate(paginate_options) : Employee.actives.paginate(paginate_options)
+    @hide_selector_column = true
+    build_query_for(:employee_index)
   end
   
   # GET /employees/:id

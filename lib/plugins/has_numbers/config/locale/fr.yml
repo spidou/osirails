@@ -1,8 +1,8 @@
-fr:     
+fr:
   activerecord:
-    models: 
+    models:
       number: "Numéro"
-    attributes: 
+    attributes:
       number:
         indicative: "Indicatif"
         number: "Numéro"

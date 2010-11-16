@@ -1,3 +1,11 @@
+/* IMAGES */
+a[data-icon=new_sub_category] { background-image: url('/themes/emr/images/logistics/add_sub_category.png'); }
+a[data-icon=enable_category]  { background-image: url('/themes/emr/images/logistics/enable_category.png'); }
+a[data-icon=disable_category] { background-image: url('/themes/emr/images/logistics/disable_category.png'); }
+a[data-icon=enable_supply]    { background-image: url('/themes/emr/images/logistics/enable_supply.png'); }
+a[data-icon=disable_supply]   { background-image: url('/themes/emr/images/logistics/disable_supply.png'); }
+/* END IMAGES */
+
 #supply_categories_supply_sizes {
   padding-left: 1em;
 }

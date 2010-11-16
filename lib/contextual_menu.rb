@@ -8,7 +8,7 @@ module Osirails
         @sections = []
       end
       
-      def add_item(section, force_not_list, item)
+      def add_item(section, force_not_list, position, item)
         return if item.blank?
         new_item = Item.new(item)
         
@@ -19,7 +19,15 @@ module Osirails
             end
           end
         else
-          @sections << Section.new(section, !force_not_list, [ new_item ] )
+          section = Section.new(section, !force_not_list, [ new_item ] )
+          
+          if position == :first || position.to_i < 0
+            @sections.unshift(section)
+          elsif position == :last || position.to_i >= @sections.size
+            @sections.push(section)
+          else
+            @sections.insert(position.to_i, section)
+          end
         end
       end
     end

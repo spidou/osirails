@@ -1,0 +1,8 @@
+<%
+  require_locals page_name
+  query = filtered_table_container
+%>
+<div id="integrated_search">
+  <%= render :partial => 'shared/filtered_table', :object => query,
+                                                  :locals => { :page_name => page_name, :page => page, :url_for => url_for } %>
+</div>

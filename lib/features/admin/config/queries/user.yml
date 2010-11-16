@@ -1,0 +1,50 @@
+conf_filters: &filters
+  filters:
+    - username
+    - roles.id
+    - enabled
+    - last_connection
+    - last_activity
+conf_columns: &columns
+  columns:
+    - username
+    - roles.name
+    - enabled
+    - last_connection
+    - last_activity
+conf_group: &group
+  group:
+conf_order: &order
+  order:
+    - enabled
+    - username
+    - last_connection
+    - last_activity
+conf_pagination: &pagination
+  per_page:
+    - 25
+    - 50
+    - 100
+
+advanced_user:
+  <<: *filters
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+
+user_index:
+  <<: *filters
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+  quick_search:
+    - username
+    - roles.name
+  default_query:
+    <<: *columns
+    order:
+      - 'enabled:desc'
+      - username
+    per_page: 25

@@ -1,4 +1,7 @@
 menus:
-  search_indexes: 
-    title: Recherche
-    description: Faire une recherche
+  advanced_search: 
+    title: Recherche Avancée
+    description: Faire une recherche avancée
+  queries:
+    title: Requêtes Personnalisées
+    descriptions: Gestion des requêtes sauvegardées

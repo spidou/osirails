@@ -1,0 +1,98 @@
+en:
+  activerecord:
+    models:
+      query: "Report"
+    attributes:
+      query:
+        name: "Report name"
+        public_access: "Public"
+        per_page: "Items per page"
+        search_type: "the result must match with"
+        columns: "Shown columns"
+        group: "Group by"
+        order: "Sort by"
+    errors:
+      models:
+        query:
+          attributes:
+            columns:
+              too_short: "not enough items ({{count}} minimum)"
+            page_name:
+              bad_type: "has not expected data type"
+              do_not_exist: "does not exist"
+              modified: "has been modified"
+            columns:
+              bad_type: "has not expected data type"
+              different_from_configuration: "does not respect configuration"
+            group:
+              bad_type: "has not expected data type"
+              different_from_configuration: "does not respect configuration"
+            order:
+              bad_type: "has not expected data type"
+              different_form_configuration: "does not respect configuration"
+              bad_syntaxe: "contient des erreurs"
+            criteria:
+              bad_type: "has not expected data type"
+              different_form_configuration: "does not respect configuration"
+              bad_syntaxe: "contains errors"
+  form:
+    query:
+      new:
+        h1: "New custom report"
+        cancel_link: "Cancel report create"
+      edit:
+        h1: "Edit the custom report"
+        cancel_link: "Cancel report update"
+      link:
+  link:
+    apply:
+      title: "Apply the new configuration"
+      name: "Apply"
+    reset:
+      name: "Cancel"
+      title: "Cancel modifications"
+    new:
+      name: "Create"
+      title: "Create a new custom report"
+    edit:
+      name: "Edit"
+      title: "Update the custom report"
+    delete:
+      name: "Delete"
+      title: "Delete the custom report"
+    toggle:
+      title: "Show/Hide advanced options"
+    add_order:
+      title: "Add another order option"
+    toggle_criteria:
+      name: "Filters"
+      title: "Show/Hide filters"
+    toggle_options:
+      name: "Options"
+      title: "Show/Hide options"
+    add_criterion:
+      name: "Add criterion"
+    delete_criterion:
+      title: "Delete criterion"
+  view:
+    quick_search:
+      default: "Quick search..."
+      title: "Search"
+    paginate_per_page: "Per page"
+    paginate_all: "All"
+    no_result: "No result found"
+    search_for: "Match"
+    search_types:
+      and: 'all of the following'
+      or: 'any of the following'
+      not: 'none of the following'
+    advanced_search:
+      model_select:
+        h2: "What are you searching for ?"
+        default: "Please choose a category"
+      criteria_h2: "Precise your search"
+    content:
+      td:
+        boolean_true: "Yes"
+        boolean_false: "No"
+      undefined_group_name: "Undefined"

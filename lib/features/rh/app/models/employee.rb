@@ -10,9 +10,6 @@ class Employee < ActiveRecord::Base
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
   
-  # for pagination : number of instances by index page
-  EMPLOYEES_PER_PAGE = 15
-  
   named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
   
   has_attached_file :avatar, 
@@ -70,9 +67,8 @@ class Employee < ActiveRecord::Base
   
   validate :validates_responsible_job_limit
   
-  has_search_index  :only_attributes      => [:first_name, :last_name, :email, :society_email, :birth_date, :social_security_number],
-                    :displayed_attributes => [:id, :first_name, :last_name, :email, :society_email],
-                    :main_model           => true
+  has_search_index  :only_attributes       => [ :first_name, :last_name, :email, :society_email, :birth_date, :social_security_number ],
+                    :additional_attributes => { :fullname => :string }
   
   # papercilp plugin validations
   with_options :if => :avatar do |v|

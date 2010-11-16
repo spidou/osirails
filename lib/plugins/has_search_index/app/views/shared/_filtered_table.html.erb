@@ -1,0 +1,13 @@
+<%
+  require_locals page_name
+  query = filtered_table
+%>
+
+<% form_tag({:controller => 'queries', :action => 'new'},
+             :id         => 'query_form',
+             :class      => 'skip_prevent_close',
+             :onsubmit   => "validSelectOptions('group columns');") do %>
+  <%= hidden_field_tag('return_uri', url_for)%>
+  <%= render :partial => "shared/form" , :locals => { :page_name => page_name, :query => query } %>
+  <%= generate_table(query, page)%>
+<% end %>

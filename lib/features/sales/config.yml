@@ -201,7 +201,7 @@ configurations:
     value: "$product_reference_sub_category.$number(2)"
   end_product_reference_pattern:
     description: Modèle permettant la génération du numéro de référence unique pour un produit fini
-    value: "$product_reference.$number(5)"
+    value: "$product_reference.%y.$number(3)"
   quote_reference_pattern:
     description: Modèle permettant la génération du numéro de référence unique pour un devis
     value: "$order.DV$number(2)"

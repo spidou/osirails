@@ -66,8 +66,7 @@ class Order < ActiveRecord::Base
   after_create  :create_steps
   
   has_search_index :only_attributes    => [ :title, :reference, :customer_needs ],
-                   :only_relationships => [ :customer ],
-                   :main_model         => true
+                   :only_relationships => [ :customer ]
   
   # level constants
   CRITICAL  = 'critical'

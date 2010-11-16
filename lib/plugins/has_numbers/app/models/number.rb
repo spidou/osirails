@@ -14,13 +14,16 @@ class Number < ActiveRecord::Base
   
   VISIBLE_STATES = { "Privé" => false, "Public" => true }
   
-  has_search_index  :only_attributes    => [:number],
-                    :only_relationships => [:number_type, :indicative]
-                    
+  has_search_index  :only_attributes        => [ :number ],
+                    :additional_attributes  => { :formatted => :string },
+                    :only_relationships     => [ :number_type, :indicative ]
+  
   journalize :attributes => :number, :identifier_method => :formatted
   
-  alias_method :formatted, :number
-  #DEPRECATED formatted is deprecated, don't use it #TODO inform deprecation when using it
+  def formatted
+    ActiveSupport::Deprecation.warn("formatted is now deprecated, please use number or formatted_with_indicative instead", caller)
+    number
+  end
   
   # display formatted number when we want to display it after the indicative (with "(0)")
   # OPTIMIZE see the helper method in NumberHelper called 'to_phone' to format the phone number

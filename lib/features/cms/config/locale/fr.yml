@@ -1,0 +1,9 @@
+fr:
+  activerecord:
+    models:
+      content: "Contenu"
+      content_version: "Version de contenu"
+    attributes: 
+      content:
+        title: "Titre"
+        description: "Description"

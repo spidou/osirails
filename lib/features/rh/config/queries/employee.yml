@@ -1,0 +1,98 @@
+conf_filters: &filters
+  filters:
+conf_columns: &columns
+  columns:
+    - last_name
+    - first_name
+    - fullname
+    - service.name
+    - civility.name
+    - jobs.name
+    - job_contract.job_contract_type.name
+    - job_contract.start_date
+conf_group: &group
+  group:
+    - last_name
+    - service.name
+conf_order: &order
+  order:
+    - last_name
+    - first_name
+conf_pagination: &pagination
+  per_page:
+    - 25
+    - 50
+    - 100
+    
+advanced_employee:
+  filters:
+    - *
+    - user_name: user.username
+    - service.name
+    - user.*
+    - address.*
+    - job_contract.*
+    - contract_end: job_contract.departure
+    - job_contract.job_contract_type.*
+    - family_situation.name
+    - iban.*
+    - contacts.*
+    - contacts.numbers.*
+    - contacts.numbers.number_type.*
+    - contacts.numbers.indicative.*
+    - contacts.numbers.indicative.country.*
+    - numbers.*
+    - numbers.number_type.*
+    - numbers.indicative.*
+    - numbers.indicative.country.*
+    - civility.*
+    - jobs.*
+    - jobs.service.name
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+    
+employee_index:
+  filters:
+    - last_name
+    - first_name
+    - user_name: user.username
+    - service_name: service.name
+    - civility: civility.id
+    - contract_end: job_contract.departure
+    - contract_type: job_contract.job_contract_type.id
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+  quick_search:
+    - first_name
+    - last_name
+    - social_security_number
+    - email
+    - society_email
+    - user.username
+    - service.name
+    - civility.name
+    - family_situation.name
+    - job_contract.job_contract_type.name
+    - numbers.number
+  default_query:
+    criteria:
+      job_contract.departure: 
+        action: '='
+        value:
+    search_type: and
+    columns:
+      - civility.name
+      - fullname
+      - society_email
+      - job_contract.start_date
+      - job_contract.job_contract_type.name
+    group:
+      - service.name
+    order:
+      - "last_name:Asc"
+      - "first_name:Asc"
+    per_page: 25

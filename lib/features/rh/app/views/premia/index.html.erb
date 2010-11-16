@@ -23,7 +23,7 @@
           <tr>
             <td><%=h premium.amount %></td>
             <td><%=h premium.remark %></td>
-            <td><%=h l(premium.date) unless premium.date.nil? %></td>
+            <td><%=h l(premium.date, :format => :long) unless premium.date.nil? %></td>
           </tr> 
         <% end %>
       </tbody>

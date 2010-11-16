@@ -1,0 +1,281 @@
+fr:     
+  activerecord:
+    models: 
+      adjustment: "Ajustement"
+      approaching: "Approche"
+      commercial_step: "Étape commerciale"
+      delivery_intervention: "Intervention"
+      delivery_note: "Bon de livraison"
+      dunning: "Relance"
+      graphic_item: "Élément graphique"
+      graphic_document: "Document graphique"
+      mockup: "Maquette"
+      invoice: "Facture"
+      order: "Projet"
+      payment: "Paiement"
+      press_proof: "BAT"
+      product: "Produit"
+      product_reference: "Produit référence"
+      product_reference_category: "Famille de produit"
+      quote: "Devis"
+      ship_to_address: "Adresse de livraison"
+      subcontractor: "Sous-traitant"
+      subcontractor_request: "Demande de sous-traitance"
+      survey_intervention: "Intervention \"Survey\""
+    attributes: 
+      adjustment:
+        amount: "Montant"
+        comment: "Commentaire"
+        attachment: "Pièce jointe"
+      delivery_intervention:
+        delivery_type: "Type de livraison"
+        scheduled_delivery_at: "Prévue le"
+        scheduled_intervention_hours: "Pendant"
+        scheduled_internal_actor: "Responsable"
+        scheduled_delivery_subcontractor: "Sous-traitant (transport)"
+        scheduled_delivery_vehicle: "Véhicules de transport à utiliser"
+        scheduled_delivery_vehicles_rental: "Location de véhicule(s) prévue pour le transport"
+        scheduled_deliverer: "Livreurs"
+        scheduled_installation_subcontractor: "Sous-traitant (pose)"
+        scheduled_installation_equipment: "Matériels à utiliser pour la pose"
+        scheduled_installation_equipments_rental: "Location de matériel(s) prévue pour la pose"
+        scheduled_installer: "Poseurs"
+        delivery_at: "Réalisée le"
+        intervention_hours: "Pendant"
+        internal_actor: "Responsable"
+        delivery_subcontractor: "Sous-traitant (transport)"
+        delivery_vehicle: "Véhicules de transport utilisés"
+        delivery_vehicles_rental: "Location de véhicule(s) de transport"
+        deliverer: "Livreurs"
+        installation_subcontractor: "Sous-traitant (pose)"
+        installation_equipments: "Matériels utilisés pour la pose"
+        installation_equipments_rental: "Location de matériel(s) pour la pose"
+        installer: "Poseurs"
+        report: "Rapport d'intervention"
+        comments: "Indiquer pourquoi l'intervention n'a pas eu lieu"
+      delivery_note:
+        reference: "Référence"
+        created_at: "Créé le"
+        creator: "Par"
+        delivery_note_type: "Mode de livraison"
+        status: "État actuel"
+        confirmed_at: "Validé le"
+        published_on: "Date d'émission"
+        signed_on: "Signé par le client le"
+        attachment: "Fichier (document signé)"
+        cancelled_at: "Annulée le"
+      dunning:
+        date: "Effectuée le"
+        dunning_sending_method: "Par"
+        comment: "Commentaire"
+      end_product:
+        product_reference: "Produit référence"
+        quantity: "Quantité"
+      graphic_item:
+        name: "Nom"
+        description: "Description"
+        graphic_unit_measure: "Unité de mesure"
+        image: "Fichier image"
+        source: "Fichier source"
+        version: "Version actuelle"
+        created_at: "Créé le"
+        creator: "Par"
+        should_add_version: "Ajouter une nouvelle version"
+        should_change_version: "Sélectionner une autre version"
+        change_version: "Version"
+      graphic_document:
+        graphic_document_type: "Type de document graphique"
+      mockup:
+        end_product: "Produit fini"
+        mockup_type: "Type de maquette"
+      invoice:
+        reference: "Référence"
+        created_at: "Créée le"
+        creator: "Par"
+        status: "État actuel"
+        invoice_type: "Type de facture"
+        published_on: "Date d'émission"
+        factor: "Factor"
+        sended_on: "Envoyée au client le"
+        send_invoice_method: "Par"
+        cancelled_at: "Annulée le"
+        cancelled_by: "Par"
+        cancelled_comment: "Indiquer la raison de cette annulation"
+        abandoned_on: "Abandonnée le"
+        abandoned_by: "Par"
+        abandoned_comment: "Indiquer la raison de l'abandon"
+        net_to_paid: "Montant total de la facture"
+        factoring_paid_on: "Financement du Factor le"
+        factoring_recovered_on: "Définancement du Factor le"
+        factoring_recovered_comment: "Indiquer la raison du définancement"
+        factoring_balance_paid_on: "Solde Factor reçu le"
+        delivery_note_invoices: "Bons de livraison associés"
+      order:
+        title: "Nom du projet"
+        customer: "Client"
+        customer_needs: "Besoins du client"
+        society_activity_sector: "Secteur d'activité"
+        order_type: "Type de dossier"
+        ship_to_address: "Adresse(s) de livraison"
+        approaching: "Type d'approche"
+        created_at: "Date de création"
+        previsional_delivery: "Date prévisionnelle de livraison"
+        quotation_deadline: "Date butoire d'envoi du devis"
+      payment:
+        paid_on: "Règlement reçu le"
+        amount: "Montant"
+        bank_name: "Établissement bancaire"
+        payment_method: "Moyen de paiement"
+        payment_identifier: "Identifiant du règlement"
+        attachment: "Pièce jointe"
+      press_proof:
+        reference: "Référence"
+        internal_actor: "Contact Graphique"
+        creator: "Créateur"
+        end_product: "Produit fini"
+        end_product_description: "Description"
+        unit_measure: "Unité de mesures"
+        sended_on: "BAT envoyé au client le"
+        document_sending_method: "Par"
+        signed_on: "BAT signé par le client le"
+        signed_press_proof: "Fichier (BAT signé)"
+        revoked_comment: "Motif de l'annulation"
+        revoked_by: "BAT annulé par"
+        revoked_at: "BAT annulé le"
+        cancelled_at: "BAT annulé le"
+        created_at: "Date de création"
+        status: "État actuel"
+      product:
+        reference: "Référence"
+        name: "Spécificité"
+        description: "Description"
+        dimensions: "Côtes"
+        designation: "Désignation"
+        vat: "Taux de TVA"
+      product_reference:
+        product_reference_category: "Famille"
+        product_reference_sub_category: "Sous-famille"
+      product_reference_category:
+        name: "Nom"
+        reference: "Référence"
+      product_reference_sub_category:
+        product_reference_category: "Famille parente"
+      quote:
+        validity_delay: "Période de validité"
+        validity_delay_unit: "Unité de période de validité"
+        cancelled_on: "Devis annulé le"
+        confirmed_on: "Devis émis le"
+        sended_on: "Devis envoyé au client le"
+        send_quote_method: "Par"
+        signed_on: "Devis signé par le client le"
+        order_form_type: "Type de document"
+        order_form: "Fichier (document signé)"
+        sales_terms: "Conditions commerciales"
+        created_at: "Date de création"
+        creator: "Créateur"
+        reference: "Référence"
+        status: "Statut"
+        order: "Projet"
+        quote_contact: "Contact"
+        carriage_costs: "Frais de port"
+        prizegiving: "Remise"
+        deposit: "Acompte (%)"
+        discount: "Escompte"
+        quote_items: "Lignes de devis"
+        quote_item: "Ligne de devis"
+        end_products: "Produits finis"
+        end_product: "Produit fini"
+        bill_to_address: "Adresse de facturation"
+        ship_to_address: "Adresse de livraison"
+      quote_item:
+        name: "Désignation"
+        dimensions: "Côtes"
+        quantity: "Quantité"
+        unit_price: "Prix/U"
+        prizegiving: "Remise"
+        vat: "Taux de TVA"
+        end_product: "Produit fini"
+      ship_to_address:
+        #establishment: "Établissement associé"
+        establishment_name: "Nom de l'enseigne"
+      subcontractor:
+        activity_sector_reference: "Code NAF"
+      subcontractor_request:
+        subcontractor: "Préstataire"
+        name: "Préstataire"
+        phone: "Tél"
+        email: "E-mail"
+        job_needed: "Prestation demandée"
+        price: "Prix de la prestation"
+        attachment: "Devis scanné"
+      survey_intervention:
+        start_date: "Le"
+        duration_hours: "Pendant"
+        internal_actor: "Responsable"
+        contact: "Contact sur place"
+        comment: "Commentaire"
+        documents: "Documents"
+        survey_intervention_contact: "Contact"
+    errors:
+      models:
+        delivery_intervention:
+          attributes:
+            scheduled_delivery_at:
+              on_or_after: "ne doit pas être AVANT aujourd'hui&#160;({{restriction}})"
+            delivery_at:
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+              on_or_after: "ne doit pas être AVANT la date d'émission du bon de livraion&#160;({{restriction}})"
+        delivery_note:
+          attributes:
+            signed_on:
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+              on_or_after: "ne doit pas être AVANT la date d'émission du BL&#160;({{restriction}})"
+        dunning:
+          attributes:
+            date:
+              on_or_after: "ne doit pas être AVANT la date d'envoi au client&#160;({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+        invoice:
+          attributes:
+            abandoned_on:
+              on_or_after:
+                while_sended: "ne doit pas être AVANT la date d'envoi de la facture&#160;({{restriction}})"
+                while_factoring_recovered: "ne doit pas être AVANT la date de définancement de la facture&#160;({{restriction}})"
+            cancelled_at:
+              on_or_after: 
+                while_confirmed: "ne doit pas être AVANT la date d'émission de la facture&#160;({{restriction}})"
+                while_sended: "ne doit pas être AVANT la date d'envoi de la facture&#160;({{restriction}})"
+            confirmed_at:
+              on_or_after: "ne doit pas être AVANT la date de création de la facture&#160;({{restriction}})"
+            factoring_balance_paid_on:
+              on_or_after: 
+                while_abandoned: "ne doit pas être AVANT la date de définancement de la facture&#160;({{restriction}})"
+                while_factoring_paid: "ne doit pas être AVANT la date de règlement par le factor de la facture&#160;({{restriction}})"
+                while_factoring_recovered: "ne doit pas être AVANT la date de définancement de la facture&#160;({{restriction}})"
+            factoring_recovered_on:
+              on_or_after: "ne doit pas être AVANT la date de réglement par le factor de la facture&#160;({{restriction}})"
+            published_on:
+              on_or_before: "ne doit pas être AVANT la date de signature du devis&#160;({{restriction})"
+            sended_on:
+              on_or_after: "ne doit pas être AVANT la date d'émission de la facture&#160;({{restriction})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+        press_proof:
+          attributes:
+            sended_on:
+              on_or_after: "ne doit pas être AVANT la date de validation du Bon à tirer&#160;({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+            signed_on:
+              on_or_after: "ne doit pas être AVANT la date d'envoi du Bon à tirer&#160;({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+        quote:
+          attributes:
+            cancelled_on:
+              on_or_after: "ne doit pas être AVANT la date de création du devis&#160;({{restriction}})"
+            confirmed_on:
+              on_or_after: "ne doit pas être AVANT la date de création du devis&#160;({{restriction}})"
+            sended_on:
+              on_or_after: "ne doit pas être AVANT la date de validation du devis&#160;({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+            signed_on:
+              on_or_after: "ne doit pas être AVANT la date d'envoi du devis&#160;({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"

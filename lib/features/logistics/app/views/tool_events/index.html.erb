@@ -18,31 +18,34 @@
     <p>Aucun &eacute;v&egrave;nement</p>
   <% else %>
     <table>
-      <tr>
-        <th></th>
-        <th>D&eacute;signation</th>
-        <th>Status</th>
-        <th>Type</th>
-        <th>Date</th>
-        <th>Acteur interne</th>
-        <th>Actions</th>
-      </tr>
+      <thead>
+        <tr>
+          <th></th>
+          <th>D&eacute;signation</th>
+          <th>Status</th>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Acteur interne</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
       
-      <% for tool_event in @paginate_tool_events %>
-      <tr>
-        <td><%= effectives_image(tool_event, @currents_tool_events, @effectives_tool_events) %></td>
-        <td><%= tool_event.name %></td>
-        <td><%= get_status_image(tool_event.status) %></td>
-        <td><%= get_event_type_text(tool_event.event_type)%></td>
-        <td>
-          <%= l(tool_event.start_date, :format => :long_ordinal) %>
-          <%= " - #{get_end_date(tool_event)}" unless tool_event.event_type_name == 'incident' %>
-        </td>
-        <td><%= get_internal_actor(tool_event) %></td>
-        <td><%= links_for_tool_event(@tool, tool_event) %></td>
-      </tr> 
-      <% end %>
-      
+      <tbody>
+        <% for tool_event in @paginate_tool_events %>
+        <tr>
+          <td><%= effectives_image(tool_event, @currents_tool_events, @effectives_tool_events) %></td>
+          <td><%= tool_event.name %></td>
+          <td><%= get_status_image(tool_event.status) %></td>
+          <td><%= get_event_type_text(tool_event.event_type)%></td>
+          <td>
+            <%= l(tool_event.start_date, :format => :long_ordinal) %>
+            <%= " - #{l(tool_event.end_date, :format => :long_ordinal)}" unless tool_event.event_type_name == 'incident' %>
+          </td>
+          <td><%= get_internal_actor(tool_event) %></td>
+          <td><%= links_for_tool_event(@tool, tool_event) %></td>
+        </tr> 
+        <% end %>
+      </tbody>
     </table>
     <%= will_paginate @paginate_tool_events %>
   <% end %>

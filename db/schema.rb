@@ -1090,6 +1090,22 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
     t.datetime "updated_at"
   end
 
+  create_table "queries", :force => true do |t|
+    t.integer  "creator_id"
+    t.string   "name"
+    t.string   "page_name"
+    t.string   "search_type"
+    t.string   "quick_search_value"
+    t.text     "criteria"
+    t.text     "columns"
+    t.text     "order"
+    t.text     "group"
+    t.boolean  "public_access"
+    t.integer  "per_page"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "quote_items", :force => true do |t|
     t.integer  "quote_id"
     t.integer  "end_product_id"
@@ -1401,12 +1417,12 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
     t.integer  "creator_id"
     t.string   "type"
     t.string   "name"
-    t.string   "siret_number"
     t.string   "website"
     t.boolean  "activated",                    :default => true
     t.date     "company_created_at"
     t.date     "collaboration_started_at"
     t.integer  "activity_sector_reference_id"
+    t.string   "siret_number"
     t.integer  "factor_id"
     t.integer  "customer_solvency_id"
     t.integer  "customer_grade_id"

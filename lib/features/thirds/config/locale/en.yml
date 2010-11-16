@@ -1,0 +1,24 @@
+en:
+  activerecord:
+    attributes:
+      third:
+        name: "Corporate name"
+        creator: "Created by"
+      customer:
+        factor: "Factor company"
+        customer_solvency: "Credit standing"
+        customer_grade: "Client relation grade"
+      establishment:
+        name: "Establishment name"
+  integrated_search:
+    attributes:
+      customer:
+        bill_to_address:
+          formatted: "Bill to address"
+      activity_sector_reference:
+        get_activity_sector_name: "Activity sector name"
+    page_names:      
+      customer:
+        customer_index: "Customers"
+      supplier:
+        supplier_index: "Suppliers"

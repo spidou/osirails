@@ -51,31 +51,33 @@ class PressProof < ActiveRecord::Base
   
   # Validations for confirm
   with_options :if => :confirmed? do |v|
-    v.validates_date :confirmed_on, :equal_to => Proc.new { Date.today }
+    v.validates_date :confirmed_on, :equal_to => Date.today
     v.validates_presence_of :reference
   end
   
   # Validations for send
   with_options :if => :sended? do |v|
-    v.validates_date :sended_on, :on_or_after => :confirmed_on, :on_or_before => Proc.new { Date.today }
+    v.validates_date :sended_on, :on_or_after   => :confirmed_on,
+                                 :on_or_before  => Date.today
     v.validates_presence_of :document_sending_method_id
     v.validates_presence_of :document_sending_method, :if => :document_sending_method_id
   end
   
   # Validations for sign
   with_options :if => :signed? do |v|
-    v.validates_date :signed_on, :on_or_after => :sended_on, :on_or_before => Proc.new { Date.today }
+    v.validates_date :signed_on, :on_or_after   => :sended_on,
+                                 :on_or_before  => Date.today
     v.validate :validates_presence_of_signed_press_proof, :validates_with_a_end_product_not_already_referenced
     v.validates_attachment_content_type :signed_press_proof, :content_type => [ 'application/pdf', 'application/x-pdf' ]
 #    v.validates_attachment_size         :signed_press_proof, :less_than    => 2.megabytes
   end
   
   # Validations for cancel
-  validates_date :cancelled_on, :equal_to => Proc.new { Date.today }, :if => :cancelled?
+  validates_date :cancelled_on, :equal_to => Date.today, :if => :cancelled?
   
   # Validations for revoke
   with_options :if => :revoked? do |v|
-    v.validates_date :revoked_on, :equal_to => Proc.new { Date.today }
+    v.validates_date :revoked_on, :equal_to => Date.today
     v.validates_presence_of :revoked_on, :revoked_by_id, :revoked_comment
     v.validates_presence_of :revoked_by, :if => :revoked_by_id
   end
@@ -173,6 +175,7 @@ class PressProof < ActiveRecord::Base
   def revoke(attributes)
     return false unless can_be_revoked?
     self.attributes = attributes
+    self.revoked_on = Date.today
     self.status     = STATUS_REVOKED
     self.save
   end

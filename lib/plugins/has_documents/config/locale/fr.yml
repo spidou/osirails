@@ -1,6 +1,6 @@
-fr:     
+fr:
   activerecord:
-    attributes: 
+    attributes:
       document:
         name: "Nom"
         description: "Description"

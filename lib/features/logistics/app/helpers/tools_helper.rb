@@ -2,22 +2,22 @@ module ToolsHelper
 
   def link_to_service(service)
     return "-" if service.nil?
-    service_link(service, :link_text => service.name, :image_tag => nil) || service.name
+    service_link(service, :link_text => service.name, :image_tag => nil, :html_options => { 'data-icon' => nil }) || service.name
   end
   
   def link_to_employee(employee)
     return "-" if employee.nil?
-    employee_link(employee, :link_text => employee.fullname, :image_tag => nil) || employee.fullname
+    employee_link(employee, :link_text => employee.fullname, :image_tag => nil, :html_options => { 'data-icon' => nil }) || employee.fullname
   end
   
   def link_to_job(job)
     return "-" if job.nil?
-    job_link(job, :link_text => job.name, :image_tag => nil) || job.name
+    job_link(job, :link_text => job.name, :image_tag => nil, :html_options => { 'data-icon' => nil }) || job.name
   end
         
   def link_to_supplier(supplier)
     return "-" if supplier.nil?
-    supplier_link(supplier, :link_text => supplier.name, :image_tag => nil) || supplier.name
+    supplier_link(supplier, :link_text => supplier.name, :image_tag => nil, :html_options => { 'data-icon' => nil }) || supplier.name
   end
 
   def links_to_actions(tool)
@@ -63,10 +63,6 @@ module ToolsHelper
     return '-' if tool_event.internal_actor.nil?
     link = employee_link(tool_event.internal_actor, :image_tag => nil, :link_text => tool_event.internal_actor.fullname)
     link || tool_event.internal_actor.fullname 
-  end
-  
-  def get_end_date(tool_event)
-    return l(tool_event.end_date, :format => :long_ordinal) unless tool_event.end_date.nil?
   end
   
   def effectives_image(tool_event, currents_tools, effectives_tools)

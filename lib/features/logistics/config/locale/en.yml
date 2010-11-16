@@ -1,0 +1,50 @@
+en:
+  activerecord:
+    models:
+      tool_event: "Event"
+    attributes:
+      commodity_category:
+        commodity_category: "Belongs to"
+      consumable_category:
+        consumable_category: "Belongs to"
+      supply_category:
+        unit_measure: "Unit of measure"
+      supply_sub_category:
+        supply_category: "Catégorie"
+        unit_measure: "Measure/U"
+      supply:
+        supply_category: "Category"
+        supply_sub_category: "Subcategory"
+        name: "Type"
+        supplier: "Main supplier"
+        measure: "Measure/U"
+        unit_mass: "Mass/U"
+        stock_quantity: "Quantity"
+        stock_measure: "Total measure"
+        stock_value: "Total value"
+        stock_mass: "Total weight"
+      supplier_supply:
+        name: "Designation"
+        fob_unit_price: "Price excl. tax"
+      stock_input:
+        identifier: "Purchase number"
+      stock_output:
+        identifier: "File number"
+      tool:
+        name: "Designation"
+        service: "Appointed service"
+        employee: "Appointed employee"
+        job: "Appointed job"
+      vehicle:
+        serial_number: "Registration number"
+      tool_event:
+        name: "Designation"
+        event_type: "Type"
+        status: "Tool status"
+        provider_actor: "Provider representative"
+  integrated_search:
+    page_names:      
+      commodity:
+        commodity_index: "Commodities"
+      consumable:
+        consumable_index: "Consumables"

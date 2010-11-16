@@ -1,5 +1,5 @@
-en:     
+en:
   activerecord:
-    attributes: 
+    attributes:
       document:
         tag_list: "Tags"

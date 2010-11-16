@@ -6,6 +6,6 @@ class SuppliesManagerController < ApplicationController
   # GET /commodities_manager
   # GET /consumables_manager
   def index
-    @supply_categories = (params[:inactives] ? @supply_category_type.all : @supply_category_type.enabled)
+    build_query_for("#{@supply_type.name.underscore}_index")
   end
 end

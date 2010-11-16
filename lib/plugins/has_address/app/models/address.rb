@@ -9,7 +9,8 @@ class Address < ActiveRecord::Base
   journalize :attributes        => [ :street_name, :city_name, :country_name, :zip_code ],
              :identifier_method => :formatted
   
-  has_search_index :only_attributes => [ :street_name, :city_name, :country_name, :zip_code ]
+  has_search_index :only_attributes       => [ :street_name, :city_name, :country_name, :zip_code ],
+                   :additional_attributes => { :formatted => :string }
   
   def formatted
     @formatted ||= [street_name, zip_code, city_name, country_name].join(" ")

@@ -25,7 +25,7 @@ class JobContract < ActiveRecord::Base
   after_update :save_salary 
 
   # Search Plugin
-  has_search_index  :only_attributes    => [:start_date],
+  has_search_index  :only_attributes    => [:start_date, :departure],
                     :only_relationships => [:job_contract_type]
   
   #return the actual salary

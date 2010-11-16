@@ -6,12 +6,9 @@ class User < ActiveRecord::Base
   # Requires
   require "digest/sha1"
   
-  # for pagination : number of instances by index page
-  USERS_PER_PAGE = 15
-
   # Relationships
   has_and_belongs_to_many :roles
-  
+
   # Validates
   validates_each :password do |record, attr, value|
     unless record.id.nil?
@@ -45,9 +42,7 @@ class User < ActiveRecord::Base
   
   # Search Plugin
   has_search_index  :additional_attributes => { :expired? => :boolean },
-                    :only_attributes       => [ :username, :enabled, :last_connection, :last_activity ],
-                    :displayed_attributes  => [ :id, :username, :enabled, :expired?, :last_activity ],
-                    :main_model            => true
+                    :only_attributes       => [ :username, :enabled, :last_connection, :last_activity ]
   
   # Method to verify if the password pass by argument is the same as the password in the database
   def compare_password(password)

@@ -24,7 +24,7 @@
           <tr>
             <td><%=h salary.gross_amount%> &euro;</td>
             <td><%=h net(salary.net_amount)%> &euro;</td>
-            <td><%=h l(salary.created_at.to_date)%></td>
+            <td><%=h l(salary.created_at.to_date, :format => :long)%></td>
           </tr> 
         <% end %>
       </tbody>

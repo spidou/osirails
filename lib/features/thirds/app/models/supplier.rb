@@ -22,9 +22,8 @@ class Supplier < Third
   
   after_save :save_iban
   
-  has_search_index :only_attributes    => [:name, :siret_number],
-                   :only_relationships => [:legal_form, :iban, :contacts, :activity_sector_reference],
-                   :main_model         => true
+  has_search_index :only_attributes    => [ :name, :siret_number, :website ],
+                   :only_relationships => [ :legal_form, :iban, :contacts, :activity_sector_reference, :address, :phone, :fax ]
   
   def iban_attributes=(iban_attributes)
     if iban_attributes[:id].blank?

@@ -1,12 +1,10 @@
-<% require_locals supply_categories %>
-
 <% content_for :header do %>
   <%= javascript_include_tag 'logistics/supplies' %>
   <%= stylesheet_link_tag_with_theme_support 'logistics/supply' %>
 <% end %>
 
 <% add_contextual_menu_item :commodities_stats do %>
-  <span>Valeur estimative du stock actuel&nbsp;: <%= number_with_precision(@supply_type.stock_value,2) %>&nbsp;&euro;</span>
+  <span>Valeur estimative du stock actuel&nbsp;: <%= number_with_precision(@supply_type.stock_value, :precision => 2) %>&nbsp;&euro;</span>
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>
@@ -18,32 +16,8 @@
   <%= params[:inactives] ? display_supply_list_button(@supply_type) : display_supply_list_all_button(@supply_type) %>
 <% end %>
 
+<h1><%= title_for_search %></h1>
+
 <div>
-  <% unless supply_categories.empty? %>
-    <div class="autoscroll">
-      <table id="supplies" class="<%= @supply_type.name.tableize %>">
-        <thead>
-          <tr>
-            <th rowspan="2">Réf.</th>
-            <th colspan="4">Désignation</th>
-            <th rowspan="2">Grandeur/U</th>
-            <th rowspan="2">Masse/U</th>
-            <th rowspan="2">PU&#160;TTC moyen</th>
-            <th rowspan="2">PG&#160;TTC moyen</th>
-            <th rowspan="2">Actions</th>
-          </tr>
-          <tr>
-            <th>Famille</th>
-            <th>Sous-famille</th>
-            <th>Type</th>
-            <th>Spécificités&#160;et&#160;conditionnement</th>
-          </tr>
-        </thead>
-        
-        <%= render :partial => "supplies_manager/supply_category_in_one_line", :collection => supply_categories %>
-      </table>
-    </div>
-  <% else %>
-    <p>Aucun élément n'a été trouvé.</p>
-  <% end %>
+  <%= table_for_search %>
 </div>

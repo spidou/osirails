@@ -27,26 +27,28 @@
     <p>Aucun pointage pour cette p&eacute;riode et pour <%= @employee.fullname %></p>
   <% else %>
     <table>
-      <tr>
-        <th>Date</th>
-        <th>Absence</th>
-        <th>Heures suppl&eacute;mentaires</th>
-        <th>Actions</th>
-      </tr>
-      <% for checking in @checkings %>
-         
-        <%="<tr #{"class='disabled'" if checking.cancelled} >" %>
-          <td><%= l(checking.date, :format => :long_ordinal) %></td>
-          <%= generate_absence_and_overtime_td(checking) %>
-          <td>
-            <%= edit_checking_link(checking, :link_text => "") if checking.can_be_edited? %>
-            <%= override_checking_link(checking) %>
-            <%= cancel_checking_link(checking) %>
-            <%= delete_checking_link(checking, :link_text => "") %>
-          </td>        
-        </tr>  
-             
-      <% end %>     
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Absence</th>
+          <th>Heures suppl&eacute;mentaires</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for checking in @checkings %>
+          <%="<tr #{"class='disabled'" if checking.cancelled} >" %>
+            <td><%= l(checking.date, :format => :long_ordinal) %></td>
+            <%= generate_absence_and_overtime_td(checking) %>
+            <td>
+              <%= edit_checking_link(checking, :link_text => "") if checking.can_be_edited? %>
+              <%= override_checking_link(checking) %>
+              <%= cancel_checking_link(checking) %>
+              <%= delete_checking_link(checking, :link_text => "") %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
     </table>  
   <% end %>
   

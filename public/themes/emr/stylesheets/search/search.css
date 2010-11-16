@@ -1,3 +1,4 @@
+/*<!-- # TODO remove that file -->*/
 #criteria_div {
   padding-left: 10px;
 }
@@ -20,13 +21,13 @@
   color: #E0E0E0;
 }
 
-.attr_chooser a.selected{
-  background: #4773C9 ;
-}
+/*.attr_chooser a.selected{*/
+/*  background: #4773C9 ;*/
+/*}*/
 
-.attr_chooser a:hover{
-  color: #303030;
-}
+/*.attr_chooser a:hover{*/
+/*  color: #303030;*/
+/*}*/
 
 .attr_chooser ul {
   list-style: none;
@@ -35,16 +36,29 @@
 	background-color: #7e98cb;
 	-moz-border-radius:0px 7px 0px 7px;
 	-moz-box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
+	z-index: 10;
+	border: solid 0.5px gray;
 }
 
 /* the attribute */
 .attr_chooser li {
 	float: left;
+/*  position: absolute;*/
 	width: auto;
 }
 
+.attr_chooser li ul li.selected {
+  background-color: #4773C9;
+}
+
+/*.attr_chooser li ul li.selected:hover{*/
+/*  background-color: #4773C9;*/
+/*  color: #303030;*/
+/*}*/
+
 .attr_chooser li ul li:hover {
   background-color: orange;
+  color: #303030;
 }
 
 /* the menu start hidden */
@@ -54,23 +68,38 @@
 	left: -999em;
 }
 
-/* show or hide the attribute */
-.attr_chooser li ul li.sub_menu ul.visible_menu{
-  position: absolute;
-  left: 15em;
-  background: #7e98cb;
+.attribute_part {
+  -moz-border-radius:7px 7px 7px 7px;
+	-moz-box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+	background-color: #7e98cb;
+	margin-right:10px ;
+	padding:5px;
+	display: inline;
 }
 
-.attr_chooser li ul li.sub_menu ul.hidden_menu{
+/* show or hide the attribute */
+.attr_chooser ul li.sub_menu ul.visible_menu{
+  position: absolute;
+  left: 15em;
+/*  background: #7e98cb;*/
+}
+
+.attr_chooser ul.visible_menu{
+  position: absolute;
+  left:auto;
+/*  background: #7e98cb;*/
+}
+
+.attr_chooser ul.hidden_menu{
   position: absolute;
   left: -999em;
 }
 /*---------------------------------------------------*/
 .attr_chooser li.sub_menu{
-  background: url('/themes/emr/images/search/arrow.png') no-repeat 95%;  
+  background: url('/themes/emr/images/search/arrow.png') no-repeat 95% #7e98cb;  
 }
 
-/* show the drop down menu when the attribute name his pointed by the mouse*/
-.attr_chooser li.clicked:hover ul{
-	left: auto;
-}
+/*/* show the drop down menu when the attribute name his pointed by the mouse*/*/
+/*.attr_chooser li.clicked:hover ul{*/
+/*	left: auto;*/
+/*}*/
