@@ -31,3 +31,10 @@ first_subcontractor:
   activity_sector_reference: ref1
   legal_form: llc
   activated: true
+second_subcontractor: # used by survey_step_test.rb
+  type: Subcontractor
+  name: Second Subcontractor
+  siret_number: 23456789123456
+  activity_sector_reference: ref1
+  legal_form: llc
+  activated: true

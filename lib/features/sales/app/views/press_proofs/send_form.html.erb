@@ -17,8 +17,7 @@
       <%= form.label :document_sending_method_id %>
       <%= form.collection_select :document_sending_method_id, DocumentSendingMethod.all, :id, :name, :include_blank => true %>
     </p>
-    <p>
-      <%= form.submit "Valider" %>
-    </p>
+    
+    <%= form.form_buttons %>
   <% end %>
 </div>

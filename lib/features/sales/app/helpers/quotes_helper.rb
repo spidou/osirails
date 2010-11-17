@@ -143,4 +143,15 @@ module QuotesHelper
     end
   end
   
+  def display_remaining_days_for(quote)
+    delay = Date.today - quote.validity_date.to_date
+    if delay < 0
+      return "<br/>(J#{delay})"   # J-10
+    elsif delay > 0
+      return "<br/>(J+#{delay})"  # J+10
+    elsif delay == 0
+      return "<br/>(Jour J)"
+    end  
+  end
+  
 end

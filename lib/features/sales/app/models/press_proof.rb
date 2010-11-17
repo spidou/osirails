@@ -99,8 +99,8 @@ class PressProof < ActiveRecord::Base
   end
   
    # OPTIMIZE this is a copy of an already existant method in quote.rb 
-  def associated_quote
-    order ? order.signed_quote : nil
+  def signed_quote
+    order and order.signed_quote
   end
   
   def can_be_downloaded? # with PDF generator

@@ -59,7 +59,7 @@ class SurveyStep < ActiveRecord::Base
       if attributes[:id].blank?
         subcontractor_requests.build(attributes)
       else
-        subcontractor_request = subcontractor_requests.detect { |t| t.id == attributes[:id].to_i }
+        subcontractor_request = subcontractor_requests.detect{ |t| t.id == attributes[:id].to_i }
         subcontractor_request.attributes = attributes
       end
     end

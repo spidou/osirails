@@ -1,0 +1,58 @@
+<% require_locals manufacturing_step %>
+
+<% fields_for "manufacturing_step[manufacturing_progresses_attributes][]", manufacturing_progress , :index => nil do |f| %>
+  <tr class="progression">
+    <td style="display:none;">
+      <%= f.hidden_field :end_product_id %>
+      <%= f.hidden_field :id %>
+    </td>
+    <td class="end_product_reference text">
+      <%= manufacturing_progress.end_product.reference %>
+    </td>
+    <td class="end_product_designation text">
+      <%= manufacturing_progress.end_product.designation %>
+    </td>
+    <td class="end_product_quantity">
+      <%= manufacturing_progress.end_product.quantity %>
+    </td>
+    <td class="building_quantity">
+      <% if f.form_view? %>
+        <%= f.select(:building_quantity, manufacturing_progress.range_for_building_quantity,
+                                         { :selected => manufacturing_progress.building_quantity.to_i },
+                                         { :index => nil, :class => :building_quantity, :onchange => "update_built_quantity_select(this)" }) %>
+      <% else %>
+        <%= strong manufacturing_progress.building_quantity %>
+      <% end %>
+    </td>
+    <td class="built_quantity">
+      <% if f.form_view? %>
+        <%= f.select(:built_quantity, manufacturing_progress.range_for_built_quantity,
+                                      { :selected => manufacturing_progress.built_quantity.to_i },
+                                      { :index => nil, :class => :built_quantity, :onchange => "update_building_quantity_select(this)" }) %>
+      <% else %>
+        <%= strong manufacturing_progress.built_quantity %>
+      <% end %>
+    </td>
+    <td class="progression">
+      <% if f.form_view? %>
+        <%= f.select(:progression, (0..100).to_a.select{ |n| n % 5 == 0 },
+                                   {}, { :index => nil, :class => :progression, :onchange => "update_built_quantity(this)" }) %>
+      <% else %>
+        <%= strong manufacturing_progress.progression %>
+      <% end %>
+    </td>
+    <td class="available_to_deliver_quantity">
+      <% if f.form_view? %>
+        <%= f.select(:available_to_deliver_quantity, manufacturing_progress.range_for_available_to_deliver_quantity,
+                                                     { :selected => manufacturing_progress.available_to_deliver_quantity.to_i },
+                                                     { :index => nil, :class => :available_to_deliver_quantity }) %>
+      <% else %>
+        <%= strong manufacturing_progress.available_to_deliver_quantity %>
+      <% end %>
+    </td>
+    
+    <% if manufacturing_step.errors.on(:manufacturing_progresses) %>
+      <td class="errors"><%= manufacturing_progress.errors.full_messages.join("<br/>") %></td>
+    <% end %>
+  </tr>
+<% end %>

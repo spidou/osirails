@@ -5,9 +5,9 @@
 <% if Order.can_list?(current_user) %>
   <% add_contextual_menu_item :useful_links do %>
     <%= link_to("Voir les dossiers en cours", in_progress_orders_path, 'data-icon' => :index) %>
-    <%= link_to("Voir les dossiers en étude commerciale", commercial_orders_path, 'data-icon' => :index) %>
-    <%= link_to("Voir les dossiers en SAS de facturation", pre_invoicing_orders_path, 'data-icon' => :index) %>
-    <%= link_to("Voir les dossiers en facturation", invoicing_orders_path, 'data-icon' => :index) %>
+    <%= link_to("Voir les dossiers en Étude Commerciale", commercial_orders_path, 'data-icon' => :index) %>
+    <%= link_to("Voir les dossiers en Production", production_orders_path, 'data-icon' => :index) %>
+    <%= link_to("Voir les dossiers en Facturation", invoicing_orders_path, 'data-icon' => :index) %>
     <%= link_to("Voir les dossiers clôturés", closed_orders_path, 'data-icon' => :index) %>
     <%= link_to("Voir les dossiers archivés", archived_orders_path, 'data-icon' => :index) %>
   <% end %>

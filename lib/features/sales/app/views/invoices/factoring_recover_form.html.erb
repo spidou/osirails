@@ -14,8 +14,6 @@
       <%= render :partial => 'factoring_recover', :collection => @invoice.due_dates %>
     </div>
     
-    <p>
-      <%= form.submit "Valider" %>
-    </p>
+    <%= form.form_buttons %>
   <% end %>
 </div>

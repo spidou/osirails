@@ -260,7 +260,7 @@ class InvoiceTest < ActiveSupport::TestCase
         end
         
         should "be invalid because of missing signed_quote" do
-          assert @invoice.errors.invalid?(:associated_quote)
+          assert @invoice.errors.invalid?(:signed_quote)
         end
       end
     end
@@ -849,8 +849,8 @@ class InvoiceTest < ActiveSupport::TestCase
       
       should_validate_presence_of :invoice_contact, :with_foreign_key => :default
       
-      should "have an associated_quote" do
-        assert_equal @signed_quote, @invoice.associated_quote
+      should "have an signed_quote" do
+        assert_equal @signed_quote, @invoice.signed_quote
       end
       
       should "require at least 1 due_date" do
@@ -1259,7 +1259,7 @@ class InvoiceTest < ActiveSupport::TestCase
       should_allow_values_for :status, nil
       should_not_allow_values_for :status, 1, "string", Invoice::STATUS_CONFIRMED, Invoice::STATUS_CANCELLED, Invoice::STATUS_SENDED, Invoice::STATUS_ABANDONED, Invoice::STATUS_FACTORING_PAID, Invoice::STATUS_FACTORING_RECOVERED, Invoice::STATUS_FACTORING_BALANCE_PAID, Invoice::STATUS_DUE_DATE_PAID, Invoice::STATUS_TOTALLY_PAID
       
-      should_validate_presence_of :bill_to_address, :published_on
+      should_validate_presence_of :bill_to_address
       should_validate_presence_of :invoice_type, :creator, :invoice_contact, :with_foreign_key => :default
       
       should "save invoice_items after saving itself" do
@@ -1302,7 +1302,7 @@ class InvoiceTest < ActiveSupport::TestCase
       should_allow_values_for     :status, nil, Invoice::STATUS_CONFIRMED
       should_not_allow_values_for :status, 1, "string", Invoice::STATUS_CANCELLED, Invoice::STATUS_SENDED, Invoice::STATUS_ABANDONED, Invoice::STATUS_FACTORING_PAID, Invoice::STATUS_FACTORING_RECOVERED, Invoice::STATUS_DUE_DATE_PAID, Invoice::STATUS_TOTALLY_PAID
       
-      should_validate_presence_of :bill_to_address, :published_on
+      should_validate_presence_of :bill_to_address
       should_validate_presence_of :invoice_type, :creator, :with_foreign_key => :default
       
       #TODO test validates_persistence_of :order_id, :invoice_type_id
@@ -1465,7 +1465,36 @@ class InvoiceTest < ActiveSupport::TestCase
         
         should_validate_presence_of :confirmed_at, :published_on, :reference
         #TODO test validates_date :confirmed_at, :on_or_after => :created_at, :on_or_after_message => "ne doit pas être AVANT la date de création de la facture&#160;(%s)"
-        #TODO test validates_date :published_at, :on_or_after => Proc.new{ |i| i.associated_quote.signed_on }, :on_or_after_message => "ne doit pas être AVANT la date de signature du devis&#160;(%s)"
+        #TODO test validates_date :published_at, :on_or_after => Proc.new{ |i| i.signed_quote.signed_on }, :on_or_after_message => "ne doit pas être AVANT la date de signature du devis&#160;(%s)"
+      end
+      
+      context "which is CONFIRMED without published_on" do
+        setup do
+          @invoice.published_on = nil
+          flunk "@invoice.pulished_on should be nil" if @invoice.published_on
+          
+          @invoice.confirm
+          flunk "@invoice should be confirmed" unless @invoice.confirmed_at_was
+        end
+        
+        should "have a published_on automatically set at today" do
+          assert_equal Date.today, @invoice.published_on_was
+        end
+      end
+      
+      context "which is CONFIRMED with published_on" do
+        setup do
+          @invoice.published_on = Date.tomorrow
+          flunk "@invoice.pulished_on should be at tomorrow" unless @invoice.published_on == Date.tomorrow
+          
+          @invoice.due_dates.each{ |dd| dd.date = Date.tomorrow } # because due dates cannot be before the invoice's published date
+          
+          flunk "@invoice should be confirmed" unless @invoice.confirm
+        end
+        
+        should "have a published_on set at the given date" do
+          assert_equal Date.tomorrow, @invoice.published_on_was
+        end
       end
     end
     
@@ -2792,7 +2821,7 @@ class InvoiceTest < ActiveSupport::TestCase
     
     def add_default_deposit_attributes_on(invoice)
       invoice.deposit         = 40
-      invoice.deposit_amount  = invoice.associated_quote.net_to_paid * 0.4
+      invoice.deposit_amount  = invoice.signed_quote.net_to_paid * 0.4
       invoice.deposit_vat     = 19.6
       invoice.deposit_comment = "This is a deposit invoice."
     end

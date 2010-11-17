@@ -4,7 +4,7 @@ class OrderTest < ActiveSupport::TestCase
   should_belong_to :society_activity_sector, :order_type, :customer, :commercial, :creator, :approaching
   
   # steps
-  should_have_one :commercial_step, :pre_invoicing_step, :invoicing_step, :dependent => :nullify
+  should_have_one :commercial_step, :production_step, :invoicing_step, :dependent => :nullify
   
   # quotes
   should_have_many :quotes
@@ -17,7 +17,7 @@ class OrderTest < ActiveSupport::TestCase
   should_have_many :delivery_notes, :uncomplete_delivery_notes, :signed_delivery_notes
   
   # invoices
-  should_have_many :invoices, :uncomplete_invoices
+  should_have_many :invoices
   
   should_have_many :ship_to_addresses, :end_products, :order_logs, :mockups, :graphic_documents
   

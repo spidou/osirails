@@ -99,7 +99,7 @@
     <TotalDutyFreeNetPrice><%= @invoice.total.to_f.round_to(2).to_s(2) %></TotalDutyFreeNetPrice>
     <TotalTaxes><%= @invoice.summon_of_taxes.to_f.round_to(2).to_s(2) %></TotalTaxes> 
     <TotalInclusiveOfTaxNetPrice><%= @invoice.net_to_paid.to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxNetPrice>
-    <SalesTerms><%= @invoice.associated_quote.sales_terms %></SalesTerms>
+    <SalesTerms><%= @invoice.signed_quote.sales_terms %></SalesTerms>
     <InvoicingState>
       <QuoteTotal><%= @invoice.net_to_paid.to_f.round_to(2).to_s(2) %></QuoteTotal>
       <InvoicedTotal></InvoicedTotal>

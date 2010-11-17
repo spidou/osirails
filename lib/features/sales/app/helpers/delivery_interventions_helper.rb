@@ -28,7 +28,7 @@ module DeliveryInterventionsHelper
     options = { :link_text => default_text,
                 :image_tag => image_tag("view_16x16.png", :alt => default_text, :title => default_text)
               }.merge(options)
-    link_to options[:image_tag] + options[:link_text], order_pre_invoicing_step_delivery_step_delivery_note_delivery_intervention_path(order, delivery_note, delivery_intervention, options[:options] || {})
+    link_to options[:image_tag] + options[:link_text], order_production_step_delivery_step_delivery_note_delivery_intervention_path(order, delivery_note, delivery_intervention, options[:options] || {})
   end
   
   def display_delivery_intervention_download_report_button(delivery_intervention, options = {})
@@ -41,7 +41,7 @@ module DeliveryInterventionsHelper
     options = { :link_text => default_text,
                 :image_tag => image_tag("mime_type_extensions/pdf_16x16.png", :alt => default_text, :title => default_text)
               }.merge(options)
-    link_to options[:image_tag] + options[:link_text], order_pre_invoicing_step_delivery_step_delivery_note_delivery_intervention_report_path(order, delivery_note, delivery_intervention, options[:options] || {})
+    link_to options[:image_tag] + options[:link_text], order_production_step_delivery_step_delivery_note_delivery_intervention_report_path(order, delivery_note, delivery_intervention, options[:options] || {})
   end
   
 end

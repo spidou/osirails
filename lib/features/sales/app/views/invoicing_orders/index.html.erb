@@ -1,4 +1,54 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+<% end %>
+
 <%= generate_shared_contextual_menu_partial %>
 
 <h1>Les dossiers en Facturation</h1>
-<%= render :partial => 'orders/index' %>
+
+<div>
+  <% if @orders.empty? %>
+    <p>Aucun dossier actuellement en Facturation</p>
+  <% else %>
+    <div class="autoscroll">
+      <table class="order_list" id="orders">
+        <thead>
+          <tr>
+            <th>N° Dossier</th>
+            <th>Type dossier</th>
+            <th>Date de cr&eacute;ation</th>
+            <th>Commercial</th>
+            <th>Nom projet</th>
+            <th>Client</th>
+            <th>R&eacute;f&eacute;rence devis</th>
+            <th>Montant TTC</th>
+            <th>Montant factur&eacute; TTC</th>
+            <th>Montant restant &agrave; facturer TTC</th>
+            <th>Montant r&eacute;gl&eacute; TTC</th>
+            <th>Montant restant &agrave; r&eacute;gler TTC</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for order in @orders %>
+            <tr class="<%= order.critical_status %>">
+              <td><%= link_to(order.reference, order, :title => "Voir ce dossier") %></td>
+              <td><%= order.order_type.title %></td>
+              <td><%= l(order.created_at.to_date, :format => :short) %></td>
+              <td><%= link_to(order.commercial.fullname, order.commercial, :title => "Voir fiche employé") %></td>
+              <td><%= link_to(order.title, order, :title => "Voir ce dossier") %></td>
+              <td><%= link_to("#{order.customer.name}", order.customer, :title => "Voir fiche client") %></td>
+              <td><%= link_to(order.signed_quote.reference, order_commercial_step_quote_step_quote_path(order, order.signed_quote), :title => "Voir ce devis") %></td>
+              <td><%= order.signed_quote.total_with_taxes.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
+              <td><%= order.billed_amount.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
+              <td><%= order.unbilled_amount.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
+              <td><%= order.paid_amount.to_f.round(2).to_s %>&nbsp;&euro;</td>
+              <td><%= order.unpaid_amount.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
+              <td><%= order_link(order, :link_text => "") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

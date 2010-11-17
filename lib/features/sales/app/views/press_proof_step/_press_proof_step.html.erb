@@ -15,7 +15,7 @@
     Vous avez la possibilité de créer autant de BAT que vous souhaitez, mais seul UN BAT par produit présent dans le dossier peut être signé à la fois.
   </p>
   <p>
-    L'étape "BAT" est automatiquement clôturée lorsque tous les produits possèdent un BAT signé. Vous pouvez clôturer l'étape manuellement si certains produits ne nécessitent pas un BAT et que tous les BAT sont signés.
+    L'étape "BAT" est automatiquement clôturée lorsque tous les produits possèdent un BAT signé. Vous pouvez clôturer l'étape manuellement si certains produits ne nécessitent pas de BAT.
   </p>
   
   <div class="presentation_in_columns" id="quotes_list_more_infos" style="display:none">
@@ -40,4 +40,14 @@
   <%= display_press_proofs(@order) %>
   
   <%= content_tag(:p, display_press_proof_add_button(@order)) if is_form_view? %>
+  
+  <% form_for(press_proof_step, :url => { :controller => "press_proof_step", :action => :update }) do |form| %>
+    <%= form.error_messages %>
+    
+    <% if is_form_view? %>
+      <p class="form_buttons">
+        <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
+      </p>
+    <% end %>
+  <% end %>
 </div>

@@ -1,6 +1,6 @@
-class CreatePreInvoicingSteps < ActiveRecord::Migration
+class CreateProductionSteps < ActiveRecord::Migration
   def self.up
-    create_table :pre_invoicing_steps do |t|
+    create_table :production_steps do |t|
       t.references :order
       t.string    :status
       t.datetime  :started_at
@@ -11,6 +11,6 @@ class CreatePreInvoicingSteps < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :pre_invoicing_steps
+    drop_table :production_steps
   end
 end

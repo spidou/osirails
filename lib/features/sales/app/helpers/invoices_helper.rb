@@ -174,4 +174,30 @@ module InvoicesHelper
     end
   end
   
+  def display_delay_of_paiment_for(invoice)
+    delay = invoice.due_dates.last.date - invoice.sended_on if invoice.sended_on
+    "#{delay} jour(s)"
+  end
+  
+  def display_delay_of_upcoming_due_date_paiment_for(invoice)
+    return "" unless invoice.upcoming_due_date
+    
+    delay = Date.today - invoice.upcoming_due_date.date
+    if delay < 0
+      return " (J#{delay})"   # J-10
+    elsif delay > 0
+      return " (J+#{delay})"  # J+10
+    elsif delay == 0
+      return " (Jour J)"
+    end
+  end
+  
+  def display_delivery_notes_references_for(invoice)
+    invoice.delivery_notes.collect(&:reference).join("<br/>")
+  end
+  
+  def display_state_of_delivery_notes_references_for(invoice)
+    invoice.delivery_notes.collect{ |n| n.signed? ? "Oui" : "Non" }.join("<br/>")
+  end
+  
 end

@@ -4,9 +4,6 @@ class QuoteItem < ActiveRecord::Base
   belongs_to :quote
   belongs_to :end_product
   
-  has_many :delivery_note_items, :dependent => :nullify
-  has_many :delivery_notes,      :through   => :delivery_note_items
-  
   journalize :identifier_method => :name, :attributes => [:name, :description, :end_product_id, :dimensions, :quantity, :unit_price, :vat, :prizegiving]
   
   validates_presence_of :name
@@ -63,19 +60,6 @@ class QuoteItem < ActiveRecord::Base
   
   def save_end_product
     end_product.save(false) unless free_item?
-  end
-  
-  def already_delivered_or_scheduled_quantity
-    return 0 if self.new_record? or delivery_note_items.empty?
-    #OPTIMIZE how can I replace that find method by a call to the named_scope ':actives' in delivery_note.rb (conditions are the same)
-    delivery_note_items.find( :all,
-                              :include    => :delivery_note,
-                              :conditions => [ "delivery_notes.status IS NULL or delivery_notes.status != ?", DeliveryNote::STATUS_CANCELLED ]
-                             ).collect(&:really_delivered_quantity).sum
-  end
-  
-  def remaining_quantity_to_deliver
-    ( quantity || 0 ) - already_delivered_or_scheduled_quantity
   end
   
   # destroy associated end_product unless quote is already destroyed (to avoid to destroy all end_products when we destroying a quote)
