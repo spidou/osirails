@@ -1,7 +1,7 @@
 class ManufacturingStepController < ApplicationController
-  acts_as_step_controller
+  helper :manufacturing_steps, :delivery_notes
   
-  helper :manufacturing_steps
+  acts_as_step_controller
   
   before_filter :find_manufacturing_step
   

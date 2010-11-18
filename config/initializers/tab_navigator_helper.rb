@@ -117,15 +117,15 @@ module ActionView
         javascript_options = @template.send(:options_for_javascript, options[:javascript_options]) if options[:javascript_options]
         
         yield self
-        @template.concat(@template.javascript_tag("var #{@name} = new TabNavigator('#{@name}', #{javascript_options})"), block.binding)
+        @template.concat(@template.javascript_tag("var #{@name} = new TabNavigator('#{@name}', #{javascript_options})"))
       end
       
       def nav_buttons(&block)
         raise ArgumentError, "Missing block" unless block_given?
         
-        @template.concat("<ul id=\"#{name}\" class=\"tab_nav\"", block.binding)
+        @template.concat("<ul id=\"#{name}\" class=\"tab_nav\"")
         yield self
-        @template.concat('</ul>', block.binding)
+        @template.concat('</ul>')
       end
       
       def tab(tab_name, title, *args)
@@ -177,9 +177,9 @@ module ActionView
         options[:class] = "content_nav #{options[:class]}"
         options[:class] << " selected" if tab_name == @selected_tab
         
-        @template.concat("<div tab=\"#{tab_name}\" rel=\"#{@name}\" class=\"#{options[:class]}\">", block.binding)
+        @template.concat("<div tab=\"#{tab_name}\" rel=\"#{@name}\" class=\"#{options[:class]}\">")
         yield self
-        @template.concat('</div>', block.binding)
+        @template.concat('</div>')
       end
       
     end

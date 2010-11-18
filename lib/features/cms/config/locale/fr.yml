@@ -7,3 +7,7 @@ fr:
       content:
         title: "Titre"
         description: "Description"
+
+  view:
+    contextual_menu_sections:
+      content_history: "Historique des modifications"

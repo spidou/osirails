@@ -13,9 +13,9 @@ module ActionView
         raise ArgumentError, "Missing block" unless block_given?
         
         @template = template
-        @template.concat("<ul>", block.binding)
+        @template.concat("<ul>")
         yield self
-        @template.concat('</ul>', block.binding)
+        @template.concat('</ul>')
       end
       
       def title(content)
@@ -36,7 +36,7 @@ module ActionView
         content << "</ul>"
         
         if content != "<ul></ul>"
-          @template.concat( @template.content_tag(:li, title + content, :class => :folder), block.binding )
+          @template.concat( @template.content_tag(:li, title + content, :class => :folder) )
         end
       end
     end
@@ -122,12 +122,12 @@ module ActionView
       html << javascript_tag("new ContextMenu('#{context_menu_path(:authenticity_token => form_authenticity_token)}', '#{selectable_item_html_class}')")
       html << hidden_field_tag("#{klass.name.underscore}_single_selection_template", options[:single_selection_template]) if options[:single_selection_template]
       html << hidden_field_tag("#{klass.name.underscore}_multiple_selection_template", options[:multiple_selection_template]) if options[:multiple_selection_template]
-      
       # end OPTIMIZE
       
       html << check_box_tag("#{object.class.name.underscore}_ids[]", object.id, false,
                             { :id => nil,
                               :class => options[:allow_multiple_selection] ? nil : 'context-menu-single-selection',
+                              'data-context-menu' => 1,
                               :style => options[:display_checkbox] ? nil : "display:none" })
       html
     end

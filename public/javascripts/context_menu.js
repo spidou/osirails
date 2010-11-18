@@ -213,7 +213,7 @@ ContextMenu.prototype = {
   },
   
   getAllSelectedCheckboxes: function(){
-    return this.getFormAncestorItem().descendants().findAll(function(n) { return n.tagName == 'INPUT' && n.type == 'checkbox' && n.checked == true });
+    return this.getFormAncestorItem().descendants().findAll(function(n) { return n.tagName == 'INPUT' && n.type == 'checkbox' && n.checked == true && n.getAttribute('data-context-menu') == '1' });
   },
   
   getAssociatedCheckbox: function(object) {

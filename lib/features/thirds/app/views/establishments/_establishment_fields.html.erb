@@ -15,7 +15,7 @@
     <%= form.form_or_view(form.text_field(:siret_number, :index => nil, :maxlength => 14), :siret_number) %>
   </p>
   
-  <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => { :address_owner => establishment } %>
+  <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => { :address_owner => establishment, :force_show_view => form.force_show_view } %>
 </div>
 
 <div>
@@ -34,7 +34,7 @@
   <%= render :partial => "numbers/number_lite", :object => phone, :locals => { :number_owner => establishment, :form => form, :one_or_many => :many } %>
   <%= render :partial => "numbers/number_lite", :object => fax, :locals => { :number_owner => establishment, :form => form, :one_or_many => :many} %>
   
-  <% if is_form_view? %>
+  <% if form.form_view? %>
   <p>
     <%= form.label :logo %>
     <%= form.file_field :logo , :index => nil%>
@@ -42,7 +42,7 @@
   <% end %>
 </div>
 
-<% if  establishment.logo_file_name %>
+<% if establishment.logo_file_name %>
   <div id="thirds_logo_container">
     <%= image_tag establishment.logo.url, :title => "Logo", :alt => "Logo" %>
   </div>

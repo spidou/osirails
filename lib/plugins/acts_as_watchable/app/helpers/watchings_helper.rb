@@ -11,34 +11,32 @@ module WatchingsHelper
     options
   end
   
-  def watching_edit_link(watchable, return_uri)
-    return unless watchable.already_watched_by?(current_user) && !watchable.new_record?
-    text = "Modifier les paramètres d'observation sur cet objet"
-    message ||= " #{text}"
-    link_to_remote( image_tag( "star_16x16.png",
-                    :alt => text,
-                    :title => text ),
-            :url      => edit_watching_path(watchable.find_watching_with(current_user.id), :return_uri => return_uri),
-            :update   => "content_popup_box", :method => 'get',
-            :complete => "display_popup_box();" )
-  end
-  
   def watching_new_link(watchable, return_uri)
     return unless watchable.not_watched_by?(current_user) && !watchable.new_record?
-    text = "Surveiller cette objet"
-    message ||= " #{text}"
-    link_to_remote( image_tag( "disabled_star_16x16.png", :alt => text, :title => text ),
-                    :url      => new_watching_path(:watchable_type => watchable.class.name, :watchable_id => watchable.id, :return_uri => return_uri),
-                    :update   => "content_popup_box", :method => 'get',
-                    :complete => "display_popup_box();" )
+    link_to_remote("Surveiller",
+                   { :url       => new_watching_path(:watchable_type => watchable.class.name, :watchable_id => watchable.id, :return_uri => return_uri),
+                     :update    => "content_popup_box",
+                     :method    => 'get',
+                     :complete  => "display_popup_box();" },
+                   { 'data-icon' => :unwatching })
+  end
+  
+  def watching_edit_link(watchable, return_uri)
+    return unless watchable.already_watched_by?(current_user) && !watchable.new_record?
+    link_to_remote("Surveiller",
+                   { :url       => edit_watching_path(watchable.find_watching_with(current_user.id), :return_uri => return_uri),
+                     :update    => "content_popup_box",
+                     :method    => 'get',
+                     :complete  => "display_popup_box();" },
+                   { 'data-icon' => :watching })
   end
   
   def watching_link(watchable)
     watching_edit_link(watchable, url_for(:only_path => true)) || watching_new_link(watchable, url_for(:only_path => true))
   end
   
-  def watching_button(watchable)
-    html = []
+  def refreshed_watching_link(watchable)
+    html = ""
     html << "<span id='watching_#{watchable.class.name.underscore}_#{watchable.id}'>"
     html << watching_link(watchable)
     html << "</span>"

@@ -157,7 +157,7 @@ module IntegratedSearchHelper
   end
   
   def page_default_name
-    I18n.t("integrated_search.page_names.#{ @query.subject_model.downcase }.#{ @page_name }", :default => @page_name)
+    I18n.t("integrated_search.page_names.#{ @query.subject_model.underscore }.#{ @page_name }", :default => @page_name)
   end
   
   def title_for_search
@@ -190,7 +190,7 @@ module IntegratedSearchHelper
   #
   def generate_table(query, page)
     @helper_end_with_page_name = "_in_#{ query.page_name }"
-    @helper_end_with_model = "_in_#{ query.subject_model.downcase }"
+    @helper_end_with_model = "_in_#{ query.subject_model.underscore }"
     header  = generate_table_header(query)
     records = records_with_or_without_paginate(query, page)
     body    = generate_table_body(records, query.columns, query.group)
@@ -239,7 +239,14 @@ module IntegratedSearchHelper
   #
   def generate_grouped_table_rows(records, columns, group_list)
     grouped_records(records, group_list).map do |group|
-      group_row = query_group_tr(group.first, columns)
+      group_by = group.first
+      #TODO find a way to point out the object of the group. Eg: 'admin' => { :attribute => 'role.name', :object => #<Role:0xb497494c> }
+      group_by = group_by.map do |x|
+        { :value      => x,
+          :attribute  => @query.group.at(group_by.index(x)) }
+      end
+      
+      group_row = query_group_tr(group_by, columns)
       rows      = group.last.map{ |record| generate_table_row(record, columns) }.join
       query_tbody("#{ group_row }#{ rows }")
     end
@@ -676,8 +683,12 @@ module IntegratedSearchHelper
     
     def query_group_td_content(group_by)
       helper = "query_group_td_content"
-      content = group_by.map!{ |n| n.blank? ? I18n.t('view.content.undefined_group_name') : n }.join(' → ')
-      override_for(helper) ? send(override_for(helper), group_by) : content_tag(:span, content, :onclick => "toggleGroup(this);", :class => 'not-collapsed')
+      if override_for(helper)
+        send(override_for(helper), group_by)
+      else
+        content = group_by.map!{ |n| n[:value].blank? ? I18n.t('view.content.undefined_group_name') : n[:value] }.join(' → ')
+        content_tag(:span, content, :onclick => "toggleGroup(this);", :class => 'not-collapsed')
+      end
     end
   
     def override_for(pattern)

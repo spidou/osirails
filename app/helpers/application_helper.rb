@@ -315,7 +315,7 @@ module ApplicationHelper
     # define the corresponding model, and check the permissions
     model                     = model_name.camelize.constantize # this will raise a NameError Exception if the constant is not defined
 	  has_model_permission      = model.respond_to?("business_object?") ? model.send("can_#{permission_name}?", current_user) : true
-	  has_controller_permission = controller.current_menu.send("can_access?", current_user)
+	  has_controller_permission = controller.send(:current_menu).send("can_access?", current_user)
     
     # default html_options
     html_options = { 'data-icon' => icon_name }.merge(options.delete(:html_options) || {})

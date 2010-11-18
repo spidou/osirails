@@ -37,6 +37,7 @@ class OrdersController < ApplicationController
   def new
     @order = Order.new
     @order.creator = current_user
+    @order.commercial = current_user.employee
     if params[:customer_id] # this is the second step of the order creation
       begin
         @order.customer = Customer.find(params[:customer_id])

@@ -3,6 +3,8 @@ id      = end_product.new_record? ? generate_random_id : end_product.id
 id_attr = "end_product_#{id}"
 style   = "style=\"display:none\"" if end_product.should_destroy?
 
+parent_navigator ||= nil
+
 end_product_errors  = { :details    => end_product.errors.empty? ? '' : ' errors',
                         :checklist  => end_product.errors.on(:checklists) ? ' errors' : '' }
 %>

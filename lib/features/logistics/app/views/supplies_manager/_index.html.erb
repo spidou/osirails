@@ -3,7 +3,7 @@
   <%= stylesheet_link_tag_with_theme_support 'logistics/supply' %>
 <% end %>
 
-<% add_contextual_menu_item :commodities_stats do %>
+<% add_contextual_menu_item :statistics do %>
   <span>Valeur estimative du stock actuel&nbsp;: <%= number_with_precision(@supply_type.stock_value, :precision => 2) %>&nbsp;&euro;</span>
 <% end %>
 

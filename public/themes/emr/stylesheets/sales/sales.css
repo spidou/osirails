@@ -5,6 +5,9 @@ a[data-icon=send]       { background-image: url("/themes/emr/images/sales/send.p
 a[data-icon=sign]       { background-image: url("/themes/emr/images/sales/sign.png"); }
 a[data-icon=transform]  { background-image: url("/themes/emr/images/sales/transform.png"); }
 
+a[data-icon=disable]  { background-image: url("/themes/emr/images/sales/disable.png"); }
+a[data-icon=enable]   { background-image: url("/themes/emr/images/sales/enable.png"); }
+
 /* ## delivery_notes */
 a[data-icon=schedule] { background-image: url("/themes/emr/images/sales/schedule.png"); }
 a[data-icon=realize]  { background-image: url("/themes/emr/images/sales/realize.png"); }

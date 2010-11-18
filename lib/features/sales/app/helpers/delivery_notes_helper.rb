@@ -29,13 +29,6 @@ module DeliveryNotesHelper
     html.compact
   end
   
-  def display_delivery_note_list_button(step, message = nil)
-    return unless DeliveryNote.can_add?(current_user)
-    link_to_unless_current(message || "Voir les BL du dossier",
-                           send(step.original_step.path),
-                           'data-icon' => :index) {nil}
-  end
-  
   def display_delivery_note_add_button(order, message = nil)
     return unless DeliveryNote.can_add?(current_user) and order.delivery_notes.build.can_be_added?
     link_to(message || "Nouveau BL",

@@ -16,7 +16,8 @@ fr:
       press_proof: "BAT"
       product: "Produit"
       product_reference: "Produit référence"
-      product_reference_category: "Famille de produit"
+      product_reference_category: "Famille"
+      product_reference_sub_category: "Sous-famille"
       quote: "Devis"
       ship_to_address: "Adresse de livraison"
       subcontractor: "Sous-traitant"
@@ -153,8 +154,11 @@ fr:
         designation: "Désignation"
         vat: "Taux de TVA"
       product_reference:
+        reference: "Référence"
         product_reference_category: "Famille"
         product_reference_sub_category: "Sous-famille"
+        name: "Nom"
+        end_products_count: "Nombre de produits finis"
       product_reference_category:
         name: "Nom"
         reference: "Référence"
@@ -313,3 +317,40 @@ fr:
             signed_on:
               on_or_after: "ne doit pas être AVANT la date d'envoi du devis&#160;({{restriction}})"
               on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+  
+  integrated_search:
+    attributes:
+      product_reference:
+        reference: "Réf."
+        designation: "Désignation"
+        description: "Description"
+        name: "Nom"
+        end_products_count: "Nb produits finis"
+      product_reference_category:
+        name: "Famille"
+      product_reference_sub_category:
+        name: "Sous-Famille"
+    page_names:
+      product_reference:
+        product_reference_index: "Les produits références"
+  
+  view:
+    contextual_menu_sections:
+      order_progress: "Avancement du projet"
+      order: "Dossier"
+      graphic_items: "Ressources graphiques"
+      mockup: "Maquette"
+      graphic_document: "Document graphique"
+      spool_items: "Travaux en attente"
+      commercial_step: "Phase d'Étude Commerciale"
+      survey_step: "Étape Survey"
+      quote_step: "Étape Devis"
+      press_proof_step: "Étape BAT"
+      production_step: "Phase de Production"
+      delivery_step: "Étape Livraison"
+      invoicing_step: "Phase de Facturation"
+      invoice_step: "Étape Factures"
+      quote: "Devis"
+      press_proof: "BAT"
+      delivery_note: "Bon de livraison"
+      invoice: "Facture"

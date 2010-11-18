@@ -83,6 +83,10 @@ fr:
         precision: 2
         format: '%n %u'
   
+  support:
+    array:
+      sentence_connector: "et"
+  
   activerecord:
     errors:
       template:
@@ -121,3 +125,6 @@ fr:
       delete: "Supprimer"
       index: "Lister"
       confirm: "Êtes-vous sûr ?"
+    contextual_menu_sections:
+      possible_actions: "Actions Possibles"
+      useful_links: "Liens Utiles"

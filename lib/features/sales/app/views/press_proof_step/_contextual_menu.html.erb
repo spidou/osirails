@@ -1,4 +1,4 @@
 <% add_contextual_menu_item :press_proof_step do %>
   <%= display_press_proof_add_button(@order) %>
-  <%= link_to("Voir les BAT du dossier", order_commercial_step_press_proof_step_path(@order), 'data-icon' => :index) if PressProofStep.can_list?(current_user) %>
+  <%= display_press_proof_step_button(@order) %>
 <% end %>

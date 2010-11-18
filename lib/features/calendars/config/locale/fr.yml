@@ -10,3 +10,7 @@ fr:
         do_alarm_before: "Alerter"
         email_to: "Par email à"
         description: "Commentaire"
+  
+  view:
+    contextual_menu_sections:
+      calendar: "Calendrier"

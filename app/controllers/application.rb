@@ -43,13 +43,6 @@ class ApplicationController < ActionController::Base
   
   @@models ||= {}
   
-  def current_menu
-    #OPTIMIZE remove the reference to step (which comes from sales feature) and override this method in the feature sales to add the step notion
-    step = current_order_step if respond_to?("current_order_step")
-    menu = step || controller_name
-    Menu.find_by_name(menu) or raise "The controller '#{controller_name}' should have a menu with the same name"
-  end
-  
   def context_menu
     class_name_and_object_ids = params.detect{ |h| h.first.end_with?("_ids") }            # ["resource_ids", ["1"]]
     class_name                = class_name_and_object_ids.first.gsub("_ids", "").camelize # "Resource"
@@ -74,6 +67,13 @@ class ApplicationController < ActionController::Base
   end
     
   protected
+    def current_menu
+      #OPTIMIZE remove the reference to step (which comes from sales feature) and override this method in the feature sales to add the step notion
+      step = current_order_step if respond_to?("current_order_step")
+      menu = step || controller_name
+      Menu.find_by_name(menu) or raise "The controller '#{controller_name}' should have a menu with the same name"
+    end
+    
     # Method to permit to add permission to an action in a controller
     # options = {:list => ['myaction']}
     def self.method_permission(options)

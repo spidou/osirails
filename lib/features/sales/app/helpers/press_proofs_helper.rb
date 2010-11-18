@@ -28,13 +28,6 @@ module PressProofsHelper
     html.compact
   end
   
-  def display_press_proof_list_button(step, message = nil)
-    return unless PressProof.can_add?(current_user)
-    link_to(message || "Voir les BAT du dossier",
-            send(step.original_step.path),
-            'data-icon' => :index)
-  end
-  
   def display_press_proof_add_button(order, message = nil)
     return unless PressProof.can_add?(current_user)
     link_to_unless_current(message || "Nouveau BAT",

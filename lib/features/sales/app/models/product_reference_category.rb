@@ -1,5 +1,5 @@
 class ProductReferenceCategory < ActiveRecord::Base
-  has_permissions :as_business_object
+  has_permissions :as_business_object, :additional_class_methods => [:disable, :enable]
   
   has_many :product_reference_sub_categories, :conditions => [ "cancelled_at IS NULL" ]
   has_many :disabled_product_reference_sub_categories, :class_name => "ProductReferenceSubCategory", :conditions => [ "cancelled_at IS NOT NULL" ]
@@ -15,8 +15,9 @@ class ProductReferenceCategory < ActiveRecord::Base
   
   validates_persistence_of :reference, :unless => :can_update_reference?
   
-  has_search_index  :only_attributes    => [ :reference, :name ],
-                    :only_relationships => [ :product_reference_sub_categories ]
+  has_search_index  :only_attributes    => [ :id, :reference, :name ],
+                    :only_relationships => [ :product_reference_sub_categories ],
+                    :identifier         => :reference_and_name
   
   before_destroy :can_be_destroyed?
   
@@ -40,6 +41,11 @@ class ProductReferenceCategory < ActiveRecord::Base
   #TODO test that method
   def can_be_disabled?
     was_enabled?
+  end
+  
+  #TODO test that method
+  def can_be_enabled?
+    !was_enabled?
   end
   
   #TODO test that method

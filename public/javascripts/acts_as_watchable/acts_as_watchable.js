@@ -52,6 +52,9 @@ function display_popup_box() {
 
 function update_acts_as_watchable_buttons(id) {
   $("popup_box").popup.hide()
-  $(id).update($("watching_button_holder_for_update").innerHTML)
-  $("watching_button_holder_for_update").update('')
+  if ($(id))
+    $(id).update($("watching_button_holder_for_update").innerHTML)
+  
+  if ($("watching_button_holder_for_update"))
+    $("watching_button_holder_for_update").update('')
 }

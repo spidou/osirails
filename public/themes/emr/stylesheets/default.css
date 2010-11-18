@@ -192,6 +192,9 @@ a[data-icon=index]  { background-image: url("/themes/emr/images/index.png"); }
 
 a[data-icon=confirm]  { background-image: url("/themes/emr/images/confirm.png"); }
 a[data-icon=cancel]   { background-image: url("/themes/emr/images/cancel.png"); }
+
+a[data-icon=watching]   { background-image: url("/themes/emr/images/watching.png"); }   /* for acts_as_watchable plugin */
+a[data-icon=unwatching] { background-image: url("/themes/emr/images/unwatching.png"); }
 /* END IMAGES */
 
 /* FIELDSET & LEGEND */
@@ -316,31 +319,31 @@ fieldset:not(no-style) > legend {
 	text-align:right;
 }
 
-#previous,
-#previous:hover,
-#next,
-#next:hover {
+#previous_memorandum,
+#previous_memorandum:hover,
+#next_memorandum,
+#next_memorandum:hover {
 	background: url("/themes/emr/images/button_under_banner_arrow.png") no-repeat;
 	width:24px;
 	height:21px;
 	border:none;
 }
 
-#previous {
+#previous_memorandum {
 	background-position:0 0;
 	
 }
 
-#previous:hover {
+#previous_memorandum:hover {
 	background-position:0 -21px;
 	cursor:pointer;
 }
 
-#next {
+#next_memorandum {
 	background-position:-24px 0;
 }
 
-#next:hover {
+#next_memorandum:hover {
 	background-position: -24px -21px;
 	cursor:pointer;
 }

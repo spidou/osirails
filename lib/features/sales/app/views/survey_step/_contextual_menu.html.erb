@@ -1,3 +1,3 @@
 <% add_contextual_menu_item :survey_step do %>
-  <%= link_to("Voir le \"Survey\"", order_commercial_step_survey_step_path(@order), 'data-icon' => :show) if SurveyStep.can_view?(current_user) %>
+  <%= display_survey_step_button(@order) %>
 <% end %>

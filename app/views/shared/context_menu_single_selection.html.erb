@@ -1,4 +1,6 @@
 <% display_context_menu do |c| %>
+  <%= c.title @object.class.human_name %>
+  
   <%= c.entry send("#{@object.class.name.underscore}_link", @object, :link_text => I18n.t("view.links.show")) %>
   <%= c.entry send("edit_#{@object.class.name.underscore}_link", @object, :link_text => I18n.t("view.links.edit")) %>
   <%= c.entry send("delete_#{@object.class.name.underscore}_link", @object, :link_text => I18n.t("view.links.delete")) %>

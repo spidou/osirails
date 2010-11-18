@@ -128,3 +128,7 @@ fr:
         commodity_index: "Les matières premières"
       consumable:
         consumable_index: "Les consommables"
+
+  view:
+    contextual_menu_sections:
+      statistics: "Statistiques"

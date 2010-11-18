@@ -2,3 +2,7 @@ en:
   activerecord:
     models:
     attributes:
+
+  view:
+    contextual_menu_sections:
+      content_history: "Changes history"

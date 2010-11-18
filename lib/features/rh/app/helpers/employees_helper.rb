@@ -80,29 +80,21 @@ module EmployeesHelper
   ##  integrated search helpers ##
   ################################
   
-  def query_td_content_for_fullname_in_employee_index
+  def query_td_content_for_fullname_in_employee
     link_to(@query_object.fullname, employee_path(@query_object))
   end
   
-  def query_td_content_for_numbers_number_in_employee_index
+  def query_td_content_for_numbers_number_in_employee
     display_full_phone_number(@query_object.numbers.visibles.first) if @query_object.numbers.visibles.first
   end
   
-  def query_td_content_for_actions_in_employee_index
-    employee_link(@query_object, :link_text => "") + edit_employee_link(@query_object, :link_text => "")
-  end
-  
-  def query_td_for_actions_in_employee_index(content)
-    content_tag(:td, content, :class => 'actions') 
-  end
-  
   def query_group_td_content_in_employee(group_by)
-    content_tag(:span, :class => 'not-collapsed', :onclick => "toggleGroup(this);") do   
-      group_by.map {|n| "#{ translate(@query.group.at(group_by.index(n))) } #{ content_tag(:span, n, :style => 'color:#555;') }"}.join(' et ')
+    content_tag(:span, :class => 'not-collapsed', :onclick => "toggleGroup(this);") do
+      group_by.map{ |n| "#{ employee_group_translation(n[:attribute]) } #{ content_tag(:span, n[:value], :style => 'color:#555;') }" }.to_sentence
     end
   end
   
-  def translate(attr)
+  def employee_group_translation(attr)
     tr = {'last_name' => 'de la famille', 'service.name' => 'dans le service'}
     return tr[attr]
   end

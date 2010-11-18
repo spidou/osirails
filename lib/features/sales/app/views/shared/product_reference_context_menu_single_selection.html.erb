@@ -1,0 +1,24 @@
+<%
+sub_category = @object.product_reference_sub_category
+category     = sub_category.product_reference_category
+%>
+
+<% display_context_menu do |c| %>
+  <%= c.title ProductReference.human_name %>
+  
+  <% c.submenu "#{category.name}" do %>
+    <% product_reference_category_action_buttons(category).each do |button| %>
+      <%= c.entry button %>
+    <% end %>
+  <% end %>
+  
+  <% c.submenu "#{sub_category.name}" do %>
+    <% product_reference_sub_category_action_buttons(sub_category).each do |button| %>
+      <%= c.entry button %>
+    <% end %>
+  <% end %>
+  
+  <% product_reference_action_buttons(@object).each do |button| %>
+    <%= c.entry button %>
+  <% end %>
+<% end %>

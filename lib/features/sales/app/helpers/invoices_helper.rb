@@ -40,13 +40,6 @@ module InvoicesHelper
     html.compact
   end
   
-  def display_invoice_list_button(step, message = nil)
-    return unless Invoice.can_add?(current_user)
-    link_to_unless_current(message || "Voir les factures du dossier",
-                           send(step.original_step.path),
-                           'data-icon' => :index) {nil}
-  end
-  
   def display_invoice_add_button(order, message = nil)
     return unless Invoice.can_add?(current_user) and ( order.invoices.build(:invoice_type_id => InvoiceType.find_by_name(Invoice::DEPOSITE_INVOICE).id).can_be_added? or
                                                        order.invoices.build(:invoice_type_id => InvoiceType.find_by_name(Invoice::STATUS_INVOICE).id).can_be_added? or

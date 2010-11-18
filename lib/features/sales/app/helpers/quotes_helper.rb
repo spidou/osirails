@@ -27,13 +27,6 @@ module QuotesHelper
     html.compact
   end
   
-  def display_quote_list_button(step, message = nil)
-    return unless Quote.can_list?(current_user)
-    link_to_unless_current(message || "Voir le(s) devis du dossier",
-                           send(step.original_step.path),
-                           'data-icon' => :index) {nil}
-  end
-  
   def display_quote_add_button(order, message = nil)
     return unless Quote.can_add?(current_user) and order.quotes.build.can_be_added?
     link_to_unless_current(message || "Nouveau devis",

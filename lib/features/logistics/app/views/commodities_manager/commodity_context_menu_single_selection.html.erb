@@ -20,9 +20,7 @@
     <%= display_supply_category_delete_button(sub_category, 'Supprimer') %>
   <% end %>
   
-  <%= c.entry display_supply_show_button(@object, 'Voir') %>
-  <%= c.entry display_supply_edit_button(@object, 'Modifier') %>
-  <%= c.entry display_supply_disable_button(@object, 'Désactiver') %>
-  <%= c.entry display_supply_enable_button(@object, 'Activer') %>
-  <%= c.entry display_supply_delete_button(@object, 'Supprimer') %>
+  <% supply_action_buttons(@object).each do |button| %>
+    <%= c.entry button %>
+  <% end %>
 <% end %>

@@ -1,16 +1,2 @@
-<% content_for :header do %>
-  <%= javascript_include_tag "thirds/thirds" %>
-<% end %>
-
-<% add_contextual_menu_item :possible_actions do %>
-  <%= new_customer_link(:link_text => "Nouveau client") %>
-  <%= customer_link(@customer, :link_text => "Voir le client") %>
-  <%= delete_customer_link(@customer, :link_text => "Supprimer le client") %>
-<% end %>
-
-<% add_contextual_menu_item :useful_links do %>
-  <%= customers_link(:link_text => "Voir tous les clients")%>
-<% end %>
-
 <h1>Modifier le client</h1>
 <%= render :partial => @customer %>

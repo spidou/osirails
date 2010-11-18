@@ -299,10 +299,24 @@ ActionController::Routing::Routes.add_routes do |map|
                                                     :method      => :get
   
   map.resources :product_reference_categories do |product_reference_category|
+    product_reference_category.disable 'disable', :controller => 'product_reference_categories',
+                                                  :action     => 'disable',
+                                                  :conditions => { :method => :get }
+    product_reference_category.enable  'enable',  :controller => 'product_reference_categories',
+                                                  :action     => 'enable',
+                                                  :conditions => { :method => :get }
+    
     product_reference_category.resources :product_reference_sub_categories
   end
   
   map.resources :product_reference_sub_categories do |product_reference_sub_category|
+    product_reference_sub_category.disable 'disable', :controller => 'product_reference_sub_categories',
+                                                      :action     => 'disable',
+                                                      :conditions => { :method => :get }
+    product_reference_sub_category.enable  'enable',  :controller => 'product_reference_sub_categories',
+                                                      :action     => 'enable',
+                                                      :conditions => { :method => :get }
+    
     product_reference_sub_category.resources :product_references
   end
   

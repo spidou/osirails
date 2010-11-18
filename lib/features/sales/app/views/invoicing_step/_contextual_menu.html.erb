@@ -1,4 +1,4 @@
-<% add_contextual_menu_item :invoice_step do %>
-  <%= display_invoice_add_button(@order) %>
-  <%= display_invoice_list_button(@step) %>
-<% end %>
+<%= generate_commercial_step_minimal_contextual_menu_partial %>
+<%= generate_production_step_minimal_contextual_menu_partial %>
+
+<%= generate_invoice_step_contextual_menu_partial %>

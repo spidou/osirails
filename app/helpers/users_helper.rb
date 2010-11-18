@@ -3,8 +3,8 @@ module UsersHelper
 #    contextual_search("User", ["*", "roles.name"])
 #  end
   
-  def query_td_content_for_actions_in_user
-    "#{user_link(@query_object, :link_text => "")} #{edit_user_link(@query_object, :link_text => "")} #{delete_user_link(@query_object, :link_text => "")}"
+  def query_td_content_for_username_in_user
+    link_to(@query_object.username, user_path(@query_object))
   end
   
   def query_td_content_for_last_connection_in_user
@@ -17,9 +17,5 @@ module UsersHelper
   
   def query_td_content_for_roles_name_in_user
     @query_object.roles.collect(&:name).join(", ")
-  end
-  
-  def query_th_content_for_employee_fullname_in_user(column, order)
-    I18n.t("integrated_search.attributes.user.#{column}") # column should be 'employee.fullname'
   end
 end

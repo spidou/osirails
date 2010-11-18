@@ -1,0 +1,67 @@
+conf_filters: &filters
+  filters:
+conf_columns: &columns
+  columns:
+    - reference
+    - product_reference_sub_category.product_reference_category.name
+    - product_reference_sub_category.name
+    - name
+    - designation
+    - description
+    - end_products_count
+conf_group: &group
+  group:
+    - product_reference_sub_category.product_reference_category.name
+    - product_reference_sub_category.name
+conf_order: &order
+  order:
+conf_pagination: &pagination
+  per_page:
+    - 50
+    - 100
+    - 200
+
+
+advanced_product_reference:
+  filters:
+    - reference
+    - product_reference_sub_category.product_reference_category.id
+    - product_reference_sub_category.product_reference_category.reference
+    - product_reference_sub_category.product_reference_category.name
+    - product_reference_sub_category.id
+    - product_reference_sub_category.reference
+    - product_reference_sub_category.name
+    - name
+    - description
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+
+product_reference_index:
+  filters:
+    - reference
+    - product_reference_category: product_reference_sub_category.product_reference_category.id
+    - product_reference_sub_category.id
+    - name
+    - description
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+  quick_search:
+    - reference
+    - product_reference_sub_category.product_reference_category.name
+    - product_reference_sub_category.name
+    - name
+    - description
+  default_query:
+    columns:
+      - reference
+      - designation
+      - description
+    group:
+      - product_reference_sub_category.product_reference_category.name
+      - product_reference_sub_category.name
+    order:
+    per_page: 50

@@ -1,7 +1,12 @@
-<% require_locals establishments_owner %>
-<% owner_type = establishments_owner.class.singularized_table_name %>
+<%
+require_locals establishments_owner
+
+owner_type = establishments_owner.class.singularized_table_name
+force_show_view ||= false
+%>
 
 <% fields_for "#{owner_type}[head_office_attributes][]", head_office do |form| %>
+  <% form.force_show_view = force_show_view %>
   <%= form.error_messages if head_office.errors_on_attributes_except_on_contacts? %>
   <div class="presentation_in_columns">
     <%= render :partial => "establishments/establishment_fields", :object => head_office, :locals => {:form => form} %>

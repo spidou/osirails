@@ -92,48 +92,34 @@ module SuppliesManagerHelper
             'data-icon' => :new)
   end
   
-  def display_supply_action_buttons(supply)
+  def supply_action_buttons(supply)
     html = []
-    html << watching_button(supply)
-    html << display_supply_show_button(supply, '')
-    html << display_supply_edit_button(supply, '')
-    html << display_supply_disable_button(supply, '')
-    html << display_supply_enable_button(supply, '')
-    html << display_supply_delete_button(supply, '')
-    html.compact.join("&nbsp;")
-  end
-  
-  def get_text_for_supply_type(supply)
-    case supply.class.name
-    when "Consumable"
-      'le consommable'
-    when "Commodity"
-      'la matière première'
-    else
-      supply.class.name
-    end
+    html << watching_link(supply)
+    html << display_supply_show_button(supply)
+    html << display_supply_edit_button(supply)
+    html << display_supply_disable_button(supply)
+    html << display_supply_enable_button(supply)
+    html << display_supply_delete_button(supply)
+    html.compact
   end
   
   def display_supply_show_button(supply, message = nil) 
     return unless supply.class.can_view?(current_user)
-    message ||= "Voir " + get_text_for_supply_type(supply)
-    link_to(message,
+    link_to(message || "Voir",
             send("#{supply.class.singularized_table_name}_path", supply),
             'data-icon' => :show)
   end
   
   def display_supply_edit_button(supply, message = nil) 
     return unless supply.class.can_edit?(current_user) and supply.can_be_edited?
-    message ||= "Modifier " + get_text_for_supply_type(supply)
-    link_to(message,
+    link_to(message || "Modifier",
             send("edit_#{supply.class.singularized_table_name}_path", supply),
             'data-icon' => :edit)
   end
   
   def display_supply_disable_button(supply, message = nil) 
     return unless supply.class.can_disable?(current_user) and supply.can_be_disabled?
-    message ||= "Désactiver " + get_text_for_supply_type(supply)
-    link_to(message,
+    link_to(message || "Désactiver",
             self.send("disable_#{supply.class.name.underscore}_path", supply),
             :confirm => "Êtes-vous sûr ?",
             'data-icon' => :disable_supply)
@@ -141,9 +127,7 @@ module SuppliesManagerHelper
   
   def display_supply_enable_button(supply, message = nil) 
     return unless supply.class.can_enable?(current_user) and supply.can_be_enabled?
-    message ||= "Restaurer " + get_text_for_supply_type(supply)
-    message ||= " #{text}"
-    link_to(message,
+    link_to(message || "Restaurer",
             self.send("enable_#{supply.class.name.underscore}_path", supply),
             :confirm => "Êtes-vous sûr ?",
             'data-icon' => :enable_supply)
@@ -151,13 +135,14 @@ module SuppliesManagerHelper
   
   def display_supply_delete_button(supply, message = nil) 
     return unless supply.class.can_delete?(current_user) and supply.can_be_destroyed?
-    message ||= "Supprimer " + get_text_for_supply_type(supply)
-    link_to(message, supply,
+    link_to(message || "Supprimer",
+            supply,
             :method => :delete,
             :confirm => 'Êtes vous sûr ?',
             'data-icon' => :delete)
   end
   
+  #TODO remove that helper after creating additional queries via has_search_index plugin (seeds)
   def display_supply_list_button(supply_type)
     return unless supply_type.can_list?(current_user)
     message ||= (supply_type == Consumable ? 'Voir tous les consommables' : 'Voir toutes les matières premières')
@@ -166,6 +151,7 @@ module SuppliesManagerHelper
             'data-icon' => :index)
   end
   
+  #TODO remove that helper after creating additional queries via has_search_index plugin (seeds)
   def display_supply_list_all_button(supply_type, all = false)
     return unless supply_type.can_list?(current_user)
     message ||= (supply_type == Consumable ? 'Voir tous les consommables (y compris ceux qui sont désactivés)' : 'Voir toutes les matières premières (y compris celles qui sont désactivées)')
@@ -181,12 +167,12 @@ module SuppliesManagerHelper
   end
   
   def query_td_for_reference_in_commodity(content)
-    content_tag(:td, content, :class => :reference)
+    content_tag(:td, link_to(content, @query_object), :class => :reference)
   end
   alias_method :query_td_for_reference_in_consumable, :query_td_for_reference_in_commodity
   
   def query_td_for_designation_in_commodity(content)
-    content_tag(:td, content, :class => "designation text")
+    content_tag(:td, link_to(content, @query_object), :class => "designation text")
   end
   alias_method :query_td_for_designation_in_consumable, :query_td_for_designation_in_commodity
   

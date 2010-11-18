@@ -33,10 +33,6 @@ module Osirails
     end
     
     class Section
-      @@section_titles ||= {  :contextual_search => "Recherche Contextuelle",
-                              :possible_actions  => "Actions Possibles",
-                              :useful_links      => "Liens Utiles" }
-      
       attr_accessor :title, :items, :list_mode
       
       def initialize(title, display_list = true, items = [])
@@ -58,7 +54,13 @@ module Osirails
       end
       
       def to_s
-        @@section_titles[@title] || @title.to_s.humanize
+        if @title.is_a?(Symbol)
+          I18n.t("view.contextual_menu_sections.#{@title.to_s}", :default => @title.to_s.humanize)
+        elsif @title.is_a?(String)
+          @title
+        else
+          raise ArgumentError, "section title expected a Symbol or a Hash, but was #{@title}:#{@title.class.name}"
+        end
       end
       
     end

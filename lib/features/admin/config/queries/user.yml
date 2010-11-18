@@ -14,6 +14,7 @@ conf_columns: &columns
     - last_activity
 conf_group: &group
   group:
+    - enabled
 conf_order: &order
   order:
     - enabled

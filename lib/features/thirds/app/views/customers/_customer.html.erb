@@ -3,6 +3,20 @@
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
   <%= stylesheet_link_tag_with_theme_support "thirds/thirds" %>
   <%= javascript_include_tag 'core/has_resources/has_resources' %>
+  <%= javascript_include_tag "thirds/thirds" if is_form_view? %>
+<% end %>
+
+<% unless customer.new_record? %>
+  <% add_contextual_menu_item Customer.human_name do %>
+    <% customer_action_buttons(customer).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= new_customer_link(:link_text => 'Nouveau client') unless is_new_view? %>
+  <%= customers_link(:link_text => "Voir tous les clients") %>
 <% end %>
 
 <%

@@ -18,7 +18,7 @@ tr_class = "#{delivery_note.status}_delivery_note"
 
 <tr class="delivery_note <%= odd_or_even %> <%= tr_class %>" title="<%= status %>">
   <td class="selector" <%= rowspan %>><%= context_menu(delivery_note, 'delivery_note') %></td>
-  <td class="reference" <%= rowspan %>><%= delivery_note.reference %></td>
+  <td class="reference" <%= rowspan %>><%= link_to(delivery_note.reference, order_production_step_delivery_step_delivery_note_path(order, delivery_note)) %></td>
   <td class="published_on" <%= rowspan %>><%= delivery_note.published_on.humanize if delivery_note.published_on %></td>
   <td class="delivery_note_type" <%= rowspan %>><%= delivery_note.delivery_note_type.title %></td>
   <td class="number_of_pieces" <%= rowspan %>><%= "#{delivery_note.number_of_pieces} / #{delivery_note.signed_quote.number_of_pieces}" %></td>
