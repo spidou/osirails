@@ -36,7 +36,7 @@ class JournalizationMigration < ActiveRecord::Migration
       t.string     :old_value, :new_value
     end
   end
-
+  
   def self.down
     drop_table :journals
     drop_table :journal_lines

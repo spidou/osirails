@@ -46,7 +46,6 @@ require 'shoulda'
 
 gem 'paperclip'
 require 'paperclip'
-include Paperclip
 
 # define logger for journalization
 log_file = File.join(File.dirname(__FILE__), "test.log")
@@ -58,15 +57,15 @@ class Test::Unit::TestCase
       @a_person = Person.new(:first_name => "Jean", 
                              :last_name  => "Dupeux", 
                              :photo      => File.new(File.join(File.dirname(__FILE__), "fixtures", "default_avatar.png")))
-      flunk "@conti must be saved to perform the next test" unless @a_person.save
+      flunk "@a_person must be saved to perform the next test" unless @a_person.save
       @a_person
     end
     
     def create_a_district_with_its_representative
       @a_district = District.new(:name => "Dupark", :area => 1000)
       
-      @a_district.build_representative(:first_name => "Louis", 
-                                       :last_name  => "Labourgue", 
+      @a_district.build_representative(:first_name => "Louis",
+                                       :last_name  => "Labourgue",
                                        :photo      => File.new(File.join(File.dirname(__FILE__), "fixtures", "default_avatar.png")))
                                                 
       flunk "@a_district and its representative must be saved to perform the next test" unless @a_district.save && !@a_district.representative.new_record?
@@ -78,20 +77,20 @@ class Test::Unit::TestCase
       @high_school = @a_district.schools.build(:name => "Dupark High School")
       @college     = @a_district.schools.build(:name => "Dupark College")
       
-      @conti       = @high_school.teachers.build(:first_name => "Rick", 
-                                                 :last_name  => "Conti", 
+      @conti       = @high_school.teachers.build(:first_name => "Rick",
+                                                 :last_name  => "Conti",
                                                  :photo      => File.new(File.join(File.dirname(__FILE__), "fixtures", "default_avatar.png")))
-      @hoelle      = @college.teachers.build(    :first_name => "Chantal", 
-                                                 :last_name  => "Hoelle", 
+      @hoelle      = @college.teachers.build(    :first_name => "Chantal",
+                                                 :last_name  => "Hoelle",
                                                  :photo      => File.new(File.join(File.dirname(__FILE__), "fixtures", "default_avatar.png")))
-           
+      
       flunk "@a_district must be saved to perform the next test" unless @a_district.save
       
       subresources_all_saved = true
       
       [@high_school, @college, @conti, @hoelle].each do |s|
         if s.new_record?
-          subresources_all_saved = false 
+          subresources_all_saved = false
           break
         end
       end

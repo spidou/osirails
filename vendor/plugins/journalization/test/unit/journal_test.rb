@@ -24,4 +24,3 @@ class JournalTest < ActiveRecordTestCase
   
   should_have_one :referenced_journal_line, :journal_identifier
 end
-

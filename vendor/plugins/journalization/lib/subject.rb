@@ -16,7 +16,7 @@
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 module Journalization
-  Journalization.const_set("SubjectsClassName",[]) unless Journalization.const_defined?("SubjectsClassName")
+  Journalization.const_set("SubjectClassNames",[]) unless Journalization.const_defined?("SubjectClassNames")
   module Models
     module Subject
       class << self
@@ -24,17 +24,17 @@ module Journalization
           base.extend ClassMethods
         end
       end
-
+      
       module ClassMethods
         def journalize params = {}
           cattr_accessor :journalized_attributes, :journalized_attachments, :journalized_subresources, :journal_identifier_method, :journalized_belongs_to_attributes
-
+          
           self.journalized_attributes   = []                                unless self.journalized_attributes
           self.journalized_attachments  = []                                unless self.journalized_attachments
           self.journalized_subresources = {:has_many => {}, :has_one => {}} unless self.journalized_subresources
           
           self.journalized_belongs_to_attributes = {} unless self.journalized_belongs_to_attributes
-
+          
           if !params.include?(:attributes) && !params.include?(:attachments) && !params.include?(:subresources) && !params.include?(:identifier_method)
             raise ArgumentError, "journalize expected at least one of the following params -> :attributes, :attachments, :subresources, :identifier_method"
           end
@@ -44,7 +44,7 @@ module Journalization
             if params[:attributes].instance_of?(Array) && params[:attributes].any?
               params[:attributes].each do |attribute|
                 raise ArgumentError, message unless attribute.instance_of?(Symbol)
-
+                
                 self.journalized_attributes << attribute unless self.journalized_attributes.include?(attribute)
               end
             elsif params[:attributes].instance_of?(Symbol)
@@ -52,7 +52,7 @@ module Journalization
             else
               raise ArgumentError, message
             end
-
+            
             self.journalized_attributes.each do |attribute|
               raise NoMethodError, "undefined attribute or method '#{attribute}' for #{self.name}" unless self.column_names.include?(attribute.to_s)
               
@@ -61,15 +61,13 @@ module Journalization
                 foreign_key ||= a.name.to_s + "_id"
                 
                 if attribute.to_s == foreign_key
-                  self.journalized_belongs_to_attributes[attribute]              = {}
-                  self.journalized_belongs_to_attributes[attribute][:name]       = a.name.to_s
-                  self.journalized_belongs_to_attributes[attribute][:class_name] = a.class_name
+                  self.journalized_belongs_to_attributes[attribute] = { :name => a.name.to_s, :class_name => a.class_name }
                   break
                 end
               end
             end
           end
-
+          
           if params.include?(:attachments)
             message = ":attachments expected a symbol or an array of symbols"
             if params[:attachments].instance_of?(Array) && params[:attachments].any?
@@ -95,8 +93,7 @@ module Journalization
               names_and_restrictions = {}
               params[:subresources].each do |relationship|
                 if relationship.instance_of?(Symbol)
-                  name        = relationship
-                  restriction = :always
+                  name, restriction = relationship, :always
                   
                   names_and_restrictions[name] = restriction
                 elsif relationship.instance_of?(Hash) && relationship.any?
@@ -110,11 +107,11 @@ module Journalization
                   raise ArgumentError, message
                 end
               end
-                
+              
               names_and_restrictions.each_pair do |name, restriction|
                 reflection = self.reflect_on_association(name)
                 raise "undefined association method '#{name}' for #{self.name}" unless reflection
-
+                
                 macro = reflection.macro
                 raise ArgumentError, "forbidden association method '#{name}' for #{self.name}. It should be :has_many or :has_one" unless [:has_many, :has_one].include?(macro)
                 
@@ -130,43 +127,45 @@ module Journalization
             self.journal_identifier_method = params[:identifier_method]
           end
           
-          Journalization::SubjectsClassName.delete(self.name) unless self.new.respond_to?("journalization_record")
-
-          unless Journalization::SubjectsClassName.include?(self.name)
+          Journalization::SubjectClassNames.delete(self.name) unless self.new.respond_to?("journalization_record")
+          
+          unless Journalization::SubjectClassNames.include?(self.name)
             class_eval do
-              Journalization::SubjectsClassName << self.name
+              Journalization::SubjectClassNames << self.name
               attr_accessor :last_journal, :parent_infos, :something_journalized
               
               after_save :journalization_record
               after_save :update_journalization_actor
-
-              def journals
-                Journal.find(:all, :conditions => ["journalized_type = ? AND journalized_id = ?", self.class.name, self.id])
+              
+              def journals(options = {})
+                default_options = { :conditions => ["journalized_type = ? AND journalized_id = ?", self.class.name, self.id] }
+                Journal.find(:all, merge_conditions(default_options, options))
               end
               
-              def journals_with_lines
-                journals.select {|j| j.journal_lines.any?}
+              def journals_with_lines #OPTIMIZE by using a SQL statement
+                journals.select{ |j| j.journal_lines.any? }
               end
               
-              def journal_identifiers
-                JournalIdentifier.find(:all, :conditions => ["journalized_type = ? AND journalized_id = ?", self.class.name, self.id])
+              def journal_identifiers(options = {})
+                default_options = { :conditions => ["journal_identifiers.journalized_type = ? AND journal_identifiers.journalized_id = ?", self.class.name, self.id] }
+                JournalIdentifier.find(:all, merge_conditions(default_options, options))
               end
               
-              def last_journalized_value_for property_string
+              def last_journalized_value_for(property_string)
                 result = JournalLine.find_by_sql("SELECT new_value, property_type FROM journal_lines INNER JOIN journals ON journal_lines.journal_id = journals.id WHERE journals.journalized_type = '#{self.class.name}' AND journals.journalized_id = #{self.id} AND journal_lines.property = '#{property_string}' AND journal_lines.property_id IS NULL ORDER BY journals.created_at DESC, journals.id DESC LIMIT 1")
                 result.any? ? result.first.new_value : nil
               end
               
               def update_journalization_actor
                 if Journalization.const_defined?("ActorClassName") && !Journalization::ActorClassName.nil? && self.last_journal.respond_to?(:actor) && self.last_journal.actor
-                  actor = self.last_journal.actor(true)
-                  actor_identifier = actor.journal_identifier
+                  actor                         = self.last_journal.actor(true)
+                  actor_identifier              = actor.journal_identifier
                   actor_class_identifier_method = actor.class.journal_identifier_method
                   actor.journalization_record(true) if !actor_identifier || actor.send(actor_class_identifier_method) != actor_identifier.new_value
                 end
               end
-
-              def journalization_record(without_actor=false)
+              
+              def journalization_record(without_actor = false)
                 @without_actor = without_actor
                 
                 self.something_journalized = false
@@ -202,7 +201,7 @@ module Journalization
                       
                       unless old_value.blank? && new_value.blank?
                         property_class = current_value ? current_value.class : last_journalized_value_for(property).class
-
+                        
                         db_type = self.class.columns.detect{|c| c.name == property}.type.to_s
                         
                         init_journal unless self.something_journalized
@@ -239,7 +238,7 @@ module Journalization
                         self.something_journalized = true
                       end
                     end
-                  
+                    
                     if [:update, :always].include?(restrictions)
                       if macro == :has_one
                         instance = self.send(resource_type.to_s)
@@ -256,7 +255,7 @@ module Journalization
                 if self.last_journal && self.parent_infos && self.parent_infos.size == 2 && self.last_journal.journal_lines.any? && !Journal.find(self.last_journal).referenced_journal_line
                   parent        = self.parent_infos.shift
                   resource_type = self.parent_infos.shift
-
+                  
                   parent.init_journal unless parent.something_journalized
                   parent.last_journal.journal_lines.create(:property => resource_type, :property_id => self.id, :referenced_journal => self.last_journal)
                   parent.something_journalized = true
@@ -272,7 +271,7 @@ module Journalization
                   self.something_journalized = true
                 end
               end
-
+              
               def init_journal
                 self.last_journal = Journal.create(:journalized_type => self.class.name, :journalized_id => self.id) do |j|
                   if Journalization.const_defined?("ActorClassName") && !Journalization::ActorClassName.nil? && j.respond_to?(:actor)
@@ -280,9 +279,9 @@ module Journalization
                   end
                 end
               end
-
+              
               def journal_identifier(datetime = Time.now)
-                journal_identifiers.select {|i| i.journal.created_at <= datetime}.sort_by {|i| i.journal.created_at}.last
+                journal_identifiers(:include => :journal, :conditions => ["journals.created_at <= ?", datetime], :order => "journals.created_at").last
               end
               
               private
@@ -296,6 +295,29 @@ module Journalization
                       instance.parent_infos = [self, resource_type]
                     end
                   end
+                end
+                
+                # Merge the second hash into the first hash
+                # If both hashes have :conditions, the are merged too, but other keys are overrided
+                # We can notice that the first hash have priority over the second (for similar keys)
+                #
+                # ==== Examples :
+                # first = { :conditions => ['active = ?', true], :order => 'position' }
+                # second = { :conditions => ['username = ?', 'john.doe'], :order => 'username' }
+                # merge_conditions(first, second) # => { :conditions => ['active = ? AND (username = ?)', true, 'john.doe'], :order => 'position' }
+                #
+                def merge_conditions(first, second)
+                  if second[:conditions]
+                    if second[:conditions].is_a?(Array)
+                      conditions_string = " AND ( #{second[:conditions].shift} )"
+                      first[:conditions] += second[:conditions]
+                    else
+                      conditions_string = options[:conditions]
+                    end
+                    first[:conditions][0] += conditions_string
+                  end
+                  
+                  second.merge(first)
                 end
             end
           end

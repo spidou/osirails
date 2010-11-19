@@ -2,11 +2,11 @@ require 'actor'
 require 'subject'
 require 'actor_setting'
 
-%w{ models helpers }.each do |dir| 
-  path = File.join(File.dirname(__FILE__), 'app', dir)  
-  $LOAD_PATH << path 
+%w{ models helpers }.each do |dir|
+  path = File.join(File.dirname(__FILE__), 'app', dir)
+  $LOAD_PATH << path
   dep = defined?(ActiveSupport::Dependencies) ? ActiveSupport::Dependencies : ::Dependencies
-  dep.load_paths << path 
+  dep.load_paths << path
   dep.load_once_paths.delete(path)
 end
 

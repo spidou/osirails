@@ -15,10 +15,10 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class JournalizationMigrationGenerator < Rails::Generator::Base 
-  def manifest 
-    record do |m| 
-      m.migration_template 'migration.rb', 'db/migrate' 
+class JournalizationMigrationGenerator < Rails::Generator::Base
+  def manifest
+    record do |m|
+      m.migration_template 'migration.rb', 'db/migrate'
     end 
   end
   

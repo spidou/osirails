@@ -6,7 +6,7 @@ ActiveRecord::Schema.define do
     t.string   "old_value"
     t.string   "new_value"
   end
-
+  
   create_table "journal_lines", :force => true do |t|
     t.integer  "journal_id",            :limit => 11
     t.integer  "referenced_journal_id", :limit => 11
@@ -16,7 +16,7 @@ ActiveRecord::Schema.define do
     t.string   "new_value"
     t.integer  "property_id",           :limit => 11
   end
-
+  
   create_table "journals", :force => true do |t|
     t.integer  "journalized_id",   :limit => 11
     t.string   "journalized_type"
