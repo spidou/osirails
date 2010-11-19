@@ -72,10 +72,6 @@ module EmployeesHelper
     return html
   end
   
-#  def contextual_search_for_employee
-#    contextual_search("Employee", ["*", "user.*", "service.name", "jobs.name"])
-#  end
-  
   ################################
   ##  integrated search helpers ##
   ################################

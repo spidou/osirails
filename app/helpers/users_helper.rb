@@ -1,8 +1,4 @@
 module UsersHelper
-#  def contextual_search_for_user
-#    contextual_search("User", ["*", "roles.name"])
-#  end
-  
   def query_td_content_for_username_in_user
     link_to(@query_object.username, user_path(@query_object))
   end

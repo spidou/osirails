@@ -27,8 +27,6 @@ class EndProduct < Product
   
   acts_as_list :scope => :order
   
-  journalize :identifier_method => :name
-  
   validates_presence_of :product_reference_id, :order_id
   validates_presence_of :product_reference, :if => :product_reference_id
   validates_presence_of :order,             :if => :order_id
@@ -43,6 +41,8 @@ class EndProduct < Product
   validates_persistence_of :product_reference_id, :order_id
   
   validates_associated :checklist_responses
+  
+  journalize :identifier_method => :name
   
   before_validation_on_create :update_reference
   

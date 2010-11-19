@@ -22,29 +22,40 @@ fr:
         name: "Raison Sociale"
         legal_form: "Forme juridique"
         website: "Site Internet"
-        created_at: "Créé le"
-        creator: "Créé par"
       customer:
         <<: *third_attributes
         factor: "Société d'affacturage"
         customer_grade: "Note relationnelle"  
         customer_solvency: "Degré de solvabilité"
+        head_office: "Siège social"
+        establishment: "Établissement"
         brand_names: "Enseigne(s)"
+        activated: "Actif ?"
       supplier:
         <<: *third_attributes
+        siret_number: "N° SIRET"
         activity_sector_reference: "Code NAF"
+        address: "Adresse"
       head_office:
         name: "Nom du siège social"
         establishment_type: "Type d'établissement"
         siret_number: "N° SIRET du siège social"
         activity_sector_reference: "Secteur d'activité"
         full_address: "Adresse du siège social"
+        address: "Adresse"
+        phone: "Tél"
+        fax: "Fax"
+        activated: "Actif ?"
       establishment:
         name: "Nom de l'enseigne"
         establishment_type: "Type d'établissement"
         siret_number: "N° SIRET"
         activity_sector_reference: "Secteur d'activité"
         full_address: "Adresse de l'établissement"
+        address: "Adresse"
+        phone: "Tél"
+        fax: "Fax"
+        activated: "Actif ?"
       factor:
         name: "Nom"
         fullname: "Nom complet"
@@ -53,6 +64,8 @@ fr:
       customer:
         bill_to_address:
           formatted: "Adresse de facturation"
+        phone:
+          number: "N° Téléphone"
       customer_grade:
         name: "Note relationnelle"
       customer_solvency:
@@ -74,6 +87,9 @@ fr:
         head_office_phone: "Téléphone"
         head_office_fax: "Fax"
         bill_to_address: "Adresse de facturation"
+      supplier:
+        phone_number: "N° Téléphone"
+        fax_number: "N° Fax"
     page_names:
       customer:
         customer_index: "Les clients"

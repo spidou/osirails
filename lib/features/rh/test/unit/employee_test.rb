@@ -11,11 +11,6 @@ class EmployeeTest < ActiveSupport::TestCase
   
   should_have_many :in_progress_leave_requests, :accepted_leave_requests, :refused_leave_requests, :cancelled_leave_requests
   
-  should_journalize :attributes          => [ :first_name, :last_name, :birth_date, :civility_id, :social_security_number, :family_situation_id, :service_id, :email, :society_email ], 
-                    :attachments         => :avatar, 
-                    :subresources        => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
-                    :identifier_method   => :fullname
-  
   should_validate_presence_of :last_name, :first_name
   should_validate_presence_of :family_situation, :civility, :service, :with_foreign_key => :default
   
@@ -27,6 +22,11 @@ class EmployeeTest < ActiveSupport::TestCase
   
   should_allow_values_for :society_email, nil, "", "foo@bar.com", "foo.bar@bar.fr", "foo@bar.abcde"
   should_not_allow_values_for :society_email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "Society email is incorrect"
+  
+  should_journalize :attributes          => [ :first_name, :last_name, :birth_date, :civility_id, :social_security_number, :family_situation_id, :service_id, :email, :society_email ], 
+                    :attachments         => :avatar, 
+                    :subresources        => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
+                    :identifier_method   => :fullname
   
   context "Thanks to 'has_contacts', a subcontractor" do
     setup do

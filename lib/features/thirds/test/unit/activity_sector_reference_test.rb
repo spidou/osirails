@@ -11,6 +11,8 @@ class ActivitySectorReferenceTest < ActiveSupport::TestCase
   should_allow_values_for     :code, "01.01Z", "99.99A"
   should_not_allow_values_for :code, nil, "", "1", "0101Z", "01.01"
   
+  should_journalize :identifier_method => :code_and_short_name
+  
   context "An activity sector reference" do
     setup do
       @activity_sector_reference = ActivitySectorReference.new

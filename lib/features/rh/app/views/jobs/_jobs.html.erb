@@ -1,7 +1,7 @@
     <h3>Service</h3>
     <p>
       <%= form.label :service %>
-      <%= form.form_or_view(form.collection_select(:service_id, @services, :id, :name), :service, :name) %>
+      <%= form.form_or_view(form.collection_select(:service_id, Service.all, :id, :name), :service, :name) %>
     </p>
     <%= "<p> #{form.label "Responsable(s) "} #{get_responsibles} </p>" unless is_form_view? %>
     

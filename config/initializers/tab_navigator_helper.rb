@@ -182,6 +182,21 @@ module ActionView
         @template.concat('</div>')
       end
       
+      ### TODO the following methods are dependents to the plugin 'journalization'
+      #        they should be moved if we want to externalize tab_navigator (by creating a plugin or gem)
+      # add tab which will contain journalization data for the given object
+      def tab_for_history(object)
+        tab(:history, "Historique", :disabled => object.new_record?)
+      end
+      
+      # add content with journalization data for the given object
+      def content_for_history(object, *args)
+        content_for :history, args do
+          @template.concat(@template.display_journals_list(object)) unless object.new_record?
+        end
+      end
+      ###
+      
     end
     
   end

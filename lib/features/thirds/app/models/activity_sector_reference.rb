@@ -9,7 +9,9 @@ class ActivitySectorReference < ActiveRecord::Base
   validates_uniqueness_of :code
   
   validates_format_of :code, :with => /^[0-9]{2}\.[0-9]{2}[A-Z]$/
-
+  
+  journalize :identifier_method => :code_and_short_name
+  
   has_search_index :only_attributes       => [ :id, :code ],
                    :additional_attributes => { :get_activity_sector_name => :string },
                    :only_relationships    => [ :activity_sector, :custom_activity_sector ],

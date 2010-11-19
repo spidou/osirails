@@ -1,6 +1,6 @@
 class EmployeesController < ApplicationController
   helper :salaries, :job_contract, :documents, :numbers
-  before_filter :load_collections, :only => [:new, :create, :edit, :update, :show]  
+  
   method_permission :list => ["show"]
   
   # GET /employees
@@ -77,11 +77,4 @@ class EmployeesController < ApplicationController
     end
     redirect_to employees_path
   end
-  
-  private
-    def load_collections
-      @jobs     = Job.all
-      @services = Service.all
-    end
-    
 end

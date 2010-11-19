@@ -245,6 +245,7 @@ module HasSearchIndex
     end
     
     def self.check_page_column(attribute, instance, error_prefix)
+      raise ArgumentError, "attribute expected to be a String, but was #{attribute.inspect}:#{attribute.class.name}" unless attribute.is_a?(String)
       splitted_attribute = attribute.split('.')
       splitted_attribute.each do |part|
         message = "#{ error_prefix } Undefined attribute path '#{ attribute }' for #{ instance.class }"

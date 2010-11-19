@@ -21,8 +21,6 @@ class OrderTest < ActiveSupport::TestCase
   
   should_have_many :ship_to_addresses, :end_products, :order_logs, :mockups, :graphic_documents
   
-  #should_journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"} # don't work beacause Procs are not supported by this shoulda macro for the moment
-
   should_validate_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
   should_validate_presence_of :customer, :society_activity_sector, :commercial, :approaching, :order_contact, :with_foreign_key => :default
   should_validate_presence_of :creator, :with_foreign_key => :user_id
@@ -30,6 +28,8 @@ class OrderTest < ActiveSupport::TestCase
   #validates_presence_of :order_type,    :if => :order_type_id
   
   #should_validate_presence_of :reference # don't work because a before_validation_on_create automatically generate a reference
+  
+  #should_journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"} # don't work beacause Procs are not supported by this shoulda macro for the moment
   
   subject { @order }
 

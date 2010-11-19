@@ -2,36 +2,8 @@
   <%= new_subcontractor_link(:link_text => "Nouveau sous-traitant") %>
 <% end %>
 
-<h1>Les sous-traitants</h1>
+<h1><%= title_for_search %></h1> 
 
 <div>
-  <% unless @subcontractors.empty? %>
-    <table>
-      <thead>
-        <tr>
-          <th>Raison sociale</th>
-          <th>Forme juridique</th>
-          <th>Secteurs d'activités</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for subcontractor in @subcontractors %>
-          <tr>
-            <td class="name text"><%= subcontractor.name %></td>
-            <td class="legal_form text"><%= subcontractor.legal_form.name %></td>
-            <td class="activity_sector_reference text"><%= subcontractor.activity_sector_reference.get_activity_sector.name if subcontractor.activity_sector_reference %></td>
-            <td class="actions">
-              <%= subcontractor_link(subcontractor, :link_text => "") %> 
-              <%= edit_subcontractor_link(subcontractor, :link_text => "") %>
-              <%= delete_subcontractor_link(subcontractor, :link_text => "") %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-    <%= will_paginate @subcontractors %>
-  <% else %>
-    <p>Aucun sous-traitant n'a été trouvé</p>
-  <% end %>
+  <%= table_for_search %>
 </div>

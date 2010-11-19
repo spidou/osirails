@@ -3,9 +3,9 @@ require File.dirname(__FILE__) + '/../sales_test'
 class QuoteItemTest < ActiveSupport::TestCase
   should_belong_to :quote, :end_product
   
-  should_journalize :identifier_method => :name, :attributes => [:name, :description, :end_product_id, :dimensions, :quantity, :unit_price, :vat, :prizegiving]
-  
   should_validate_presence_of :name
+  
+  should_journalize :identifier_method => :name, :attributes => [:name, :description, :end_product_id, :dimensions, :quantity, :unit_price, :vat, :prizegiving]
   
   context 'A "free" quote item' do
     setup do

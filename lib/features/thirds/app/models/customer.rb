@@ -6,7 +6,6 @@ class Customer < Third
   belongs_to :factor
   belongs_to :customer_solvency
   belongs_to :customer_grade
-  belongs_to :creator, :class_name => 'User'
   
   has_one  :head_office
   has_many :establishments, :conditions => ['establishments.type IS NULL and ( hidden = ? or hidden IS NULL )', false]
@@ -34,10 +33,15 @@ class Customer < Third
   
   validate :validates_uniqueness_of_siret_number
   
-  after_save :save_establishments, :save_head_office
+  journalize :attributes        => [ :name, :legal_form_id, :company_created_at, :collaboration_started_at, :factor_id, :customer_solvency_id, :customer_grade_id, :activated ],
+             :attachments       => :logo,
+             :subresources      => [ :head_office, :establishments ],
+             :identifier_method => :name
   
   has_search_index :only_attributes    => [:name, :siret_number, :website],
                    :only_relationships => [:legal_form, :establishments, :head_office, :customer_grade, :customer_solvency, :bill_to_address, :factor]
+  
+  after_save :save_establishments, :save_head_office
   
   def payment_time_limit
     customer_grade && customer_grade.payment_time_limit

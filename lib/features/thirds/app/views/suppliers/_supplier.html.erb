@@ -1,14 +1,55 @@
-<div class="presentation_medium">
-  <h2>Informations g&eacute;n&eacute;rales</h2>
-  <% form_for @supplier do |form| %>
-    <%= form.error_messages %>
+<% content_for :header do %>
+  <%= javascript_include_tag 'thirds/thirds' if is_form_view? %>
+<% end %>
+
+<% unless supplier.new_record? %>
+  <% add_contextual_menu_item Supplier.human_name do %>
+    <% supplier_action_buttons(supplier).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= new_supplier_link(:link_text => 'Nouveau fournisseur') unless is_new_view? %>
+  <%= suppliers_link(:link_text => "Voir tous les fournisseurs") %>
+<% end %>
+
+<%
+supplier_errors  = {:informations   => supplier.errors.on(:name) || supplier.errors.on(:siret_number) || supplier.errors.on(:website) ||
+                                       supplier.errors.on(:legal_form_id) || supplier.errors.on(:legal_form) ||
+                                       supplier.errors.on(:activity_sector_reference_id) || supplier.errors.on(:activity_sector_reference) ||
+                                       supplier.errors.on(:address) || supplier.errors.on(:phone) || supplier.errors.on(:fax) || supplier.errors.on(:iban) ? ' errors' : '',
+                    :contacts       => supplier.errors.on(:contacts) ? ' errors' : '' }
+%>
+
+<div class="presentation_medium root_nav standard">
+  <% tab_navigator :supplier_nav do |t| %>
+    <% t.nav_buttons do %>
+      <%= t.tab :informations,  "Informations générales",
+                                :class    => supplier_errors[:informations],
+                                :selected => true %>
+      <%= t.tab :contacts,      "Contacts (#{supplier.contacts.reject(&:should_destroy?).count})",
+                                :class => supplier_errors[:contacts] %>
+      <%= t.tab_for_history(supplier) %>
+    <% end %>
     
-    <%= render :partial => 'thirds/third', :object => @supplier, :locals => { :form => form } %>
-    
-    <h2>Contacts</h2>
-    <%= display_contacts_list(@supplier) %>
-    <%= display_contact_add_button(@supplier) if is_form_view? %>
-    
-    <%= form.form_buttons %>
+    <% form_for supplier, :html => { :multipart => true } do |form| %>
+      
+      <% t.content_for :informations do %>
+        <%= form.error_messages unless supplier_errors[:informations].blank? %>
+        <%= render :partial => 'thirds/third', :object => supplier, :locals => { :form => form } %>
+      <% end %>
+      
+      <% t.content_for :contacts do %>
+        <%= form.error_messages unless supplier_errors[:contacts].blank? %>
+        <%= display_contacts_list(supplier) %>
+        <%= display_contact_add_button(supplier) if is_form_view? %>
+      <% end %>
+      
+      <% t.content_for_history(supplier) %>
+      
+      <%= form.form_buttons %>
+    <% end %>
   <% end %>
 </div>

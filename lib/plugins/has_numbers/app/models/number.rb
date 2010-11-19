@@ -14,11 +14,11 @@ class Number < ActiveRecord::Base
   
   VISIBLE_STATES = { "Privé" => false, "Public" => true }
   
+  journalize :attributes => :number, :identifier_method => :formatted
+  
   has_search_index  :only_attributes        => [ :number ],
                     :additional_attributes  => { :formatted => :string },
                     :only_relationships     => [ :number_type, :indicative ]
-  
-  journalize :attributes => :number, :identifier_method => :formatted
   
   def formatted
     ActiveSupport::Deprecation.warn("formatted is now deprecated, please use number or formatted_with_indicative instead", caller)

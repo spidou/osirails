@@ -4,14 +4,14 @@ class QuoteItem < ActiveRecord::Base
   belongs_to :quote
   belongs_to :end_product
   
-  journalize :identifier_method => :name, :attributes => [:name, :description, :end_product_id, :dimensions, :quantity, :unit_price, :vat, :prizegiving]
-  
   validates_presence_of :name
   
   validates_numericality_of :unit_price, :vat, :quantity, :unless => :free_item?
   validates_numericality_of :prizegiving, :allow_blank => true
   
   validates_associated :end_product
+  
+  journalize :identifier_method => :name, :attributes => [ :name, :description, :end_product_id, :dimensions, :quantity, :unit_price, :vat, :prizegiving ]
   
   attr_accessor :should_destroy, :product_reference_id, :order_id
   

@@ -41,8 +41,6 @@ class Order < ActiveRecord::Base
   has_many :mockups
   has_many :graphic_documents
   
-  journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"}
-
   validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id
   validates_presence_of :customer,                :if => :customer_id
@@ -59,13 +57,15 @@ class Order < ActiveRecord::Base
   validate :validates_order_type_validity
   #TODO validates_date :previsional_delivery (check if the date is correct, if it's after order creation date), etc. )
   
+  journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"}
+  
+  has_search_index :only_attributes    => [ :title, :reference, :customer_needs ],
+                   :only_relationships => [ :customer ]
+  
   before_validation_on_create :update_reference
   
   after_save    :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
   after_create  :create_steps
-  
-  has_search_index :only_attributes    => [ :title, :reference, :customer_needs ],
-                   :only_relationships => [ :customer ]
   
   # level constants
   CRITICAL  = 'critical'

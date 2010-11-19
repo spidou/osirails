@@ -8,9 +8,9 @@ class Job < ActiveRecord::Base
   
   named_scope :with_responsibility, :conditions => ["responsible = ?", true]
   
-  journalize :identifier_method => :name
-  
   validates_uniqueness_of :name
+  
+  journalize :identifier_method => :name
   
   has_search_index :only_attributes => [:id, :name, :responsible, :mission, :activity, :goal],
                    :identifier => :name

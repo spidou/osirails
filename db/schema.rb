@@ -1436,7 +1436,6 @@ ActiveRecord::Schema.define(:version => 20100917082131) do
 
   create_table "thirds", :force => true do |t|
     t.integer  "legal_form_id"
-    t.integer  "creator_id"
     t.string   "type"
     t.string   "name"
     t.string   "website"

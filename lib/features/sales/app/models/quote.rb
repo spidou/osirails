@@ -32,12 +32,6 @@ class Quote < ActiveRecord::Base
                     :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
                     :url  => '/quotes/:quote_id/order_form'
                     
-  journalize :attributes   => [:status, :creator_id, :quote_contact_id, :reference, :carriage_costs, :prizegiving, 
-                               :deposit, :discount, :sales_terms, :validity_delay, :validity_delay_unit, :confirmed_on, 
-                               :cancelled_on, :sended_on, :send_quote_method_id, :signed_on, :order_form_type_id],
-             :subresources => [:quote_items, :bill_to_address, :ship_to_address],
-             :attachments  =>  :order_form
-  
   named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ], :order => "quotes.created_at DESC"
   
   named_scope :pending,   :conditions => [ 'status IN (?)', [STATUS_CONFIRMED, STATUS_SENDED] ], :order => "quotes.created_at DESC"
@@ -86,6 +80,12 @@ class Quote < ActiveRecord::Base
     
     quote.validate :validates_presence_of_order_form
   end
+  
+  journalize :attributes   => [:status, :creator_id, :quote_contact_id, :reference, :carriage_costs, :prizegiving, 
+                               :deposit, :discount, :sales_terms, :validity_delay, :validity_delay_unit, :confirmed_on, 
+                               :cancelled_on, :sended_on, :send_quote_method_id, :signed_on, :order_form_type_id],
+             :subresources => [:quote_items, :bill_to_address, :ship_to_address],
+             :attachments  =>  :order_form
   
   after_save    :save_quote_items, :remove_order_end_products
   after_update  :update_quote_step_status

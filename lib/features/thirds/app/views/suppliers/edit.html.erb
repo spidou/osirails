@@ -1,16 +1,2 @@
-<% add_contextual_menu_item :possible_actions do %>
-  <%= new_supplier_link(:link_text => "Nouveau fournisseur") %>
-	<%= supplier_link(@supplier, :link_text => "Voir le fournisseur")%>
-	<%= delete_supplier_link(@supplier, :link_text => "Supprimer le fournisseur")%>
-<% end %>
-
-<% add_contextual_menu_item :useful_links do %>
-	<%= suppliers_link(:link_text => "Voir tous les fournisseurs") %>
-<% end %>
-
-<% content_for :header do %>
-     <%= javascript_include_tag 'thirds/thirds' %>
-<% end %>
-
 <h1>Modifier le fournisseur </h1>
 <%= render :partial => @supplier %>

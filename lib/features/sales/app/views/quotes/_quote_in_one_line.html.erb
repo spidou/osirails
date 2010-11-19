@@ -6,7 +6,7 @@ title = quote.status ? " title=\"#{quote.status.titleize} quote\"" : ''
 
 <tr class="quote<%= status %>"<%= title %>>
   <td class="selector"><%= context_menu(quote, 'quote') %></td>
-  <td class="reference text"><%= quote.reference %></td>
+  <td class="reference text"><%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(quote.order, quote)) %></td>
   <td class="created_at"><%= quote.created_at.humanize if quote.created_at %></td>
   <td class="confirmed_on"><%= quote.confirmed_on.humanize if quote.confirmed_on %></td>
   <td class="contact"><%= quote.quote_contact.fullname %></td>

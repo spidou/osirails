@@ -1,12 +1,2 @@
-<% add_contextual_menu_item :possible_actions do %>
-  <%= new_subcontractor_link(:link_text => "Nouveau sous-traitant") %>
-	<%= subcontractor_link(@subcontractor, :link_text => "Voir le sous-traitant") %>
-	<%= delete_subcontractor_link(@subcontractor, :link_text => "Supprimer le sous-traitant") %>
-<% end %>
-
-<% add_contextual_menu_item :useful_links do %>
-	<%= subcontractors_link(:link_text => "Voir tous les sous-traitants") %>
-<% end %>
-
 <h1>Modifier le sous-traitant</h1>
 <%= render :partial => @subcontractor %>

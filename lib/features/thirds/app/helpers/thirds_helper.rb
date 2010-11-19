@@ -1,22 +1,5 @@
 module ThirdsHelper
-#  def contextual_search_for_customer
-#    contextual_search("Customer", [ "*",
-#                                    "legal_form.name",
-#                                    "establishments.name",
-#                                    "establishments.contacts.*"] )
-#  end
-#  
-#  def contextual_search_for_supplier
-#    contextual_search("Supplier", [ "*",
-#                                    "activity_sector_reference.code",
-#                                    "activity_sector_reference.activity_sector.name",
-#                                    "activity_sector_reference.custom_activity_sector.name",
-#                                    "legal_form.name",
-#                                    "contacts.first_name", 
-#                                    "contacts.last_name",
-#                                    "iban.*"] )
-#  end
-  
+  ### Customer
   def customer_action_buttons(customer)
     html = []
     html << customer_link(customer) unless is_show_view?
@@ -36,12 +19,10 @@ module ThirdsHelper
   def query_td_for_name_in_customer(content)
     content_tag(:td, link_to(content, @query_object), :class => :text)
   end
-  alias_method :query_td_for_name_in_supplier, :query_td_for_name_in_customer
   
   def query_td_for_legal_form_name_in_customer(content)
     content_tag(:td, content, :class => :text)
   end
-  alias_method :query_td_for_legal_form_name_in_supplier, :query_td_for_legal_form_name_in_customer
   
   def query_td_for_brand_names_in_customer(content)
     content_tag(:td, content, :class => :text)
@@ -54,6 +35,18 @@ module ThirdsHelper
   def query_td_for_head_office_activity_sector_reference_get_activity_sector_name_in_customer(content)
     content_tag(:td, content, :class => :text)
   end
+  
+  ### Supplier
+  def supplier_action_buttons(supplier)
+    html = []
+    html << supplier_link(supplier) unless is_show_view?
+    html << edit_supplier_link(supplier) unless is_edit_view?
+    html << delete_supplier_link(supplier)
+    html.compact
+  end
+  
+  alias_method :query_td_for_name_in_supplier, :query_td_for_name_in_customer
+  alias_method :query_td_for_legal_form_name_in_supplier, :query_td_for_legal_form_name_in_customer
   
   def query_td_for_activity_sector_reference_get_activity_sector_name_in_supplier(content)
     content_tag(:td, content, :class => :text)

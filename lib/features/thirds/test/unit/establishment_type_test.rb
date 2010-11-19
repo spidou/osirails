@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/../thirds_test'
 
 class EstablishmentTypeTest < ActiveSupport::TestCase
+  should_journalize :identifier_method => :name
+  
   context "An empty establishment type" do
     setup do
       @establishment_type = EstablishmentType.new

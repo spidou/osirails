@@ -10,8 +10,6 @@ class ContactTest < ActiveSupport::TestCase
   
   should_belong_to :has_contact
   
-  should_journalize :identifier_method => :fullname
-  
   should_validate_presence_of :has_contact, :first_name, :last_name, :gender
   
   should_allow_values_for :email, nil, "", "foo@bar.com"
@@ -19,6 +17,8 @@ class ContactTest < ActiveSupport::TestCase
   
   should_allow_values_for :gender, "M", "F"
   should_not_allow_values_for :gender, nil, "", 1, "anything"
+  
+  should_journalize :identifier_method => :fullname
   
   context "A new contact" do
     setup do

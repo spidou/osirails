@@ -24,7 +24,7 @@ conf_pagination: &pagination
     - 100
     - 200
 
-advanced_supplier:
+advanced_subcontractor:
   filters:
     - name
     - legal_form.name
@@ -41,7 +41,7 @@ advanced_supplier:
   <<: *order
   <<: *pagination
 
-supplier_index:
+subcontractor_index:
   filters:
     - name
     - legal_form.id

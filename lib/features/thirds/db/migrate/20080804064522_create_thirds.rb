@@ -2,12 +2,12 @@ class CreateThirds < ActiveRecord::Migration
   def self.up
     create_table :thirds do |t|
       # common attributes
-      t.references :legal_form, :creator
+      t.references :legal_form
       t.string  :type, :name, :website
       t.boolean :activated, :default => true
       t.date    :company_created_at, :collaboration_started_at
       
-      # supplier and subcontractor attributes
+      # supplier attributes
       t.references :activity_sector_reference
       t.string :siret_number
       

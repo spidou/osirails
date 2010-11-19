@@ -2,31 +2,25 @@ class JobContract < ActiveRecord::Base
   has_permissions :as_business_object
   has_documents :job_contract, :job_contract_endorsement, :resignation_letter, :demission_letter, :other
   
-  # Relationships
   belongs_to :employee
   belongs_to :employee_state
   belongs_to :job_contract_type
   
   has_many :salaries, :order => "created_at DESC"
   
-  journalize :attributes => [:job_contract_type_id, :start_date, :end_date, :departure]
-  
-  # Validations
   #TODO active these validations once the process to create job_contract and employee_state is well determined
 #  validates_presence_of :employee_state_id, :job_contract_type_id
 #  validates_presence_of :employee_state,    :if => :employee_state_id
 #  validates_presence_of :job_contract_type, :if => :job_contract_type_id
   
   validates_associated :salaries
+  
+  journalize :attributes => [ :job_contract_type_id, :start_date, :end_date, :departure ]
 
-  #acts_as_file
-
-  #Callbacks
-  after_update :save_salary 
-
-  # Search Plugin
   has_search_index  :only_attributes    => [:start_date, :departure],
                     :only_relationships => [:job_contract_type]
+  
+  after_update :save_salary 
   
   #return the actual salary
   #OPTIMIZE use 'has_one :current_salary' instead!

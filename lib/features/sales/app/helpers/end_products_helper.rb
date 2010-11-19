@@ -30,18 +30,17 @@ module EndProductsHelper
                                                   { :update_id  => 'add_end_product_with_this_product_reference_id' } )
     html << "&nbsp;"
     
-    #TODO replace link_to_remove by button_to_remove after migrating to Rails 2.2.1
-    html << ( link_to_remote "Ajouter", :update     => :new_end_products,
-                                        :position   => :bottom,
-                                        :url        => { :controller => :survey_step, :action => :new },
-                                        :method     => :get,
-                                        :condition  => "parseInt($('add_end_product_with_this_product_reference_id').value) > 0",
-                                        :with       => "'product_reference_id=' + $('add_end_product_with_this_product_reference_id').value",
-                                        :complete   => "$('new_end_products').show();" +
-                                                       "$('new_end_products').select('.end_product').last().scrollTo().show().highlight();" +
-                                                       "initialize_autoresize_text_areas();" +
-                                                       "$('add_end_product_with_this_product_reference_id').value = '';" +
-                                                       "$('product_reference_reference').value = '#{default_value_for_autocomplete_field}';" ) #TODO $('id').value = ''; $('id').blur() => but it doesn't work!! how can I do this ?
+    html << ( button_to_remote "Ajouter", :update     => :new_end_products,
+                                          :position   => :bottom,
+                                          :url        => { :controller => :survey_step, :action => :new },
+                                          :method     => :get,
+                                          :condition  => "parseInt($('add_end_product_with_this_product_reference_id').value) > 0",
+                                          :with       => "'product_reference_id=' + $('add_end_product_with_this_product_reference_id').value",
+                                          :complete   => "$('new_end_products').show();" +
+                                                         "$('new_end_products').select('.end_product').last().scrollTo().show().highlight();" +
+                                                         "initialize_autoresize_text_areas();" +
+                                                         "$('add_end_product_with_this_product_reference_id').value = '';" +
+                                                         "$('product_reference_reference').value = '#{default_value_for_autocomplete_field}';" ) #TODO $('id').value = ''; $('id').blur() => but it doesn't work!! how can I do this ?
     html << "</div>"
   end
   

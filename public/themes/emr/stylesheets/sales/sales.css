@@ -376,7 +376,7 @@ table.survey_checklist td.response {
   width: auto !important;
 }
 
-#survey_step_search_product_reference input {
+#survey_step_search_product_reference input[type=text] {
   margin-left: 5px;
   padding-right: 20px;
 }

@@ -23,7 +23,7 @@ fr:
       subcontractor: "Sous-traitant"
       subcontractor_request: "Demande de sous-traitance"
       survey_intervention: "Intervention \"Survey\""
-    attributes: 
+    attributes:
       adjustment:
         amount: "Montant"
         comment: "Commentaire"
@@ -211,7 +211,12 @@ fr:
         #establishment: "Établissement associé"
         establishment_name: "Nom de l'enseigne"
       subcontractor:
+        name: "Raison Sociale"
+        legal_form: "Forme juridique"
+        website: "Site Internet"
+        siret_number: "N° SIRET"
         activity_sector_reference: "Code NAF"
+        address: "Adresse"
       subcontractor_request:
         subcontractor: "Préstataire"
         name: "Préstataire"
@@ -330,9 +335,15 @@ fr:
         name: "Famille"
       product_reference_sub_category:
         name: "Sous-Famille"
+    filters:
+      subcontractor:
+        phone_number: "N° Téléphone"
+        fax_number: "N° Fax"
     page_names:
       product_reference:
         product_reference_index: "Les produits références"
+      subcontractor:
+        subcontractor_index: "Les sous-traitants"
   
   view:
     contextual_menu_sections:
