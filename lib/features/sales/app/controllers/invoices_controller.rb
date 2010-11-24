@@ -22,6 +22,10 @@ class InvoicesController < ApplicationController
         render :layout => false
       }
       format.pdf {
+        #FIXME don't know why, but for this case, response.headers["Expires"] is always set to 1970, so the file is never get from cache, even when we want it to
+        #      we have a good behaviour on press_proofs
+        set_cache_buster unless @invoice.can_be_downloaded? # don't allow browser caching when downloading preview
+        
         build_temporary_reference_line
         pdf_path = "assets/sales/invoices/generated_pdf/#{@invoice.can_be_downloaded? ? @invoice.id : 'tmp_'+generate_random_id}.pdf" # => "1.pdf" or "tmp_W91OA918.pdf"
         pdf_filename = "#{Invoice.human_name.parameterize.to_s}_#{@invoice.can_be_downloaded? ? @invoice.reference : 'tmp_'+generate_random_id}" # => "invoice_REFINVOICE" or "invoice_tmp_W91OA918"
@@ -330,8 +334,10 @@ class InvoicesController < ApplicationController
     end
     
     def find_invoice
-      id = params[:id] || params[:invoice_id]
-      @invoice = Invoice.find(id) if id
+      if id = params[:id] || params[:invoice_id]
+        @invoice = Invoice.find(id)
+        error_access_page(404) unless @order and @invoice.order_id == @order.id
+      end
     end
     
     def check_invoice_belong_to_order
@@ -354,7 +360,7 @@ class InvoicesController < ApplicationController
     end 
     
     def build_temporary_reference_line
-      lines = ([@invoice.associated_quote] + @invoice.delivery_notes).collect do |item|
+      lines = ([@invoice.signed_quote] + @invoice.delivery_notes).collect do |item|
         "#{item.class.human_name} n°#{item.reference}"
       end.join("\n")
       

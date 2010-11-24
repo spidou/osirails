@@ -1,13 +1,14 @@
 <%
 invoice = invoice_in_one_line
 status  = invoice_status_text(invoice)
+order   = invoice.order
 
 due_date = invoice.upcoming_due_date || invoice.due_dates.last
 %>
 
 <tr class="invoice <%= invoice.status %>_invoice" title="<%= h(status) %>">
   <td class="selector"><%= context_menu(invoice, 'invoice') %></td>
-  <td class="reference"><%= invoice.reference %></td>
+  <td class="reference text"><%= link_to(invoice.reference, order_invoicing_step_invoice_step_invoice_path(order, invoice)) if invoice.reference %></td>
   <td class="published_on"><%= invoice.published_on.humanize if invoice.published_on and invoice.confirmed_at %></td>
   <td class="invoice_type"><%= invoice.invoice_type.title %></td>
   <td class="net_to_paid"><%= invoice.net_to_paid.to_f.round_to(2).to_s(2) %></td>
@@ -15,7 +16,7 @@ due_date = invoice.upcoming_due_date || invoice.due_dates.last
   <td class="due_date"><%= due_date.date.humanize %></td>
   <td class="due_date_net_to_paid"><%= due_date.net_to_paid.to_f.round_to(2).to_s(2) %></td>
   <td class="sended_on"><%= invoice.sended_on.humanize if invoice.sended_on %></td>
-  <% if @order.customer.factorised? %>
+  <% if order.customer.factorised? %>
     <td>#TODO</td>
   <% end %>
   <td class="totally_paid_on"><%= invoice.was_totally_paid_on.humanize if invoice.was_totally_paid? %></td>

@@ -3,6 +3,10 @@ require File.dirname(__FILE__) + '/../rh_test'
 require File.dirname(__FILE__) + '/leave_base_test'
 require File.dirname(__FILE__) + '/leave_validations_test'
 
+#TODO these tests absolutly need to be 'shoulda-ized'. The single context is too adventurous
+#     because it depends on working_days, holidays and the current date.
+#     for example all the 47th week of 2010, tests crashes on 'test_total_estimate_duration_with_in_parameters'
+#     because the @leave have a start_date which is on of the legal_holidays!!
 class LeaveTest < ActiveSupport::TestCase
   include LeaveBaseTest
   include LeaveValidationsTest

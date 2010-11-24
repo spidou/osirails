@@ -20,6 +20,10 @@ class DeliveryNotesController < ApplicationController
         render :layout => false
       }
       format.pdf {
+        #FIXME don't know why, but for this case, response.headers["Expires"] is always set to 1970, so the file is never get from cache, even when we want it to
+        #      we have a good behaviour on press_proofs
+        set_cache_buster unless @delivery_note.can_be_downloaded? # don't allow browser caching when downloading preview
+        
         build_temporary_reference_line
         pdf_path = "assets/sales/delivery_notes/generated_pdf/#{@delivery_note.can_be_downloaded? ? @delivery_note.id : 'tmp_'+generate_random_id}.pdf" # => "1.pdf" or "tmp_W91OA918.pdf"
         pdf_filename = "#{DeliveryNote.human_name.parameterize.to_s}_#{@delivery_note.can_be_downloaded? ? @delivery_note.reference : 'tmp_'+generate_random_id}" # => "delivery-note_REFDELIVERYNOTE" or "delivery-note_tmp_W91OA918"
@@ -236,7 +240,7 @@ class DeliveryNotesController < ApplicationController
     def find_delivery_note
       if id = params[:id] || params[:delivery_note_id]
         @delivery_note = DeliveryNote.find(id)
-        error_access_page(404) unless @order and @order.delivery_notes.include?(@delivery_note)
+        error_access_page(404) unless @order and @delivery_note.order_id == @order.id
       end
     end
     
@@ -253,7 +257,7 @@ class DeliveryNotesController < ApplicationController
     end 
     
     def build_temporary_reference_line
-      fake_quote_item = QuoteItem.new(:name => "Pièce d'origine :", :description => "#{Quote.human_name} n°#{@delivery_note.associated_quote.reference}")
-      @delivery_note.delivery_note_items.unshift DeliveryNoteItem.new(:quote_item => fake_quote_item)
+      fake_end_product = EndProduct.new(:name => "Pièce d'origine :", :description => "#{Quote.human_name} n°#{@delivery_note.signed_quote.reference}")
+      @delivery_note.delivery_note_items.unshift DeliveryNoteItem.new(:end_product => fake_end_product)
     end
 end

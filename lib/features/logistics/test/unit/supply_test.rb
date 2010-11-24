@@ -395,6 +395,7 @@ module SupplyTest
             @supply = parent.supplies.build
           end
           
+          #FIXME this test is not reliable, see the TODO note on Supply#validates_uniqueness_of_supplies_supply_sizes_scoped_by_name
           should "NOT be valid if name and supply_size's values are exactly the same" do
             @supply.attributes = { :name => "Supply",
                                    :supplies_supply_size_attributes => [
@@ -406,7 +407,7 @@ module SupplyTest
                                       :value            => "1000" } ] }
             @supply.valid?
             
-            assert @supply.errors.invalid?(:supplies_supply_sizes)
+            assert @supply.errors.invalid?(:supplies_supply_sizes), "<#{@another_supply.designation}> expected to be equal to\n<#{@supply.designation}>"
             assert_match /La famille choisie contient déjà une fourniture avec le même type et les mêmes spécificités \(#{@supply.designation}\)/, @supply.errors.on(:supplies_supply_sizes)
             assert @supply.errors.invalid?(:name)
             assert_equal 2, @supply.supplies_supply_sizes.select{ |s| s.errors.on(:value) }.size

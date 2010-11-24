@@ -5,6 +5,7 @@ class PressProofsController < ApplicationController
   
   skip_before_filter :lookup_step_environment, :only => [:context_menu]
   
+  before_filter :find_press_proof
   before_filter :load_order_mockups, :only => [ :new, :create, :edit, :update ]
   
   # GET /orders/:order_id/:step/press_proofs
@@ -14,14 +15,14 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs/:id
   def show
-    @press_proof = PressProof.find(params[:id])
-    pdf_path = "assets/sales/press_proofs/generated_pdf/#{@press_proof.can_be_downloaded? ? @press_proof.id : 'tmp_'+generate_random_id}.pdf" # => "1.pdf" or "tmp_W91OA918.pdf"
-    
     respond_to do |format|
       format.xml  {
         render :layout => false
       }
       format.pdf  {
+        set_cache_buster unless @press_proof.can_be_downloaded? # don't allow browser caching when downloading preview
+        
+        pdf_path = "assets/sales/press_proofs/generated_pdf/#{@press_proof.can_be_downloaded? ? @press_proof.id : 'tmp_'+generate_random_id}.pdf" # => "1.pdf" or "tmp_W91OA918.pdf"
         pdf_filename = "#{PressProof.human_name.parameterize.to_s}_#{@press_proof.can_be_downloaded? ? @press_proof.reference : 'tmp_'+generate_random_id}" # => "press-proof_REFPRESSPROOF" or "press-proof_tmp_W91OA918"
         render :pdf => pdf_filename, :xml_template => "press_proofs/show.xml.erb", :xsl_template => "press_proofs/show.xsl.erb", :path => pdf_path, :is_temporary_pdf => !@press_proof.can_be_downloaded?
       }
@@ -61,14 +62,11 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs/:press_proof_id
   def edit
-    @press_proof = PressProof.find(params[:id])
     error_access_page(412) unless @press_proof.can_be_edited?
   end
   
   # PUT /orders/:order_id/:step/press_proofs/:press_proof_id
   def update
-    @press_proof = PressProof.find(params[:id])
-    
     if @press_proof.can_be_edited?
       if @press_proof.update_attributes(params[:press_proof])
         flash[:notice] = "Le Bon à Tirer (BAT) a été modifié avec succès"
@@ -83,7 +81,6 @@ class PressProofsController < ApplicationController
   
   # DELETE /orders/:order_id/:step/press_proofs/:id
   def destroy
-    @press_proof = PressProof.find(params[:id])
     if @press_proof.can_be_destroyed?
       if @press_proof.destroy
         flash[:notice] = "Le Bon à Tirer (BAT) a été supprimé avec succès"
@@ -98,7 +95,6 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs/:press_proof_id/cancel
   def cancel
-    @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_cancelled?
       if @press_proof.cancel
         flash[:notice] = "Le Bon à Tirer (BAT) a été annulé avec succès"
@@ -113,7 +109,6 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs/:press_proof_id/confirm
   def confirm
-    @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_confirmed?
       if @press_proof.confirm
         flash[:notice] = "Le Bon à Tirer (BAT) a été validé avec succès"
@@ -128,12 +123,11 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs/:press_proof_id/send_form
   def send_form
-    error_access_page(412) unless (@press_proof = PressProof.find(params[:press_proof_id])).can_be_sended?
+    error_access_page(412) unless @press_proof.can_be_sended?
   end
   
   # PUT /orders/:order_id/:step/press_proofs/:press_proof_id/send_to_customer
   def send_to_customer
-    @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_sended?
       if @press_proof.send_to_customer(params[:press_proof])
        flash[:notice] = "Le Bon à tirer (BAT) a été modifié avec succés"
@@ -148,12 +142,11 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs/:press_proof_id/sign_form
   def sign_form
-    error_access_page(412) unless (@press_proof = PressProof.find(params[:press_proof_id])).can_be_signed?
+    error_access_page(412) unless @press_proof.can_be_signed?
   end
   
   # PUT /orders/:order_id/:step/press_proofs/:press_proof_id/sign
   def sign
-    @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_signed?
       if @press_proof.sign(params[:press_proof])
        flash[:notice] = "Le Bon à tirer (BAT) a été modifié avec succés"
@@ -168,12 +161,11 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs/:press_proof_id/revoke_form
   def revoke_form
-    error_access_page(412) unless (@press_proof = PressProof.find(params[:press_proof_id])).can_be_revoked?
+    error_access_page(412) unless @press_proof.can_be_revoked?
   end
   
   # PUT /orders/:order_id/:step/press_proofs/:press_proof_id/revoke
   def revoke
-    @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_revoked?
       @press_proof.revoked_by_id = current_user.id
       if @press_proof.revoke(params[:press_proof])
@@ -189,7 +181,6 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs/:press_proof_id/signed_press_proof
   def signed_press_proof
-    @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof and @press_proof.signed?
       url = @press_proof.signed_press_proof.path
       ext = File.extname(url)
@@ -201,7 +192,8 @@ class PressProofsController < ApplicationController
   end
   
   def add_mockup
-    press_proof          = params[:press_proof_id] ? PressProof.find(params[:press_proof_id]) : PressProof.new
+    @press_proof ||= PressProof.new
+    
     graphic_item_version = GraphicItemVersion.find(params[:mockup_version_id])
     position             = params[:position].to_i
     
@@ -209,11 +201,18 @@ class PressProofsController < ApplicationController
       page.insert_html :bottom, "droppable_div", :partial => 'press_proofs/selected_graphic_item_version',
                                                  :object  => graphic_item_version,
                                                  :locals  => { :position    => position,
-                                                               :press_proof => press_proof }
+                                                               :press_proof => @press_proof }
     end
   end
   
   private
+    def find_press_proof
+      if id = params[:id] || params[:press_proof_id]
+        @press_proof = PressProof.find(id)
+        error_access_page(404) unless @order and @press_proof.order_id == @order.id
+      end
+    end
+    
     def load_order_mockups
       @mockups = @order.mockups
     end

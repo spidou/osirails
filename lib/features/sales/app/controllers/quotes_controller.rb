@@ -3,13 +3,14 @@ class QuotesController < ApplicationController
   helper :orders, :contacts, :numbers, :address
   # method_permission :edit => ['enable', 'disable']
   
-  before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]
-  
-  after_filter :add_error_in_step_if_quote_has_errors, :only => [ :create, :update ]
-  
   acts_as_step_controller :step_name => :quote_step, :skip_edit_redirection => true
   
   skip_before_filter :lookup_step_environment, :only => [:context_menu]
+  
+  before_filter :find_quote
+  before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]
+  
+  after_filter :add_error_in_step_if_quote_has_errors, :only => [ :create, :update ]
   
   set_journalization_actor [:create, :update, :confirm, :send_to_customer, :sign]
   
@@ -17,9 +18,6 @@ class QuotesController < ApplicationController
   # GET /orders/:order_id/:step/quotes/:id.xml
   # GET /orders/:order_id/:step/quotes/:id.pdf
   def show
-    @quote = Quote.find(params[:id])
-    pdf_path = "assets/sales/quotes/generated_pdf/#{@quote.can_be_downloaded? ? @quote.id : 'tmp_'+generate_random_id}.pdf" # => "1.pdf" or "tmp_W91OA918.pdf"
-    
     respond_to do |format|
       format.xsl {
         render :layout => false
@@ -28,6 +26,11 @@ class QuotesController < ApplicationController
         render :layout => false
       }
       format.pdf {
+        #FIXME don't know why, but for this case, response.headers["Expires"] is always set to 1970, so the file is never get from cache, even when we want it to
+        #      we have a good behaviour on press_proofs
+        set_cache_buster unless @quote.can_be_downloaded? # don't allow browser caching when downloading preview
+        
+        pdf_path = "assets/sales/quotes/generated_pdf/#{@quote.can_be_downloaded? ? @quote.id : 'tmp_'+generate_random_id}.pdf" # => "1.pdf" or "tmp_W91OA918.pdf"
         pdf_filename = "#{Quote.human_name.parameterize.to_s}_#{@quote.can_be_downloaded? ? @quote.reference : 'tmp_'+generate_random_id}" # => "quote_REFQUOTE" or "quote_tmp_W91OA918"
         render_pdf(pdf_filename, "quotes/show.xml.erb", "quotes/show.xsl.erb", pdf_path, !@quote.can_be_downloaded?)
       }
@@ -71,12 +74,12 @@ class QuotesController < ApplicationController
   
   # GET /orders/:order_id/:step/quotes/:id/edit
   def edit
-    error_access_page(412) unless (@quote = Quote.find(params[:id])).can_be_edited?
+    error_access_page(412) unless @quote.can_be_edited?
   end
   
   # PUT /orders/:order_id/:step/quotes/:id
   def update
-    if (@quote = Quote.find(params[:id])).can_be_edited?
+    if @quote.can_be_edited?
       if @quote.update_attributes(params[:quote])
         flash[:notice] = 'Le devis a été modifié avec succès'
         redirect_to send(@step.original_step.path)
@@ -90,7 +93,7 @@ class QuotesController < ApplicationController
   
   # DELETE /orders/:order_id/:step/quotes/:id
   def destroy
-    if (@quote = Quote.find(params[:id])).can_be_deleted?
+    if @quote.can_be_deleted?
       unless @quote.destroy
         flash[:notice] = 'Une erreur est survenue à la suppression du devis'
       end
@@ -110,7 +113,7 @@ class QuotesController < ApplicationController
   
   # GET /orders/:order_id/:step/quotes/:quote_id/confirm
   def confirm
-    if (@quote = Quote.find(params[:quote_id])).can_be_confirmed?
+    if @quote.can_be_confirmed?
       unless @quote.confirm
         flash[:error] = "Une erreur est survenue à la validation du devis"
       else
@@ -124,7 +127,7 @@ class QuotesController < ApplicationController
   
   # GET /orders/:order_id/:step/quotes/:quote_id/cancel
   def cancel
-    if (@quote = Quote.find(params[:quote_id])).can_be_cancelled?
+    if @quote.can_be_cancelled?
       unless @quote.cancel
         flash[:error] = "Une erreur est survenue à l'annulation du devis"
       end
@@ -136,12 +139,12 @@ class QuotesController < ApplicationController
   
   # GET /orders/:order_id/:step/quotes/:quote_id/send_form
   def send_form
-    error_access_page(412) unless (@quote = Quote.find(params[:quote_id])).can_be_sended?
+    error_access_page(412) unless @quote.can_be_sended?
   end
   
   # PUT /orders/:order_id/:step/quotes/:quote_id/send_to_customer
   def send_to_customer # method 'send' is also defined
-    if (@quote = Quote.find(params[:quote_id])).can_be_sended?
+    if @quote.can_be_sended?
       if @quote.send_to_customer(params[:quote])
         flash[:notice] = 'Le devis a été modifié avec succès'
         redirect_to send(@step.original_step.path)
@@ -155,12 +158,12 @@ class QuotesController < ApplicationController
   
   # GET /orders/:order_id/:step/quotes/:quote_id/sign_form
   def sign_form
-    error_access_page(412) unless (@quote = Quote.find(params[:quote_id])).can_be_signed?
+    error_access_page(412) unless @quote.can_be_signed?
   end
   
   # PUT /orders/:order_id/:step/quotes/:quote_id/sign
   def sign
-    if (@quote = Quote.find(params[:quote_id])).can_be_signed?
+    if @quote.can_be_signed?
       if @quote.sign(params[:quote])
         flash[:notice] = 'Le devis a été modifié avec succès'
         redirect_to send(@step.original_step.path)
@@ -174,7 +177,7 @@ class QuotesController < ApplicationController
   
   # GET /orders/:order_id/:step/quotes/:quote_id/order_form
   def order_form
-    if @quote = Quote.find(params[:quote_id]) and @quote.signed?
+    if @quote.signed?
       url = @quote.order_form.path
       url = File.exists?(url) ? url : @quote.order_form
       
@@ -190,6 +193,13 @@ class QuotesController < ApplicationController
   end
   
   private
+    def find_quote
+      if id = params[:id] || params[:quote_id]
+        @quote = Quote.find(id)
+        error_access_page(404) unless @order and @quote.order_id == @order.id
+      end
+    end
+    
     ## this method could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
     ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
     ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core

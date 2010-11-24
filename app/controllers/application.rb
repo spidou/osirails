@@ -142,7 +142,15 @@ class ApplicationController < ActionController::Base
       end
     end
     ######################################################################
-      
+    
+    # thanks to stackoverflow for the tip (http://stackoverflow.com/questions/711418/how-to-prevent-browser-page-caching-in-rails)
+    # call this method if you want to prevent browser page caching
+    def set_cache_buster
+      response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+      response.headers["Pragma"] = "no-cache"
+      response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+    end
+  
   private
 
     # Do every verification before shows the page

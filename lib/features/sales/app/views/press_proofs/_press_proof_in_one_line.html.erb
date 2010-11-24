@@ -6,7 +6,7 @@ status      = press_proof_status_text(press_proof)
 
 <tr class="press_proof <%= press_proof.status %>_press_proof" title="<%= status %>">
   <td class="selector"><%= context_menu(press_proof, 'press_proof') %></td>
-  <td class="reference"><%= press_proof.reference %></td>
+  <td class="reference text"><%= link_to(press_proof.reference, order_commercial_step_press_proof_step_press_proof_path(press_proof.order, press_proof)) if press_proof.reference %></td>
   <td class="confirmed_on"><%= l(press_proof.confirmed_on, :format => :short) if press_proof.confirmed_on %></td>
   <td class="internal_actor"><%= press_proof.internal_actor.fullname %></td>
   <td class="mockups">
