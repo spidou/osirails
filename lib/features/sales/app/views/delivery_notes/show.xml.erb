@@ -30,7 +30,7 @@
         <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @delivery_note.order.commercial.numbers.first %></Phone>
       </Representative>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
-    </Supplier>  
+    </Supplier>
     <Customer>
       <CorporateName><%= @delivery_note.order.customer.name %></CorporateName>
       <CorporateName2><%= @delivery_note.order.customer.name %></CorporateName2>
@@ -48,32 +48,30 @@
         <FirstName><%= @delivery_note.delivery_note_contact.first_name %></FirstName>
         <Email><%= @delivery_note.delivery_note_contact.email %></Email>
         <Phone/>
-        <Fax/>      
+        <Fax/>
       </Representative>
     </Customer>
     <Lines>
       <% @delivery_note.delivery_note_items.each do |item| %>
-        <% unless item.quantity == 0 %>
-          <% item_id = item.id || generate_random_id %>
-          <Line>
-            <Id><%= item.id %></Id>
-            <% if @footlines_adjustments %>
-              <% @adjust_bottom = @footlines_adjustments.include?(("item_#{item_id}").to_sym) %>
-              <% if @adjust_bottom %>
-                <% @padding_bottom = @footlines_adjustments[("item_#{item_id}").to_sym].round_to(2).to_s(2) %>
-              <% else %>
-                <% @padding_bottom = "0.3" %>
-              <% end %>
+        <% item_id = item.id || generate_random_id %>
+        <Line>
+          <Id><%= item_id %></Id>
+          <% if @footlines_adjustments %>
+            <% @adjust_bottom = @footlines_adjustments.include?(("item_#{item_id}").to_sym) %>
+            <% if @adjust_bottom %>
+              <% @padding_bottom = @footlines_adjustments[("item_#{item_id}").to_sym].round_to(2).to_s(2) %>
             <% else %>
               <% @padding_bottom = "0.3" %>
             <% end %>
-            <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>  
-            <Reference><%= item.quote_item.end_product.product_reference.reference if item.quote_item.end_product %></Reference>
-            <Name><%= item.quote_item.name %></Name>
-            <Description><%= item.quote_item.description %></Description>
-            <Quantity><%= item.quantity %></Quantity>
-          </Line>
-        <% end %> 
+          <% else %>
+            <% @padding_bottom = "0.3" %>
+          <% end %>
+          <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>
+          <Reference><%= item.quote_item.end_product.product_reference.reference if item.quote_item.end_product %></Reference>
+          <Name><%= item.quote_item.name %></Name>
+          <Description><%= item.quote_item.description %></Description>
+          <Quantity><%= item.quantity %></Quantity>
+        </Line>
       <% end %>
     </Lines>
   </Document>
@@ -102,12 +100,12 @@
     <StatusInProgress>En cours</StatusInProgress>
     <StatusEnded>Terminé à 100%</StatusEnded>
     <Agreement>Date, signature et cachet client :</Agreement>
-    <Agreement2>Produits livrés <%= @delivery_note.delivery_note_type.installation ? "et installés" : "" %> conformes</Agreement2>
+    <Agreement2>Produits livrés<%= @delivery_note.delivery_note_type.installation ? " et installés" : "" %> conformes</Agreement2>
     <% @delivery_type = "LIVRAISON" %>
     <% @installation_type = "POSE" %>
     <DeliveryAndInstallationTitle><%= "#{@delivery_type}#{@delivery_note.delivery_note_type.installation ? ' ET '+@installation_type : ''}" %></DeliveryAndInstallationTitle>
     <DeliveryName>Nom du livreur :</DeliveryName>
     <InstallationName>Nom du poseur :</InstallationName>
-    <Page>Page</Page>  
+    <Page>Page</Page>
   </Labels>
 </Root>

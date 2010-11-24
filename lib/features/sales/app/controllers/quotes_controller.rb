@@ -16,6 +16,7 @@ class QuotesController < ApplicationController
   # GET /orders/:order_id/:step/quotes/:id.pdf
   def show
     @quote = Quote.find(params[:id])
+    pdf_path = "assets/sales/quotes/generated_pdf/#{@quote.can_be_downloaded? ? @quote.id : 'tmp_'+generate_random_id}.pdf" # => "1.pdf" or "tmp_W91OA918.pdf"
     
     respond_to do |format|
       format.xsl {
@@ -25,8 +26,8 @@ class QuotesController < ApplicationController
         render :layout => false
       }
       format.pdf {
-        pdf_filename = "devis_#{@quote.can_be_downloaded? ? @quote.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
-        render_pdf(pdf_filename, "quotes/show.xml.erb", "quotes/show.xsl.erb", "assets/sales/quotes/generated_pdf/#{@quote.reference.nil? ? 'tmp' : @quote.id}.pdf", @quote.reference.nil?)
+        pdf_filename = "#{Quote.human_name.parameterize.to_s}_#{@quote.can_be_downloaded? ? @quote.reference : 'tmp_'+generate_random_id}" # => "quote_REFQUOTE" or "quote_tmp_W91OA918"
+        render_pdf(pdf_filename, "quotes/show.xml.erb", "quotes/show.xsl.erb", pdf_path, !@quote.can_be_downloaded?)
       }
       format.html { }
     end

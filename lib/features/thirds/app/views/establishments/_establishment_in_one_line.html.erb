@@ -1,6 +1,5 @@
 <%
-  require_locals establishments_owner
-  owner_type = establishments_owner.class.name.downcase
+  require_locals owner_type
   establishment = establishment_in_one_line
   
   confim_text = "'Êtes-vous sûr? Attention, les modifications seront appliquées à la soumission du formulaire.'"
@@ -31,7 +30,7 @@
       <% end %>
     <% end %>
     
-    <%= render :partial => 'establishments/establishment_form', :object => establishment, :locals => { :establishments_owner => establishments_owner } if Establishment.can_view?(current_user) or Estabslishment.can_edit?(current_user) %>
+    <%= render :partial => 'establishments/establishment_form', :object => establishment, :locals => { :owner_type => owner_type } if Establishment.can_view?(current_user) or Estabslishment.can_edit?(current_user) %>
   </p>
 <% end  %>
 </div>

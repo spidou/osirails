@@ -188,8 +188,6 @@ fieldset:not(no-style) > legend {
 }
 
 textarea.autoresize_text_area {
-  height: 40px;
-  width: 275px;
   overflow: hidden;
 }
 
@@ -1105,24 +1103,31 @@ div label.skip_presentation {
   margin: 10px -13px -5px -13px;
 }
 
-.calendar-displayed-field {
-	padding-right: 18px;
+.calendar_container {
+  position: relative;
+  vertical-align: top;
 }
 
-.calendar-cleaner {
-	background:url("/themes/emr/images/eraser_12x12.png") ;
-  cursor: pointer;
-  vertical-align: middle;
-	position:relative;
-	right:18px;
-	border:none;
-	width:12px;
-	height:12px;
+.calendar_displayed_field {
+	padding-right: 16px; /* space for calendar_cleaner */
+	margin-right: 25px; /* space for calendar_trigger */
 }
 
-.calendar-trigger {
-  margin-left: -12px;
-  vertical-align: middle;
+.calendar_cleaner {
+	position: absolute;
+	background: url("/themes/emr/images/eraser_12x12.png") ;
+	top: 7px;
+	right: 30px;
+	border: none;
+	width: 12px;
+	height: 12px;
+	cursor: pointer;
+}
+
+.calendar_trigger {
+  position: absolute;
+  top: 4px;
+  right: 6px;
   cursor: pointer;
 }
 
@@ -1360,21 +1365,28 @@ div.auto_complete_container {
   display: inline;
 }
 
-p.with_auto_complete_container {
-  position: relative;
-  display: inline;
+div.auto_complete_container input {
+  padding-right: 20px;
 }
 
 div.auto_complete_container div.auto_complete_indicator {
   position: absolute;
   float: left;
-  top: 1px;
+  top: 0;
   right: 5px;
   width: 16px;
   height: 16px;
+  background: url('/themes/emr/images/not_loading.png') no-repeat;
+}
+
+div.auto_complete_container div.auto_complete_indicator.loading {
   background: url('/themes/emr/images/loading_16x16.gif') no-repeat;
 }
 
+p.contain_auto_completer {
+  position: relative;
+  display: inline;
+}
 /*/////////////////////////////////////////////////////
 					AUTOCOMPLETE FIELD
 ////////////////////////////////////////////////////*/

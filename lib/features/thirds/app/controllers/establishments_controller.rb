@@ -12,5 +12,15 @@ class EstablishmentsController < ApplicationController
       format.png { send_data(File.read(url), options) }
     end
   end
-
+  
+  def new
+    error_access_page(400) if params[:owner_type].blank?
+    
+    respond_to do |format|
+      format.js { render :partial => 'establishments/establishment_in_one_line',
+                         :object  => Establishment.new,
+                         :locals  => { :owner_type => params[:owner_type] } }
+    end
+  end
+  
 end

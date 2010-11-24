@@ -4,7 +4,6 @@ class InvoicesController < ApplicationController
   
   acts_as_step_controller :step_name => :invoice_step, :skip_edit_redirection => true
   
-  before_filter :load_employees
   before_filter :find_invoice
   before_filter :check_invoice_belong_to_order, :except => [ :new, :create, :ajax_request_for_invoice_items ]
   before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]
@@ -16,20 +15,15 @@ class InvoicesController < ApplicationController
   # GET /orders/:order_id/:step/invoices/:id.pdf
   def show
     respond_to do |format|
-      pdf_path = "assets/sales/invoices/generated_pdf/#{@invoice.reference.nil? ? 'tmp' : @invoice.id}.pdf"
-      
-      unless File.exist?(pdf_path)
-        ([@invoice.associated_quote] + @invoice.delivery_note_invoices.collect(&:delivery_note) + @order.unbilled_delivery_notes).uniq.each do |item|
-          @invoice.invoice_items.unshift InvoiceItem.new(:name => "Pièce d'origine : #{item.instance_of?(Quote) ? 'Devis' : 'Bon de Livraison'} n°#{item.reference}")
-        end
-      end
-      
       format.xml {
+        build_temporary_reference_line
         render :layout => false
       }
       format.pdf {
-        pdf_filename = "facture_#{@invoice.can_be_downloaded? ? @invoice.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
-        render_pdf(pdf_filename, "invoices/show.xml.erb", "invoices/show.xsl.erb", pdf_path, @invoice.reference.nil?)
+        build_temporary_reference_line
+        pdf_path = "assets/sales/invoices/generated_pdf/#{@invoice.can_be_downloaded? ? @invoice.id : 'tmp_'+generate_random_id}.pdf" # => "1.pdf" or "tmp_W91OA918.pdf"
+        pdf_filename = "#{Invoice.human_name.parameterize.to_s}_#{@invoice.can_be_downloaded? ? @invoice.reference : 'tmp_'+generate_random_id}" # => "invoice_REFINVOICE" or "invoice_tmp_W91OA918"
+        render_pdf(pdf_filename, "invoices/show.xml.erb", "invoices/show.xsl.erb", pdf_path, !@invoice.can_be_downloaded?)
       }
       format.html { }
     end
@@ -313,11 +307,7 @@ class InvoicesController < ApplicationController
     @invoice.build_or_update_invoice_items_from_associated_delivery_notes
   end
   
- private
-    def load_employees
-      @employees = Employee.all
-    end
-    
+  private
     ## this method could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
     ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
     ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
@@ -359,4 +349,12 @@ class InvoicesController < ApplicationController
         render :pdf => pdf_filename, :path => pdf_path
       end
     end 
+    
+    def build_temporary_reference_line
+      lines = ([@invoice.associated_quote] + @invoice.delivery_notes).collect do |item|
+        "#{item.class.human_name} n°#{item.reference}"
+      end.join("\n")
+      
+      @invoice.invoice_items.unshift InvoiceItem.new(:name => "Pièces d'origine :", :description => lines)
+    end
 end

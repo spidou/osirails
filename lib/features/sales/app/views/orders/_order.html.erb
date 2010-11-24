@@ -49,7 +49,7 @@
       <%= form.label :ship_to_address_ids %>
       <%= display_ship_to_addresses_picker(order, order.customer.head_office_and_establishments) %>
       <%= display_new_establishments_list(order) %>
-      <%= display_establishment_add_button(order) if is_form_view? %>
+      <%= display_establishment_add_button_for_ship_to_address(order) %>
     </p>
     
     <h3>Facturation</h3>

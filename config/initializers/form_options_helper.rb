@@ -116,11 +116,13 @@ module ActionView
         
         update_id = completion_options.delete(:update_id) || "#{object}_#{method}_id"
         
+        indicator = "auto_complete_indicator_for_#{tag_options[:id]}"
+        
         completion_options =  { :update_id            => update_id,
                                 :skip_style           => true,
                                 :frequency            => 0.7,
                                 :url                  => send("auto_complete_for_#{object}_#{method}_path"),
-                                :indicator            => "auto_complete_indicator_#{identifier}",
+                                #:indicator            => indicator,
                                 :update_element       => "function(li){
                                                             this.element = $('#{tag_options[:id]}')
                                                             target_value = li.down('.#{object}_#{method}_value')
@@ -132,7 +134,9 @@ module ActionView
                                                             target_value = li.down('.#{object}_#{method}_value')
                                                             if (target_id) { $('#{update_id}').value = target_id.innerHTML }
                                                             if (target_value) { input.setAttribute('restoreValue', target_value.innerHTML); input.value = input.getAttribute('restoreValue'); }
-                                                          }"
+                                                          }",
+                                :start_indicator      => "function(){ $('#{indicator}').addClassName('loading'); }",
+                                :stop_indicator       => "function(){ $('#{indicator}').removeClassName('loading'); }"
                               }.merge(completion_options)
         
         if tag_options[:value]
@@ -144,7 +148,7 @@ module ActionView
         
         html =  "<div class=\"auto_complete_container\">"
         html << text_field_with_auto_complete(object, "#{method}_#{identifier}", tag_options, completion_options)
-        html << content_tag(:div, nil, :id => "auto_complete_indicator_#{identifier}", :class => "auto_complete_indicator", :style => "display:none")
+        html << content_tag(:div, nil, :id => indicator, :class => "auto_complete_indicator")
         html << "</div>"
       end
       
@@ -176,6 +180,8 @@ module ActionView
       end
       
       def autoresize_text_area(object_name, method, options = {})
+        options[:rows] ||= 3
+        options[:cols] ||= 60
         options[:class] = "#{options[:class]}#{options[:class].blank? ? '' : ' '}autoresize_text_area";
         InstanceTag.new(object_name, method, self, options.delete(:object)).to_text_area_tag(options)
       end
@@ -235,47 +241,44 @@ module ActionView
       end
       
       def to_calendar_select_tag(object_name, options = {}, text_field_options = {})
-        options[:default]                 ||= object.send(@method_name)
-        options[:start_year]              ||= 1900
-        options[:end_year]                ||= 2999
-        options[:time_select]             ||= false
-        options[:time_format]             ||= 24
-        options[:disabled]                ||= false
+        options[:default]     ||= object.send(@method_name)
+        options[:start_year]  ||= 1900
+        options[:end_year]    ||= 2999
+        options[:time_select] ||= false
+        options[:time_format] ||= 24
+        options[:disabled]    ||= false
         
         textfield_value      = I18n.l(options[:default], :format => options[:displayed_format]) rescue options[:default]
+        text_field_options   = { :readonly => true,
+                                 :class    => :calendar_displayed_field,
+                                 :value    => textfield_value }.merge(text_field_options)
+        
+        button_action        = "this.up('.calendar_container').down('.calendar_field').value = ''; this.up('.calendar_container').down('.calendar_displayed_field').value = ''"
+        button_options       = { :class    => :calendar_cleaner, :title => "Effacer" }
         
         hidden_field_value   = I18n.l(options[:default], :format => options[:database_format]) rescue options[:default]
-        
-        button_action        = "this.up('.calendar-container').down('.calendar-field').value = ''; this.up('.calendar-container').down('.calendar-displayed-field').value = ''"
-        
-        text_field_options   = { :readonly => true, 
-                                 :class    => "calendar-displayed-field",
-                                 :value    => textfield_value }.merge(text_field_options)
-                                 
-        button_options       = { :class    => "calendar-cleaner"}
-        
-        hidden_field_options = { :name     => object_name + "[#{@method_name}]", 
-                                 :class    => "calendar-field", 
-                                 :disabled => options[:disabled], 
+        hidden_field_options = { :name     => object_name + "[#{@method_name}]",
+                                 :class    => :calendar_field,
+                                 :disabled => options[:disabled],
                                  :value    => hidden_field_value }
-                                 
-        trigger_options      = { :class => "calendar-trigger" }
+        
+        trigger_options      = { :class => :calendar_trigger }
         
         calendar_options     = "{range       : [#{options[:start_year]},#{options[:end_year]}],
-                                 showsTime   : #{options[:time_select]}, 
+                                 showsTime   : #{options[:time_select]},
                                  timeFormat  : #{options[:time_format]},
                                  ifFormat    : '#{options[:database_format]}',
                                  altIfFormat : '#{options[:displayed_format]}',
                                  disabledIf  : #{options[:disabled]},
                                  showOthers  : true }"
-                                 
+        
         text_field     = text_field_tag("#{@object_name}_displayed_#{@method_name}_for_calendar", nil, text_field_options)
         button         = button_to_function "", button_action, button_options
         hidden_field   = InstanceTag.new(@object_name, @method_name, self, options.delete(:object)).to_input_field_tag("hidden", hidden_field_options)
         trigger        = image_tag("calendar.png", trigger_options)
-        calendar_setup = javascript_tag("Calendar.setup(#{calendar_options});") 
-
-        content_tag(:span, text_field + button + hidden_field + trigger + calendar_setup, :class => "calendar-container")          
+        calendar_setup = javascript_tag("Calendar.setup(#{calendar_options});")
+        
+        content_tag(:span, text_field + error_unwrapping(button + hidden_field + trigger + calendar_setup), :class => :calendar_container)
       end
       
       def to_collection_select_tag_with_custom_choice(choice_method_name, collection, value_method, text_method, options, select_options, text_field_options, link_options)

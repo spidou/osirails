@@ -6,7 +6,7 @@
 <%= render :partial => 'thirds/third_main_info', :object => customer, :locals => { :form => form } %>
     
 <h3>Si&egrave;ge social</h3>
-<%= render :partial => 'establishments/head_office', :object => customer.head_office , :locals => { :establishments_owner => customer }%>
+<%= render :partial => 'establishments/head_office', :object => customer.head_office , :locals => { :owner_type => customer }%>
 
 <h3>Adresse de facturation</h3>
 <%= render :partial => 'addresses/address_form', :object => customer.bill_to_address || customer.build_bill_to_address , :locals => { :address_owner => customer } %>

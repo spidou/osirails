@@ -86,6 +86,11 @@ class ApplicationController < ActionController::Base
       @@models[controller_path] ||= controller_name.singularize.camelize
     end
     
+    def generate_random_id(length = 8) # same as ApplicationHelper#generate_random_id
+      chars = ['A'..'Z', 'a'..'z', '0'..'9'].map{|r|r.to_a}.flatten
+      Array.new(length).map{chars[rand(chars.size)]}.join
+    end
+    
     ######################################################################
     # These methods are used to hack params into sales (CustomerContoller, SubcontractorController etc ...)
     # TODO remove that methods when the hack become useless

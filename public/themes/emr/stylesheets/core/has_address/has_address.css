@@ -1,10 +1,14 @@
+div.address textarea.street_name {
+  width: 290px;
+}
+
 div.address label.city_label {
-  width: auto;
-  margin-left: 20px;
+  width: auto !important;
+  margin-left: 10px;
 }
 
 div.address input.city_name {
-  width: 150px;
+  width: 140px;
 }
 
 div.address input.zip_code {

@@ -2,7 +2,7 @@ module ActionView
   module Helpers
     module TextHelper
       # Source: https://rails.lighthouseapp.com/projects/8994-ruby-on-rails/tickets/3593-patch-support-for-highlighting-with-ignoring-special-chars
-    
+      
       # Highlights one or more +phrases+ everywhere in +text+ by inserting it into
       # a <tt>:highlighter</tt> string. The highlighter can be specialized by passing <tt>:highlighter</tt>
       # as a single-quoted string with \1 where the phrase is to be inserted (defaults to
@@ -33,7 +33,7 @@ module ActionView
           options[:highlighter] = args[0] || '<strong class="highlight">\1</strong>'
         end
         options.reverse_merge!(:highlighter => '<strong class="highlight">\1</strong>')
-
+        
         if text.blank? || phrases.blank?
           text
         else

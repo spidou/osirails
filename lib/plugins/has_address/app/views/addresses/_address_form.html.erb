@@ -15,48 +15,57 @@ if address_owner.class.one_or_many == :many
 else
   options = {}
 end
+
+identifier = generate_random_id
 %>
 <div class="address">
   <% fields_for "#{owner_type}[#{address.has_address_key}_attributes]", address do |form| %>
     <% form.force_show_view = force_show_view %>
-    <%= form.error_messages %>
-    <p>
+    
+    <p class="contain_auto_completer">
       <%= form.label :street_name, nil, options %>
-      <%= form.form_or_view(form.text_area_autoresize(:street_name, options.merge(:class => "street_name_text_area")), :street_name) %>
+      <%= form.form_or_view(form.text_area_autoresize(:street_name, options.merge(:class => "street_name")), :street_name) %>
     </p>
+    <br/>
+    
     <% if is_form_view? %>
-      <p class="with_auto_complete_container">
+      <p class="contain_auto_completer">
         <%= form.label :zip_code, nil, options %>
-        <%= custom_text_field_with_auto_complete_for_city_zip_code(owner_type, address, form.object_name, options) %>
-        <%= form.label :city_name, nil, options.merge(:class => "city_label") %>
-        <%= custom_text_field_with_auto_complete_for_city_name(owner_type, address, form.object_name, options) %>
+        <%= custom_text_field_with_auto_complete_for_city_zip_code(address, identifier, form, options) %>
+        
+        <%= form.label :city_name, nil, options.merge(:class => :city_label) %>
+        <%= custom_text_field_with_auto_complete_for_city_name(address, identifier, form, options) %>
       </p>
       <br/>
-      <p class="with_auto_complete_container">
+      <p class="contain_auto_completer">
         <%= form.label :region_name, nil, options %>
-        <%= custom_text_field_with_auto_complete_for_region_name(owner_type, address, form.object_name, options) %>
+        <%= custom_text_field_with_auto_complete_for_region_name(address, identifier, form, options) %>
       </p>
       <br/>
-      <p class="with_auto_complete_container">
+      <p class="contain_auto_completer">
         <%= form.label :country_name, nil, options %>
-        <%= custom_text_field_with_auto_complete_for_country_name(owner_type, address, form.object_name, options) %>
+        <%= custom_text_field_with_auto_complete_for_country_name(address, identifier, form, options) %>
       </p>
     <% else %>
       <p>
-        <%= form.label  :zip_code, nil, options %>
+        <%= simple_label :address, :zip_code %>
         <%= form.strong :zip_code %>
-        <%= form.label  :city_name, nil, options.merge(:class => "city_label") %>
+        
+        <%= simple_label :address, :city_name, :class => :city_label %>
         <%= form.strong :city_name %>
       </p>
+      <% unless address.region_name.blank? %>
+        <p>
+          <%= simple_label :address, :region_name %>
+          <%= form.strong :region_name %>
+        </p>
+      <% end %>
       <p>
-        <%= form.label  :region_name, nil, options %>
-        <%= form.strong :region_name %>
-      </p>
-      <p>
-        <%= form.label  :country_name, nil, options %>
+        <%= simple_label :address, :country_name %>
         <%= form.strong :country_name %>
       </p>
     <% end %>
+    
     <div style="display:none;">
       <% #OPTIMIZE the herein hidden fields would not be exists if the fields_for command accept argument like 'customer[establishment_attributes][][address_attributes]' %>
       <% if is_form_view? and !force_show_view %>

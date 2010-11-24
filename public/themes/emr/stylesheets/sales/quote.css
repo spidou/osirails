@@ -62,7 +62,7 @@ ul.quote_caption {
 }
 
 #quote_header > div label {
-  width: 110px !important;
+  width: 110px;
   vertical-align: top;
 }
 

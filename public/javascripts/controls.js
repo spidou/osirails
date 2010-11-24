@@ -117,11 +117,17 @@ Autocompleter.Base = Class.create({
   },
 
   startIndicator: function() {
-    if(this.options.indicator) Element.show(this.options.indicator);
+    if (this.options.startIndicator)
+      this.options.startIndicator();
+    else
+      if(this.options.indicator) Element.show(this.options.indicator);
   },
 
   stopIndicator: function() {
-    if(this.options.indicator) Element.hide(this.options.indicator);
+    if (this.options.stopIndicator)
+      this.options.stopIndicator();
+    else
+      if(this.options.indicator) Element.hide(this.options.indicator);
   },
 
   onKeyPress: function(event) {

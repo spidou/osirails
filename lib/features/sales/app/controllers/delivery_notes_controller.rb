@@ -13,19 +13,15 @@ class DeliveryNotesController < ApplicationController
   # GET /orders/:order_id/:step/delivery_notes/:id.pdf
   def show
     respond_to do |format|
-      pdf_path = "assets/sales/delivery_notes/generated_pdf/#{@delivery_note.reference.nil? ? 'tmp' : @delivery_note.id}.pdf"
-      
-      unless File.exist?(pdf_path)
-        fake_quote_item = QuoteItem.new(:name => "Pièce d'origine : Devis n°#{@delivery_note.associated_quote.reference}")
-        @delivery_note.delivery_note_items.unshift DeliveryNoteItem.new(:quote_item => fake_quote_item)
-      end
-      
       format.xml {
+        build_temporary_reference_line
         render :layout => false
       }
       format.pdf {
-        pdf_filename = "bon_livraison_#{@delivery_note.can_be_downloaded? ? @delivery_note.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
-        render_pdf(pdf_filename, "delivery_notes/show.xml.erb", "delivery_notes/show.xsl.erb", pdf_path, @delivery_note.reference.nil?)
+        build_temporary_reference_line
+        pdf_path = "assets/sales/delivery_notes/generated_pdf/#{@delivery_note.can_be_downloaded? ? @delivery_note.id : 'tmp_'+generate_random_id}.pdf" # => "1.pdf" or "tmp_W91OA918.pdf"
+        pdf_filename = "#{DeliveryNote.human_name.parameterize.to_s}_#{@delivery_note.can_be_downloaded? ? @delivery_note.reference : 'tmp_'+generate_random_id}" # => "delivery-note_REFDELIVERYNOTE" or "delivery-note_tmp_W91OA918"
+        render_pdf(pdf_filename, "delivery_notes/show.xml.erb", "delivery_notes/show.xsl.erb", pdf_path, !@delivery_note.can_be_downloaded?)
       }
       format.html { }
     end
@@ -248,4 +244,9 @@ class DeliveryNotesController < ApplicationController
         render :pdf => pdf_filename, :path => pdf_path
       end
     end 
+    
+    def build_temporary_reference_line
+      fake_quote_item = QuoteItem.new(:name => "Pièce d'origine :", :description => "#{Quote.human_name} n°#{@delivery_note.associated_quote.reference}")
+      @delivery_note.delivery_note_items.unshift DeliveryNoteItem.new(:quote_item => fake_quote_item)
+    end
 end

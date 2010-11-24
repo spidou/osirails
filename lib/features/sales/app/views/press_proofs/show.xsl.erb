@@ -77,7 +77,7 @@
   
   <xsl:attribute-set name="header-table-logo-image">
     <xsl:attribute name="content-height">2cm</xsl:attribute>
-  </xsl:attribute-set>  
+  </xsl:attribute-set>
   
   <xsl:attribute-set name="header-table-document-type-cell" use-attribute-sets="header-table-cells">
     <xsl:attribute name="text-align">center</xsl:attribute>
@@ -385,38 +385,38 @@
   </xsl:attribute-set>
   <!-- END -->
   <xsl:template match="Document">
-    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" xsl:use-attribute-sets="default-style" font-selection-strategy="character-by-character" line-height-shift-adjustment="disregard-shifts" language="fr">     
+    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" xsl:use-attribute-sets="default-style" font-selection-strategy="character-by-character" line-height-shift-adjustment="disregard-shifts" language="fr">
       <fo:layout-master-set>
-        <fo:simple-page-master master-name="only" xsl:use-attribute-sets="a4-page">                
+        <fo:simple-page-master master-name="only" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-first-page"/>
           <fo:region-before xsl:use-attribute-sets="region-before-spec-for-first-page"/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec-for-last-page"/>
-        </fo:simple-page-master>        
+        </fo:simple-page-master>
         <fo:simple-page-master master-name="first" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-first-page"/>
           <fo:region-before xsl:use-attribute-sets="region-before-spec-for-first-page"/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec-for-other-pages"/>
-        </fo:simple-page-master>         
+        </fo:simple-page-master>
         <fo:simple-page-master master-name="other" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-other-pages"/>
           <fo:region-before xsl:use-attribute-sets="region-before-spec-for-other-pages"/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec-for-other-pages"/>
-        </fo:simple-page-master>         
+        </fo:simple-page-master>
         <fo:simple-page-master master-name="last" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-other-pages"/>
           <fo:region-before xsl:use-attribute-sets="region-before-spec-for-other-pages"/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec-for-last-page"/>
-        </fo:simple-page-master>        
-        <fo:page-sequence-master master-name="unnamed">           
+        </fo:simple-page-master>
+        <fo:page-sequence-master master-name="unnamed">
           <fo:repeatable-page-master-alternatives>
             <fo:conditional-page-master-reference page-position="only" master-reference="only"/>
-            <fo:conditional-page-master-reference page-position="first" master-reference="first"/>         
-            <fo:conditional-page-master-reference page-position="last" master-reference="last"/>     
+            <fo:conditional-page-master-reference page-position="first" master-reference="first"/>
+            <fo:conditional-page-master-reference page-position="last" master-reference="last"/>
             <fo:conditional-page-master-reference page-position="rest" master-reference="other"/>
-          </fo:repeatable-page-master-alternatives>          
-        </fo:page-sequence-master>            
-      </fo:layout-master-set>     
-      <fo:page-sequence format="1" master-reference="unnamed" initial-page-number="1">        
+          </fo:repeatable-page-master-alternatives>
+        </fo:page-sequence-master>
+      </fo:layout-master-set>
+      <fo:page-sequence format="1" master-reference="unnamed" initial-page-number="1">
         <fo:static-content flow-name="xsl-region-before">
           <fo:table xsl:use-attribute-sets="header-table">
             <fo:table-body>
@@ -520,10 +520,10 @@
           <fo:table xsl:use-attribute-sets="header2-table">
             <fo:table-body>
               <fo:table-row>
-                <fo:table-cell xsl:use-attribute-sets="header2-table-product-cell">  
-                  <fo:block-container xsl:use-attribute-sets="header2-table-product-block-container"> 
-                    <fo:block xsl:use-attribute-sets="header2-table-product-block"> 
-                      <fo:inline xsl:use-attribute-sets="header2-table-product-inline-label"> 
+                <fo:table-cell xsl:use-attribute-sets="header2-table-product-cell">
+                  <fo:block-container xsl:use-attribute-sets="header2-table-product-block-container">
+                    <fo:block xsl:use-attribute-sets="header2-table-product-block">
+                      <fo:inline xsl:use-attribute-sets="header2-table-product-inline-label">
                         <xsl:value-of select="../Labels/ProductName"/>
                       </fo:inline>&#160;
                       <fo:inline>
@@ -532,10 +532,10 @@
                     </fo:block>
                   </fo:block-container>
                 </fo:table-cell>
-                <fo:table-cell xsl:use-attribute-sets="header2-table-representative-cell">  
-                  <fo:block-container xsl:use-attribute-sets="header2-table-representative-block-container"> 
-                    <fo:block> 
-                      <fo:inline xsl:use-attribute-sets="header2-table-representative-inline-label"> 
+                <fo:table-cell xsl:use-attribute-sets="header2-table-representative-cell">
+                  <fo:block-container xsl:use-attribute-sets="header2-table-representative-block-container">
+                    <fo:block>
+                      <fo:inline xsl:use-attribute-sets="header2-table-representative-inline-label">
                         <xsl:value-of select="../Labels/SupplierRepresentative"/>
                       </fo:inline>&#160;
                       <fo:inline>
@@ -547,7 +547,7 @@
               </fo:table-row>
             </fo:table-body>
           </fo:table>
-        </fo:static-content>   
+        </fo:static-content>
         <fo:static-content flow-name="xsl-region-after">
           <fo:table>
             <fo:table-body>
@@ -645,7 +645,7 @@
               </fo:table-row>
             </fo:table-body>
           </fo:table>
-        </fo:static-content>                  
+        </fo:static-content>
         <fo:flow flow-name="xsl-region-body">
           <xsl:apply-templates select="Mockups/Mockup"/>
         </fo:flow>
@@ -719,7 +719,7 @@
                       <xsl:attribute name="src">
                         <xsl:value-of select="Path"/>
                       </xsl:attribute>
-                    </xsl:otherwise>                   
+                    </xsl:otherwise>
                   </xsl:choose>
                 </fo:external-graphic>
                 <xsl:choose>
@@ -741,6 +741,6 @@
           <fo:block id="last-page"/>
         </xsl:when>
     </xsl:choose>
-    </fo:block>    
+    </fo:block>
   </xsl:template>
 </xsl:stylesheet>

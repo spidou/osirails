@@ -21,7 +21,7 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
     <%= strong(invoice.invoice_type.title) if invoice.invoice_type %> <%= link_to( "(Changer le type de facture ?)", new_order_invoicing_step_invoice_step_invoice_path ) if invoice.new_record? %>
 
     <%= form.label :invoicing_actor_id %>
-    <%= form.form_or_view(form.collection_select(:invoicing_actor_id, @employees, :id, :fullname, :prompt => invoice.new_record? ? "Veuillez sélectionner un employé" : false), :invoicing_actor, :fullname) %>
+    <%= form.form_or_view(form.collection_select(:invoicing_actor_id, Employee.all, :id, :fullname, :prompt => invoice.new_record? ? "Veuillez sélectionner un employé" : false), :invoicing_actor, :fullname) %>
   </p>
   
   <p>

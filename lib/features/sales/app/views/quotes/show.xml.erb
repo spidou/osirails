@@ -5,7 +5,7 @@
     <Type>DEVIS</Type>
     <Reference><%= @quote.reference %></Reference>
     <Date><%= l(Date.today)%></Date>
-    <Currency>EUROS (€)</Currency>  
+    <Currency>EUROS (€)</Currency>
     <FileName><%= @quote.order.title%></FileName>
     <Supplier>
       <CorporateName><%= ConfigurationManager.admin_society_identity_configuration_name %></CorporateName>
@@ -29,7 +29,7 @@
         <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @quote.order.commercial.numbers.first %></Phone>
       </Representative>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
-    </Supplier>  
+    </Supplier>
     <Customer>
       <CorporateName><%= @quote.order.customer.name %></CorporateName>
       <CorporateName2><%= @quote.order.customer.name %></CorporateName2>
@@ -64,7 +64,7 @@
           <% else %>
             <% @padding_bottom = "0.3" %>
           <% end %>
-          <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>  
+          <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>
           <% if @report_adjustment %>
             <% @adjust_report = @report_adjustment.include?(("item_"+item.id.to_s).to_sym) %>
             <% if @adjust_report %>
@@ -75,7 +75,7 @@
           <% else %>
             <% @is_page_first_element = "false" %>
           <% end %>
-          <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %>     
+          <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %>
           <Reference><%= item.end_product.product_reference.reference unless item.free_item? %></Reference>
           <Name><%= item.designation %></Name>
           <Description><%= item.description %></Description>
@@ -92,17 +92,17 @@
         <VAT>
           <Code><%= index+1 %></Code>
           <Coefficient><%= tc %></Coefficient>
-          <TotalDutyFreePrice><%= @quote.total_taxes_for(tc).to_f.round_to(2).to_s(2) %></TotalDutyFreePrice> 
-          <TotalInclusiveOfTaxPrice><%= (@quote.total_taxes_for(tc)*tc/100).to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxPrice> 
+          <TotalDutyFreePrice><%= @quote.total_taxes_for(tc).to_f.round_to(2).to_s(2) %></TotalDutyFreePrice>
+          <TotalInclusiveOfTaxPrice><%= (@quote.total_taxes_for(tc)*tc/100).to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxPrice>
         </VAT>
       <% end %>
-    </Taxes>  
+    </Taxes>
     <TotalDutyFreeGrossPrice><%= @quote.total.to_f.round_to(2).to_s(2) %></TotalDutyFreeGrossPrice>
     <Prizegiving><%= @quote.prizegiving.to_f.round_to(2).to_s(2) %></Prizegiving>
     <TotalDutyFreeNetPrice><%= @quote.net.to_f.round_to(2).to_s(2) %></TotalDutyFreeNetPrice>
     <Postage><%= @quote.carriage_costs.to_f.round_to(2).to_s(2) %></Postage>
     <Discount><%= @quote.discount.to_f.round_to(2).to_s(2) %></Discount>
-    <TotalTaxes><%= @quote.summon_of_taxes.to_f.round_to(2).to_s(2) %></TotalTaxes> 
+    <TotalTaxes><%= @quote.summon_of_taxes.to_f.round_to(2).to_s(2) %></TotalTaxes>
     <TotalInclusiveOfTaxNetPrice><%= @quote.net_to_paid.to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxNetPrice>
     <SalesTerms>
       <Description><%= @quote.sales_terms %></Description>
@@ -133,14 +133,14 @@
     <TotalPrice>Montant HT</TotalPrice>
     <VAT>TVA</VAT>
     <VATCode>Code</VATCode>
-    <TotalDutyFreePrice>Montant HT</TotalDutyFreePrice> 
+    <TotalDutyFreePrice>Montant HT</TotalDutyFreePrice>
     <Coefficient>Taux</Coefficient>
-    <TotalInclusiveOfTaxPrice>Montant TVA</TotalInclusiveOfTaxPrice> 
+    <TotalInclusiveOfTaxPrice>Montant TVA</TotalInclusiveOfTaxPrice>
     <TotalDutyFreeGrossPrice>Total Brut HT :</TotalDutyFreeGrossPrice>
     <TotalDutyFreeNetPrice>Net HT :</TotalDutyFreeNetPrice>
     <Postage>Frais de port :</Postage>
     <Discount>Escompte :</Discount>
-    <TotalTaxes>Total taxes :</TotalTaxes> 
+    <TotalTaxes>Total taxes :</TotalTaxes>
     <TotalInclusiveOfTaxNetPrice>NET A PAYER :</TotalInclusiveOfTaxNetPrice>
     <SalesTerms>Conditions commerciales</SalesTerms>
     <QuoteValidity>Durée de validité du devis :</QuoteValidity>
@@ -150,6 +150,6 @@
     <Agreement2>(avec la mention "bon pour accord", dater et signer) :</Agreement2>
     <BillingAddress>Adresse de facturation :</BillingAddress>
     <Subtotal>Report :</Subtotal>
-    <Page>Page</Page>  
+    <Page>Page</Page>
   </Labels>
 </Root>

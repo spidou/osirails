@@ -63,7 +63,7 @@
   
   <xsl:attribute-set name="table-title-cell">
     <xsl:attribute name="display-align">center</xsl:attribute>
-    <xsl:attribute name="padding">1pt</xsl:attribute>    
+    <xsl:attribute name="padding">1pt</xsl:attribute>
     <xsl:attribute name="border-bottom-color">rgb(0, 0, 0)</xsl:attribute>
     <xsl:attribute name="border-bottom-style">solid</xsl:attribute>
     <xsl:attribute name="border-bottom-width">1px</xsl:attribute>
@@ -288,7 +288,7 @@
   
   <xsl:attribute-set name="sales-terms-table" use-attribute-sets="table">
     <xsl:attribute name="margin-bottom">2pt</xsl:attribute>
-  </xsl:attribute-set>  
+  </xsl:attribute-set>
   
   <xsl:attribute-set name="sales-terms-title-row" use-attribute-sets="table-title-row"/>
   
@@ -367,7 +367,7 @@
     <xsl:attribute name="text-align">right</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="main-table-column-title-row" use-attribute-sets="table-column-title-row">    
+  <xsl:attribute-set name="main-table-column-title-row" use-attribute-sets="table-column-title-row">
     <xsl:attribute name="font-size">10px</xsl:attribute>
     <xsl:attribute name="height">5mm</xsl:attribute>
   </xsl:attribute-set>
@@ -400,7 +400,7 @@
   
   <xsl:attribute-set name="main-table-column-title-prizegiving-block-container" use-attribute-sets="main-table-column-title-default-block-container"/>
   
-  <xsl:attribute-set name="main-table-column-title-total-price-block-container" use-attribute-sets="main-table-column-title-default-block-container"/>  
+  <xsl:attribute-set name="main-table-column-title-total-price-block-container" use-attribute-sets="main-table-column-title-default-block-container"/>
   
   <xsl:attribute-set name="main-table-column-title-vat-block-container" use-attribute-sets="main-table-column-title-default-block-container"/>
   
@@ -411,11 +411,11 @@
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-first-empty-line-cell" use-attribute-sets="line-cell">
-    <xsl:attribute name="padding-bottom">1cm</xsl:attribute> 
+    <xsl:attribute name="padding-bottom">1cm</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-last-empty-line-cell" use-attribute-sets="line-cell">
-    <xsl:attribute name="padding-top"><%= @new_padding_for_last_offset||"1" %>cm</xsl:attribute>      
+    <xsl:attribute name="padding-top"><%= @new_padding_for_last_offset||"1" %>cm</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-last-footline-cell">
@@ -435,7 +435,7 @@
   </xsl:attribute-set>
   
   <xsl:attribute-set name="billing-address-cell">
-    <xsl:attribute name="height">1.5cm</xsl:attribute>    
+    <xsl:attribute name="height">1.5cm</xsl:attribute>
     <xsl:attribute name="display-align">before</xsl:attribute>
     <xsl:attribute name="padding">1pt</xsl:attribute>
     <xsl:attribute name="border-bottom-color">rgb(0, 0, 0)</xsl:attribute>
@@ -450,7 +450,7 @@
   </xsl:attribute-set>
   
   <xsl:attribute-set name="agreement-cell">
-    <xsl:attribute name="height">3cm</xsl:attribute>    
+    <xsl:attribute name="height">3cm</xsl:attribute>
     <xsl:attribute name="display-align">before</xsl:attribute>
     <xsl:attribute name="padding">1pt</xsl:attribute>
     <xsl:attribute name="border-bottom-color">rgb(0, 0, 0)</xsl:attribute>
@@ -478,8 +478,8 @@
   <xsl:attribute-set name="main-table-default-line-cell" use-attribute-sets="line-cell">
     <xsl:attribute name="display-align">before</xsl:attribute>
     <xsl:attribute name="padding-top">1mm</xsl:attribute>
-    <xsl:attribute name="padding-right">2px</xsl:attribute> 
-    <xsl:attribute name="padding-left">2px</xsl:attribute>     
+    <xsl:attribute name="padding-right">2px</xsl:attribute>
+    <xsl:attribute name="padding-left">2px</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-line-reference-cell" use-attribute-sets="main-table-default-line-cell"/>
@@ -501,11 +501,11 @@
   <xsl:attribute-set name="main-table-line-description-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
   <xsl:attribute-set name="main-table-line-description2-block-container">
-    <xsl:attribute name="overflow">hidden</xsl:attribute> 
+    <xsl:attribute name="overflow">hidden</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-line-reference-block">
-    <xsl:attribute name="text-align">start</xsl:attribute> 
+    <xsl:attribute name="text-align">start</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-line-description-block">
@@ -515,30 +515,30 @@
   
   <xsl:attribute-set name="main-table-line-description2-block">
     <xsl:attribute name="linefeed-treatment">preserve</xsl:attribute>
-    <xsl:attribute name="text-align">start</xsl:attribute>  
+    <xsl:attribute name="text-align">start</xsl:attribute>
     <xsl:attribute name="font-size">7px</xsl:attribute>
     <xsl:attribute name="font-style">italic</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-line-vat-block">
-    <xsl:attribute name="text-align">center</xsl:attribute> 
+    <xsl:attribute name="text-align">center</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="vat-table" use-attribute-sets="table"/>
   
-  <xsl:attribute-set name="vat-table-header-row" use-attribute-sets="table-column-title-row"/>    
+  <xsl:attribute-set name="vat-table-header-row" use-attribute-sets="table-column-title-row"/>
   
-  <xsl:attribute-set name="vat-table-header-default-cell" use-attribute-sets="table-cell">  
+  <xsl:attribute-set name="vat-table-header-default-cell" use-attribute-sets="table-cell">
     <xsl:attribute name="padding">1pt</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="vat-table-header-code-cell" use-attribute-sets="vat-table-header-default-cell"/> 
+  <xsl:attribute-set name="vat-table-header-code-cell" use-attribute-sets="vat-table-header-default-cell"/>
   
-  <xsl:attribute-set name="vat-table-header-total-duty-free-price-cell" use-attribute-sets="vat-table-header-default-cell"/> 
+  <xsl:attribute-set name="vat-table-header-total-duty-free-price-cell" use-attribute-sets="vat-table-header-default-cell"/>
   
-  <xsl:attribute-set name="vat-table-header-coefficient-cell" use-attribute-sets="vat-table-header-default-cell"/> 
+  <xsl:attribute-set name="vat-table-header-coefficient-cell" use-attribute-sets="vat-table-header-default-cell"/>
   
-  <xsl:attribute-set name="vat-table-header-total-inclusive-of-tax-price-cell" use-attribute-sets="vat-table-header-default-cell"/> 
+  <xsl:attribute-set name="vat-table-header-total-inclusive-of-tax-price-cell" use-attribute-sets="vat-table-header-default-cell"/>
   
   <xsl:attribute-set name="vat-table-header-code-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
@@ -549,95 +549,95 @@
   <xsl:attribute-set name="vat-table-header-total-inclusive-of-tax-price-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
   <xsl:attribute-set name="vat-table-line-row">
-    <xsl:attribute name="text-align">center</xsl:attribute> 
-  </xsl:attribute-set>    
+    <xsl:attribute name="text-align">center</xsl:attribute>
+  </xsl:attribute-set>
   
-  <xsl:attribute-set name="vat-table-line-default-cell" use-attribute-sets="table-cell">  
+  <xsl:attribute-set name="vat-table-line-default-cell" use-attribute-sets="table-cell">
     <xsl:attribute name="padding">1pt</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="vat-table-line-code-cell" use-attribute-sets="vat-table-line-default-cell"/> 
+  <xsl:attribute-set name="vat-table-line-code-cell" use-attribute-sets="vat-table-line-default-cell"/>
   
-  <xsl:attribute-set name="vat-table-line-total-duty-free-price-cell" use-attribute-sets="vat-table-line-default-cell"/> 
+  <xsl:attribute-set name="vat-table-line-total-duty-free-price-cell" use-attribute-sets="vat-table-line-default-cell"/>
   
-  <xsl:attribute-set name="vat-table-line-coefficient-cell" use-attribute-sets="vat-table-line-default-cell"/> 
+  <xsl:attribute-set name="vat-table-line-coefficient-cell" use-attribute-sets="vat-table-line-default-cell"/>
   
-  <xsl:attribute-set name="vat-table-line-total-inclusive-of-tax-price-cell" use-attribute-sets="vat-table-line-default-cell"/>  
+  <xsl:attribute-set name="vat-table-line-total-inclusive-of-tax-price-cell" use-attribute-sets="vat-table-line-default-cell"/>
   
   <xsl:attribute-set name="totals-table" use-attribute-sets="table"/>
   
-  <xsl:attribute-set name="totals-table-total-duty-free-gross-price-row">  
+  <xsl:attribute-set name="totals-table-total-duty-free-gross-price-row">
     <xsl:attribute name="font-size">10px</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="totals-table-total-duty-free-net-price-row" use-attribute-sets="table-cell">  
+  <xsl:attribute-set name="totals-table-total-duty-free-net-price-row" use-attribute-sets="table-cell">
     <xsl:attribute name="font-size">10px</xsl:attribute>
     <xsl:attribute name="font-weight">bold</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="totals-table-total-inclusive-of-tax-net-price-row" use-attribute-sets="table-cell">  
+  <xsl:attribute-set name="totals-table-total-inclusive-of-tax-net-price-row" use-attribute-sets="table-cell">
     <xsl:attribute name="background-color">rgb(180, 180, 180)</xsl:attribute>
     <xsl:attribute name="font-size">11px</xsl:attribute>
     <xsl:attribute name="font-weight">bold</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="totals-table-default-cell">  
+  <xsl:attribute-set name="totals-table-default-cell">
     <xsl:attribute name="padding">1pt</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="totals-table-total-duty-free-gross-price-label-cell" use-attribute-sets="totals-table-default-cell"/>  
+  <xsl:attribute-set name="totals-table-total-duty-free-gross-price-label-cell" use-attribute-sets="totals-table-default-cell"/>
   
   <xsl:attribute-set name="totals-table-total-duty-free-gross-price-value-cell" use-attribute-sets="totals-table-default-cell"/>
   
-  <xsl:attribute-set name="totals-table-prizegiving-label-cell" use-attribute-sets="totals-table-default-cell"/>  
+  <xsl:attribute-set name="totals-table-prizegiving-label-cell" use-attribute-sets="totals-table-default-cell"/>
   
   <xsl:attribute-set name="totals-table-prizegiving-value-cell" use-attribute-sets="totals-table-default-cell"/>
   
-  <xsl:attribute-set name="totals-table-total-duty-free-net-price-label-cell" use-attribute-sets="totals-table-default-cell"/>  
+  <xsl:attribute-set name="totals-table-total-duty-free-net-price-label-cell" use-attribute-sets="totals-table-default-cell"/>
   
-  <xsl:attribute-set name="totals-table-total-duty-free-net-price-value-cell" use-attribute-sets="totals-table-default-cell"/> 
+  <xsl:attribute-set name="totals-table-total-duty-free-net-price-value-cell" use-attribute-sets="totals-table-default-cell"/>
   
-  <xsl:attribute-set name="totals-table-postage-label-cell" use-attribute-sets="totals-table-default-cell"/>  
+  <xsl:attribute-set name="totals-table-postage-label-cell" use-attribute-sets="totals-table-default-cell"/>
   
   <xsl:attribute-set name="totals-table-postage-value-cell" use-attribute-sets="totals-table-default-cell"/>
   
-  <xsl:attribute-set name="totals-table-discount-label-cell" use-attribute-sets="totals-table-default-cell"/>  
+  <xsl:attribute-set name="totals-table-discount-label-cell" use-attribute-sets="totals-table-default-cell"/>
   
   <xsl:attribute-set name="totals-table-discount-value-cell" use-attribute-sets="totals-table-default-cell"/>
   
-  <xsl:attribute-set name="totals-table-total-taxes-label-cell" use-attribute-sets="totals-table-default-cell"/>  
+  <xsl:attribute-set name="totals-table-total-taxes-label-cell" use-attribute-sets="totals-table-default-cell"/>
   
   <xsl:attribute-set name="totals-table-total-taxes-value-cell" use-attribute-sets="totals-table-default-cell"/>
   
-  <xsl:attribute-set name="totals-table-total-inclusive-of-tax-net-price-label-cell" use-attribute-sets="totals-table-default-cell"/>  
+  <xsl:attribute-set name="totals-table-total-inclusive-of-tax-net-price-label-cell" use-attribute-sets="totals-table-default-cell"/>
   
   <xsl:attribute-set name="totals-table-total-inclusive-of-tax-net-price-value-cell" use-attribute-sets="totals-table-default-cell"/>
   
-  <xsl:attribute-set name="totals-table-total-duty-free-gross-price-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>  
+  <xsl:attribute-set name="totals-table-total-duty-free-gross-price-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
   <xsl:attribute-set name="totals-table-total-duty-free-gross-price-value-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
-  <xsl:attribute-set name="totals-table-prizegiving-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>  
+  <xsl:attribute-set name="totals-table-prizegiving-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
   <xsl:attribute-set name="totals-table-prizegiving-value-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
-  <xsl:attribute-set name="totals-table-total-duty-free-net-price-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>  
+  <xsl:attribute-set name="totals-table-total-duty-free-net-price-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
-  <xsl:attribute-set name="totals-table-total-duty-free-net-price-value-block-container" use-attribute-sets="no-wrap-and-hidden"/> 
+  <xsl:attribute-set name="totals-table-total-duty-free-net-price-value-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
-  <xsl:attribute-set name="totals-table-postage-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>  
+  <xsl:attribute-set name="totals-table-postage-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
   <xsl:attribute-set name="totals-table-postage-value-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
-  <xsl:attribute-set name="totals-table-discount-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>  
+  <xsl:attribute-set name="totals-table-discount-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
   <xsl:attribute-set name="totals-table-discount-value-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
-  <xsl:attribute-set name="totals-table-total-taxes-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>  
+  <xsl:attribute-set name="totals-table-total-taxes-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
   <xsl:attribute-set name="totals-table-total-taxes-value-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
-  <xsl:attribute-set name="totals-table-total-inclusive-of-tax-price-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>  
+  <xsl:attribute-set name="totals-table-total-inclusive-of-tax-price-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
   <xsl:attribute-set name="totals-table-total-inclusive-of-tax-price-value-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
@@ -660,38 +660,38 @@
   <xsl:attribute-set name="totals-table-total-inclusive-of-tax-price-value-block" use-attribute-sets="totals-table-default-value-block"/>
   <!-- END -->
   <xsl:template match="Document">
-    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" xsl:use-attribute-sets="default-style" font-selection-strategy="character-by-character" line-height-shift-adjustment="disregard-shifts" language="fr">     
+    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" xsl:use-attribute-sets="default-style" font-selection-strategy="character-by-character" line-height-shift-adjustment="disregard-shifts" language="fr">
       <fo:layout-master-set>
-        <fo:simple-page-master master-name="only" xsl:use-attribute-sets="a4-page">                
+        <fo:simple-page-master master-name="only" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-only-page"/>
           <fo:region-before/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec"/>
-        </fo:simple-page-master>        
+        </fo:simple-page-master>
         <fo:simple-page-master master-name="first" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-all-pages"/>
           <fo:region-before/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec"/>
-        </fo:simple-page-master>        
+        </fo:simple-page-master>
         <fo:simple-page-master master-name="others" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-all-pages"/>
           <fo:region-before/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec"/>
-        </fo:simple-page-master>        
+        </fo:simple-page-master>
         <fo:simple-page-master master-name="last" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-all-pages"/>
           <fo:region-before/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec"/>
-        </fo:simple-page-master>        
-        <fo:page-sequence-master master-name="unnamed">           
+        </fo:simple-page-master>
+        <fo:page-sequence-master master-name="unnamed">
           <fo:repeatable-page-master-alternatives>
             <fo:conditional-page-master-reference page-position="only" master-reference="only"/>
-            <fo:conditional-page-master-reference page-position="first" master-reference="first"/>         
-            <fo:conditional-page-master-reference page-position="last" master-reference="last"/>     
+            <fo:conditional-page-master-reference page-position="first" master-reference="first"/>
+            <fo:conditional-page-master-reference page-position="last" master-reference="last"/>
             <fo:conditional-page-master-reference page-position="rest" master-reference="others"/>
-          </fo:repeatable-page-master-alternatives>          
-        </fo:page-sequence-master>            
+          </fo:repeatable-page-master-alternatives>
+        </fo:page-sequence-master>
       </fo:layout-master-set>
-      <fo:page-sequence format="1" master-reference="unnamed" initial-page-number="1">       
+      <fo:page-sequence format="1" master-reference="unnamed" initial-page-number="1">
         <fo:static-content flow-name="xsl-region-before">
           <xsl:choose>
             <xsl:when test="Reference = ''">
@@ -727,7 +727,7 @@
                     <fo:block>
                       <fo:inline>
                         <xsl:value-of select="Supplier/Country"/>
-                      </fo:inline>                    
+                      </fo:inline>
                     </fo:block>
                   </fo:block-container>
                 </fo:table-cell>
@@ -784,7 +784,7 @@
                 </fo:table-cell>
               </fo:table-row>
             </fo:table-body>
-          </fo:table>        
+          </fo:table>
           <fo:table xsl:use-attribute-sets="header-with-supplier-infos2-table">
             <fo:table-body>
               <fo:table-row page-break-inside="avoid">
@@ -808,9 +808,9 @@
               </fo:inline>
             </fo:block>
           </fo:block-container>
-        </fo:static-content>              
+        </fo:static-content>
         <fo:static-content flow-name="xsl-region-after" xsl:use-attribute-sets="footer-flow">
-          <fo:table page-break-inside="avoid">      
+          <fo:table page-break-inside="avoid">
             <fo:table-body>
               <fo:table-row page-break-inside="avoid">
                 <fo:table-cell number-rows-spanned="2">
@@ -824,7 +824,7 @@
                     <fo:block-container xsl:use-attribute-sets="footer-sentence-block-container">
                       <fo:block xsl:use-attribute-sets="footer-sentence-block">
                         Membre du Synafel (syndicat des enseignistes européens) et certifié Qualif' enseigne signalétique par Bureau Veritas en 2004
-                      </fo:block> 
+                      </fo:block>
                     </fo:block-container>
                   </fo:block>
                 </fo:table-cell>
@@ -841,7 +841,7 @@
                   </fo:block-container>
                 </fo:table-cell>
               </fo:table-row>
-              <fo:table-row page-break-inside="avoid">                  
+              <fo:table-row page-break-inside="avoid">
                 <fo:table-cell xsl:use-attribute-sets="total-pages-cell">
                   <fo:block-container xsl:use-attribute-sets="total-pages-block-container">
                     <fo:block xsl:use-attribute-sets="total-pages-block">
@@ -850,9 +850,9 @@
                   </fo:block-container>
                 </fo:table-cell>
               </fo:table-row>
-            </fo:table-body>                                  
+            </fo:table-body>
           </fo:table>
-        </fo:static-content>                  
+        </fo:static-content>
         <fo:flow flow-name="xsl-region-body">
           <fo:block xsl:use-attribute-sets="region-body-main-block-for-background">
             <xsl:attribute name="background-image">
@@ -861,8 +861,8 @@
             <fo:block-container xsl:use-attribute-sets="document-type-and-reference-block-container">
               <fo:block xsl:use-attribute-sets="document-type-and-reference-block">
                 <xsl:value-of select="Type"/>&#160;<xsl:value-of select="../Labels/Prefix"/>&#160;<xsl:value-of select="Reference"/>
-              </fo:block> 
-            </fo:block-container>  
+              </fo:block>
+            </fo:block-container>
             <fo:block xsl:use-attribute-sets="date-block">
               <fo:inline>
                 <xsl:value-of select="../Labels/Date"/>
@@ -870,8 +870,8 @@
               <fo:inline>
                 <xsl:value-of select="Date"/>
               </fo:inline>
-            </fo:block>                   
-            <fo:table xsl:use-attribute-sets="top-infos-table" page-break-inside="avoid">      
+            </fo:block>
+            <fo:table xsl:use-attribute-sets="top-infos-table" page-break-inside="avoid">
               <fo:table-body>
                 <fo:table-row page-break-inside="avoid">
                   <fo:table-cell number-columns-spanned="5">
@@ -909,13 +909,13 @@
                       <fo:block>
                         <xsl:value-of select="Customer/Country"/>
                       </fo:block>
-                    </fo:block-container>  
+                    </fo:block-container>
                   </fo:table-cell>
                 </fo:table-row>
-              </fo:table-body>                
-            </fo:table>              
+              </fo:table-body>
+            </fo:table>
             <fo:table xsl:use-attribute-sets="sales-terms-table">
-              <fo:table-body>                          
+              <fo:table-body>
                 <fo:table-row xsl:use-attribute-sets="sales-terms-title-row" keep-with-next="always" page-break-inside="avoid">
                   <fo:table-cell xsl:use-attribute-sets="sales-terms-title-cell" number-columns-spanned="10">
                     <fo:block-container xsl:use-attribute-sets="sales-terms-title-block-container">
@@ -961,8 +961,8 @@
                   </fo:table-cell>
                 </fo:table-row>
               </fo:table-body>
-            </fo:table>               
-            <fo:table xsl:use-attribute-sets="main-table">                
+            </fo:table>
+            <fo:table xsl:use-attribute-sets="main-table">
               <fo:table-column column-width="2.8cm"/>
               <fo:table-column column-width="2cm"/>
               <fo:table-column column-width="2cm"/>
@@ -972,7 +972,7 @@
               <fo:table-column column-width="2.1cm"/>
               <fo:table-column column-width="1.2cm"/>
               <fo:table-column column-width="2.1cm"/>
-              <fo:table-column column-width="8mm"/>                
+              <fo:table-column column-width="8mm"/>
               <fo:table-header>
                 <fo:table-row page-break-inside="avoid">
                   <fo:table-cell number-columns-spanned="5">
@@ -991,7 +991,7 @@
                     <fo:block-container xsl:use-attribute-sets="currency-block-container">
                       <fo:block xsl:use-attribute-sets="currency-block">
                         <xsl:value-of select="../Labels/Amount"/>&#160;<xsl:value-of select="Currency"/>
-                      </fo:block> 
+                      </fo:block>
                     </fo:block-container>
                   </fo:table-cell>
                 </fo:table-row>
@@ -1068,17 +1068,17 @@
                   <fo:table-cell xsl:use-attribute-sets="main-table-first-empty-line-cell">
                     <fo:block/>
                   </fo:table-cell>
-                </fo:table-row>   
-              </fo:table-header>               
+                </fo:table-row>
+              </fo:table-header>
               <!-- A FOOTER IS REQUIRED TO CLOSE THE TABLE ON PAGE BREAKS -->
               <fo:table-footer>
                 <fo:table-cell id="footline" xsl:use-attribute-sets="main-table-footline-cell" number-columns-spanned="10">
-                  <fo:block/> 
+                  <fo:block/>
                 </fo:table-cell>
-              </fo:table-footer>               
+              </fo:table-footer>
               <fo:table-body>
                 <xsl:apply-templates select="Lines/Line"/>
-                <!-- THIS EMPTY LINE IS REQUIRED TO FILL THE TABLE DYNAMICALLY -->                
+                <!-- THIS EMPTY LINE IS REQUIRED TO FILL THE TABLE DYNAMICALLY -->
                 <fo:table-row>
                   <fo:table-cell xsl:use-attribute-sets="main-table-last-empty-line-cell">
                     <fo:block/>
@@ -1101,14 +1101,14 @@
                   <fo:table-cell xsl:use-attribute-sets="main-table-last-empty-line-cell">
                     <fo:block/>
                   </fo:table-cell>
-                </fo:table-row>                  
+                </fo:table-row>
                 <fo:table-row>
                   <fo:table-cell xsl:use-attribute-sets="main-table-last-footline-cell" number-columns-spanned="10">
                     <fo:block/>
                   </fo:table-cell>
-                </fo:table-row>                  
+                </fo:table-row>
                 <fo:table-row keep-with-next="always">
-                  <fo:table-cell xsl:use-attribute-sets="main-table-billing-address-and-agreement-cell" number-columns-spanned="3">                    
+                  <fo:table-cell xsl:use-attribute-sets="main-table-billing-address-and-agreement-cell" number-columns-spanned="3">
                     <fo:table xsl:use-attribute-sets="billing-address-and-agreement-table">
                       <fo:table-body>
                         <fo:table-row keep-with-next="always" page-break-inside="avoid">
@@ -1134,16 +1134,16 @@
                             </fo:block-container>
                           </fo:table-cell>
                         </fo:table-row>
-                      </fo:table-body>  
-                    </fo:table>                    
-                  </fo:table-cell>                  
-                  <fo:table-cell number-columns-spanned="3">                  
+                      </fo:table-body>
+                    </fo:table>
+                  </fo:table-cell>
+                  <fo:table-cell number-columns-spanned="3">
                     <fo:table xsl:use-attribute-sets="vat-table">
                       <fo:table-column column-width="9mm"/>
                       <fo:table-column column-width="2.5cm"/>
                       <fo:table-column column-width="1cm"/>
-                      <fo:table-column column-width="2.5cm"/>                      
-                      <fo:table-header>                          
+                      <fo:table-column column-width="2.5cm"/>
+                      <fo:table-header>
                         <fo:table-row xsl:use-attribute-sets="vat-table-header-row" keep-with-next="always" page-break-inside="avoid">
                           <fo:table-cell xsl:use-attribute-sets="vat-table-header-code-cell">
                             <fo:block-container xsl:use-attribute-sets="vat-table-header-code-block-container">
@@ -1175,14 +1175,14 @@
                           </fo:table-cell>
                         </fo:table-row>
                       </fo:table-header>
-                      <fo:table-body> 
-                        <xsl:apply-templates select="Taxes/VAT[Code &lt; 5]"/>  
+                      <fo:table-body>
+                        <xsl:apply-templates select="Taxes/VAT[Code &lt; 5]"/>
                       </fo:table-body>
                     </fo:table>
-                  </fo:table-cell>                           
-                  <fo:table-cell number-columns-spanned="4">                  
+                  </fo:table-cell>
+                  <fo:table-cell number-columns-spanned="4">
                     <fo:table xsl:use-attribute-sets="totals-table">
-                      <fo:table-body>                          
+                      <fo:table-body>
                         <fo:table-row xsl:use-attribute-sets="totals-table-total-duty-free-gross-price-row" keep-with-next="always" page-break-inside="avoid">
                           <fo:table-cell xsl:use-attribute-sets="totals-table-total-duty-free-gross-price-label-cell" number-columns-spanned="2">
                             <fo:block-container xsl:use-attribute-sets="totals-table-total-duty-free-gross-price-label-block-container">
@@ -1198,7 +1198,7 @@
                               </fo:block>
                             </fo:block-container>
                           </fo:table-cell>
-                        </fo:table-row> 
+                        </fo:table-row>
                         <fo:table-row keep-with-next="always" page-break-inside="avoid">
                           <fo:table-cell xsl:use-attribute-sets="totals-table-prizegiving-label-cell" number-columns-spanned="2">
                             <fo:block-container xsl:use-attribute-sets="totals-table-prizegiving-label-block-container">
@@ -1293,14 +1293,14 @@
                                 <xsl:value-of select="TotalInclusiveOfTaxNetPrice"/>
                               </fo:block>
                             </fo:block-container>
-                          </fo:table-cell>                                  
+                          </fo:table-cell>
                         </fo:table-row>
                       </fo:table-body>
-                    </fo:table>                     
+                    </fo:table>
                   </fo:table-cell>
-                </fo:table-row> 
+                </fo:table-row>
               </fo:table-body>
-            </fo:table>    
+            </fo:table>
           </fo:block>
           <fo:block id="last-page"/>
         </fo:flow>
@@ -1314,7 +1314,7 @@
           <xsl:value-of select="PaddingBottom"/>cm
         </xsl:attribute>
         <fo:block-container xsl:use-attribute-sets="main-table-line-reference-block-container">
-          <fo:block xsl:use-attribute-sets="main-table-line-reference-block"> 
+          <fo:block xsl:use-attribute-sets="main-table-line-reference-block">
             <fo:marker marker-class-name="footer-report-label">
               <xsl:choose>
                 <xsl:when test="position()!=last()">
@@ -1328,7 +1328,7 @@
                   <xsl:value-of select="format-number(TotalPrice + sum(preceding::TotalPrice), '0.00')"/>
                 </xsl:when>
               </xsl:choose>
-            </fo:marker>           
+            </fo:marker>
             <xsl:value-of select="Reference"/>
           </fo:block>
         </fo:block-container>
@@ -1436,6 +1436,6 @@
           <xsl:value-of select="TotalInclusiveOfTaxPrice"/>
         </fo:block>
       </fo:table-cell>
-    </fo:table-row> 
+    </fo:table-row>
   </xsl:template>
 </xsl:stylesheet>

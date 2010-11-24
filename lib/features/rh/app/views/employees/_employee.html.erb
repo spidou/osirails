@@ -28,7 +28,11 @@
       <div>
         <p>
           <%= f.label :birth_date %>
-          <%= f.form_or_view(f.calendar_date_select(:birth_date),:birth_date)%>
+          <% if f.form_view? %>
+            <%= f.calendar_date_select(:birth_date)%>
+          <% else %>
+            <%= strong l(employee.birth_date, :format => :long) %>
+          <% end %>
         </p>
         <p>
           <%= f.label :family_situation %>

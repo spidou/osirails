@@ -13,14 +13,15 @@ class PressProofsController < ApplicationController
   # GET /orders/:order_id/:step/press_proofs/:id
   def show
     @press_proof = PressProof.find(params[:id])
+    pdf_path = "assets/sales/press_proofs/generated_pdf/#{@press_proof.can_be_downloaded? ? @press_proof.id : 'tmp_'+generate_random_id}.pdf" # => "1.pdf" or "tmp_W91OA918.pdf"
     
     respond_to do |format|
       format.xml  {
         render :layout => false
       }
       format.pdf  {
-        pdf_filename = "bat_#{@press_proof.can_be_downloaded? ? @press_proof.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
-        render :pdf => pdf_filename, :xml_template => "press_proofs/show.xml.erb", :xsl_template => "press_proofs/show.xsl.erb", :path => "assets/sales/press_proofs/generated_pdf/#{@press_proof.reference.nil? ? 'tmp' : @press_proof.id}.pdf", :is_temporary_pdf => @press_proof.status.nil?
+        pdf_filename = "#{PressProof.human_name.parameterize.to_s}_#{@press_proof.can_be_downloaded? ? @press_proof.reference : 'tmp_'+generate_random_id}" # => "press-proof_REFPRESSPROOF" or "press-proof_tmp_W91OA918"
+        render :pdf => pdf_filename, :xml_template => "press_proofs/show.xml.erb", :xsl_template => "press_proofs/show.xsl.erb", :path => pdf_path, :is_temporary_pdf => !@press_proof.can_be_downloaded?
       }
       format.html { }
     end

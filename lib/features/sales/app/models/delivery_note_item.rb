@@ -15,6 +15,10 @@ class DeliveryNoteItem < ActiveRecord::Base
   
   attr_accessor :order_id
   
+  def quantity
+    self[:quantity] ||= 0
+  end
+  
   def validates_quantity_range
     #return if quote_item.nil? or ( !new_record? and !quantity_changed? )
     return unless quote_item and ( new_record? or quantity_changed? )

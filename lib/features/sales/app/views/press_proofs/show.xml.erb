@@ -20,10 +20,10 @@
         <FirstName><%= @press_proof.internal_actor.first_name %></FirstName>
         <Email><%= @press_proof.internal_actor.email %></Email>
         <Phone/>
-        <Fax/>      
+        <Fax/>
       </Representative>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png" %></LogoPath>
-    </Supplier>  
+    </Supplier>
     <ProductName><%= @press_proof.end_product.name %></ProductName>
     <Mockups>
       <% @press_proof.graphic_item_versions.each do |giv| %>
@@ -48,7 +48,7 @@
           <Width><%= (`identify -format %w #{giv.formatted_image_for_press_proof_path}`.to_f/72.to_f)*2.54 %></Width>
           <OriginalHeight><%= (`identify -format %h #{giv.image.path}`.to_f/72.to_f)*2.54 %></OriginalHeight>
           <OriginalWidth><%= (`identify -format %w #{giv.image.path}`.to_f/72.to_f)*2.54 %></OriginalWidth>
-        </Mockup> 
+        </Mockup>
       <% end %>
     </Mockups>
   </Document>

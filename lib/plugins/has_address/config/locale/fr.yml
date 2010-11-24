@@ -4,7 +4,7 @@ fr:
       address: "Adresse"
     attributes: 
       address:
-        street_name: "Adresse"
+        street_name: "Nom de rue"
         country_name: "Pays"
         region_name: "Région"
         city_name: "Ville"

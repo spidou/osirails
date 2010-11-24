@@ -2,7 +2,7 @@
   <%= stylesheet_link_tag_with_theme_support "thirds/thirds.css" %>
 <% end %>
 <%
-require_locals establishments_owner
+require_locals owner_type
 force_show_view ||= false
 id_attr = "id=\"resource_establishment_#{establishment.id}\"" unless establishment.new_record?
 %>
@@ -20,5 +20,5 @@ id_attr = "id=\"resource_establishment_#{establishment.id}\"" unless establishme
     <% end -%>
   <% end -%>
   
-  <%= render(:partial => "establishments/establishment_form", :object => establishment, :locals => { :establishments_owner => establishments_owner }) if is_form_view? and !force_show_view %>
+  <%= render(:partial => "establishments/establishment_form", :object => establishment, :locals => { :owner_type => owner_type }) if is_form_view? and !force_show_view %>
 </div>

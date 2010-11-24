@@ -271,7 +271,7 @@
     <xsl:attribute name="text-align">left</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="main-table-column-title-row" use-attribute-sets="table-column-title-row">    
+  <xsl:attribute-set name="main-table-column-title-row" use-attribute-sets="table-column-title-row">
     <xsl:attribute name="font-size">10px</xsl:attribute>
     <xsl:attribute name="height">5mm</xsl:attribute>
   </xsl:attribute-set>
@@ -303,11 +303,11 @@
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-first-empty-line-cell" use-attribute-sets="line-cell">
-    <xsl:attribute name="padding-bottom">1cm</xsl:attribute> 
+    <xsl:attribute name="padding-bottom">1cm</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-last-empty-line-cell" use-attribute-sets="line-cell">
-    <xsl:attribute name="padding-top"><%= @new_padding_for_last_offset||"1" %>cm</xsl:attribute>      
+    <xsl:attribute name="padding-top"><%= @new_padding_for_last_offset||"1" %>cm</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-last-footline-cell">
@@ -326,7 +326,7 @@
   
   <xsl:attribute-set name="contact-title-row" use-attribute-sets="table-title-row"/>
   
-  <xsl:attribute-set name="contact-title-cell" use-attribute-sets="table-title-cell"/>  
+  <xsl:attribute-set name="contact-title-cell" use-attribute-sets="table-title-cell"/>
   
   <xsl:attribute-set name="contact-title-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
@@ -363,7 +363,7 @@
   
   <xsl:attribute-set name="delivery-and-installation-title-row" use-attribute-sets="table-title-row"/>
   
-  <xsl:attribute-set name="delivery-and-installation-title-cell" use-attribute-sets="table-title-cell"/>  
+  <xsl:attribute-set name="delivery-and-installation-title-cell" use-attribute-sets="table-title-cell"/>
   
   <xsl:attribute-set name="delivery-and-installation-title-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
@@ -394,7 +394,7 @@
   
   <xsl:attribute-set name="status-title-row" use-attribute-sets="table-title-row"/>
   
-  <xsl:attribute-set name="status-title-cell" use-attribute-sets="table-title-cell"/>  
+  <xsl:attribute-set name="status-title-cell" use-attribute-sets="table-title-cell"/>
   
   <xsl:attribute-set name="status-title-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
@@ -443,7 +443,7 @@
   
   <xsl:attribute-set name="agreement-block">
     <xsl:attribute name="padding-top">1mm</xsl:attribute>
-    <xsl:attribute name="padding-bottom">3.5cm</xsl:attribute> 
+    <xsl:attribute name="padding-bottom">3.5cm</xsl:attribute>
     <xsl:attribute name="font-weight">bold</xsl:attribute>
     <xsl:attribute name="font-size">10px</xsl:attribute>
   </xsl:attribute-set>
@@ -461,8 +461,8 @@
   <xsl:attribute-set name="main-table-default-line-cell" use-attribute-sets="line-cell">
     <xsl:attribute name="display-align">before</xsl:attribute>
     <xsl:attribute name="padding-top">1mm</xsl:attribute>
-    <xsl:attribute name="padding-right">2px</xsl:attribute> 
-    <xsl:attribute name="padding-left">2px</xsl:attribute>     
+    <xsl:attribute name="padding-right">2px</xsl:attribute>
+    <xsl:attribute name="padding-left">2px</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-line-reference-cell" use-attribute-sets="main-table-default-line-cell"/>
@@ -478,58 +478,58 @@
   <xsl:attribute-set name="main-table-line-description-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
   <xsl:attribute-set name="main-table-line-description2-block-container">
-    <xsl:attribute name="overflow">hidden</xsl:attribute> 
+    <xsl:attribute name="overflow">hidden</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-line-reference-block">
-    <xsl:attribute name="text-align">start</xsl:attribute> 
+    <xsl:attribute name="text-align">start</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-line-description-block">
     <xsl:attribute name="font-weight">bold</xsl:attribute>
-    <xsl:attribute name="text-align">start</xsl:attribute> 
+    <xsl:attribute name="text-align">start</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-line-description2-block">
     <xsl:attribute name="linefeed-treatment">preserve</xsl:attribute>
-    <xsl:attribute name="text-align">start</xsl:attribute>  
+    <xsl:attribute name="text-align">start</xsl:attribute>
     <xsl:attribute name="font-size">7px</xsl:attribute>
     <xsl:attribute name="font-style">italic</xsl:attribute>
   </xsl:attribute-set>
     <!-- END -->
   <xsl:template match="Document">
-    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" xsl:use-attribute-sets="default-style" font-selection-strategy="character-by-character" line-height-shift-adjustment="disregard-shifts" language="fr">     
+    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" xsl:use-attribute-sets="default-style" font-selection-strategy="character-by-character" line-height-shift-adjustment="disregard-shifts" language="fr">
       <fo:layout-master-set>
-        <fo:simple-page-master master-name="only" xsl:use-attribute-sets="a4-page">                
+        <fo:simple-page-master master-name="only" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-only-page"/>
           <fo:region-before/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec"/>
-        </fo:simple-page-master>        
+        </fo:simple-page-master>
         <fo:simple-page-master master-name="first" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-all-pages"/>
           <fo:region-before/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec"/>
-        </fo:simple-page-master>        
+        </fo:simple-page-master>
         <fo:simple-page-master master-name="others" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-all-pages"/>
           <fo:region-before/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec"/>
-        </fo:simple-page-master>        
+        </fo:simple-page-master>
         <fo:simple-page-master master-name="last" xsl:use-attribute-sets="a4-page">
           <fo:region-body xsl:use-attribute-sets="page-margin-specs-for-all-pages"/>
           <fo:region-before/>
           <fo:region-after xsl:use-attribute-sets="region-after-spec"/>
-        </fo:simple-page-master>        
-        <fo:page-sequence-master master-name="unnamed">           
+        </fo:simple-page-master>
+        <fo:page-sequence-master master-name="unnamed">
           <fo:repeatable-page-master-alternatives>
             <fo:conditional-page-master-reference page-position="only" master-reference="only"/>
-            <fo:conditional-page-master-reference page-position="first" master-reference="first"/>         
-            <fo:conditional-page-master-reference page-position="last" master-reference="last"/>     
+            <fo:conditional-page-master-reference page-position="first" master-reference="first"/>
+            <fo:conditional-page-master-reference page-position="last" master-reference="last"/>
             <fo:conditional-page-master-reference page-position="rest" master-reference="others"/>
-          </fo:repeatable-page-master-alternatives>          
-        </fo:page-sequence-master>            
+          </fo:repeatable-page-master-alternatives>
+        </fo:page-sequence-master>
       </fo:layout-master-set>
-      <fo:page-sequence format="1" master-reference="unnamed" initial-page-number="1">     
+      <fo:page-sequence format="1" master-reference="unnamed" initial-page-number="1">
         <fo:static-content flow-name="xsl-region-before">
           <xsl:choose>
             <xsl:when test="Reference = ''">
@@ -565,7 +565,7 @@
                     <fo:block>
                       <fo:inline>
                         <xsl:value-of select="Supplier/Country"/>
-                      </fo:inline>                    
+                      </fo:inline>
                     </fo:block>
                   </fo:block-container>
                 </fo:table-cell>
@@ -625,7 +625,7 @@
                 </fo:table-cell>
               </fo:table-row>
             </fo:table-body>
-          </fo:table>        
+          </fo:table>
           <fo:table xsl:use-attribute-sets="header-with-supplier-infos2-table">
             <fo:table-body>
               <fo:table-row page-break-inside="avoid">
@@ -639,9 +639,9 @@
               </fo:table-row>
             </fo:table-body>
           </fo:table>
-        </fo:static-content>               
+        </fo:static-content>
         <fo:static-content flow-name="xsl-region-after" xsl:use-attribute-sets="footer-flow">
-          <fo:table page-break-inside="avoid">      
+          <fo:table page-break-inside="avoid">
             <fo:table-body>
               <fo:table-row page-break-inside="avoid">
                 <fo:table-cell number-rows-spanned="2">
@@ -655,7 +655,7 @@
                     <fo:block-container xsl:use-attribute-sets="footer-sentence-block-container">
                       <fo:block xsl:use-attribute-sets="footer-sentence-block">
                         Membre du Synafel (syndicat des enseignistes européens) et certifié Qualif' enseigne signalétique par Bureau Veritas en 2004
-                      </fo:block> 
+                      </fo:block>
                     </fo:block-container>
                   </fo:block>
                 </fo:table-cell>
@@ -663,7 +663,7 @@
                   <fo:block/>
                 </fo:table-cell>
               </fo:table-row>
-              <fo:table-row page-break-inside="avoid">                  
+              <fo:table-row page-break-inside="avoid">
                 <fo:table-cell xsl:use-attribute-sets="total-pages-cell">
                   <fo:block-container xsl:use-attribute-sets="total-pages-block-container">
                     <fo:block xsl:use-attribute-sets="total-pages-block">
@@ -672,9 +672,9 @@
                   </fo:block-container>
                 </fo:table-cell>
               </fo:table-row>
-            </fo:table-body>                                  
+            </fo:table-body>
           </fo:table>
-        </fo:static-content>                 
+        </fo:static-content>
         <fo:flow flow-name="xsl-region-body">
           <fo:block xsl:use-attribute-sets="region-body-main-block-for-background">
             <xsl:attribute name="background-image">
@@ -683,8 +683,8 @@
             <fo:block-container xsl:use-attribute-sets="document-type-and-reference-block-container">
               <fo:block xsl:use-attribute-sets="document-type-and-reference-block">
                 <xsl:value-of select="Type"/>&#160;<xsl:value-of select="../Labels/Prefix"/>&#160;<xsl:value-of select="Reference"/>
-              </fo:block> 
-            </fo:block-container>  
+              </fo:block>
+            </fo:block-container>
             <fo:block xsl:use-attribute-sets="date-block">
               <fo:inline>
                 <xsl:value-of select="../Labels/Date"/>
@@ -692,8 +692,8 @@
               <fo:inline>
                 <xsl:value-of select="Date"/>
               </fo:inline>
-            </fo:block>                   
-            <fo:table xsl:use-attribute-sets="top-infos-table" page-break-inside="avoid">      
+            </fo:block>
+            <fo:table xsl:use-attribute-sets="top-infos-table" page-break-inside="avoid">
               <fo:table-body>
                 <fo:table-row page-break-inside="avoid">
                   <fo:table-cell number-columns-spanned="5">
@@ -731,12 +731,12 @@
                       <fo:block>
                         <xsl:value-of select="Customer/Country"/>
                       </fo:block>
-                    </fo:block-container>  
+                    </fo:block-container>
                   </fo:table-cell>
                 </fo:table-row>
-              </fo:table-body>                
-            </fo:table>              
-            <fo:table xsl:use-attribute-sets="main-table">                
+              </fo:table-body>
+            </fo:table>
+            <fo:table xsl:use-attribute-sets="main-table">
               <fo:table-column column-width="2.8cm"/>
               <fo:table-column column-width="2cm"/>
               <fo:table-column column-width="2cm"/>
@@ -746,7 +746,7 @@
               <fo:table-column column-width="2.1cm"/>
               <fo:table-column column-width="1.2cm"/>
               <fo:table-column column-width="2.1cm"/>
-              <fo:table-column column-width="8mm"/>                
+              <fo:table-column column-width="8mm"/>
               <fo:table-header>
                 <fo:table-row page-break-inside="avoid">
                   <fo:table-cell number-columns-spanned="10">
@@ -806,16 +806,16 @@
                     <fo:block/>
                   </fo:table-cell>
                 </fo:table-row>
-              </fo:table-header>               
+              </fo:table-header>
               <!-- A FOOTER IS REQUIRED TO CLOSE THE TABLE ON PAGE BREAKS -->
               <fo:table-footer>
                 <fo:table-cell id="footline" xsl:use-attribute-sets="main-table-footline-cell" number-columns-spanned="10">
-                  <fo:block/> 
+                  <fo:block/>
                 </fo:table-cell>
-              </fo:table-footer>               
-              <fo:table-body>                 
+              </fo:table-footer>
+              <fo:table-body>
                 <xsl:apply-templates select="Lines/Line"/>
-                <!-- THIS EMPTY LINE IS REQUIRED TO FILL THE TABLE DYNAMICALLY -->                
+                <!-- THIS EMPTY LINE IS REQUIRED TO FILL THE TABLE DYNAMICALLY -->
                 <fo:table-row>
                   <fo:table-cell xsl:use-attribute-sets="main-table-last-empty-line-cell">
                     <fo:block/>
@@ -829,14 +829,14 @@
                   <fo:table-cell number-columns-spanned="4" xsl:use-attribute-sets="main-table-last-empty-line-cell">
                     <fo:block/>
                   </fo:table-cell>
-                </fo:table-row>                  
+                </fo:table-row>
                 <fo:table-row>
                   <fo:table-cell xsl:use-attribute-sets="main-table-last-footline-cell" number-columns-spanned="10">
                     <fo:block/>
                   </fo:table-cell>
-                </fo:table-row>              
+                </fo:table-row>
                 <fo:table-row keep-with-next="always">
-                  <fo:table-cell xsl:use-attribute-sets="main-table-contact-cell" number-columns-spanned="3">                    
+                  <fo:table-cell xsl:use-attribute-sets="main-table-contact-cell" number-columns-spanned="3">
                     <fo:table xsl:use-attribute-sets="contact-table">
                       <fo:table-body>
                         <fo:table-row xsl:use-attribute-sets="contact-title-row" keep-with-next="always" page-break-inside="avoid">
@@ -875,10 +875,10 @@
                             </fo:block-container>
                           </fo:table-cell>
                         </fo:table-row>
-                      </fo:table-body>  
-                    </fo:table>                    
+                      </fo:table-body>
+                    </fo:table>
                   </fo:table-cell>
-                  <fo:table-cell xsl:use-attribute-sets="main-table-status-cell" number-columns-spanned="2">                    
+                  <fo:table-cell xsl:use-attribute-sets="main-table-status-cell" number-columns-spanned="2">
                     <fo:table xsl:use-attribute-sets="status-table">
                       <fo:table-body>
                         <fo:table-row xsl:use-attribute-sets="status-title-row" keep-with-next="always" page-break-inside="avoid">
@@ -930,9 +930,9 @@
                             </fo:block-container>
                           </fo:table-cell>
                         </fo:table-row>
-                      </fo:table-body>  
-                    </fo:table>                    
-                  </fo:table-cell>  
+                      </fo:table-body>
+                    </fo:table>
+                  </fo:table-cell>
                   <fo:table-cell number-columns-spanned="5" number-rows-spanned="2">
                     <fo:table xsl:use-attribute-sets="agreement-table">
                       <fo:table-body>
@@ -951,9 +951,9 @@
                       </fo:table-body>
                     </fo:table>
                   </fo:table-cell>
-                </fo:table-row>    
+                </fo:table-row>
                 <fo:table-row keep-with-next="always">
-                  <fo:table-cell xsl:use-attribute-sets="main-table-delivery-and-installation-cell" number-columns-spanned="5">                    
+                  <fo:table-cell xsl:use-attribute-sets="main-table-delivery-and-installation-cell" number-columns-spanned="5">
                     <fo:table xsl:use-attribute-sets="delivery-and-installation-table">
                       <fo:table-body>
                         <fo:table-row xsl:use-attribute-sets="delivery-and-installation-title-row" keep-with-next="always" page-break-inside="avoid">
@@ -987,12 +987,12 @@
                             </fo:table-row>
                           </xsl:when>
                         </xsl:choose>
-                      </fo:table-body>  
-                    </fo:table>                    
-                  </fo:table-cell>  
+                      </fo:table-body>
+                    </fo:table>
+                  </fo:table-cell>
                 </fo:table-row>
               </fo:table-body>
-            </fo:table>    
+            </fo:table>
           </fo:block>
           <fo:block id="last-page"/>
         </fo:flow>

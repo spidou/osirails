@@ -503,7 +503,7 @@ class Invoice < ActiveRecord::Base
         product_item_quantity        = product_items_sum[key]       || 0
         delivery_note_items_quantity = delivery_note_items_sum[key] || 0
         #TODO replace this view logic by a new tag system
-        contents                    += "<br/>- #{end_product.name} (x#{product_item_quantity} ≠ x#{delivery_note_items_quantity})"
+        contents                    += "<br/>- #{end_product.name} (quantité à '#{product_item_quantity}' au lieu de '#{delivery_note_items_quantity}')"
       end
       message = contents
       errors.add(:invoice_items, "La liste des produits qui composent la facture est incorrecte. Elle ne correspond pas aux produits livrés dans le(s) 'Bon de Livraison' associé(s) : #{message}") 

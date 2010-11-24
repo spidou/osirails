@@ -14,13 +14,10 @@ module ShipToAddressesHelper
     render_new_establishments_list(order)
   end
   
-  def display_establishment_add_button(order)
-    return unless Establishment.can_add?(current_user)
-    content_tag( :p, link_to_function "Ajouter un établissement comme adresse de livraison" do |page|
-      page.insert_html :bottom, :new_establishments, :partial => 'establishments/establishment', :object => order.customer.build_establishment, :locals => { :establishments_owner => order }
-      last_element = page['new_establishments'].show.select('.resource').last
-      last_element.visual_effect :highlight
-    end )
+  def display_establishment_add_button_for_ship_to_address(order)
+    display_establishment_add_button(order, :link_name => "Ajouter un établissement comme adresse de livraison",
+                                            :update    => :new_establishments,
+                                            :complete  => "$('new_establishments').show()") if is_form_view?
   end
   
   def display_ship_to_addresses_picker(order, establishments)
@@ -40,7 +37,7 @@ module ShipToAddressesHelper
       new_establishments = order.customer.establishments.select{ |contact| contact.new_record? }
       html =  "<div class=\"resource_group establishment_group new_records\" id=\"new_establishments\" #{"style=\"display:none\"" if new_establishments.empty?}>"
       html << "  <h1>Nouveaux établissements</h1>"
-      html << render(:partial => 'establishments/establishment', :collection => new_establishments, :locals => { :establishments_owner => order }) unless new_establishments.empty?
+      html << render(:partial => 'establishments/establishment', :collection => new_establishments, :locals => { :owner_type => order.class.name.underscore }) unless new_establishments.empty?
       html << "</div>"
     end
 end

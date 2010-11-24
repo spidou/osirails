@@ -6,7 +6,7 @@
     <Type2><%= @invoice.invoice_type.title.upcase %></Type2>
     <Reference><%= @invoice.reference %></Reference>
     <Date><%= l(Date.today) %></Date>
-    <Currency>EUROS (€)</Currency>  
+    <Currency>EUROS (€)</Currency>
     <FileName><%= @invoice.order.title%></FileName>
     <Supplier>
       <CorporateName><%= ConfigurationManager.admin_society_identity_configuration_name %></CorporateName>
@@ -35,7 +35,7 @@
         <Email><%= @invoice.invoicing_actor.email %></Email>
       </InvoicingActor>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
-    </Supplier>  
+    </Supplier>
     <Customer>
       <CorporateName><%= @invoice.order.customer.name %></CorporateName>
       <CorporateName2><%= @invoice.order.customer.name %></CorporateName2>
@@ -46,14 +46,14 @@
       <Country><%= @invoice.bill_to_address.country_name %></Country>
       <Representative>
         <LastName><%= @invoice.invoice_contact.last_name %></LastName>
-        <FirstName><%= @invoice.invoice_contact.first_name %></FirstName>   
+        <FirstName><%= @invoice.invoice_contact.first_name %></FirstName>
       </Representative>
     </Customer>
     <Lines>
       <% @invoice.invoice_items.each do |item| %>
         <% item_id = item.id || generate_random_id %>
         <Line>
-          <Id><%= item.id %></Id>
+          <Id><%= item_id %></Id>
           <% if @footlines_adjustments %>
             <% @adjust_bottom = @footlines_adjustments.include?(("item_#{item_id}").to_sym) %>
             <% if @adjust_bottom %>
@@ -64,7 +64,7 @@
           <% else %>
             <% @padding_bottom = "0.3" %>
           <% end %>
-          <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>  
+          <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>
           <% if @report_adjustment %>
             <% @adjust_report = @report_adjustment.include?(("item_#{item_id}").to_sym) %>
             <% if @adjust_report %>
@@ -75,7 +75,7 @@
           <% else %>
             <% @is_page_first_element = "false" %>
           <% end %>
-          <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %> 
+          <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %>
           <Reference><%= item.end_product && item.end_product.product_reference ? item.end_product.product_reference.reference : nil %></Reference>
           <Name><%= item.name %></Name>
           <Description><%= item.description %></Description>
@@ -92,13 +92,13 @@
         <VAT>
           <Code><%= index+1 %></Code>
           <Coefficient><%= tc %></Coefficient>
-          <TotalDutyFreePrice><%= @invoice.total_taxes_for(tc).to_f.round_to(2).to_s(2) %></TotalDutyFreePrice> 
-          <TotalInclusiveOfTaxPrice><%= (@invoice.total_taxes_for(tc)*tc/100).to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxPrice> 
+          <TotalDutyFreePrice><%= @invoice.total_taxes_for(tc).to_f.round_to(2).to_s(2) %></TotalDutyFreePrice>
+          <TotalInclusiveOfTaxPrice><%= (@invoice.total_taxes_for(tc)*tc/100).to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxPrice>
         </VAT>
       <% end %>
-    </Taxes>  
+    </Taxes>
     <TotalDutyFreeNetPrice><%= @invoice.total.to_f.round_to(2).to_s(2) %></TotalDutyFreeNetPrice>
-    <TotalTaxes><%= @invoice.summon_of_taxes.to_f.round_to(2).to_s(2) %></TotalTaxes> 
+    <TotalTaxes><%= @invoice.summon_of_taxes.to_f.round_to(2).to_s(2) %></TotalTaxes>
     <TotalInclusiveOfTaxNetPrice><%= @invoice.net_to_paid.to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxNetPrice>
     <SalesTerms><%= @invoice.associated_quote.sales_terms %></SalesTerms>
     <InvoicingState>
@@ -139,11 +139,11 @@
     <TotalPrice>Montant HT</TotalPrice>
     <VAT>TVA</VAT>
     <VATCode>Code</VATCode>
-    <TotalDutyFreePrice>Montant HT</TotalDutyFreePrice> 
+    <TotalDutyFreePrice>Montant HT</TotalDutyFreePrice>
     <Coefficient>Taux</Coefficient>
-    <TotalInclusiveOfTaxPrice>Montant TVA</TotalInclusiveOfTaxPrice> 
+    <TotalInclusiveOfTaxPrice>Montant TVA</TotalInclusiveOfTaxPrice>
     <TotalDutyFreeNetPrice>Net HT :</TotalDutyFreeNetPrice>
-    <TotalTaxes>Total taxes :</TotalTaxes> 
+    <TotalTaxes>Total taxes :</TotalTaxes>
     <TotalInclusiveOfTaxNetPrice>NET A PAYER :</TotalInclusiveOfTaxNetPrice>
     <SalesTerms>Rappel des conditions commerciales</SalesTerms>
     <InvoicingState>État de facturation</InvoicingState>
@@ -157,6 +157,6 @@
     <DueDatesTotal>Montant TTC</DueDatesTotal>
     <FormToCut><%= @invoice.due_dates.many? ? "Coupons à retourner avec chaque règlement" : "Coupon à retourner avec le règlement" %></FormToCut>
     <Subtotal>Report :</Subtotal>
-    <Page>Page</Page>  
+    <Page>Page</Page>
   </Labels>
 </Root>

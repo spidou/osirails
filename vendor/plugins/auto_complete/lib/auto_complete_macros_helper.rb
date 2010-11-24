@@ -84,6 +84,8 @@ module AutoCompleteMacrosHelper
     
     { :update_element => :updateElement,
       :after_update_element => :afterUpdateElement,
+      :start_indicator => :startIndicator,
+      :stop_indicator => :stopIndicator,
       :on_show => :onShow,
       :on_hide => :onHide,
       :min_chars => :minChars }.each do |k,v|
