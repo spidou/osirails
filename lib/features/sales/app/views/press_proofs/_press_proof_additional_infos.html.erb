@@ -19,7 +19,7 @@ press_proof = press_proof_additional_infos %>
 </p>
 <p>
   <%= form.label :status %>
-  <%= strong "\"#{status_text(press_proof)}\"" %>
+  <%= strong "\"#{press_proof_status_text(press_proof)}\"" %>
 </p>
 
 <% if press_proof.cancelled? %>

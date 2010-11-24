@@ -21,26 +21,26 @@ module Journalization
       def act_on_journalization_with params = nil
         ActOnJournalizationWithMatcher.new(params)
       end
-
+      
       class ActOnJournalizationWithMatcher
         def initialize params = nil
           @params  = params
           @message = ""
         end
-
+        
         def matches? subject
           @subject = subject
           responds? && callback? && included?
         end
-
+        
         def failure_message
           @message
         end
-
+        
         def description
           "act on journalization with :#{@params}"
         end
-
+        
         protected
           def responds?
             [:journalization_actor_object, :journalization_actor_object=, :reset_journalization_actor_object].each do |method|

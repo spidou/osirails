@@ -1,21 +1,17 @@
 module UsersHelper
-  def contextual_search_for_user
-    contextual_search("User", ["*", "roles.name"])
+  def query_td_content_for_username_in_user
+    link_to(@query_object.username, user_path(@query_object))
   end
   
-  def get_headers
-    result = []
-    result << "Nom du compte utilisateur"
-    result << "Compte activé ?"
-    result << "Dernière connexion"
-    result << "Actions"
+  def query_td_content_for_last_connection_in_user
+    if @query_object.last_connection
+      @query_object.last_connection.humanize
+    else
+      'Jamais' #:never_conected
+    end
   end
   
-  def get_rows(user)
-    result = []
-    result << link_to(user.username, user)
-    result << (user.enabled ? "Oui" : "Non")
-    result << (user.last_connection.nil? ? "Jamais connecté" : user.last_connection.humanize)
-    result << "#{user_link(user, :link_text => "")} #{edit_user_link(user, :link_text => "")} #{delete_user_link(user, :link_text => "")}"
+  def query_td_content_for_roles_name_in_user
+    @query_object.roles.collect(&:name).join(", ")
   end
 end

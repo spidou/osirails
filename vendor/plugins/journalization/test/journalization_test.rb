@@ -54,7 +54,7 @@ class JournalizationTest < ActiveRecordTestCase
       should "have an only one journal for its creation" do
         assert_equal 1, @dupark.journals.count
       end
-    
+      
       should "have a journal with an only one line" do
         assert_equal 1, @dupark.journals.first.journal_lines.count
       end
@@ -71,8 +71,8 @@ class JournalizationTest < ActiveRecordTestCase
         setup do
           create_a_person
           
-          Person.acts_on_journalization_with :name   
-          Person.journalization_actor_object = @a_person         
+          Person.acts_on_journalization_with :name
+          Person.journalization_actor_object = @a_person
           
           @dupark.name = "another name changed by a person"
           flunk "@dupark must be saved to perform the next test" unless @dupark.save
@@ -155,7 +155,7 @@ class JournalizationTest < ActiveRecordTestCase
           
           should "have an additional journal with two lines including one which property is \"area\", old_value is its previous area and new_value is its new area" do
             last_journal = @dupark.journals.last
-          
+            
             assert_equal 2, last_journal.journal_lines.count
             assert_not_nil last_journal.journal_lines.detect { |l| l.property == "area" && l.old_value.to_s == @dupark_old_area.to_s && l.new_value.to_s == @dupark.area.to_s }
           end
@@ -223,7 +223,7 @@ class JournalizationTest < ActiveRecordTestCase
             should "have a journal_identifier new_value equals to the result of the class identifier method" do
               assert_equal @dupark.send(@dupark.class.journal_identifier_method.to_s), @dupark.journal_identifier.new_value
             end
-          
+            
             should "have an additional journal with a journal identifier" do
               identifier = @dupark.journals.last.journal_identifier
               
@@ -273,7 +273,7 @@ class JournalizationTest < ActiveRecordTestCase
       should "have an only one journal for its creation" do
         assert_equal 1, @a_person.journals.count
       end
-    
+      
       should "have a journal with three lines" do
         assert_equal 3, @a_person.journals.first.journal_lines.count
       end
@@ -349,7 +349,7 @@ class JournalizationTest < ActiveRecordTestCase
           setup do
             @a_district_representative_old_first_name = @a_district.representative.last_journalized_value_for("first_name")
             @a_district_representative_journals_count = @a_district.representative.journals.count
-          
+            
             @a_district.representative.first_name = "another first name"
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
@@ -363,7 +363,7 @@ class JournalizationTest < ActiveRecordTestCase
           end
         end
       end
-        
+      
       context "when District journalizes its representative (with no restrictions)," do
         setup do
           District.journalize :subresources => [:representative]
@@ -380,7 +380,7 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district_representative_old_first_name = @a_district.representative.last_journalized_value_for("first_name")
             @a_district_representative_journals_count = @a_district.representative.journals.count
             @a_district_journals_count = @a_district.journals.count
-          
+            
             @a_district.representative.first_name = "another first name"
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
@@ -392,7 +392,7 @@ class JournalizationTest < ActiveRecordTestCase
           should "have its representative getting one additional journal with an only one line which property is \"first_name\", old_value is @a_district representative old first name and new_value is @a_district representative first name}" do
             assert_not_nil @a_district.representative.journals.last.journal_lines.detect { |l| l.property == "first_name" && l.old_value == @a_district_representative_old_first_name && l.new_value == @a_district.representative.first_name}
           end
-        
+          
           should "have an additional journal" do
             assert_equal 1, @a_district.journals.count - @a_district_journals_count
           end
@@ -402,8 +402,8 @@ class JournalizationTest < ActiveRecordTestCase
           end
           
           should "have an additional journal including one line referencing its representative update journal" do
-            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               && 
-                                                                               l.old_value.nil?                                             && 
+            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               &&
+                                                                               l.old_value.nil?                                             &&
                                                                                l.new_value.nil?                                             &&
                                                                                l.property_id == @a_district.representative.id               &&
                                                                                l.referenced_journal == @a_district.representative.last_journal}
@@ -422,7 +422,7 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district.representative = @a_person
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
-        
+          
           should "have an additional journal" do
             assert_equal 1, @a_district.journals.count - @a_district_journals_count
           end
@@ -432,8 +432,8 @@ class JournalizationTest < ActiveRecordTestCase
           end
           
           should "have an additional journal including one line referencing its change of person as representative" do
-            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               && 
-                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s && 
+            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               &&
+                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s &&
                                                                                l.new_value.to_s == [@a_district.representative.id].to_s     &&
                                                                                l.property_id.nil?                                             }
           end
@@ -446,7 +446,7 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district.representative = nil
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
-        
+          
           should "have an additional journal" do
             assert_equal 1, @a_district.journals.count - @a_district_journals_count
           end
@@ -456,8 +456,8 @@ class JournalizationTest < ActiveRecordTestCase
           end
           
           should "have an additional journal including one line referencing its remove of person as representative" do
-            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               && 
-                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s && 
+            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               &&
+                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s &&
                                                                                l.new_value.to_s == [].to_s                                  &&
                                                                                l.property_id.nil?                                             }
           end
@@ -473,7 +473,7 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district.representative = create_a_person
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
-        
+          
           should "have an additional journal for the addition" do
             assert_equal 1, @a_district.journals.count - @a_district_journals_count
           end
@@ -483,8 +483,8 @@ class JournalizationTest < ActiveRecordTestCase
           end
           
           should "have an additional journal for the addition including one line referencing its addition of person as representative" do
-            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               && 
-                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s && 
+            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               &&
+                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s &&
                                                                                l.new_value.to_s == [@a_district.representative.id].to_s     &&
                                                                                l.property_id.nil?                                             }
           end
@@ -507,7 +507,7 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district_representative_old_first_name = @a_district.representative.last_journalized_value_for("first_name")
             @a_district_representative_journals_count = @a_district.representative.journals.count
             @a_district_journals_count = @a_district.journals.count
-          
+            
             @a_district.representative.first_name = "another first name"
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
@@ -519,7 +519,7 @@ class JournalizationTest < ActiveRecordTestCase
           should "have its representative getting one additional journal with an only one line which property is \"first_name\", old_value is @a_district representative old first name and new_value is @a_district representative first name}" do
             assert_not_nil @a_district.representative.journals.last.journal_lines.detect { |l| l.property == "first_name" && l.old_value == @a_district_representative_old_first_name && l.new_value == @a_district.representative.first_name}
           end
-        
+          
           should "have an additional journal" do
             assert_equal 1, @a_district.journals.count - @a_district_journals_count
           end
@@ -529,8 +529,8 @@ class JournalizationTest < ActiveRecordTestCase
           end
           
           should "have an additional journal including one line referencing its representative update journal" do
-            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               && 
-                                                                               l.old_value.nil?                                             && 
+            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               &&
+                                                                               l.old_value.nil?                                             &&
                                                                                l.new_value.nil?                                             &&
                                                                                l.property_id == @a_district.representative.id               &&
                                                                                l.referenced_journal == @a_district.representative.last_journal}
@@ -549,14 +549,14 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district.representative = @a_person
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
-        
+          
           should "have an additional journal" do
             assert_equal 1, @a_district.journals.count - @a_district_journals_count
           end
           
           should "have an additional journal with a line referencing its new representative journal creation" do
-             assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               && 
-                                                                                l.old_value.nil?                                             && 
+             assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               &&
+                                                                                l.old_value.nil?                                             &&
                                                                                 l.new_value.nil?                                             &&
                                                                                 l.property_id == @a_district.representative.id               &&
                                                                                 l.referenced_journal == @a_district.representative.last_journal}
@@ -570,7 +570,7 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district.representative = nil
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
-        
+          
           should "have any additional journal" do
             assert_equal 0, @a_district.journals.count - @a_district_journals_count
           end
@@ -593,7 +593,7 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district_representative_old_first_name = @a_district.representative.last_journalized_value_for("first_name")
             @a_district_representative_journals_count = @a_district.representative.journals.count
             @a_district_journals_count = @a_district.journals.count
-          
+            
             @a_district.representative.first_name = "another first name"
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
@@ -605,7 +605,7 @@ class JournalizationTest < ActiveRecordTestCase
           should "have its representative getting one additional journal with an only one line which property is \"first_name\", old_value is @a_district representative old first name and new_value is @a_district representative first name}" do
             assert_not_nil @a_district.representative.journals.last.journal_lines.detect { |l| l.property == "first_name" && l.old_value == @a_district_representative_old_first_name && l.new_value == @a_district.representative.first_name}
           end
-        
+          
           should "NOT have any additional journal" do
             assert_equal 0, @a_district.journals.count - @a_district_journals_count
           end
@@ -619,7 +619,7 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district.representative = @a_person
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
-        
+          
           should "have an additional journal" do
             assert_equal 1, @a_district.journals.count - @a_district_journals_count
           end
@@ -629,8 +629,8 @@ class JournalizationTest < ActiveRecordTestCase
           end
           
           should "have an additional journal including one line referencing its change of person as representative" do
-            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               && 
-                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s && 
+            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               &&
+                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s &&
                                                                                l.new_value.to_s == [@a_district.representative.id].to_s     &&
                                                                                l.property_id.nil?                                             }
           end
@@ -643,7 +643,7 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district.representative = nil
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
-        
+          
           should "have an additional journal" do
             assert_equal 1, @a_district.journals.count - @a_district_journals_count
           end
@@ -653,8 +653,8 @@ class JournalizationTest < ActiveRecordTestCase
           end
           
           should "have an additional journal including one line referencing its remove of person as representative" do
-            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               && 
-                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s && 
+            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               &&
+                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s &&
                                                                                l.new_value.to_s == [].to_s                                  &&
                                                                                l.property_id.nil?                                             }
           end
@@ -670,7 +670,7 @@ class JournalizationTest < ActiveRecordTestCase
             @a_district.representative = create_a_person
             flunk "@a_district must be saved to perform the next test" unless @a_district.save
           end
-        
+          
           should "have an additional journal for the addition" do
             assert_equal 1, @a_district.journals.count - @a_district_journals_count
           end
@@ -680,8 +680,8 @@ class JournalizationTest < ActiveRecordTestCase
           end
           
           should "have an additional journal for the addition including one line referencing its addition of person as representative" do
-            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               && 
-                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s && 
+            assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "representative"                               &&
+                                                                               l.old_value.to_s == [@a_district_old_representative_id].to_s &&
                                                                                l.new_value.to_s == [@a_district.representative.id].to_s     &&
                                                                                l.property_id.nil?                                             }
           end
@@ -709,7 +709,7 @@ class JournalizationTest < ActiveRecordTestCase
       context "after an update of its representative first_name, @a_district" do
         setup do
           @a_district_journals_count = @a_district.journals.count
-        
+          
           @a_district.representative.first_name = "another first name"
           flunk "@a_district must be saved to perform the next test" unless @a_district.save
         end
@@ -738,7 +738,7 @@ class JournalizationTest < ActiveRecordTestCase
         School.journalized_subresources   = {:has_one => {}, :has_many => {}}
         Person.journalized_attributes     = []
       end
-  
+      
       context "after an update of the first teacher first_name of the district first school, @district" do
         setup do
           @the_school  = @a_district.schools.first
@@ -766,8 +766,8 @@ class JournalizationTest < ActiveRecordTestCase
         end
         
         should "have the first teacher of its first school getting an additional journal with a line which property is \"first_name\", old_value is the previous first name and new_value is the first name" do
-          assert_not_nil @the_teacher.journals.last.journal_lines.detect {|l| l.property  == "first_name"                 && 
-                                                                              l.old_value == @the_teacher_old_first_name  && 
+          assert_not_nil @the_teacher.journals.last.journal_lines.detect {|l| l.property  == "first_name"                 &&
+                                                                              l.old_value == @the_teacher_old_first_name  &&
                                                                               l.new_value == @the_teacher.first_name       }
         end
         
@@ -776,8 +776,8 @@ class JournalizationTest < ActiveRecordTestCase
         end
         
         should "have its first school getting an additional journal with a line referencing its first teacher last journal" do
-          assert_not_nil @the_school.journals.last.journal_lines.detect {|l| l.property == "teachers"                        && 
-                                                                             l.old_value.nil?                                && 
+          assert_not_nil @the_school.journals.last.journal_lines.detect {|l| l.property == "teachers"                        &&
+                                                                             l.old_value.nil?                                &&
                                                                              l.new_value.nil?                                &&
                                                                              l.property_id == @the_teacher.id                &&
                                                                              l.referenced_journal == @the_teacher.last_journal}
@@ -788,8 +788,8 @@ class JournalizationTest < ActiveRecordTestCase
         end
         
         should "have an additional journal with a line referencing its first school last journal" do
-          assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "schools"                        && 
-                                                                             l.old_value.nil?                               && 
+          assert_not_nil @a_district.journals.last.journal_lines.detect {|l| l.property == "schools"                        &&
+                                                                             l.old_value.nil?                               &&
                                                                              l.new_value.nil?                               &&
                                                                              l.property_id == @the_school.id                &&
                                                                              l.referenced_journal == @the_school.last_journal}

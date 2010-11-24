@@ -11,8 +11,6 @@ class Subcontractor < Third
   
   belongs_to :activity_sector_reference
   
-  SUBCONTRACTORS_PER_PAGE = 15
-  
   named_scope :actives, :conditions => { :activated => true }
   
   validates_presence_of :activity_sector_reference_id
@@ -20,11 +18,14 @@ class Subcontractor < Third
   
   validates_uniqueness_of :siret_number, :scope => :type, :allow_blank => true
   
-  after_save :save_iban
+  journalize :attributes        => [ :name, :legal_form_id, :company_created_at, :collaboration_started_at, :activated ],
+             :subresources      => [ :contacts, :address, :phone, :fax, :iban ],
+             :identifier_method => :name
   
-  has_search_index :only_attributes    => [:name, :siret_number],
-                   :only_relationships => [:legal_form, :iban, :contacts, :activity_sector_reference],
-                   :main_model         => true
+  has_search_index :only_attributes    => [ :name, :siret_number, :website ],
+                   :only_relationships => [ :legal_form, :iban, :contacts, :activity_sector_reference, :address, :phone, :fax ]
+  
+  after_save :save_iban
   
   def iban_attributes=(iban_attributes)
     if iban_attributes[:id].blank?

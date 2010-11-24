@@ -6,7 +6,6 @@ class Customer < Third
   belongs_to :factor
   belongs_to :customer_solvency
   belongs_to :customer_grade
-  belongs_to :creator, :class_name => 'User'
   
   has_one  :head_office
   has_many :establishments, :conditions => ['establishments.type IS NULL and ( hidden = ? or hidden IS NULL )', false]
@@ -34,14 +33,15 @@ class Customer < Third
   
   validate :validates_uniqueness_of_siret_number
   
+  journalize :attributes        => [ :name, :legal_form_id, :company_created_at, :collaboration_started_at, :factor_id, :customer_solvency_id, :customer_grade_id, :activated ],
+             :attachments       => :logo,
+             :subresources      => [ :head_office, :establishments ],
+             :identifier_method => :name
+  
+  has_search_index :only_attributes    => [:name, :siret_number, :website],
+                   :only_relationships => [:legal_form, :establishments, :head_office, :customer_grade, :customer_solvency, :bill_to_address, :factor]
+  
   after_save :save_establishments, :save_head_office
-  
-  # for pagination : number of instances by index page
-  CUSTOMERS_PER_PAGE = 25
-  
-  has_search_index :only_attributes    => [ :name ],
-                   :only_relationships => [ :legal_form, :factor, :customer_solvency, :customer_grade ], #:head_office, :establishments ], #TODO add these relationships when bug #60 will be resolved
-                   :main_model         => true
   
   def payment_time_limit
     customer_grade && customer_grade.payment_time_limit
@@ -118,12 +118,19 @@ class Customer < Third
   def validates_uniqueness_of_siret_number
     establishments    = head_office_and_establishments
     all_siret_numbers = {}
-    establishments.each{ |n| all_siret_numbers.merge!(n => n.siret_number) }
+    establishments.reject{ |e| e.siret_number.blank? }.each{ |e| all_siret_numbers.merge!(e => e.siret_number) }
     
     message = "est déjà pris par un autre établissement (ou le siège social) de ce client"
+    at_least_one_error = false
+    
     establishments.each do |establishment|
       other_siret_numbers = all_siret_numbers.reject{ |estab, siret_number| establishment == estab }
-      establishment.errors.add(:siret_number, message) if other_siret_numbers.values.include?(establishment.siret_number)
+      if other_siret_numbers.values.include?(establishment.siret_number)
+        establishment.errors.add(:siret_number, message)
+        at_least_one_error = true
+      end
     end
+    
+    errors.add(:establishments) if at_least_one_error
   end
 end

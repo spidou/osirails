@@ -18,20 +18,16 @@
 class JournalIdentifier< ActiveRecord::Base
   belongs_to :journal
   belongs_to :journalized, :polymorphic => true
-
+  
   validates_presence_of :journal
   
   def self.find_for(journalized_type, journalized_id, datetime = Time.now)
-    begin
-      journalized = journalized_type.constantize.find(journalized_id)
-    rescue
-      journalized = nil
-    end
+    journalized = journalized_type.constantize.find(journalized_id) rescue nil
     
     if journalized && journalized.respond_to?(:journal_identifiers)
-      return journalized.journal_identifiers.select {|i| i.journal.created_at <= datetime}.sort_by {|i| i.journal.created_at}
+      journalized.journal_identifiers(:include => :journal, :order => 'journals.created_at', :conditions => [ "journals.created_at <= ?", datetime ])
     else
-      return self.all.select {|i| i.journalized_type == journalized_type && i.journalized_id == journalized_id && i.journal.created_at <= datetime}.sort_by {|i| i.journal.created_at}
+      self.all(:include => :journal, :conditions => [ "journal_identifiers.journalized_type = ? AND journal_identifiers.journalized_id = ? AND journals.created_at <= ?", journalized_type, journalized_id, datetime ], :order => "journals.created_at")
     end
   end
   
@@ -39,4 +35,3 @@ class JournalIdentifier< ActiveRecord::Base
     self.find_for(journalized_type, journalized_id, datetime).last
   end
 end
-

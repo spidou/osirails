@@ -1,8 +1,11 @@
+<% content_for :header do -%>
+  <%= javascript_include_tag 'sales/invoice' %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/invoice' %>
+<% end -%>
+
 <%= order_header %>
 
 <%= generate_invoice_contextual_menu_partial %>
-
-<%= javascript_include_tag 'sales/invoice' %>
 
 <h1>Signaler le financement de la facture par le FACTOR</h1>
 
@@ -14,8 +17,6 @@
       <%= render :partial => 'factoring_payment', :collection => @invoice.due_dates %>
     </div>
     
-    <p>
-      <%= form.submit "Valider" %>
-    </p>
+    <%= form.form_buttons %>
   <% end %>
 </div>

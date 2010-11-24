@@ -3,16 +3,20 @@
 
 <div id="under_banner">
 
-  <div id='text_under_banner' style="overflow: hidden;" onclick="show_memorandum(this, 0)">
+  <div id="text_under_banner" style="overflow: hidden;" onclick="show_memorandum(this, 0)">
       <%= last_memorandums %>
   </div>
-  <div id='block_button_under_banner'>
-    <input type='button' id='previous' class="previous_memorandum_<%= size %>" alt="bouton précédent"
-           title="Information précédente" onclick="change_memorandum(this, <%= size %>, event)"/>
+  <div id="block_button_under_banner">
+    <input type="button" id="previous_memorandum" class="previous_memorandum_<%= size %>" alt="Précédent"
+           title="Précédent" onclick="change_memorandum(this)"/>
            
-    <span class='number'><%= start_number%></span>|<span class='number'><%= last_memorandums.size %></span>
-    <input type='button' id='next' class='next_memorandum_2' alt="bouton suivant"
-           title="Information suivante" onclick="change_memorandum(this, <%= size %>, event)"  />
+    <span class="number"><%= start_number%></span>|<span class='number'><%= last_memorandums.size %></span>
+    <input type="button" id="next_memorandum" class='next_memorandum_2' alt="Suivant"
+           title="Suivant" onclick="change_memorandum(this)"/>
   </div>
 
 </div>
+
+<% javascript_tag do %>
+  var memorandum_count = <%= size %>;
+<% end %>

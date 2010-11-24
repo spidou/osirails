@@ -18,7 +18,7 @@
     <p>
       <%= f.label :date %>
       <% if is_edit_view? %>
-        <%= strong @checking.date.humanize %>
+        <%= strong l(@checking.date, :format => :long_ordinal) %>
       <% else %>
         <%= f.form_or_view(f.calendar_date_select(:date, {:start_year => Date.today.year-1, :end_year => Date.today.year+1}), :date)%>
       <% end %>

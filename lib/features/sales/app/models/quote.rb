@@ -4,9 +4,15 @@ class Quote < ActiveRecord::Base
   STATUS_SENDED     = 'sended'
   STATUS_SIGNED     = 'signed'
   
+  #TODO review that array (I18n)
   VALIDITY_DELAY_UNITS = { 'heures' => 'hours',
                            'jours'  => 'days',
                            'mois'   => 'months' }
+  
+  # priorities based on validity_date, published date and dunnings
+  LOW_PRIORITY    = 'low_priority'
+  MEDIUM_PRIORITY = 'medium_priority'
+  HIGH_PRIORITY   = 'high_priority'
   
   has_permissions :as_business_object, :additional_class_methods => [:confirm, :cancel, :send_to_customer, :sign]
   has_address     :bill_to_address
@@ -26,13 +32,11 @@ class Quote < ActiveRecord::Base
                     :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
                     :url  => '/quotes/:quote_id/order_form'
                     
-  journalize :attributes   => [:status, :order_id, :creator_id,  :quote_contact_id, :reference, :carriage_costs, :prizegiving, 
-                               :deposit, :discount, :sales_terms, :validity_delay, :validity_delay_unit, :confirmed_on, 
-                               :cancelled_on, :sended_on, :send_quote_method_id, :signed_on, :order_form_type_id, ],
-             :subresources => [:quote_items, :bill_to_address, :ship_to_address],
-             :attachments  =>  :order_form
+  named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ], :order => "quotes.created_at DESC"
   
-  named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
+  named_scope :pending,   :conditions => [ 'status IN (?)', [STATUS_CONFIRMED, STATUS_SENDED] ], :order => "quotes.created_at DESC"
+  named_scope :unsigned,  :conditions => [ 'status IS NULL OR status IN (?)', [STATUS_CONFIRMED, STATUS_SENDED] ], :order => "quotes.created_at DESC"
+  named_scope :signed,    :conditions => [ 'status = ?', STATUS_SIGNED ], :order => "quotes.created_at DESC"
   
   validates_presence_of :order_id, :creator_id
   validates_presence_of :order,   :if => :order_id
@@ -76,6 +80,12 @@ class Quote < ActiveRecord::Base
     
     quote.validate :validates_presence_of_order_form
   end
+  
+  journalize :attributes   => [:status, :creator_id, :quote_contact_id, :reference, :carriage_costs, :prizegiving, 
+                               :deposit, :discount, :sales_terms, :validity_delay, :validity_delay_unit, :confirmed_on, 
+                               :cancelled_on, :sended_on, :send_quote_method_id, :signed_on, :order_form_type_id],
+             :subresources => [:quote_items, :bill_to_address, :ship_to_address],
+             :attachments  =>  :order_form
   
   after_save    :save_quote_items, :remove_order_end_products
   after_update  :update_quote_step_status
@@ -331,7 +341,6 @@ class Quote < ActiveRecord::Base
   end
   
   def can_be_confirmed?
-    #was_uncomplete? and quote_step.pending_quote.nil? and quote_step.signed_quote.nil?
     !new_record? and was_uncomplete? and order.pending_quote(true).nil? and order.signed_quote(true).nil?
   end
   
@@ -351,11 +360,21 @@ class Quote < ActiveRecord::Base
     order ? order.all_contacts_and_customer_contacts : []
   end
   
+  def priority_level #TODO priority_level should take in account the dunnings
+    return unless validity_date
+    
+    now             = Time.zone.now.to_datetime
+    expiration_date = validity_date.to_datetime
+    half_date       = (expiration_date - (validity_delay / 2).days).to_datetime
+    
+    return LOW_PRIORITY    if now <= half_date
+    return MEDIUM_PRIORITY if now > half_date and now < expiration_date
+    return HIGH_PRIORITY   if now >= expiration_date
+  end
+  
   private
     def update_quote_step_status
-      if signed?
-        order.commercial_step.quote_step.terminated!
-      end
+      order.commercial_step.quote_step.terminated! if signed?
     end
     
     def build_or_update_quote_item(quote_item_attributes)

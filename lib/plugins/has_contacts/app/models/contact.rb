@@ -5,9 +5,23 @@ class Contact < ActiveRecord::Base
   
   belongs_to :has_contact, :polymorphic => true
   
+  has_attached_file :avatar, 
+                    :styles         => { :thumb => "75x75#" },
+                    :default_style  => :thumb,
+                    :path           => ":rails_root/assets/contacts/avatars/:id/:style.:extension",
+                    :url            => "/contacts/:id/avatar",
+                    :default_url    => ":current_theme_path/images/avatars/:gender.png"
+  
   validates_presence_of   :has_contact, :first_name, :last_name, :gender
   validates_format_of     :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail est incorrecte"
   validates_inclusion_of  :gender, :in => %w( M F )
+  
+  journalize :attributes        => [ :gender, :first_name, :last_name, :job, :email ],
+             :subresources      => [ :numbers ],
+             :attachments       => :avatar,
+             :identifier_method => :fullname
+  
+  has_search_index :only_attributes => [ :first_name, :last_name, :email ]
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit
   attr_accessor :should_destroy
@@ -22,17 +36,6 @@ class Contact < ActiveRecord::Base
   
   cattr_accessor :contacts_owners_models
   @@contacts_owners_models = []
-  
-  has_attached_file :avatar, 
-                    :styles         => { :thumb => "75x75#" },
-                    :default_style  => :thumb,
-                    :path           => ":rails_root/assets/contacts/avatars/:id/:style.:extension",
-                    :url            => "/contacts/:id/avatar",
-                    :default_url    => ":current_theme_path/images/avatars/:gender.png"
-  
-  has_search_index  :only_attributes => [ :first_name, :last_name, :email ]
-  
-  journalize :identifier_method => :fullname
   
   before_save :case_management
   

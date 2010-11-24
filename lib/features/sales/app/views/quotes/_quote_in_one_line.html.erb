@@ -5,7 +5,8 @@ title = quote.status ? " title=\"#{quote.status.titleize} quote\"" : ''
 %>
 
 <tr class="quote<%= status %>"<%= title %>>
-  <td class="reference text"><%= quote.reference %></td>
+  <td class="selector"><%= context_menu(quote, 'quote') %></td>
+  <td class="reference text"><%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(quote.order, quote)) %></td>
   <td class="created_at"><%= quote.created_at.humanize if quote.created_at %></td>
   <td class="confirmed_on"><%= quote.confirmed_on.humanize if quote.confirmed_on %></td>
   <td class="contact"><%= quote.quote_contact.fullname %></td>
@@ -14,6 +15,5 @@ title = quote.status ? " title=\"#{quote.status.titleize} quote\"" : ''
   <td class="deposit amount"><%= quote.deposit %>&nbsp;%</td>
   <td class="sended_on"><%= "#{quote.sended_on.humanize} (#{quote.send_quote_method.name})" if quote.sended_on and quote.send_quote_method %></td>
   <td class="signed_on"><%= quote.signed_on.humanize if quote.signed_on %></td>
-  <td class="status"><%= status_text(quote) %></td>
-  <td class="actions"><%= display_quote_action_buttons(quote.order, quote) %></td>
+  <td class="status"><%= quote_status_text(quote) %></td>
 </tr>

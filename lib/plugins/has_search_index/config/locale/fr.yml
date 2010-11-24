@@ -1,0 +1,97 @@
+fr:
+  activerecord:
+    models:
+      query: "Rapport"
+    attributes:
+      query:
+        name: "Nom du rapport"
+        public_access: "Public"
+        per_page: "Éléments par page"
+        search_type: "Le résultat doit correspondre à"
+        criteria: "Critères"
+        columns: "Colonnes à afficher"
+        group: "Grouper par"
+        order: "Ordonner par"
+    errors:
+      models:
+        query:
+          attributes:
+            columns:
+              too_short: "n'a pas assez d'éléments ({{count}} minimum)"
+            page_name:
+              bad_type: "n'est pas au bon format"
+              do_not_exist: "n'existe pas"
+              modified: "a été modifié"
+            columns:
+              bad_type: "n'est pas au bon format"
+              different_from_configuration: "ne correspond pas à la configuration"
+            group:
+              bad_type: "n'est pas au bon format"
+              different_from_configuration: "ne correspond pas à la configuration"
+            order:
+              bad_type: "n'est pas au bon format"
+              different_form_configuration: "ne correspond pas à la configuration"
+              bad_syntax: "contient des erreurs"
+            criteria:
+              bad_type: "n'est pas au bon format"
+              different_form_configuration: "ne correspond pas à la configuration"
+              bad_syntax: "contient des erreurs"
+  form:
+    query:
+      new:
+        h1: "Nouveau rapport personnalisé"
+        cancel_link: "Annuler la création du rapport"
+      edit:
+        h1: "Modifier le rapport personnalisé"
+        cancel_link: "Annuler l'édition du rapport"
+  link:
+    apply:
+      title: "Appliquer la nouvelle configuration"
+      name: "Appliquer"
+    reset:
+      name: "Annuler"
+      title: "Annuler les modifications effectuées"
+    new:
+      name: "Créer"
+      title: "Sauvegarder en tant que nouveau rapport personnalisé"
+    edit:
+      name: "Modifier"
+      title: "Modifier le rapport personnalisé"
+    delete:
+      name: "Supprimer"
+      title: "Supprimer le rapport personnalisé"
+    toggle:
+      title: "Afficher/Cacher les options avancées"
+    add_order:
+      title: "Ajouter une attribut pour le tri"
+    toggle_criteria:
+      name: "Filtres"
+      title: "Afficher/Cacher les filtres"
+    toggle_options:
+      name: "Options"
+      title: "Affichier/Cacher les options"
+    add_criterion:
+      name: "Ajouter un critère"
+    delete_criterion:
+      title: "Supprimer un critère"
+  view:
+    quick_search:
+      default: "Recherche rapide ..."
+      title: "Rechercher"
+    paginate_per_page: "Par page"
+    paginate_all: "Tout"
+    no_result: "Aucun résultat correspondant à la recherche"
+    search_for: "Le résultat doit correspondre à"
+    search_types:
+      and: 'tous les critères'
+      or: 'au moins un des critères'
+      not: 'aucun des critères'
+    advanced_search:
+      model_select:
+        h2: "Que recherchez vous ?"
+        default: "Veuillez choisir une catégorie"
+      criteria_h2: "Précisez votre recherche"
+    content:
+      boolean_true: "Oui"
+      boolean_false: "Non"
+      undefined_group_name: "Non défini"

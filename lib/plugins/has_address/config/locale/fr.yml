@@ -1,8 +1,8 @@
-fr:     
+fr:
   activerecord:
-    models: 
+    models:
       address: "Adresse"
-    attributes: 
+    attributes:
       address:
         street_name: "Nom de rue"
         country_name: "Pays"

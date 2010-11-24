@@ -3,74 +3,74 @@
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
   <%= stylesheet_link_tag_with_theme_support "thirds/thirds" %>
   <%= javascript_include_tag 'core/has_resources/has_resources' %>
+  <%= javascript_include_tag "thirds/thirds" if is_form_view? %>
+<% end %>
+
+<% unless customer.new_record? %>
+  <% add_contextual_menu_item Customer.human_name do %>
+    <% customer_action_buttons(customer).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= new_customer_link(:link_text => 'Nouveau client') unless is_new_view? %>
+  <%= customers_link(:link_text => "Voir tous les clients") %>
 <% end %>
 
 <%
-customer_headers = {:customer_informations            => "Informations générales",
-                    :customer_establishments          => "Autres établissements (#{customer.establishments.reject(&:should_destroy?).count})",
-                    :customer_contacts                => "Contacts (#{customer.contacts.reject(&:should_destroy?).count})",
-                    :customer_documents               => "Documents (#{customer.documents.reject(&:should_destroy?).count})",
-                    :customer_additional_informations => "Informations supplémentaires"}
-
-customer_errors  = {:customer_informations   => customer.head_office.errors_on_attributes_except_on_contacts? || customer.errors.on(:bill_to_address) ||
+customer_errors  = {:informations   => customer.head_office.errors_on_attributes_except_on_contacts? || customer.errors.on(:bill_to_address) ||
                                                 customer.errors.on(:name) || customer.errors.on(:legal_form) ||
                                                 customer.errors.on(:website) || customer.errors.on(:legal_form_id) ? ' errors' : '',
-                    :customer_establishments => customer.establishments.select {|n| n.errors_on_attributes_except_on_contacts? }.any? ? ' errors' : '',
-                    :customer_contacts       => customer.establishments.select {|n| n.errors.on(:contacts)}.any? ? ' errors' : ''}
+                    :establishments => customer.establishments.select {|n| n.errors_on_attributes_except_on_contacts? }.any? ? ' errors' : '',
+                    :contacts       => customer.head_office_and_establishments.select {|n| n.errors.on(:contacts)}.any? ? ' errors' : '',
+                    :documents      => customer.documents.select {|n| n.errors.any? }.any? ? ' errors' : '' }
 %>
-<div class="presentation_medium root_nav">
-  <ul class="customer_nav tab_nav">
-    <li class="customer_informations<%= customer_errors[:customer_informations] %> selected">
-      <%= customer_headers[:customer_informations ] %>
-    </li>
-    
-    <li class="customer_establishments<%= customer_errors[:customer_establishments] %>">
-      <%= customer_headers[:customer_establishments ] %>
-    </li>
-    
-    <li class="customer_contacts<%= customer_errors[:customer_contacts] %>">
-      <%= customer_headers[:customer_contacts ] %>
-    </li>
-    
-    <li class="customer_documents">
-      <%= customer_headers[:customer_documents ] %>
-    </li>
-    
-    <li class="customer_additional_informations">
-      <%= customer_headers[:customer_additional_informations ] %>
-    </li>
-  </ul>
+
+<div class="presentation_medium root_nav standard">
   
-  <% form_for customer, :html => { :multipart => true } do |form| %>
-    <%= form.error_messages %>
-    
-    <h2 class="customer_informations section_nav"><%= customer_headers[:customer_informations] %></h2>
-    <div class="customer_informations section_nav selected">
-      <%= render :partial => "customer_main_info", :object => customer, :locals => { :form => form } %>
-    </div>
-    
-    <h2 class="customer_establishments section_nav"><%= customer_headers[:customer_establishments] %></h2>
-    <div class="customer_establishments section_nav">
-      <%= display_establishments_list(customer) %>
-      <%= display_establishment_add_button(customer) if is_form_view? %>
-    </div>
-    
-    <h2 class="customer_contacts section_nav"><%= customer_headers[:customer_contacts] %></h2>
-    <div class="customer_contacts section_nav">
-      <%= render :partial => "customer_contacts", :object => customer %>
-    </div>
-    
-    <h2 class="customer_documents section_nav"><%= customer_headers[:customer_documents] %></h2>
-    <div class="customer_documents section_nav">
-      <%= display_documents_list(customer) %>
-      <%= display_document_add_button(customer) if is_form_view? %>
-    </div>
-    
-    <h2 class="customer_additional_informations section_nav"><%= customer_headers[:customer_additional_informations] %></h2>
-    <div class="customer_additional_informations section_nav">
-      <%= render :partial => "thirds/third_additional_info", :object => customer, :locals => { :form  => form } %>
-    </div>
-    
-    <%= form.form_buttons %>
+  <% tab_navigator :customer_nav do |t| %>
+    <% t.nav_buttons do %>
+      <%= t.tab :informations,    "Informations générales",
+                                  :class    => customer_errors[:informations],
+                                  :selected => true %>
+      <%= t.tab :establishments,  "Autres établissements (#{customer.establishments.reject(&:should_destroy?).count})",
+                                  :class => customer_errors[:establishments] %>
+      <%= t.tab :contacts,        "Contacts (#{customer.contacts.reject(&:should_destroy?).count})",
+                                  :class => customer_errors[:contacts] %>
+      <%= t.tab :documents,       "Documents (#{customer.documents.reject(&:should_destroy?).count})",
+                                  :class => customer_errors[:documents] %>
+      <%= t.tab_for_history(customer) %>
+    <% end %>
+  
+    <% form_for customer, :html => { :multipart => true } do |form| %>
+      
+      <% t.content_for :informations do %>
+        <%= form.error_messages unless customer_errors[:informations].blank? %>
+        <%= render :partial => "customer_main_info", :object => customer, :locals => { :form => form } %>
+      <% end %>
+      
+      <% t.content_for :establishments do %>
+        <%= form.error_messages unless customer_errors[:establishments].blank? %>
+        <%= display_establishments_list(customer) %>
+        <%= display_establishment_add_button(customer) if is_form_view? %>
+      <% end %>
+      
+      <% t.content_for :contacts do %>
+        <%= form.error_messages unless customer_errors[:contacts].blank? %>
+        <%= render :partial => "customer_contacts", :object => customer %>
+      <% end %>
+      
+      <% t.content_for :documents do %>
+        <%= form.error_messages unless customer_errors[:documents].blank? %>
+        <%= display_documents_list(customer) %>
+        <%= display_document_add_button(customer) if is_form_view? %>
+      <% end %>
+      
+      <% t.content_for_history(customer) %>
+      
+      <%= form.form_buttons %>
+    <% end %>
   <% end %>
 </div>

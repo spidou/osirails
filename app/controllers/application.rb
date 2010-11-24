@@ -43,14 +43,37 @@ class ApplicationController < ActionController::Base
   
   @@models ||= {}
   
-  def current_menu
-    #OPTIMIZE remove the reference to step (which comes from sales feature) and override this method in the feature sales to add the step notion
-    step = current_order_step if respond_to?("current_order_step")
-    menu = step || controller_name
-    Menu.find_by_name(menu) or raise "The controller '#{controller_name}' should have a menu with the same name"
+  def context_menu
+    class_name_and_object_ids = params.detect{ |h| h.first.end_with?("_ids") }            # ["resource_ids", ["1"]]
+    class_name                = class_name_and_object_ids.first.gsub("_ids", "").camelize # "Resource"
+    underscored_class_name    = class_name.underscore                                     # "resource"
+    object_id                 = class_name_and_object_ids.last.first                      # "1"
+    controller_folder_name    = self.class.name.gsub("Controller","").underscore          # "resources"
+    @ids                      = class_name_and_object_ids.last                            # ["1"]
+    choice                    = @ids.many? ? "multiple" : "single"                        # "single"
+    
+    controller_template = "#{controller_folder_name}/#{underscored_class_name}_context_menu_#{choice}_selection" # resources/resource_context_menu_single_selection
+    model_template      = "shared/#{underscored_class_name}_context_menu_#{choice}_selection"                    # shared/resource_context_menu_single_selection
+    default_template    = "shared/context_menu_#{choice}_selection"                                              # shared/context_menu_single_selection
+    
+    template   = params["#{underscored_class_name}_#{choice}_selection_template".to_sym]
+    template ||= controller_template if template_exists?(controller_template)
+    template ||= model_template      if template_exists?(model_template)
+    template ||= default_template
+    
+    @object = class_name.constantize.find(object_id)
+    
+    render :template => template, :layout => false
   end
-  
+    
   protected
+    def current_menu
+      #OPTIMIZE remove the reference to step (which comes from sales feature) and override this method in the feature sales to add the step notion
+      step = current_order_step if respond_to?("current_order_step")
+      menu = step || controller_name
+      Menu.find_by_name(menu) or raise "The controller '#{controller_name}' should have a menu with the same name"
+    end
+    
     # Method to permit to add permission to an action in a controller
     # options = {:list => ['myaction']}
     def self.method_permission(options)
@@ -63,8 +86,8 @@ class ApplicationController < ActionController::Base
 
     # This method return the feature name
     def feature_name(file)
-      file = file.split("/").slice(0...-3).join('/')
-      yaml = YAML.load(File.open(file+'/config.yml'))
+      file_name = file.split("/").slice(0...-3).join('/') + '/config.yml'
+      yaml = YAML.load(File.open(file_name))
       yaml['name']
     end
 
@@ -73,7 +96,7 @@ class ApplicationController < ActionController::Base
       ConfigurationManager.find_configurations_for(feature_name(file), controller_path)
     end
 
-    def current_user
+    def current_user # same as ApplicationHelper#current_user
       @current_user ||= User.find_by_id(session[:user_id])
     end
 

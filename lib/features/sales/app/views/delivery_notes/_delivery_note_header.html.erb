@@ -8,8 +8,8 @@ require_locals form
 delivery_note           = delivery_note_header
 order                   = delivery_note.order
 contacts_owners         = order.customer.head_office_and_establishments
-quote                   = delivery_note.associated_quote
-default_ship_to_address = order.signed_quote.ship_to_address
+quote                   = order.signed_quote
+default_ship_to_address = quote.ship_to_address
 %>
 
 <div id="delivery_note_header">
@@ -20,7 +20,11 @@ default_ship_to_address = order.signed_quote.ship_to_address
   </p>
   <p>
     <%= form.label :published_on %>
-    <%= form.form_or_view(form.calendar_date_select(:published_on), :published_on, :humanize) %> <% if delivery_note.was_uncomplete? and delivery_note.published_on.blank? %><span class="help_text">Laisser vide pour mettre automatiquement la date de validation</span><% end %>
+    <% if form.form_view? %>
+      <%= form.calendar_date_select :published_on %> <% if delivery_note.was_uncomplete? and delivery_note.published_on.blank? %><span class="help_text">Laisser vide pour mettre automatiquement la date de validation</span><% end %>
+    <% else %>
+      <%= strong l(delivery_note.published_on, :format => :long) %>
+    <% end %>
   </p>
   
   <div class="presentation_in_columns">
@@ -42,6 +46,6 @@ default_ship_to_address = order.signed_quote.ship_to_address
   <p>
     <label>Devis signé :</label>
     <%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(order, quote)) %>
-    <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_commercial_step_quote_step_quote_path(order, quote, :format => :pdf)) %>
+    <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_commercial_step_quote_step_quote_order_form_path(order, quote)) %>
   </p>
 </div>

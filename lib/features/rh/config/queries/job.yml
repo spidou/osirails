@@ -1,0 +1,63 @@
+conf_filters: &filters
+  filters:
+    - name
+    - service: service.id
+    - responsible
+    - mission
+    - activity
+    - goal
+conf_columns: &columns
+  columns:
+    - name
+    - service.name
+    - responsible
+    - mission
+    - activity
+    - goal
+conf_group: &group
+  group:
+    - service.name
+    - responsible
+conf_order: &order
+  order:
+    - name
+    - service.name
+    - responsible
+conf_pagination: &pagination
+  per_page:
+    - 25
+    - 50
+    - 100
+
+advanced_job:
+  <<: *filters
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+    
+job_index:
+  <<: *filters
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+  quick_search:
+    - name
+    - service.name
+    - mission
+    - activity
+    - goal
+  default_query:
+    columns:
+      - name
+      - responsible
+      - mission
+      - activity
+      - goal
+    group:
+      - service.name
+    order:
+      - 'responsible:desc'
+      - name
+    per_page: 25

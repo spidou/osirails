@@ -6,6 +6,7 @@ product_reference_category = product_reference_sub_category.product_reference_ca
 %>
 
 <tr id="<%= "end_product_#{end_product.id}" %>" class="end_product">
+  <td><%= link_to end_product.reference, end_product, :popup => true %></td>
   <td><%= link_to "#{product_reference.reference} - #{product_reference.designation}", product_reference, :popup => true %></td>
   <td><%= link_to end_product.name, end_product, :popup => true %></td>
   <td><%= link_to end_product.order.customer.name, end_product.order.customer, :popup => true %></td>

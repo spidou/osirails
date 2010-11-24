@@ -12,6 +12,10 @@ class SupplierTest < ActiveSupport::TestCase
   should_validate_uniqueness_of :name
   should_validate_uniqueness_of :siret_number, :scoped_to => :type
   
+  should_journalize :attributes        => [ :name, :legal_form_id, :company_created_at, :collaboration_started_at, :activated ],
+                    :subresources      => [ :contacts, :address, :phone, :fax, :iban ],
+                    :identifier_method => :name
+  
   context "Thanks to 'has_contacts', a supplier" do
     setup do
       @contacts_owner = Supplier.new

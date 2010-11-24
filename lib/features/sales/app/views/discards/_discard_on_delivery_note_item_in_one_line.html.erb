@@ -3,7 +3,7 @@ require_locals delivery_intervention
 delivery_note_item = discard_on_delivery_note_item_in_one_line
 
 discard = delivery_intervention.discards.detect{ |d| d.delivery_note_item_id == delivery_note_item.id } || delivery_intervention.discards.build(:delivery_note_item_id => delivery_note_item.id)
-end_product = delivery_note_item.quote_item.end_product
+end_product = delivery_note_item.end_product
 %>
 
 <% fields_for "delivery_intervention[discard_attributes][]", discard, :index => nil do |form| %>

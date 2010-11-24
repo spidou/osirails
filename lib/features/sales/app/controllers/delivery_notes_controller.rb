@@ -4,6 +4,8 @@ class DeliveryNotesController < ApplicationController
   
   acts_as_step_controller :step_name => :delivery_step, :skip_edit_redirection => true
   
+  skip_before_filter :lookup_step_environment, :only => [:context_menu]
+  
   before_filter :find_delivery_note
   before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]
   
@@ -29,9 +31,10 @@ class DeliveryNotesController < ApplicationController
   
   # GET /orders/:order_id/:step/delivery_notes/new
   def new
-    if @signed_quote = @order.signed_quote
-      @delivery_note = @order.delivery_notes.build
-      @delivery_note.build_delivery_note_items_from_signed_quote
+    @delivery_note = @order.delivery_notes.build
+    
+    if @delivery_note.can_be_added?
+      @delivery_note.build_missing_delivery_note_items_from_ready_to_deliver_end_products
       @delivery_note.delivery_note_contact = @order.order_contact
       @delivery_note.creator = current_user
     else
@@ -54,7 +57,11 @@ class DeliveryNotesController < ApplicationController
   
   # GET /orders/:order_id/:step/delivery_notes/:id/edit
   def edit
-    error_access_page(412) unless @delivery_note.can_be_edited?
+    if @delivery_note.can_be_edited?
+      @delivery_note.build_missing_delivery_note_items_from_ready_to_deliver_end_products
+    else
+      error_access_page(412)
+    end
   end
   
   # PUT /orders/:order_id/:step/delivery_notes/:id

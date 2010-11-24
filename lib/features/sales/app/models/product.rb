@@ -1,7 +1,13 @@
 class Product < ActiveRecord::Base
   named_scope :actives, :conditions => [ "cancelled_at IS NULL" ]
   
-  validates_presence_of :name
+  validates_presence_of :name, :unless => :should_destroy?
+  
+  attr_accessor :should_destroy
+  
+  def should_destroy?
+    should_destroy.to_i == 1
+  end
   
   #TODO test that method
   def enabled?

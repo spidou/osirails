@@ -27,11 +27,11 @@ module ApplicationHelper
   def format_memorandum(memorandum, max_memorandums)
       formated_memorandum = []
       memorandum_signature = "<strong>"+memorandum.signature+".</strong>"
-      memorandum_date = "<span class='memorandum_date'>Le " + memorandum.published_at.to_date.humanize + ".</span> "
+      memorandum_date = "<span class='memorandum_date'>Le " + l(memorandum.published_at.to_date) + ".</span> "
       memorandum_title = "<span class='memorandum_title'>"+memorandum.title+"</span> : "
       memorandum_size = 400
       memorandum_subject_size = memorandum_size - (memorandum_signature.size + memorandum_date.size + memorandum_title.size) 
-      memorandum_subject = "<span class='memorandum_subject'>"+truncate(memorandum.subject, memorandum_subject_size)+".</span> "
+      memorandum_subject = "<span class='memorandum_subject'>"+truncate(memorandum.subject, :length => memorandum_subject_size)+".</span> "
       display = ( max_memorandums == 1 ? "inline" : "none" )
       formated_memorandum << "<div id='banner_memorandum_#{memorandum.id}' class='memorandums position_#{max_memorandums}' style='display: #{display};'>"
       formated_memorandum << memorandum_date

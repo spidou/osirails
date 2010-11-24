@@ -13,12 +13,25 @@ class Establishment < ActiveRecord::Base
   belongs_to :establishment_type
   belongs_to :activity_sector_reference
   
+  has_attached_file :logo, 
+                    :styles => { :thumb => "120x120" },
+                    :path   => ":rails_root/assets/thirds/establishments/:id/logo/:style.:extension",
+                    :url    => "/establishments/:id.:extension"
+  
   validates_presence_of :address, :establishment_type_id
   validates_presence_of :establishment_type, :if => :establishment_type_id
   
   validates_uniqueness_of :siret_number, :allow_blank => true
   
   validates_associated :address
+  
+  journalize :attributes        => [ :name, :establishment_type_id, :activity_sector_reference_id, :siret_number, :activated, :hidden ],
+             :subresources      => [ :address, :contacts, :documents, :phone, :fax ],
+             :attachments       => :logo,
+             :identifier_method => :establishment_type_and_name
+  
+  has_search_index :only_attributes    => [ :name, :activated ],
+                   :only_relationships => [ :customer, :activity_sector_reference, :establishment_type, :address, :contacts, :phone, :fax ]
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit
   attr_accessor :should_destroy
@@ -31,15 +44,6 @@ class Establishment < ActiveRecord::Base
   # should_update = 0 if the form is hidden (after clicking on the cancel button via the web site) # see the /customers/1/edit
   attr_accessor :should_update
   
-  has_attached_file :logo, 
-                    :styles => { :thumb => "120x120" },
-                    :path   => ":rails_root/assets/thirds/establishments/:id/logo/:style.:extension",
-                    :url    => "/establishments/:id.:extension"
-  
-  has_search_index :only_attributes    => [ :name, :activated ],
-                   :only_relationships => [ :customer, :activity_sector_reference, :establishment_type, :contacts, :address, :phone, :fax ],
-                   :main_model         => true
-  
   def errors_on_attributes_except_on_contacts?
     [:address, :establishment_type_id, :establishment_type, :siret_number].each do |attribute|
       return true if errors.on(attribute)
@@ -51,8 +55,12 @@ class Establishment < ActiveRecord::Base
     super.blank? ? ( customer && customer.name ) : super
   end
   
+  def establishment_type_and_name
+    "#{establishment_type.name} - #{name}"
+  end
+  
   def formatted
-    "#{establishment_type.name} - #{name} (#{address.city_name} #{address.country_name})"
+    "#{establishment_type_and_name} (#{address.city_name} #{address.country_name})"
   end
   
   def can_be_hidden?

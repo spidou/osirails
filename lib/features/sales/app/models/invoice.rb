@@ -2,7 +2,7 @@ class Invoice < ActiveRecord::Base
   # status
   STATUS_CONFIRMED              = 'confirmed'
   STATUS_CANCELLED              = 'cancelled'
-  STATUS_SENDED                 = 'sended'
+  STATUS_SENDED                 = 'sended' # rename 'sended' to 'sent'
   STATUS_ABANDONED              = 'abandoned'
   STATUS_DUE_DATE_PAID          = 'due_date_paid'
   STATUS_TOTALLY_PAID           = 'totally_paid'
@@ -20,6 +20,12 @@ class Invoice < ActiveRecord::Base
   MIN_DUE_DATES = 1
   MAX_DUE_DATES = 5
   
+  # priorities based on due_dates, payments and dunnings
+  VERY_LOW_PRIORITY = 'very_low_priority'
+  LOW_PRIORITY      = 'low_priority'
+  MEDIUM_PRIORITY   = 'medium_priority'
+  HIGH_PRIORITY     = 'high_priority'
+  
   has_permissions :as_business_object, :additional_class_methods => [ :confirm, :cancel, :send_to_customer, :abandon, :factoring_pay, :factoring_recover, :factoring_balance_pay, :due_date_pay, :totally_pay ]
   has_contact     :invoice_contact, :accept_from => :order_and_customer_contacts
   has_address     :bill_to_address
@@ -34,7 +40,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :cancelled_by,    :class_name => 'User'
   belongs_to :abandoned_by,    :class_name => 'User'
   
-  has_many :invoice_items,  :dependent  => :destroy,        :order => 'position'
+  has_many :invoice_items,  :dependent  => :destroy,        :order => 'position, id'
   has_many :end_products,   :through    => :invoice_items,  :order => 'invoice_items.position'
   
   has_many :delivery_note_invoices, :dependent  => :destroy
@@ -43,6 +49,13 @@ class Invoice < ActiveRecord::Base
   has_many :due_dates, :order => "date ASC",  :dependent => :destroy
   
   has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
+  
+  named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ], :order => "invoices.created_at DESC"
+  
+  named_scope :pending, :conditions => [ 'status IN (?)', [STATUS_CONFIRMED, STATUS_SENDED, STATUS_DUE_DATE_PAID, STATUS_FACTORING_PAID] ], :order => "invoices.created_at DESC"
+  named_scope :sent,    :conditions => [ 'status = ?', STATUS_SENDED ], :order => "invoices.created_at DESC"
+  named_scope :unpaid,  :conditions => [ 'status IS NULL OR status IN (?)', [STATUS_CONFIRMED, STATUS_SENDED, STATUS_DUE_DATE_PAID, STATUS_FACTORING_PAID] ], :order => "invoices.created_at DESC"
+  named_scope :paid,    :conditions => [ 'status IN (?)', [STATUS_TOTALLY_PAID, STATUS_FACTORING_BALANCE_PAID] ], :order => "invoices.created_at DESC"
   
   attr_accessor :the_due_date_to_pay # only one due_date can be paid at time, and it's stored in this accessor
   
@@ -61,7 +74,7 @@ class Invoice < ActiveRecord::Base
   
   # when invoice is UNSAVED or UNCOMPLETE
   with_options :if => Proc.new{ |invoice| invoice.new_record? or invoice.was_uncomplete? } do |x|
-    x.validates_presence_of :bill_to_address, :published_on, :invoice_type_id, :creator_id, :invoicing_actor_id, :invoice_contact_id
+    x.validates_presence_of :bill_to_address, :invoice_type_id, :creator_id, :invoicing_actor_id, :invoice_contact_id
     x.validates_presence_of :invoice_type,    :if => :invoice_type_id
     x.validates_presence_of :creator,         :if => :creator_id
     x.validates_presence_of :invoicing_actor, :if => :invoicing_actor_id
@@ -82,7 +95,7 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :confirmed_at, :published_on, :reference
     
     x.validates_date :confirmed_at, :on_or_after => :created_at
-    x.validates_date :published_on, :on_or_after => Proc.new{ |i| i.associated_quote.signed_on }
+    x.validates_date :published_on, :on_or_after => Proc.new{ |i| i.signed_quote.signed_on }
   end
   
   # when invoice is CONFIRMED
@@ -295,7 +308,7 @@ class Invoice < ActiveRecord::Base
     x.validates_persistence_of :status
   end
   
-  validate :validates_presence_of_associated_quote
+  validate :validates_presence_of_signed_quote
   
   validate :validates_factorised_according_to_invoice_type
   validate :validates_product_items_according_to_invoice_type
@@ -325,8 +338,8 @@ class Invoice < ActiveRecord::Base
   has_search_index :only_attributes    => [ :reference, :status, :published_on, :sended_on, :abandoned_on, :factoring_recovered_on, :factoring_balance_paid_on ],
                    :only_relationships => [ :factor, :invoice_type ]#,:order] #TODO add :order to relationships list when bug #60 will be resolved.
   
-  def validates_presence_of_associated_quote
-    errors.add(:associated_quote, "La facture doit être associée à un devis signé, mais celui-ci n'est pas présent.") unless associated_quote
+  def validates_presence_of_signed_quote
+    errors.add(:signed_quote, "La facture doit être associée à un devis signé, mais celui-ci n'est pas présent.") unless signed_quote
   end
   
   def validates_presence_of_factoring_payment
@@ -364,7 +377,7 @@ class Invoice < ActiveRecord::Base
       errors.add(:delivery_note_invoices, "Une facture d'#{invoice_type_text} ne peut pas être associée à un Bon de Livraison") unless delivery_note_invoices.empty?
     elsif status_invoice?
       errors.add(:delivery_note_invoices, "Une facture de situation doit être associée à au moins 1 Bon de Livraison") if delivery_note_invoices.empty?
-      errors.add(:delivery_note_invoices, "Une facture de situation ne doit PAS être associée à l'ensemble des Bons de Livraison restants à facturer. Vous devez changer le type de facture et choisir la facture de solde") if order.all_is_delivered? and associated_to_all_unbilled_delivery_notes?
+      errors.add(:delivery_note_invoices, "Une facture de situation ne doit PAS être associée à l'ensemble des Bons de Livraison restants à facturer. Vous devez soit changer le type de facture, soit retirer les BL associés en trop") if order.all_is_delivered? and associated_to_all_unbilled_delivery_notes?
     elsif balance_invoice?
       errors.add(:delivery_note_invoices, "Une facture de solde doit absolument être associée à l'ensemble des Bons de Livraison restants à facturer") unless associated_to_all_unbilled_delivery_notes?
     end
@@ -487,9 +500,9 @@ class Invoice < ActiveRecord::Base
     return unless status_invoice? or balance_invoice?
     
     delivery_note_items_sum = {}
-    delivery_note_invoices.reject(&:should_destroy).collect(&:delivery_note).collect(&:delivery_note_items).flatten.each do |i|
-      p_id = i.quote_item.end_product_id
-      ( delivery_note_items_sum[p_id] = ( delivery_note_items_sum[p_id] || 0 ) + i.quantity ) if i.quantity > 0
+    delivery_note_invoices.reject(&:should_destroy).collect(&:delivery_note).collect(&:delivery_note_items).flatten.each do |item|
+      p_id = item.end_product_id
+      delivery_note_items_sum[p_id] = ( delivery_note_items_sum[p_id] || 0 ) + item.quantity
     end
     
     product_items_sum = {}
@@ -550,8 +563,8 @@ class Invoice < ActiveRecord::Base
     ( order.unbilled_delivery_notes - delivery_note_invoices.reject(&:should_destroy?).collect(&:delivery_note) ).empty?
   end
   
-  def associated_quote
-    order ? order.signed_quote : nil
+  def signed_quote
+    order and order.signed_quote
   end
   
   # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
@@ -622,17 +635,17 @@ class Invoice < ActiveRecord::Base
   def build_or_update_invoice_items_from(delivery_note, should_destroy = false)
     return if delivery_note.nil? or delivery_note.new_record?
     
-    delivery_note.delivery_note_items.each do |item|
-      existing_invoice_item = invoice_items.detect{ |i| i.end_product_id == item.quote_item.end_product_id }
+    delivery_note.delivery_note_items.each do |dn_item|
+      existing_invoice_item = invoice_items.detect{ |i| i.end_product_id == dn_item.end_product_id }
       
       if should_destroy
-        existing_invoice_item.quantity -= item.really_delivered_quantity if existing_invoice_item
+        existing_invoice_item.quantity -= dn_item.really_delivered_quantity if existing_invoice_item
       else
         if existing_invoice_item
-          existing_invoice_item.quantity += item.really_delivered_quantity if existing_invoice_item.new_record?
-        elsif item.really_delivered_quantity > 0
-          invoice_items.build( :end_product_id  => item.quote_item.end_product_id,
-                               :quantity        => item.really_delivered_quantity )
+          existing_invoice_item.quantity += dn_item.really_delivered_quantity if existing_invoice_item.new_record?
+        elsif dn_item.really_delivered_quantity > 0
+          invoice_items.build( :end_product_id  => dn_item.end_product_id,
+                               :quantity        => dn_item.really_delivered_quantity )
         end
       end
     end
@@ -740,8 +753,9 @@ class Invoice < ActiveRecord::Base
   def confirm
     if can_be_confirmed?
       update_reference
-      self.confirmed_at = Time.now
-      self.status       = STATUS_CONFIRMED
+      self.published_on ||= Date.today
+      self.confirmed_at   = Time.now
+      self.status         = STATUS_CONFIRMED
       self.save
     else
       false
@@ -855,8 +869,8 @@ class Invoice < ActiveRecord::Base
   end
   
   def calculate_deposit_amount_according_to_quote_and_deposit
-    return unless associated_quote and deposit
-    associated_quote.net_to_paid * deposit / 100
+    return unless signed_quote and deposit
+    signed_quote.net_to_paid * deposit / 100
   end
   
   def deposit_amount_without_taxes
@@ -878,7 +892,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def can_create_asset_invoice?
-    associated_quote
+    !signed_quote.nil?
   end
   
   def uncomplete?
@@ -1051,6 +1065,22 @@ class Invoice < ActiveRecord::Base
   
   def order_and_customer_contacts
     order ? order.all_contacts_and_customer_contacts : []
+  end
+  
+  def priority_level #TODO priority_level should take in account the dunnings
+    return unless published_on and upcoming_due_date and upcoming_due_date.date
+    
+    today       = Date.today
+    last_limit  = upcoming_due_date.date
+    delay       = (last_limit - published_on) / 3
+    
+    first_limit   = published_on  + delay
+    second_limit  = published_on  + (2 * delay)
+    
+    return VERY_LOW_PRIORITY  if today <= first_limit
+    return LOW_PRIORITY       if today > first_limit and today < second_limit
+    return MEDIUM_PRIORITY    if today > second_limit and today < last_limit
+    return HIGH_PRIORITY      if today >= last_limit
   end
   
   def message_for_validates_date_cancelled_at_on_or_after_while_confirmed

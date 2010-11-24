@@ -1,14 +1,55 @@
-<div class="presentation_medium">
-  <h2>Informations g&eacute;n&eacute;rales</h2>
-  <% form_for @subcontractor do |form| %>
-    <%= form.error_messages %>
+<% content_for :header do %>
+  <%= javascript_include_tag 'thirds/thirds' if is_form_view? %>
+<% end %>
+
+<% unless subcontractor.new_record? %>
+  <% add_contextual_menu_item Subcontractor.human_name do %>
+    <% subcontractor_action_buttons(subcontractor).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= new_subcontractor_link(:link_text => 'Nouveau sous-traitant') unless is_new_view? %>
+  <%= subcontractors_link(:link_text => "Voir tous les sous-traitants") %>
+<% end %>
+
+<%
+subcontractor_errors  = {:informations   => subcontractor.errors.on(:name) || subcontractor.errors.on(:siret_number) || subcontractor.errors.on(:website) ||
+                                       subcontractor.errors.on(:legal_form_id) || subcontractor.errors.on(:legal_form) ||
+                                       subcontractor.errors.on(:activity_sector_reference_id) || subcontractor.errors.on(:activity_sector_reference) ||
+                                       subcontractor.errors.on(:address) || subcontractor.errors.on(:phone) || subcontractor.errors.on(:fax) || subcontractor.errors.on(:iban) ? ' errors' : '',
+                    :contacts       => subcontractor.errors.on(:contacts) ? ' errors' : '' }
+%>
+
+<div class="presentation_medium root_nav standard">
+  <% tab_navigator :subcontractor_nav do |t| %>
+    <% t.nav_buttons do %>
+      <%= t.tab :informations,  "Informations générales",
+                                :class    => subcontractor_errors[:informations],
+                                :selected => true %>
+      <%= t.tab :contacts,      "Contacts (#{subcontractor.contacts.reject(&:should_destroy?).count})",
+                                :class => subcontractor_errors[:contacts] %>
+      <%= t.tab_for_history(subcontractor) %>
+    <% end %>
     
-    <%= render :partial => 'thirds/third', :object => @subcontractor, :locals => {:form => form} %>
-    
-    <h2>Contacts</h2>
-    <%= display_contacts_list(@subcontractor) %>
-    <%= display_contact_add_button(@subcontractor) if is_form_view? %>
-    
-    <%= form.form_buttons %>
+    <% form_for subcontractor, :html => { :multipart => true } do |form| %>
+      
+      <% t.content_for :informations do %>
+        <%= form.error_messages unless subcontractor_errors[:informations].blank? %>
+        <%= render :partial => 'thirds/third', :object => subcontractor, :locals => { :form => form } %>
+      <% end %>
+      
+      <% t.content_for :contacts do %>
+        <%= form.error_messages unless subcontractor_errors[:contacts].blank? %>
+        <%= display_contacts_list(subcontractor) %>
+        <%= display_contact_add_button(subcontractor) if is_form_view? %>
+      <% end %>
+      
+      <% t.content_for_history(subcontractor) %>
+      
+      <%= form.form_buttons %>
+    <% end %>
   <% end %>
 </div>

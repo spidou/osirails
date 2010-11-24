@@ -1,0 +1,4 @@
+first_watching: # for validates_uniqueness_of
+  watchable_id: 1
+  watchable_type: District
+  watcher_id: 1

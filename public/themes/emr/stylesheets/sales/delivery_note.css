@@ -16,6 +16,10 @@ table tr.delivery_note td.realized_at.undelivered {
   color: #ff3528;
 }
 
+table tr.delivery_note td.realized_at.postponed {
+  color: #ff3528;
+}
+
 table tr.delivery_note td.realized_at.delivered {
   color: #60bc00;
 }

@@ -18,17 +18,17 @@ class Checking < ActiveRecord::Base
     v.validates_persistence_of :overtime_hours, :overtime_minutes, :absence_hours, :absence_minutes, :overtime_comment, :absence_comment
   end
   
-  validates_presence_of :absence_comment,                     :if => Proc.new { |o| o.mandatory_absence_comment? }
-  validates_presence_of :overtime_comment,                    :if => Proc.new { |o| o.mandatory_overtime_comment? }
+  validates_presence_of :absence_comment,   :if => Proc.new { |o| o.mandatory_absence_comment? }
+  validates_presence_of :overtime_comment,  :if => Proc.new { |o| o.mandatory_overtime_comment? }
   validates_presence_of :date
   validates_presence_of :user_id, :employee_id
-  validates_presence_of :user,                                :if => :user_id
-  validates_presence_of :employee,                            :if => :employee_id
+  validates_presence_of :user,      :if => :user_id
+  validates_presence_of :employee,  :if => :employee_id
   
   validate :validates_one_checking_per_day_and_per_employee
   validate :validates_good_hours, :validates_good_minutes
   validate :validates_not_empty_checking
-  validate :validates_date_not_too_far_away,                  :if => :date
+  validate :validates_date_not_too_far_away
   
   def mandatory_absence_comment?
     mandatory_comment?(absence_hours, absence_minutes)
@@ -134,7 +134,7 @@ class Checking < ActiveRecord::Base
     end
     
     def validates_date_not_too_far_away
-      if changes.include?("date") and !date.between?(Date.today-1.month, Date.today+1.month)
+      if date and changes.include?("date") and !date.between?(Date.today-1.month, Date.today+1.month)
         errors.add(:date, "ne doit pas être trop éloignée de la date d'aujourd'hui")
       end 
     end

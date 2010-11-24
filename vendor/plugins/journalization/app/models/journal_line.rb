@@ -18,7 +18,7 @@
 class JournalLine < ActiveRecord::Base
   belongs_to :journal
   belongs_to :referenced_journal, :class_name => "Journal", :foreign_key => "referenced_journal_id"
-
+  
   validates_presence_of :journal
   
   def old_value
@@ -33,7 +33,7 @@ class JournalLine < ActiveRecord::Base
     return if value.blank?
     case type
       when "boolean"
-        return (value == "true" ? true : false)
+        return value == "true"
       when "integer"
         return value.to_i
       when "float"

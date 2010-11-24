@@ -9,8 +9,13 @@ class CustomerTest < ActiveSupport::TestCase
   
   should_validate_presence_of   :bill_to_address, :head_office
   should_validate_uniqueness_of :name
+  
+  should_journalize :attributes        => [ :name, :legal_form_id, :company_created_at, :collaboration_started_at, :factor_id, :customer_solvency_id, :customer_grade_id, :activated ],
+                    :attachments       => :logo,
+                    :subresources      => [ :head_office, :establishments ],
+                    :identifier_method => :name
 
-  context "a new customer" do
+  context "A new customer" do
     setup do
       @customer = Customer.new
     end
@@ -19,6 +24,8 @@ class CustomerTest < ActiveSupport::TestCase
       @customer = nil
     end
     
+    #TODO test when siret numbers are nil
+    #     test if customer.establishments is invalid
     # test validates_uniqueness_of_siret_number
     context "with sub resources having similar siret_numbers except one" do
       setup do

@@ -1,15 +1,7 @@
 <% add_contextual_menu_item :quote do %>
-  <%= display_quote_add_button(@order) unless is_new_view? %>
-  <%= display_quote_show_button(@order, @quote) unless is_show_view? %>
-  <%= display_quote_order_form_button(@order, @quote) %>
-  <%= display_quote_preview_button(@order, @quote) %>
-  <%= display_quote_show_pdf_button(@order, @quote) %>
-  <%= display_quote_edit_button(@order, @quote) unless is_edit_view? %>
-  
-  <%= display_quote_confirm_button(@order, @quote) %>
-  <%= display_quote_send_button(@order, @quote) %>
-  <%= display_quote_sign_button(@order, @quote) %>
-  <%= display_quote_cancel_button(@order, @quote) %>
-  <%= display_quote_delete_button(@order, @quote) %>
-  <%= display_quote_list_button(@step) %>
+  <% quote_action_buttons(@quote).each do |button| -%>
+    <%= button %>
+  <% end -%>
 <% end %>
+
+<%= generate_quote_step_contextual_menu_partial %>

@@ -1,7 +1,9 @@
 function add_product_reference_to_quote(remote_path, authenticity_token) {
   var product_reference_id = $('add_this_product_reference_id').value
   
-  var quote_items = $('quote_items').select('tbody > tr.quote_item')
+  var quote_items = $('quote_items').select('tbody > tr.quote_item').reject(function(tr){
+    return parseInt(tr.down('input.should_destroy').value) > 0
+  })
   var reference_already_chosen = false
   var line_reference = null
   
@@ -22,7 +24,7 @@ function add_product_reference_to_quote(remote_path, authenticity_token) {
       onSuccess: function(transport) {
 	      $('quote_items').down('tbody').insert({ bottom: transport.responseText })
 	      
-	      update_up_down_links($('quote_items_body'));  // method defined into sales.js
+	      update_up_down_links_and_positions($('quote_items_body'));  // method defined into sales.js
 	      initialize_autoresize_text_areas()
 	      
 	      last_element = $('quote_items').down('tbody').select('tr').last()
@@ -43,7 +45,7 @@ function remove_reference(obj) {
   }
   
   update_aggregates()
-  update_up_down_links($('quote_items_body'));  // method defined into sales.js
+  update_up_down_links_and_positions($('quote_items_body'));  // method defined into sales.js
 }
 
 function calculate(tr) {
@@ -143,5 +145,5 @@ function remove_free_quote_item(element) {
     item.remove();
   }
   
-  update_up_down_links($('quote_items_body'));  // method defined into sales.js
+  update_up_down_links_and_positions($('quote_items_body'));  // method defined into sales.js
 }

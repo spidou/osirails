@@ -5,7 +5,7 @@
     <Date><%= l(Date.today) %></Date>
     <Reference><%= @press_proof.reference %></Reference>
     <FileName><%= @press_proof.order.title%></FileName>
-    <QuoteReference><%= @press_proof.associated_quote.reference if @press_proof.associated_quote %></QuoteReference>
+    <QuoteReference><%= @press_proof.signed_quote.reference if @press_proof.signed_quote %></QuoteReference>
     <CustomerName><%= @press_proof.order.customer.name %></CustomerName>
     <CustomerName2><%= @press_proof.order.customer.name %></CustomerName2>
     <Supplier>

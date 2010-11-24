@@ -1,3 +1,20 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+<% end %>
+
+<% unless product_reference_sub_category.new_record? %>
+  <% add_contextual_menu_item ProductReferenceSubCategory.human_name do %>
+    <% product_reference_sub_category_action_buttons(product_reference_sub_category).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= new_product_reference_sub_category_link(:link_text => 'Nouvelle sous-famille') unless is_new_view? %>
+  <%= product_references_link(:link_text => "Voir tous les produits références") %>
+<% end %>
+
 <div class="presentation_medium">
   <% form_for product_reference_sub_category do |form|%>
     <%= form.error_messages %>

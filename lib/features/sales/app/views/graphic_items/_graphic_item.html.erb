@@ -3,46 +3,48 @@
   <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
 <% end -%>
 
-<%
-  graphic_item_headers = { :graphic_item_informations             => "Informations",
-                           :graphic_item_graphic_item_versions    => "Versions (#{graphic_item.graphic_item_versions.count})",
-                           :graphic_item_additional_informations  => "Informations supplémentaires" }
+<% display_user_spool_in_contextual_menu %>
 
-  graphic_item_errors  = { :graphic_item_informations => graphic_item.errors.on(:product_id) || graphic_item.errors.on(:product) ||
-                                                         graphic_item.errors.on(:name) || graphic_item.errors.on(:description) ||
-                                                         graphic_item.errors.on(:mockup_type_id) || graphic_item.errors.on(:mockup_type) ||
-                                                         graphic_item.errors.on(:graphic_document_type_id) || graphic_item.errors.on(:graphic_document_type) ||
-                                                         graphic_item.errors.on(:graphic_unit_measure_id) || graphic_item.errors.on(:graphic_unit_measure) ||
-                                                         graphic_item.errors.on(:new_graphic_item_version) ? ' errors' : ''}
-  
-  disabled = graphic_item.new_record? ? "disabled" : ""
+<%= generate_graphic_items_contextual_menu_partial %>
+
+<%
+  graphic_item_errors  = { :informations => graphic_item.errors.on(:product_id) || graphic_item.errors.on(:product) ||
+                                            graphic_item.errors.on(:name) || graphic_item.errors.on(:description) ||
+                                            graphic_item.errors.on(:mockup_type_id) || graphic_item.errors.on(:mockup_type) ||
+                                            graphic_item.errors.on(:graphic_document_type_id) || graphic_item.errors.on(:graphic_document_type) ||
+                                            graphic_item.errors.on(:graphic_unit_measure_id) || graphic_item.errors.on(:graphic_unit_measure) ||
+                                            graphic_item.errors.on(:new_graphic_item_version) ? ' errors' : ''}
 %>
 
-<div class="presentation_medium graphic_item root_nav">
-  <ul class="graphic_item_nav tab_nav">
-    <li class="graphic_item_informations<%= graphic_item_errors[:graphic_item_informations] %> selected"><%= graphic_item_headers[:graphic_item_informations] %></li>
-    <li class="graphic_item_graphic_item_versions <%= disabled %>"><%= graphic_item_headers[:graphic_item_graphic_item_versions] %></li>
-    <li class="graphic_item_additional_informations <%= disabled %>"><%= graphic_item_headers[:graphic_item_additional_informations] %></li>
-  </ul>
-  <% action = graphic_item.new_record? ? :create : :update %>
-  <% form_for(graphic_item, :url => { :controller => "#{graphic_item.class.name.tableize}", :action => action}, :html => { :multipart => true, :class => is_form_view? ? (graphic_item.new_record? ? "new_#{graphic_item.class.name.underscore}" : "edit_#{graphic_item.class.name.underscore}") : "skip_prevent_close" }) do |form| %>
-    <%= form.error_messages(:skip_links => true) %>
-
-    <h2 class="graphic_item_informations section_nav"><%= graphic_item_headers[:graphic_item_informations] %></h2>
-    <div class="graphic_item_informations section_nav selected">
-      <%= render :partial => 'graphic_items/graphic_item_infos', :object => graphic_item, :locals => { :form => form } %>
-    </div>
+<div class="presentation_medium graphic_item root_nav standard">
+  
+  <% tab_navigator :graphic_item_nav do |t| %>
+    <% t.nav_buttons do %>
+      <%= t.tab :informations,            "Informations",
+                                          :class    => graphic_item_errors[:informations],
+                                          :selected => true %>
+      <%= t.tab :versions,                "Versions (#{graphic_item.graphic_item_versions.count})",
+                                          :disabled => graphic_item.new_record? %>
+      <%= t.tab :additional_informations, "Informations supplémentaires" %>
+    <% end %>
     
-    <h2 class="graphic_item_graphic_item_versions section_nav"><%= graphic_item_headers[:graphic_item_graphic_item_versions] %></h2>
-    <div class="graphic_item_graphic_item_versions section_nav">
-      <%= render :partial => 'graphic_items/graphic_item_versions', :object => graphic_item, :locals => { :form => form } %>
-    </div>
-    
-    <h2 class="graphic_item_additional_informations section_nav"><%= graphic_item_headers[:graphic_item_additional_informations] %></h2>
-    <div class="graphic_item_additional_informations section_nav">
-      <%= render :partial => 'graphic_items/graphic_item_additional_infos', :object => graphic_item, :locals => { :form => form } %>
-    </div>
+    <% action = graphic_item.new_record? ? :create : :update %>
+    <% form_for(graphic_item, :url => { :controller => "#{graphic_item.class.name.tableize}", :action => action}, :html => { :multipart => true, :class => is_form_view? ? (graphic_item.new_record? ? "new_#{graphic_item.class.name.underscore}" : "edit_#{graphic_item.class.name.underscore}") : "skip_prevent_close" }) do |form| %>
       
-    <%= form.form_buttons %>  
+      <% t.content_for :informations do %>
+        <%= form.error_messages(:skip_links => true) %>
+        <%= render :partial => 'graphic_items/graphic_item_infos', :object => graphic_item, :locals => { :form => form } %>
+      <% end %>
+      
+      <% t.content_for :versions do %>
+        <%= render :partial => 'graphic_items/graphic_item_versions', :object => graphic_item, :locals => { :form => form } %>
+      <% end %>
+      
+      <% t.content_for :additional_informations do %>
+        <%= render :partial => 'graphic_items/graphic_item_additional_infos', :object => graphic_item, :locals => { :form => form } %>
+      <% end %>
+      
+      <%= form.form_buttons %>
+    <% end %>
   <% end %>
 </div>

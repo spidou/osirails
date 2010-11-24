@@ -88,11 +88,13 @@ ActionController::Routing::Routes.add_routes do |map|
       
     end
     
-    # pre invoicing step
-    order.pre_invoicing_step 'pre_invoicing', :controller => 'pre_invoicing_step'
+    # production step
+    order.production_step 'production', :controller => 'production_step'
     
-    order.with_options :name_prefix => 'order_pre_invoicing_step_' do |pre_invoicing|
-      pre_invoicing.resource :delivery_step, :as => 'delivery', :controller => 'delivery_step' do |delivery_step|
+    order.with_options :name_prefix => 'order_production_step_' do |production|
+      production.resource :manufacturing_step, :as => 'manufacturing', :controller => 'manufacturing_step'
+      
+      production.resource :delivery_step, :as => 'delivery', :controller => 'delivery_step' do |delivery_step|
         delivery_step.resources :delivery_notes do |delivery_note|
           delivery_note.confirm       'confirm',        :controller => 'delivery_notes',
                                                         :action     => 'confirm',
@@ -277,12 +279,15 @@ ActionController::Routing::Routes.add_routes do |map|
                                                                       :action     => 'show',
                                                                       :style      => 'original'
   
-  map.closed_orders         'closed_orders',         :controller => 'closed_orders'
-  map.archived_orders       'archived_orders',       :controller => 'archived_orders'
-  map.in_progress_orders    'in_progress_orders',    :controller => 'in_progress_orders'
-  map.commercial_orders     'commercial_orders',     :controller => 'commercial_orders'
-  map.pre_invoicing_orders  'pre_invoicing_orders',  :controller => 'pre_invoicing_orders'
-  map.invoicing_orders      'invoicing_orders',      :controller => 'invoicing_orders'
+  map.closed_orders       'closed_orders',      :controller => 'closed_orders'
+  map.archived_orders     'archived_orders',    :controller => 'archived_orders'
+  map.in_progress_orders  'in_progress_orders', :controller => 'in_progress_orders'
+  map.commercial_orders   'commercial_orders',  :controller => 'commercial_orders'
+  map.production_orders   'production_orders',  :controller => 'production_orders'
+  map.invoicing_orders    'invoicing_orders',   :controller => 'invoicing_orders'
+  
+  map.invoice_management  'invoice_management', :controller => 'invoice_management'
+  map.quote_management    'quote_management',   :controller => 'quote_management'
   
   map.auto_complete_for_customer_name 'auto_complete_for_customer_name', :controller  => 'customers', 
                                                                          :action      => 'auto_complete_for_customer_name',
@@ -294,10 +299,24 @@ ActionController::Routing::Routes.add_routes do |map|
                                                     :method      => :get
   
   map.resources :product_reference_categories do |product_reference_category|
+    product_reference_category.disable 'disable', :controller => 'product_reference_categories',
+                                                  :action     => 'disable',
+                                                  :conditions => { :method => :get }
+    product_reference_category.enable  'enable',  :controller => 'product_reference_categories',
+                                                  :action     => 'enable',
+                                                  :conditions => { :method => :get }
+    
     product_reference_category.resources :product_reference_sub_categories
   end
   
   map.resources :product_reference_sub_categories do |product_reference_sub_category|
+    product_reference_sub_category.disable 'disable', :controller => 'product_reference_sub_categories',
+                                                      :action     => 'disable',
+                                                      :conditions => { :method => :get }
+    product_reference_sub_category.enable  'enable',  :controller => 'product_reference_sub_categories',
+                                                      :action     => 'enable',
+                                                      :conditions => { :method => :get }
+    
     product_reference_sub_category.resources :product_references
   end
   

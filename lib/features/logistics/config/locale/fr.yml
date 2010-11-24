@@ -1,0 +1,134 @@
+fr:
+  activerecord:
+    models:
+      supply: "Fourniture"
+      commodity: "Matière première"
+      commodity_category: "Catégorie de matière première"
+      commodity_sub_category: "Sous-catégorie de matière première"
+      computer: "Ordinateur"
+      consumable: "Consommable"
+      consumable_category: "Catégorie de consommable"
+      consumable_sub_category: "Sous-catégorie de consommable"
+      device: "Périphérique"
+      inventory: "Inventaire"
+      machine: "Machine"
+      other_tool: "Autre"
+      stock_flow: "Mouvement de stock"
+      stock_input: "Entrée de stock"
+      stock_output: "Sortie de stock"
+      supplier_supply: "Fourniture fournisseur"
+      #supplies_supply_size:
+      #supply_categories_supply_size:
+      supply_category: "Catégorie de fourniture"
+      supply_size: "Grandeur"
+      #supply_size_unit_measure:
+      supply_sub_category: "Sous-catégorie de fourniture"
+      tool: "Équipement"
+      tool_event: "Évènement"
+      unit_measure: "Unité de mesure"
+      vehicle: "Véhicule"
+    attributes: 
+      commodity_category: 
+        commodity_category: "Appartient à"
+      consumable_category: 
+        consumable_category: "Appartient à"
+      supply_category: &supply_category
+        name: "Nom"
+        reference: "Référence"
+      commodity_category:
+        <<: *supply_category
+      consumable_category:
+        <<: *supply_category
+      supply_sub_category: &supply_sub_category
+        supply_category: "Famille"
+        unit_measure: "Grandeur/U"
+      commodity_sub_category:
+        <<: *supply_sub_category
+      consumable_sub_category:
+        <<: *supply_sub_category
+      supply: &supply
+        supply_category: "Famille"
+        supply_sub_category: "Sous-famille"
+        name: "Type"
+        reference: "Référence"
+        supplier: "Fournisseur principal"
+        measure: "Grandeur/U"
+        unit_mass: "Masse/U"
+        average_unit_price: "PU TTC moyen"
+        average_measure_price: "PG TTC moyen"
+        higher_unit_price: "PU TTC plus cher"
+        higher_measure_price: "PG TTC cher"
+        threshold: "Seuil d'alerte"
+        stock_quantity: "Quantité"
+        stock_measure: "Grandeur totale"
+        stock_value: "Valeur totale"
+        stock_mass: "Poids total"
+        average_unit_value: "Valeur unitaire moyenne"
+      commodity:
+        <<: *supply
+      consumable:
+        <<: *supply
+      supplier_supply:
+        supplier: "Fournisseur"
+        supplier_reference: "Référence fournisseur"
+        name: "Désignation"
+        fob_unit_price: "Prix HT"
+        lead_time: "Délai d'approvisionnement"
+      stock_flow:
+        supply: "Fourniture"
+        quantity: "Quantité"
+      stock_input:
+        identifier: "Numéro d'achat"
+        unit_price: "PU TTC"
+      stock_output:
+        identifier: "Numéro de dossier"
+      tool:
+        status: "Statut"
+        type: "Type"
+        name: "Désignation"
+        description: "Description"
+        serial_number: "Numéro de série"
+        purchase_date: "Date d'achat"
+        purchase_price: "Prix d'achat"
+        service: "Affecté au service"
+        job: "Affecté à la fonction"
+        employee: "Affecté à l'employé"
+        supplier: "Fournisseur"
+      vehicle:
+        serial_number: "N° d'immatriculation"
+      tool_event:
+        name: "Désignation"
+        event_type: "Type"
+        status: "Statut de l'équipement"
+        internal_actor: "Acteur interne"
+        provider_society: "Entreprise prestataire"
+        provider_actor: "Représentant prestataire"
+        start_date: "Date de début"
+        end_date: "Date de fin"
+        comment: "Commentaire"
+  integrated_search:
+    attributes:
+      commodity_category:
+        name: "Famille"
+      commodity_sub_category:
+        name: "Sous-Famille"
+      consumable_category:
+        name: "Famille"
+      consumable_sub_category:
+        name: "Sous-Famille"
+      commodity:
+        supply_category: "Famille"           # for alias on filters
+        supply_sub_category: "Sous-Famille"  # for alias on filters
+        humanized_supply_sizes: "Spécificités"
+    filters:
+      commodity:
+        humanized_supply_sizes: "Spécificités (dimensions, etc.)"
+    page_names:      
+      commodity:
+        commodity_index: "Les matières premières"
+      consumable:
+        consumable_index: "Les consommables"
+
+  view:
+    contextual_menu_sections:
+      statistics: "Statistiques"

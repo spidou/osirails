@@ -1,7 +1,6 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
   has_address :address
-  
   has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
   
   has_numbers
@@ -9,9 +8,6 @@ class Employee < ActiveRecord::Base
   
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
-  
-  # for pagination : number of instances by index page
-  EMPLOYEES_PER_PAGE = 15
   
   named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
   
@@ -48,11 +44,6 @@ class Employee < ActiveRecord::Base
                                         :conditions => ["status = ?", LeaveRequest::STATUS_CANCELLED],
                                         :order      => "cancelled_at DESC, start_date DESC"
   
-  journalize :attributes          => [ :first_name, :last_name, :birth_date, :civility_id, :social_security_number, :family_situation_id, :service_id, :email, :society_email ], 
-             :attachments         =>   :avatar, 
-             :subresources        => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
-             :identifier_method   =>   :fullname
-  
   validates_presence_of :last_name, :first_name
   validates_presence_of :family_situation_id, :civility_id, :service_id
   validates_presence_of :family_situation,     :if => :family_situation_id
@@ -66,19 +57,23 @@ class Employee < ActiveRecord::Base
   validates_format_of :society_email,           :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
                                                 :allow_blank  => true
   
-  validates_associated :iban, :address, :job_contract#, :contacts
-  
-  validate :validates_responsible_job_limit
-  
-  has_search_index  :only_attributes      => [:first_name, :last_name, :email, :society_email, :birth_date, :social_security_number],
-                    :displayed_attributes => [:id, :first_name, :last_name, :email, :society_email],
-                    :main_model           => true
-  
   # papercilp plugin validations
   with_options :if => :avatar do |v|
     v.validates_attachment_content_type :avatar, :content_type => [ 'image/jpg', 'image/png','image/jpeg']
     v.validates_attachment_size         :avatar, :less_than => 2.megabytes
   end
+  
+  validates_associated :iban, :address, :job_contract#, :contacts
+  
+  validate :validates_responsible_job_limit
+  
+  journalize :attributes        => [ :first_name, :last_name, :birth_date, :civility_id, :social_security_number, :family_situation_id, :service_id, :email, :society_email ],
+             :attachments       => :avatar,
+             :subresources      => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
+             :identifier_method => :fullname
+  
+  has_search_index  :only_attributes       => [ :first_name, :last_name, :email, :society_email, :birth_date, :social_security_number ],
+                    :additional_attributes => { :fullname => :string }
   
   before_validation_on_create :build_associated_resources
   before_save :case_management
@@ -340,6 +335,10 @@ class Employee < ActiveRecord::Base
     else
       self.iban.attributes = iban_attributes
     end 
+  end
+  
+  def mail
+    "armoog_s@epitech.net"
   end
   
   private

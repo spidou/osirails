@@ -25,7 +25,7 @@ module SiretNumberTest
         
         should "respond_to formatted_siret_number" do
           assert @siret_number_owner.respond_to?(:formatted_siret_number)
-        end 
+        end
         
         context "with a 14 chars siret_number" do
           setup do

@@ -8,7 +8,7 @@ module GraphicItemsHelper
       text = "Voir les documents graphiques du dossier"
       path = order_graphic_documents_path
     end
-    link_to(image_tag("list_16x16.png", :alt => text, :title => text) + " " + text, path)
+    link_to(text, path, 'data-icon' => :index)
   end
   
   def graphic_item_link(object)
@@ -19,7 +19,7 @@ module GraphicItemsHelper
       text = "Voir le document graphique"
       path = order_graphic_document_path(object.order, object)
     end
-    link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, path)
+    link_to(text, path, 'data-icon' => :show)
   end
   
   def new_graphic_item_link(object_class)
@@ -30,7 +30,7 @@ module GraphicItemsHelper
       text = "Nouveau document graphique"
       path = new_order_graphic_document_path
     end
-    link_to(image_tag("add_16x16.png", :alt => text, :title => text) + " " + text, path)
+    link_to(text, path, 'data-icon' => :new)
   end
   
   def edit_graphic_item_link(object)
@@ -41,7 +41,7 @@ module GraphicItemsHelper
       text = "Modifier le document graphique"
       path = edit_order_graphic_document_path(object.order,object)
     end
-    link_to(image_tag("edit_16x16.png", :alt => text, :title => text) + " " + text, path)
+    link_to(text, path, 'data-icon' => :edit)
   end
   
   def delete_graphic_item_link(object)
@@ -52,7 +52,7 @@ module GraphicItemsHelper
       text = "Supprimer le document graphique"
       path = order_graphic_document_path(object.order,object)
     end
-    link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + " " + text, path, :method => :delete, :confirm => "Êtes-vous sûr ?")
+    link_to(text, path, :method => :delete, :confirm => "Êtes-vous sûr ?", 'data-icon' => :delete)
   end
   
   def cancel_graphic_item_link(object)
@@ -63,13 +63,15 @@ module GraphicItemsHelper
       text = "Désactiver le document graphique"
       path = order_graphic_document_cancel_path(object.order,object)
     end
-    link_to(image_tag("cancel_16x16.png", :alt => text, :title => text) + " " + text, path, :confirm => "Êtes-vous sûr ?")
+    link_to(text, path, :confirm => "Êtes-vous sûr ?", 'data-icon' => :cancel)
   end
   
   def display_graphic_item_summary_preview_button(object, press_proof = nil)
     parent = press_proof || object.end_product
     image = image_tag("preview_16x16.gif", :alt => text = "Aperçu", :title => text)
-    link_to(image, object.current_image.url(:medium), :rel => "lightbox[#{parent.class.name.underscore}_#{parent.id}]", :title => "#{object.name} : #{object.short_description}")
+    link_to(image, object.current_image.url(:medium),
+            :rel => "lightbox[#{parent.class.name.underscore}_#{parent.id}]",
+            :title => "#{object.name} : #{object.short_description}")
   end
   
   def display_graphic_item_summary_download_button(object)
@@ -121,14 +123,6 @@ module GraphicItemsHelper
     link_to(image_tag("cancel_16x16.png", :alt => text, :title => text), path, :confirm => "Êtes-vous sûr ?")
   end
   
-  def display_graphic_item_summary_image_download_link(object)
-    link_to("", object.current_image.url)
-  end
-  
-  def display_graphic_item_summary_source_download_link(object)
-    link_to(image_tag("picture_source_16x16.png", :alt => text, :title => text), object.current_source.url)
-  end
-  
   def display_graphic_item_summary_image_spool_actions(object)
     if object.class.name == "Mockup" 
       remove_path = order_mockup_remove_from_spool_path({:mockup_id => object.id, :file_type => "image", :item_id => object.spool_item_id("image",current_user)})
@@ -168,13 +162,13 @@ module GraphicItemsHelper
     html << '</p>'
     html << '<ul>'
     html << ' <li>'
-    html <<     link_to( image_tag("view_16x16.png") + " Voir la file d'attente (<span id='spool_size'>#{spool_items.size}</span>)", order_graphic_item_spool_items_path)
+    html <<     link_to("Voir la file d'attente (<span id='spool_size'>#{spool_items.size}</span>)", order_graphic_item_spool_items_path, 'data-icon' => :show)
     html << ' </li>'
     html << '</ul>'
   end
   
   def display_user_spool_in_contextual_menu
-    add_contextual_menu_item(:spool_items, true) { display_user_spool }
+    add_contextual_menu_item(:spool_items, :force_not_list => true) { display_user_spool }
   end
   
   def display_empty_spool_link

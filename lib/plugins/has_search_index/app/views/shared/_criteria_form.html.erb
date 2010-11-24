@@ -1,0 +1,25 @@
+<%
+  search_type_config = [
+    [I18n.t('view.search_types.and'),'and'],
+    [I18n.t('view.search_types.or'),'or'],
+    [I18n.t('view.search_types.not'),'not']
+  ]
+  visible            = cookies["#{ @page_name }_criteria"] == 'false' ? false : true
+  collapse           = visible ? 'not-collapsed' : 'collapsed'
+%>
+
+<fieldset>
+    <%= toggle_criteria_legend(collapse) %>
+    
+    <div id="<%= query.subject_model.downcase %>_criteria" class="criteria" style="<%= 'display:none;' unless visible %>">
+      <div class='search_type'>
+        <%= content_tag(:span, I18n.t("view.search_for")) %>
+        <%= select_tag("query[search_type]", options_for_select(search_type_config, query.search_type))%>
+      </div>
+      
+      <table class='no_nth'>
+        <%= render :partial => 'queries/criteria', :object => @query.criteria, :locals => { :model => @query.subject_model } %>
+        <%= generate_attribute_chooser %>
+      </table>
+    </div>
+</fieldset>

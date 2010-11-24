@@ -7,8 +7,6 @@ class EndProductTest < ActiveSupport::TestCase
   
   should_validate_presence_of :product_reference, :order, :with_foreign_key => :default
   
-  should_validate_presence_of :name
-  
   should_validate_numericality_of :quantity, :prizegiving
   
   should_journalize :identifier_method => :name
@@ -54,9 +52,9 @@ class EndProductTest < ActiveSupport::TestCase
     end
   end
   
-  context "A saved end_product" do
+  context "A new end_product" do
     setup do
-      @product = create_default_end_product
+      @product = EndProduct.new
     end
     
     subject{ @product }

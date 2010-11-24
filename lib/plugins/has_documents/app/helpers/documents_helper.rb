@@ -58,9 +58,7 @@ module DocumentsHelper
                                                       :object   => documents_owner.build_document,
                                                       :locals   => {:documents_owner => documents_owner}.merge(options)
       page[options[:new_div_id]].show if page[options[:new_div_id]].visible
-      last_document = page[options[:new_div_id]].select('.document').last
-      last_document.show
-      last_document.visual_effect :highlight
+      page[options[:new_div_id]].select('.document').last.show.visual_effect(:highlight)
     end )
   end
 

@@ -1,0 +1,57 @@
+fr:
+  activerecord:
+    models:
+      admin_mailer: "Mailer admin"
+      feature: "Module"
+      file_type: "Type de fichier"
+      iban: "IBAN"
+      menu: "Menu"
+      role: "Rôle"
+      schedule: "Programme"
+      service: "Service"
+      society_activity_sector: "Secteur d'activité"
+      user: "Utilisateur"
+    attributes:
+      iban:
+        bank_name: "Nom de la banque"
+        bank_code: "Code bancaire"
+        branch_code: "Code guichet"
+        account_number: "N° de compte"
+        key: "Clé"
+        account_name: "Nom du compte"
+      menu:
+        title: "Titre"
+        description: "Description"
+        parent: "Menu parent"
+        separator: "Insérer un séparateur"
+      role:
+        name: "Nom du rôle"
+        description: "Description du rôle"
+        users: "Membres"
+      service:
+        name: "Nom"
+        service_parent: "Service parent"
+      society_activity_sector:
+        name: "Nom"
+      user:
+        username: "Nom du compte utilisateur"
+        password: "Mot de passe"
+        password_confirmation: "Confirmation du mot de passe"
+        enabled: "Compte activé ?"
+        last_connection: "Dernière connexion"
+        last_activity: "Dernière activité"
+        roles: "Rôles"
+        force_password_expiration: "Demander à l'utilisateur un nouveau mot de passe à sa prochaine connexion"
+  integrated_search:
+    attributes:
+      user:
+        roles:
+          name: "Rôles"
+        employee:
+          fullname: "Nom de l'employé"
+    filters:
+        user:
+          roles: "Rôles"
+    page_names:      
+      user:
+        user_index: "Les utilisateurs"

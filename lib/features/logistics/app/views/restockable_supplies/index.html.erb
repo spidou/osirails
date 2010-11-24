@@ -1,17 +1,18 @@
 <%= stylesheet_link_tag_with_theme_support "logistics/restockable_supplies.css" %>
 
-<% if @commodities_to_restock.size > 0 or @consumables_to_restock.size > 0 %>
-  <% add_contextual_menu_item :restockable_supplies_statistics do %>
+<% if @commodities_to_restock.any? or @consumables_to_restock.any? %>
+  <% add_contextual_menu_item :statistics do %>
     <span class='contextual_menu_statistic'>A renouveler :</span>
-	  <%= "<span class='contextual_menu_statistic'>- #{pluralize(@commodities_to_restock.size, "matière première", "matières premières")}</span><br/>" if @commodities_to_restock.size > 0 %>    <%= "<span class='contextual_menu_statistic'>- #{pluralize(@consumables_to_restock.size, "consommable", "consommables")}</span>" if @consumables_to_restock.size > 0 %>
+    <%= "<span class='contextual_menu_statistic'>- #{pluralize(@commodities_to_restock.size, "matière première", "matières premières")}</span><br/>" if @commodities_to_restock.any? %>
+    <%= "<span class='contextual_menu_statistic'>- #{pluralize(@consumables_to_restock.size, "consommable", "consommables")}</span>" if @consumables_to_restock.any? %>
   <% end %>
 <% end %>
   
 <h1>Les fournitures &agrave; r&eacute;approvisionner</h1>
 <div>
-  <% if @commodities_to_restock.size > 0 or @consumables_to_restock.size > 0 %>  
-    <%= render(:partial => "supplies_to_restock", :object => @commodities_to_restock) if @commodities_to_restock.size > 0 %>
-    <%= render(:partial => "supplies_to_restock", :object => @consumables_to_restock) if @consumables_to_restock.size > 0 %>
+  <% if @commodities_to_restock.any? or @consumables_to_restock.any? %>  
+    <%= render(:partial => "supplies_to_restock", :object => @commodities_to_restock) if @commodities_to_restock.any? %>
+    <%= render(:partial => "supplies_to_restock", :object => @consumables_to_restock) if @consumables_to_restock.any? %>
   <% else %>
     <p>Les matières premières et les consommables sont normalement approvisionn&eacute;s.</p>
   <% end %>

@@ -1,16 +1,12 @@
 require File.dirname(__FILE__) + '/../rh_test'
 
 class JobTest < ActiveSupport::TestCase
+  should_have_many :employees_jobs, :dependent => :destroy
+  should_have_many :employees, :through => :employees_jobs
+  
+  should_belong_to :service
+  
+  should_validate_uniqueness_of :name
+  
   should_journalize :identifier_method => :name
-
-  def setup
-    @job = jobs(:developer)
-  end
-
-  def test_uniqueness_of_name
-    assert_no_difference 'Job.count' do
-      job = Job.create(:name => @job.name)
-      assert_not_nil job.errors.on(:name), "A Job should have an uniq name"
-    end
-  end
 end

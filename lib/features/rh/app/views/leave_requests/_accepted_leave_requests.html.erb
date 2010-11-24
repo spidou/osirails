@@ -14,8 +14,8 @@
       <% for leave_request in accepted_leave_requests %>
         <tr>
           <td><%= leave_request.formatted %></td>
-          <td><%= l(leave_request.submitted_at.to_datetime) %></td>
-          <td><%= l(leave_request.updated_at.to_datetime) %></td>
+          <td><%= l(leave_request.submitted_at) %></td>
+          <td><%= l(leave_request.updated_at) %></td>
           <td><%= leave_request_link(leave_request, :link_text => "") %></td>
         </tr>
       <% end %>

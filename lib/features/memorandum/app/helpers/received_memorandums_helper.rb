@@ -34,7 +34,7 @@ module ReceivedMemorandumsHelper
   
   def received_memorandums_link
     text = "Voir toutes les notes de service reçues"#"List all received memorandums"
-    link_to image_tag("list_16x16.png", :alt => text, :title => text) + " #{text}", received_memorandums_path
+    link_to(text, received_memorandums_path, 'data-icon' => :index)
   end
 
 end

@@ -1,6 +1,9 @@
-<%= order_header %>
+<% content_for :header do -%>
+  <%= javascript_include_tag 'sales/invoice' %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/invoice' %>
+<% end -%>
 
-<%= javascript_include_tag 'sales/invoice' %>
+<%= order_header %>
 
 <h1>Signaler le règlement partiel de la facture par le CLIENT</h1>
 
@@ -15,8 +18,6 @@
       <%= render :partial => 'due_date_payment', :collection => @invoice.due_dates %>
     </div>
     
-    <p>
-      <%= form.submit "Valider" %>
-    </p>
+    <%= form.form_buttons %>
   <% end %>
 </div>

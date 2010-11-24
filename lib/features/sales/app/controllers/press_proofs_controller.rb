@@ -3,6 +3,8 @@ class PressProofsController < ApplicationController
   
   acts_as_step_controller :step_name => :press_proof_step, :skip_edit_redirection => true
   
+  skip_before_filter :lookup_step_environment, :only => [:context_menu]
+  
   before_filter :load_order_mockups, :only => [ :new, :create, :edit, :update ]
   
   # GET /orders/:order_id/:step/press_proofs
@@ -153,7 +155,7 @@ class PressProofsController < ApplicationController
   def sign
     @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_signed?
-      if  @press_proof.sign(params[:press_proof])
+      if @press_proof.sign(params[:press_proof])
        flash[:notice] = "Le Bon à tirer (BAT) a été modifié avec succés"
        redirect_to send(@step.original_step.path)
       else
@@ -173,9 +175,7 @@ class PressProofsController < ApplicationController
   def revoke
     @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_revoked?
-      params[:press_proof][:revoked_on]    = Date.today
-      params[:press_proof][:revoked_by_id] = current_user.id
-      
+      @press_proof.revoked_by_id = current_user.id
       if @press_proof.revoke(params[:press_proof])
        flash[:notice] = "Le Bon à tirer (BAT) a été modifié avec succés"
        redirect_to send(@step.original_step.path)

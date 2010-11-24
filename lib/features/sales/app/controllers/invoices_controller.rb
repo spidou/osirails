@@ -4,6 +4,8 @@ class InvoicesController < ApplicationController
   
   acts_as_step_controller :step_name => :invoice_step, :skip_edit_redirection => true
   
+  skip_before_filter :lookup_step_environment, :only => [:context_menu]
+  
   before_filter :find_invoice
   before_filter :check_invoice_belong_to_order, :except => [ :new, :create, :ajax_request_for_invoice_items ]
   before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]
@@ -51,8 +53,9 @@ class InvoicesController < ApplicationController
         @invoice.due_dates.build(:date => Date.today, :net_to_paid => @invoice.net_to_paid)
       when 'status'
         delivery_notes = []
+        
         if params[:delivery_note_ids]
-          delivery_notes = params[:delivery_note_ids].split(",").collect{ |x| DeliveryNote.find_by_id(x) } #OPTIMIZE by using find_some ? (ou find_by_ids)
+          delivery_notes = params[:delivery_note_ids].collect{ |x| DeliveryNote.find_by_id(x) }
          
           # return a 404 error if one of the delivery_note_ids is not found, or if one of the delivery_note_ids is not a delivery_note of the order
           unless delivery_notes.select{ |dn| dn.nil? }.empty? and delivery_notes.reject{ |dn| @order.unbilled_delivery_notes.include?(dn) }.empty?

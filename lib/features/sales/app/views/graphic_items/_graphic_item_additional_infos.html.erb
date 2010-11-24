@@ -3,15 +3,11 @@ require_locals form
 graphic_item = graphic_item_additional_infos
 %>
 
-<% if graphic_item.new_record? %>
-  <p>Aucune information diverse disponible</p>
-<% else %>
-  <p>
-    <%= form.label :created_at %>
-    <%= form.strong graphic_item.created_at.humanize %>
-  </p>
-  <p>
-    <%= form.label :creator %>
-    <%= link_to graphic_item.creator.employee_name, graphic_item.creator.employee ? employee_path(graphic_item.creator.employee) : user_path(graphic_item.creator) %>
-  </p>
-<% end %>
+<p>
+  <%= form.label :created_at %>
+  <%= form.strong(graphic_item.created_at.humanize) if graphic_item.created_at %>
+</p>
+<p>
+  <%= form.label :creator %>
+  <%= link_to(graphic_item.creator.employee_name, graphic_item.creator.employee ? employee_path(graphic_item.creator.employee) : user_path(graphic_item.creator)) %>
+</p>

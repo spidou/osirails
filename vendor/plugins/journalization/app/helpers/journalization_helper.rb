@@ -21,12 +21,11 @@ module JournalizationHelper
   end
   
   def render_collection_changes_for(journal_line)
-    klass               = journal_line.journal.journalized_type.constantize
-  
-    belongs_to_property = journal_line.journal.journalized_type.constantize.journalized_belongs_to_attributes[journal_line.property.to_sym]
-
-    old_value = journal_line.old_value
-    new_value = journal_line.new_value
+    klass = journal_line.journal.journalized_type.constantize
+    
+    belongs_to_property = klass.journalized_belongs_to_attributes[journal_line.property.to_sym]
+    
+    old_value, new_value = journal_line.old_value, journal_line.new_value
     
     if belongs_to_property
       class_name = belongs_to_property[:class_name]
@@ -38,12 +37,16 @@ module JournalizationHelper
       property = klass.human_attribute_name(belongs_to_property[:name])
       
       if old_value.blank? && !new_value.blank?
-        html = journal_li(journal_strong(property) + " #{get_translation("added", :initialization)}: " + new_value)
+        li_html = journal_strong(property) + " #{get_translation(:initialization, :default => 'added')}: " + new_value
+        li_class = :added
       elsif !old_value.blank? && new_value.blank?
-        html = journal_li(journal_strong(property) + " " + old_value + " #{get_translation("removed", :one_removal)}")
+        li_html = journal_strong(property) + " " + old_value + " #{get_translation(:one_removal, :default => 'removed')}"
+        li_class = :removed
       else
-        html = journal_li(journal_strong(property) + " " + get_translation("changed from " + old_value + " to " + new_value, :changes, {:old_value => old_value, :new_value => new_value}))
+        li_html = journal_strong(property) + " " + get_translation(:changes, :default => "changed from #{old_value} to #{new_value}", :interpolations => { :old_value => old_value, :new_value => new_value })
+        li_class = :changed
       end
+      html = journal_li(li_html, { :class => "belongs_to #{li_class}" })
     else
       property = journal_line.property
       
@@ -62,14 +65,24 @@ module JournalizationHelper
         
         [destroyed_objects, created_objects].each do |array|
           if array.any?
-            several = array.size > 1
-            html << "<li>#{journal_strong(klass.human_attribute_name(several ? property : property.singularize))} #{array == destroyed_objects ? (several ? get_translation("removed", :several_removals) : get_translation("removed", :one_removal)) : (several ? get_translation("added", :several_additions) : get_translation("added", :one_addition))}: " 
+            several = array.many?
+            
+            li_html = "#{journal_strong(klass.human_attribute_name(several ? property : property.singularize))} "
+            if array == destroyed_objects
+              li_html << ( several ? get_translation(:several_removals, :default => 'removed') : get_translation(:one_removal, :default => 'removed') )
+              li_class = :removed
+            else
+              li_html << ( several ? get_translation(:several_additions, :default => 'added') : get_translation(:one_addition, :default => 'added') )
+              li_class = :added
+            end
+            
             array.each do |object|
               journal_line.property_id = object
-              html << get_identifier("subresource", journal_line)
-              html << ", " unless object == array.last
+              li_html << get_identifier("subresource", journal_line)
+              li_html << ", " unless object == array.last
             end
-            html << "</li>"
+            
+            html << journal_li(li_html, { :class => "has_many #{li_class}" })
           end
         end
       else
@@ -77,7 +90,17 @@ module JournalizationHelper
           if object
             journal_line.property_id = object
             unless object == new_value && journal_line.journal.journal_lines.detect {|l| l.property == journal_line.property && l.property_id == object}
-              html << journal_li("#{journal_strong(klass.human_attribute_name(property))} #{object == old_value ? get_translation("removed", :one_removal) : get_translation("added", :one_addition)}")
+              
+              li_html = "#{journal_strong(klass.human_attribute_name(property))} "
+              if object == old_value
+                li_html << get_translation(:one_removal, :default => 'removed')
+                li_class = :removed
+              else
+                li_html << get_translation(:one_addition, :default => 'removed')
+                li_class = :added
+              end
+              
+              html << journal_li(li_html, { :class => "has_one #{li_class}" })
             end
           end
         end
@@ -98,27 +121,33 @@ module JournalizationHelper
     new_value = get_formatted(journal_line.new_value)
     
     if has_subresource?(journal_line)
+      li_class = 'has_resources'
+      
       subresource_class_name = klass.reflect_on_association(property.to_sym).class_name
       is_first = journal_line.referenced_journal == Journal.find_for(subresource_class_name, journal_line.property_id).first
       
       subresource_camelized_name = (plural?(property) ? property.singularize : property).camelize
       subresource_name           = klass.human_attribute_name(subresource_camelized_name.underscore)
       
-      html = journal_strong(subresource_name) + get_identifier("subresource", journal_line) + " #{is_first ? get_translation("added", :one_addition) : get_translation("modified", :modification)}"
+      html = journal_strong(subresource_name) + get_identifier("subresource", journal_line) + " #{is_first ? get_translation(:one_addition, :default => 'added') : get_translation(:modification, :default => 'modified')}"
+      li_class << ( is_first ? ' added' : ' changed' )
       
       unless journal_line.referenced_journal.journal_lines.empty?
-        html << " (" + link_to_function("#{get_translation("Show details", :show_details)}", "Effect.toggle(this.next(), 'slide'); if(this.next().style.display == 'none') {this.innerHTML = '#{get_translation("Close", :hide_details)}'} else {this.innerHTML = '#{get_translation("Show details", :show_details)}'}") + ")"
+        html << " (" + link_to_function("#{get_translation(:show_details, :default => 'Show details')}", "Effect.toggle(this.next(), 'slide'); if(this.next().style.display == 'none') {this.innerHTML = '#{get_translation(:hide_details, :default => 'Close')}'} else {this.innerHTML = '#{get_translation(:show_details, :default => 'Show details')}'}") + ")"
         html << render(:partial => "journals/journal", :object => journal_line.referenced_journal, :locals => {:has_parent => true})
       end
     elsif !old_value.blank? && !new_value.blank?
-      html = journal_strong(property) + " " + get_translation("changed from " + journal_em(old_value) + " to " + journal_em(new_value), :changes, {:old_value => journal_em(old_value), :new_value => journal_em(new_value)} )
+      html = journal_strong(property) + " " + get_translation(:changes, :default => "changed from #{journal_em(old_value)} to #{journal_em(new_value)}", :interpolations => { :old_value => journal_em(old_value), :new_value => journal_em(new_value) })
+      li_class = :changed
     elsif !old_value.blank? && new_value.blank?
-      html = journal_strong(property) + " " + journal_em(old_value) + " #{get_translation("removed", :one_removal)}"
+      html = journal_strong(property) + " " + journal_em(old_value) + " #{get_translation(:one_removal, :default => 'removed')}"
+      li_class = :removed
     elsif old_value.blank? && !new_value.blank?
-      html = journal_strong(property) + " #{get_translation("added", :initialization)}: " + journal_em(new_value)
+      html = journal_strong(property) + " #{get_translation(:initialization, :default => 'added')}: " + journal_em(new_value)
+      li_class = :added
     end
     
-    return journal_li(html)
+    return journal_li(html, { :class => "attribute #{li_class}" })
   end
   
   def has_subresource?(journal_line)
@@ -168,9 +197,9 @@ module JournalizationHelper
       old_journalized_identifier = JournalIdentifier.find_last_for(journalized_klass_name, journalized_id, created_at)
       if old_journalized_identifier && old_journalized_identifier.new_value != journalized_identifier.new_value
         old_identifier = journal_em(old_journalized_identifier.new_value)
-
+        
         old_identifier = " \"#{old_identifier}\"" unless type == "actor"
-        identifier = old_identifier + " (" + get_translation("currently known as #{last_identifier}", :current_identifier, :identifier => last_identifier) + ")"
+        identifier = old_identifier + " (" + get_translation(:current_identifier, :default => "currently known as #{last_identifier}", :interpolations => { :identifier => last_identifier }) + ")"
       else
         identifier = last_identifier
       end
@@ -192,11 +221,11 @@ module JournalizationHelper
   
   def get_title(journal)
     author = content_tag :span, :class => "journal_author" do
-      get_translation("#{"By " + get_identifier("actor", journal)}", :author, :author => get_identifier("actor", journal)) if journal.actor
+      get_translation(:author, :default => "By #{get_identifier('actor', journal)}", :interpolations => { :author => get_identifier("actor", journal) }) if journal.actor
     end
     
-    time_distance = content_tag :span, :class => "journal_time_distance", :title => defined?(I18n) ? l(journal.created_at) : journal.created_at.strftime("%A, %B %d, %Y at %H:%M") do
-      content = get_translation("#{time_ago_in_words(journal.created_at)} ago", :time_distance, :time_distance => time_ago_in_words(journal.created_at))
+    time_distance = content_tag :span, :class => "journal_time_distance", :title => defined?(I18n) ? l(journal.created_at, :format => :long) : journal.created_at.strftime("%B %d, %Y at %H:%M") do
+      content = get_translation(:time_distance, :default => "#{time_ago_in_words(journal.created_at)} ago", :interpolations => { :time_distance => time_ago_in_words(journal.created_at) })
       content.capitalize! unless journal.actor
       content
     end
@@ -206,8 +235,9 @@ module JournalizationHelper
   
   # This method permits to manage projects which Rails version is under 2.2 (without I18n)
   # OPTIMIZE me to avoid repetition, default values are the same as those in lib/locale/en.yml
-  def get_translation(default, key, interpolations = {})
-    return defined?(I18n) ? t("journalization.#{key}", interpolations.merge(:default => default)) : default
+  def get_translation(key, options = {})
+    raise ArgumentError, "You may specify a default string using the :default key in the 'options' parameter" unless options[:default]
+    return defined?(I18n) ? t("journalization.#{key}", { :default => options[:default] }.merge(options[:interpolations] || {})) : options[:default]
   end
   
   # This method permits to manage projects which Rails version is under 2.2 (without I18n)
@@ -218,9 +248,9 @@ module JournalizationHelper
   
   def get_formatted(value)
     if value.class == TrueClass
-      return get_translation("Yes", :bool_true)
+      return get_translation(:bool_true, :default => 'Yes')
     elsif value.class == FalseClass
-      return get_translation("No", :bool_false)
+      return get_translation(:bool_false, :default => 'No')
     elsif [Date, DateTime, Time].include?(value.class)
       return get_localization(value)
     else

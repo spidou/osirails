@@ -114,7 +114,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     should "have an associated quote corresponding to the order signed quote" do
-      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
+      assert_equal @press_proof.signed_quote, @press_proof.order.signed_quote
     end
   end
   
@@ -189,7 +189,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     should "have an associated quote corresponding to the order signed quote" do
-      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
+      assert_equal @press_proof.signed_quote, @press_proof.order.signed_quote
     end
     
     should "not be destroyed" do
@@ -364,7 +364,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     should "have an associated quote corresponding to the order signed quote" do
-      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
+      assert_equal @press_proof.signed_quote, @press_proof.order.signed_quote
     end
   end
   
@@ -476,7 +476,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     should "have an associated quote corresponding to the order signed quote" do
-      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
+      assert_equal @press_proof.signed_quote, @press_proof.order.signed_quote
     end
     
     #### OPTIMIZE to avoid all that lines, use a macro like : should_validate_persistence_of :status, :references, etc...
@@ -581,7 +581,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     should "have an associated quote corresponding to the order signed quote" do
-      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
+      assert_equal @press_proof.signed_quote, @press_proof.order.signed_quote
     end
     
     #### OPTIMIZE to avoid all that lines, use a macro like : should_validate_persistence_of :status, :references, etc...
@@ -738,7 +738,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     should "have an associated quote corresponding to the order signed quote" do
-      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
+      assert_equal @press_proof.signed_quote, @press_proof.order.signed_quote
     end
   end
   

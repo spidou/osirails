@@ -18,23 +18,31 @@ menus:
         title: Dossiers en Étude Commerciale
         description: "Afficher la liste des dossiers actuellement en phase d'étude commerciale"
         position: 2
-      pre_invoicing_orders:
-        title: Dossiers en SAS de Facturation
-        description: Afficher la liste des dossiers actuellement en phase de SAS de facturation
+      production_orders:
+        title: Dossiers en Prodution
+        description: Afficher la liste des dossiers actuellement en phase de Production
         position: 3
       invoicing_orders:
         title: Dossiers en Facturation
         description: Afficher la liste des dossiers actuellement en phase de facturation
-        position: 4
+        position: 5
         separator: after
       closed_orders:
-        title: Dossiers Cloturés
+        title: Dossiers cloturés
         description: Afficher la liste des dossiers déjà cloturés
-        position: 5
-      archived_orders:
-        title: Dossiers Archivés
-        description: Afficher la liste des dossiers déjà archivés
         position: 6
+      archived_orders:
+        title: Dossiers archivés
+        description: Afficher la liste des dossiers déjà archivés
+        position: 7
+      quote_management:
+        title: Gestion des devis
+        description: Gestion des devis
+        position: 8
+      invoice_management:
+        title: Gestion des factures
+        description: Gestion de factures
+        position: 9
       orders:
         title: Dossier
         description: Dossier de vente
@@ -46,7 +54,7 @@ menus:
             position: 1
           commercial_step:
             title: Étude commerciale
-            description: "Phase de l'étude commerciale"
+            description: "Phase de l'Étude Commerciale"
             position: 2
             children:
               survey_step:
@@ -81,14 +89,19 @@ menus:
                       dunnings:
                         title: Relances
                         description: Gestion des relances
-          pre_invoicing_step:
-            title: SAS de Facturation
-            description: Phase du SAS de Facturation
+          production_step:
+            title: Production
+            description: Phase de la Production
             position: 3
             children:
+              manufacturing_step:
+                title: Fabrication
+                description: Étape de la fabrication
+                position: 1
               delivery_step:
                 title: Livraison
                 description: Étape de la livraison
+                position: 2
                 children:
                   delivery_notes:
                     title: Bon de livraison
@@ -201,7 +214,7 @@ configurations:
     value: "$product_reference_sub_category.$number(2)"
   end_product_reference_pattern:
     description: Modèle permettant la génération du numéro de référence unique pour un produit fini
-    value: "$product_reference.$number(5)"
+    value: "$product_reference.%y.$number(3)"
   quote_reference_pattern:
     description: Modèle permettant la génération du numéro de référence unique pour un devis
     value: "$order.DV$number(2)"

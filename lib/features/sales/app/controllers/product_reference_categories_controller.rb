@@ -97,6 +97,7 @@ class ProductReferenceCategoriesController < ApplicationController
     end
     
     def find_product_reference_category
-      @product_reference_category = @product_reference_category_type.find(params[:id])
+      id = params[:id] || params["#{@product_reference_category_type.name.underscore}_id".to_sym]
+      @product_reference_category = @product_reference_category_type.find(id)
     end
 end

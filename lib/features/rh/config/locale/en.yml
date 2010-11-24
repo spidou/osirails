@@ -1,0 +1,96 @@
+en:
+  activerecord:
+    attributes:
+      checking:
+        absence_hours: "Time of absence"
+        absence_comment: "Comment"
+        overtime_hours: "Overtime"
+        overtime_comment: "Comment"
+      job:
+        activity: "Activities"
+        mission: "Missions"
+        goal: "Goals"
+        responsible: "Responsible ?"
+      job_contract:
+        job_contract_type: "Contract type"
+        employee_state: "Status"
+        salary: "Base salary"
+      leave:
+        start_date: "From"
+        end_date: "To"
+        start_half: "From midday"
+        end_half: "To midday"
+        leave_type: "Type"
+      leave_request:
+        status: "Status"
+        employee: "Applicant"
+        submitted_at: "Submitted request date"
+        period: "Requested date/period"
+        start_date: "from"
+        end_date: "to"
+        start_half: "From midday"
+        end_half: "To midday"
+        responsible_agreement: "Resonsible answer"
+        checked_at: "Date"
+        responsible: "Treated by"
+        responsible_remarks: "Comment"
+        acquired_leaves_days: "Acquired leaves days estate"
+        duration: "Total real duration"
+        observer_remarks: "Observations"
+        observer: "Notified by"
+        noticed_at: "Date"
+        director: "Closed by"
+        director_agreement: "Supervisor answer"
+        agreement_true: "AGREEMENT"
+        agreement_false: "REFUSAL"
+        director_remarks: "Comment"
+        ended_at: "Date"
+      premium:
+        remark: "Reason" 
+    errors:
+      models:
+        employee:
+          attributes:
+            social_security_number:
+              invalid: "Social security number must contain 15 digits"
+            email:
+              invalid: "Email is incorrect"
+            society_email:
+              invalid: "Society email is incorrect"
+  integrated_search:
+    relationships:
+      employee:
+        contacts: "Contacts"
+    attributes:
+      employee:
+        user_name: "User name"
+        service_name: "Service name"
+        civility: "Civility"
+        contract_end: "Contrat end"
+        contract_type: "Contrat type"
+        fullname: "Full name"
+      job_contract_type:
+        name: "Contrat type"
+      service:
+        name: "Service name"
+        id: "Service"
+      civility:
+        name: "Civility"
+        id: "Civility"
+    page_names:
+      employee:
+        employee_index: "Working employees"
+      job:
+        job_index: "Jobs"
+    filters:
+      civility:
+        name: "Name"
+      job_contract_type:
+        name: "Name"
+      service:
+        name: "Name"
+      job:
+        name: "Name"
+  seeds:
+    query:
+      all_employees: "All employees"

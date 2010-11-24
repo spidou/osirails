@@ -1,0 +1,4 @@
+<% display_context_menu do |c| %>
+  <%= c.title DeliveryNote.human_name %>
+  <%= c.entry display_transform_delivery_note_in_status_invoice_button(@object.order, @object, @ids) %>
+<% end %>

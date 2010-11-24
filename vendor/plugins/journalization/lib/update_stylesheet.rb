@@ -15,4 +15,5 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-FileUtils.cp File.join(File.dirname(__FILE__), '..', 'public', 'stylesheets', 'journalization.css'), File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'public', 'stylesheets', 'journalization.css') 
+FileUtils.cp( File.join(File.dirname(__FILE__), '..', 'public', 'stylesheets', 'journalization.css'),
+              File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'public', 'stylesheets', 'journalization.css') )

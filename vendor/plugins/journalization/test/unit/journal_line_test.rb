@@ -36,7 +36,7 @@ class JournalLineTest < ActiveRecordTestCase
         should "have #{method} returning nil" do
           assert_nil @line.send(method)
         end
-      end    
+      end
       
       context "when setting #{method} to ''," do
         setup do
@@ -53,7 +53,7 @@ class JournalLineTest < ActiveRecordTestCase
       a_time     = "Fri Sep 17 11:13:20 +0400 2010"
       a_datetime = "2010-09-17T11:14:13+04:00"
       
-      fixtures = {"true"                           => [ "boolean",      TrueClass,  true                                         ], 
+      fixtures = {"true"                           => [ "boolean",      TrueClass,  true                                         ],
                   "false"                          => [ "boolean",      FalseClass, false                                        ],
                   "1"                              => [ "integer",      Fixnum,     1                                            ],
                   "#{a_bignum}"                    => [ "integer",      Bignum,     a_bignum                                     ],

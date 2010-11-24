@@ -7,6 +7,7 @@ end_products   = press_proofs_list.collect(&:end_product).uniq
   <table id="press_proofs_list">
     <thead>
       <tr>
+        <th><%= toggle_selectable_items_link(image_tag('confirm_16x16.png'), 'press_proof') %></th>
         <th>Réf.</th>
         <th>Émis&nbsp;le</th>
         <th>Contact graphique</th>
@@ -14,7 +15,6 @@ end_products   = press_proofs_list.collect(&:end_product).uniq
         <th>BAT&nbsp;envoyé&nbsp;le</th>
         <th>BAT&nbsp;signé&nbsp;le</th>
         <th>État</th>
-        <th>Actions</th>
       </tr>
     </thead>
     <%= render :partial => "press_proofs/end_product_in_one_line", :collection => end_products, :locals => { :press_proofs => press_proofs } %>

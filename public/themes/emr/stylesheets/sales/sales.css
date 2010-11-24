@@ -1,3 +1,31 @@
+/* IMAGES */
+a[data-icon=preview]    { background-image: url("/themes/emr/images/sales/preview.gif"); }
+a[data-icon=download]   { background-image: url("/themes/emr/images/sales/download.png"); }
+a[data-icon=send]       { background-image: url("/themes/emr/images/sales/send.png"); }
+a[data-icon=sign]       { background-image: url("/themes/emr/images/sales/sign.png"); }
+a[data-icon=transform]  { background-image: url("/themes/emr/images/sales/transform.png"); }
+
+a[data-icon=disable]  { background-image: url("/themes/emr/images/sales/disable.png"); }
+a[data-icon=enable]   { background-image: url("/themes/emr/images/sales/enable.png"); }
+
+/* ## delivery_notes */
+a[data-icon=schedule] { background-image: url("/themes/emr/images/sales/schedule.png"); }
+a[data-icon=realize]  { background-image: url("/themes/emr/images/sales/realize.png"); }
+
+/* ## invoices */
+a[data-icon=due_date_pay]           { background-image: url("/themes/emr/images/sales/due_date_pay.png"); }
+a[data-icon=totally_pay]            { background-image: url("/themes/emr/images/sales/totally_pay.png"); }
+a[data-icon=factoring_pay]          { background-image: url("/themes/emr/images/sales/factoring_pay.png"); }
+a[data-icon=factoring_balance_pay]  { background-image: url("/themes/emr/images/sales/factoring_balance_pay.png"); }
+a[data-icon=factoring_recover]      { background-image: url("/themes/emr/images/sales/factoring_recover.png"); }
+a[data-icon=abandon]                { background-image: url("/themes/emr/images/sales/abandon.png"); }
+
+/* ## product_references */
+a[data-icon=new_category]           { background-image: url("/themes/emr/images/sales/new_category.png"); }
+a[data-icon=new_sub_category]       { background-image: url("/themes/emr/images/sales/new_sub_category.png"); }
+a[data-icon=new_product_reference]  { background-image: url("/themes/emr/images/sales/new_product_reference.png"); }
+/* END IMAGES */
+
 #order_search_customer {
   margin: 7px 10px 7px 10px;
 }
@@ -153,22 +181,22 @@ table.sales_table tr.aggregates {
   border-top: 1px solid #CCC;
 }
 
-table.sales_table tr.aggregates td {
+table.sales_table tr.aggregates > td {
   text-align: left;
   border-top: none;
   border-bottom: none;
 }
 
-table.sales_table tr.aggregates td.aggregate_label {
+table.sales_table tr.aggregates > td.aggregate_label {
   border-right: none;
 }
 
-table.sales_table tr.aggregates td.aggregate_amount {
+table.sales_table tr.aggregates > td.aggregate_amount {
   border-left: none;
   text-align: right;
 }
 
-table.sales_table tr.aggregates td.aggregate_amount input {
+table.sales_table tr.aggregates > td.aggregate_amount input {
   text-align: right;
 }
 
@@ -348,7 +376,7 @@ table.survey_checklist td.response {
   width: auto !important;
 }
 
-#survey_step_search_product_reference input {
+#survey_step_search_product_reference input[type=text] {
   margin-left: 5px;
   padding-right: 20px;
 }
@@ -459,7 +487,7 @@ ul#graphic_items li p {
   display: none;
 }
 
-#spool .spool_item:hover{
+#spool .spool_item:hover {
   background-color: #ecc48b;
 }
 
@@ -467,11 +495,48 @@ ul#graphic_items li p {
   display: block;
 }
 
-.spool_warning{
+.spool_warning {
   position: relative;
 	border:solid 1px #F1BD73;
 	background:#F6E8CF;
 	margin:10px;
 	width:530px;
 	padding:10px;
+}
+
+/* PRIORITIES */
+
+table tr.high_priority { 
+  background-color: #FE6464;
+  color: white;
+}
+
+table tr.high_priority a { 
+  color: white;
+  text-decoration: underline;
+}
+
+table tr.medium_priority {
+  background-color: #FEAC64; 
+}
+
+table tr.medium_priority a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+table tr.low_priority {
+}
+
+table tr.low_priority a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+table tr.very_low_priority {
+}
+
+table tr.very_low_priority a {
+  color: inherit;
+  text-decoration: underline;
 }

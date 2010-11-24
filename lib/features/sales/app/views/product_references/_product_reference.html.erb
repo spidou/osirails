@@ -2,6 +2,31 @@
   <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
 <% end %>
 
+<% unless product_reference.new_record? %>
+  <% add_contextual_menu_item ProductReference.human_name do %>
+    <% product_reference_action_buttons(product_reference).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+  
+  <% add_contextual_menu_item ProductReferenceCategory.human_name do %>
+    <% product_reference_category_action_buttons(product_reference.product_reference_category).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+  
+  <% add_contextual_menu_item ProductReferenceSubCategory.human_name do %>
+    <% product_reference_sub_category_action_buttons(product_reference.product_reference_sub_category).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= new_product_reference_link(:link_text => 'Nouveau produit référence') unless is_new_view? %>
+  <%= product_references_link(:link_text => "Voir tous les produits références") %>
+<% end %>
+
 <div class="presentation_medium">
   <% form_for product_reference do |form| %>
     <%= form.error_messages %>

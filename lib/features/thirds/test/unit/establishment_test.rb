@@ -6,6 +6,11 @@ class EstablishmentTest < ActiveSupport::TestCase
   should_validate_presence_of :address
   should_validate_presence_of :establishment_type, :with_foreign_key => :default
   
+  should_journalize :attributes        => [ :name, :establishment_type_id, :activity_sector_reference_id, :siret_number, :activated, :hidden ],
+                    :subresources      => [ :address, :contacts, :documents, :phone, :fax ],
+                    :attachments       => :logo,
+                    :identifier_method => :establishment_type_and_name
+  
   context "A new establishment" do
     setup do
       @establishment = Establishment.new

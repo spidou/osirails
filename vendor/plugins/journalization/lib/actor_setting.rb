@@ -34,13 +34,14 @@ module Journalization
               before_filter :set_journalization_actor_object,   :only => actions
               after_filter  :reset_journalization_actor_object, :only => actions
               
-              def set_journalization_actor_object
-                Journalization::ActorClassName.constantize.journalization_actor_object = self.current_user
-              end
-
-              def reset_journalization_actor_object
-                Journalization::ActorClassName.constantize.reset_journalization_actor_object
-              end
+              private
+                def set_journalization_actor_object
+                  Journalization::ActorClassName.constantize.journalization_actor_object = self.current_user
+                end
+                
+                def reset_journalization_actor_object
+                  Journalization::ActorClassName.constantize.reset_journalization_actor_object
+                end
             end
           end
         end

@@ -38,10 +38,10 @@ function check_values_of_total_and_due_dates() {
   
   if (sum_net_to_paid != total_invoice) {
     $('due_date_amounts_notification').appear()
-    $('due_dates_list').up('.root_nav').down('.invoice_due_dates_payments').addClassName('warning')
+    invoice_nav.tabs.detect(function(tab){ return tab.name == "due_dates_payments" }).warn()
   } else {
     $('due_date_amounts_notification').fade()
-    $('due_dates_list').up('.root_nav').down('.invoice_due_dates_payments').removeClassName('warning')
+    invoice_nav.tabs.detect(function(tab){ return tab.name == "due_dates_payments" }).unwarn()
   }
 }
 
@@ -186,13 +186,11 @@ function update_invoice_items(checkbox, url_prefix) {
   new Ajax.Request(url, {
     method: 'get',
     onLoading: function() {
-      $('invoice_items_ajax_loading').appear();
       form_buttons.each(function(button){
         button.disable()
       });
     },
     onLoaded: function() {
-      $('invoice_items_ajax_loading').fade();
       form_buttons.each(function(button){
         button.enable()
       });
@@ -218,7 +216,7 @@ function add_free_item() {
   last_line.removeAttribute('style');
   new Effect.Highlight(last_line, {afterFinish: function(){ last_line.setStyle({backgroundColor: ''}) }})
   
-  update_up_down_links($('invoice_items_body')); //defined in sales.js
+  update_up_down_links_and_positions($('invoice_items_body')); //defined in sales.js
 }
 
 function remove_free_item(element) {
@@ -231,7 +229,7 @@ function remove_free_item(element) {
     item.remove();
   }
   
-  update_up_down_links($('invoice_items_body')); //defined in sales.js
+  update_up_down_links_and_positions($('invoice_items_body')); //defined in sales.js
   update_aggregates();
 }
 

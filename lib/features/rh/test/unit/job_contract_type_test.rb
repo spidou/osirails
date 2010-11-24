@@ -1,25 +1,10 @@
 require File.dirname(__FILE__) + '/../rh_test'
 
 class JobContractTypeTest < ActiveSupport::TestCase
-  should_journalize :identifier_method => :name
+  should_validate_presence_of :name
   
-  def setup
-    @job_contract_type = job_contract_types(:rolling_contract)
-  end
-
-  def test_presence_of_name
-    assert_no_difference 'JobContractType.count' do
-      job_contract_type = JobContractType.create
-      assert_not_nil job_contract_type.errors.on(:name),
-        "A JobContractType should have a name"
-    end
-  end
-
-  def test_presence_of_limited
-    assert_no_difference 'JobContractType.count' do
-      job_contract_type = JobContractType.create
-      assert_not_nil job_contract_type.errors.on(:limited),
-        "A JobContractType should have a limited value"
-    end
-  end
+  should_allow_values_for :limited, true, false
+  should_not_allow_values_for :limited, nil, "string", 100
+  
+  should_journalize :identifier_method => :name
 end

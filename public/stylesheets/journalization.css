@@ -1,13 +1,60 @@
-#journals_list div.journal_with_parent{
-  margin: 10px;
-  padding: 10px;
-  border: 1px solid #BFBFBF;
-  -moz-border-radius: 8px;
-  -moz-box-shadow: -5px 0px 10px rgba(30,30,30,0.3)
+#journals_list ul {
+  padding-left: 20px;
 }
 
-#journals_list li{
-  list-style: disc;
-  padding-top: 5px;
-  padding-bottom: 5px;
+#journals_list li {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0;
+}
+
+#journals_list li:before {
+  content: '✎';
+  font-size: 1.1em;
+  padding: 1px 5px;
+  margin-right: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  
+  -moz-box-shadow: inset -2px -2px 6px rgba(0,0,0,0.2);
+  -webkit-box-shadow: inset -2px -2px 6px rgba(0,0,0,0.2);
+  box-shadow: inset -2px -2px 6px rgba(0,0,0,0.2);
+}
+
+#journals_list li.added:before {
+  background-color: #BBF792;
+}
+
+#journals_list li.changed:before {
+  background-color: #C7D3D7;
+}
+
+#journals_list li.removed:before {
+  color: white;
+  background-color: #F63939;
+}
+
+#journals_list li.has_resources:before {
+  content: '';
+}
+
+#journals_list strong {
+  color: inherit;
+  font-weight: bold;
+}
+
+#journals_list div.journal_with_parent {
+  margin-left: 25px;
+  margin-right: 5px;
+  border: 1px solid #BFBFBF;
+  border-top-style: dashed;
+  
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
+  
+  -moz-box-shadow: 0px 1px 4px rgba(0,0,0,0.2);
+  -webkit-box-shadow: 0px 1px 4px rgba(0,0,0,0.2);
+  box-shadow: 0px 1px 4px rgba(0,0,0,0.2);
 }

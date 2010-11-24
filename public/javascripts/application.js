@@ -3,6 +3,8 @@ String.prototype.ltrim = function() { return this.replace(/^\s+/, ''); };
 String.prototype.rtrim = function() { return this.replace(/\s+$/, ''); };
 String.prototype.trim = function() { return this.ltrim().rtrim(); };
 
+Array.prototype.sum = function() { return this.inject(0, function(a,b){ return a + b }); };
+
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 if (window.addEventListener)
@@ -25,7 +27,7 @@ function initEventListeners()
   
   if (contextual_menu_toggle_button){
     contextual_menu_toggle_button.addEventListener("click", function(){toggle_contextual_menu(contextual_menu_toggle_button)}, false);
-    click_next(0);
+    refresh_timer();
   }
 }
 
@@ -179,8 +181,8 @@ function show_memorandum(element_or_position, value) {
   document.location = "/received_memorandums/"+id
 }
 
-function change_memorandum(element, memorandum_number, event) {
-  if (memorandum_number != 0 && memorandum_number !=1) {
+function change_memorandum(element) {
+  if (memorandum_count > 1) {
     place = element.className.lastIndexOf("_");
     position = element.className.substr(place +1);
     
@@ -189,27 +191,27 @@ function change_memorandum(element, memorandum_number, event) {
     element_id = element.id
     
     if ((parseInt(position) - 1) == 0 ) {
-      $('previous').className = 'previous_memorandum_'+(parseInt(memorandum_number));
-      if (element_id == 'next') {
-        new Effect.Fade(document.getElementsByClassName('position_'+memorandum_number)[0], {duration: 0.3});
+      $('previous_memorandum').className = 'previous_memorandum_'+(parseInt(memorandum_count));
+      if (element_id == 'next_memorandum') {
+        new Effect.Fade(document.getElementsByClassName('position_'+memorandum_count)[0], {duration: 0.3});
       }
     }
     else {
-      $('previous').className = 'previous_memorandum_'+(parseInt(position) - 1);
-      if (element_id == 'next') {
+      $('previous_memorandum').className = 'previous_memorandum_'+(parseInt(position) - 1);
+      if (element_id == 'next_memorandum') {
         new Effect.Fade(document.getElementsByClassName('position_'+(parseInt(position) -1))[0], {duration: 0.3});
       }
     }
     
-    if (parseInt(position) < memorandum_number) {
-      $('next').className = 'next_memorandum_'+(parseInt(position) + 1);
-      if (element_id = 'previous') {
+    if (parseInt(position) < memorandum_count) {
+      $('next_memorandum').className = 'next_memorandum_'+(parseInt(position) + 1);
+      if (element_id = 'previous_memorandum') {
         new Effect.Fade(document.getElementsByClassName('position_'+(parseInt(position) +1))[0], {duration: 0.3});
       }
     }
     else {
-      $('next').className = 'next_memorandum_1';
-      if (element_id = 'previous') {
+      $('next_memorandum').className = 'next_memorandum_1';
+      if (element_id = 'previous_memorandum') {
         new Effect.Fade(document.getElementsByClassName('position_1')[0], {duration: 0.3});
       }
     }
@@ -218,30 +220,15 @@ function change_memorandum(element, memorandum_number, event) {
     $('text_under_banner').setAttribute('onclick', 'show_memorandum('+parseInt(position)+', 1)')
     new Effect.Appear(document.getElementsByClassName('position_'+position)[0], {duration: 2});
     refresh_timer()
-    }
-}
-var timer
-
-function click_next(value) {
-  if (document.getElementsByClassName('number')[1] != null) {
-    total_memorandum = document.getElementsByClassName('number')[1].innerHTML;
-
-    if ( total_memorandum != 0 && total_memorandum != 1 ) {
-      if (value == 0) {
-
-        timer = setTimeout('click_next('+1+');', 15000);
-
-      }
-      else {
-        if( $('next') != null ) { $('next').click(); }
-      }
-    }
   }
 }
 
+
+var timer
 function refresh_timer() {
   clearTimeout(timer);
-  timer = setTimeout('click_next('+1+');', 15000);
+  if (typeof(memorandum_count) != 'undefined')
+    timer = setTimeout(function(){ change_memorandum($('next_memorandum')) }, 15000)
 }
 
 // permits to display the hidden menu when we click on the link

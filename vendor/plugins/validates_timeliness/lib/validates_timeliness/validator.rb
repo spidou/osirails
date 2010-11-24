@@ -118,7 +118,7 @@ module ValidatesTimeliness
       case comparator
       when Symbol
         value.send(comparator, restriction)
-    when Proc
+      when Proc
         comparator.call(value, restriction)
       end
     end

@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   # GET /users
   def index
     # TODO In the view index, add the sessions management
-    @users = User.find(:all).paginate(:page => params[:page], :per_page => User::USERS_PER_PAGE)
+    build_query_for(:user_index)
   end
 
   # GET /users/1

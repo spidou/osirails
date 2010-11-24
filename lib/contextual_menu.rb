@@ -8,7 +8,7 @@ module Osirails
         @sections = []
       end
       
-      def add_item(section, force_not_list, item)
+      def add_item(section, force_not_list, position, item)
         return if item.blank?
         new_item = Item.new(item)
         
@@ -19,16 +19,20 @@ module Osirails
             end
           end
         else
-          @sections << Section.new(section, !force_not_list, [ new_item ] )
+          section = Section.new(section, !force_not_list, [ new_item ] )
+          
+          if position == :first || position.to_i < 0
+            @sections.unshift(section)
+          elsif position == :last || position.to_i >= @sections.size
+            @sections.push(section)
+          else
+            @sections.insert(position.to_i, section)
+          end
         end
       end
     end
     
     class Section
-      @@section_titles ||= {  :contextual_search => "Recherche Contextuelle",
-                              :possible_actions  => "Actions Possibles",
-                              :useful_links      => "Liens Utiles" }
-      
       attr_accessor :title, :items, :list_mode
       
       def initialize(title, display_list = true, items = [])
@@ -50,7 +54,13 @@ module Osirails
       end
       
       def to_s
-        @@section_titles[@title] || @title.to_s.humanize
+        if @title.is_a?(Symbol)
+          I18n.t("view.contextual_menu_sections.#{@title.to_s}", :default => @title.to_s.humanize)
+        elsif @title.is_a?(String)
+          @title
+        else
+          raise ArgumentError, "section title expected a Symbol or a Hash, but was #{@title}:#{@title.class.name}"
+        end
       end
       
     end

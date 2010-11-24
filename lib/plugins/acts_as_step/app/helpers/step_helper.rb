@@ -45,7 +45,7 @@ module StepHelper
 #    unless remarks.empty?
 #      for remark in remarks.reverse
 #        html += "<p>"
-#        html += "Posté par <strong> #{remark.user.employee ? remark.user.employee.fullname : remark.user.username}</strong> le #{I18n.l(remark.created_at.to_date, :long)} à #{I18n.l(remark.created_at, :time)} : <br/>"
+#        html += "Posté par <strong> #{remark.user.employee ? remark.user.employee.fullname : remark.user.username}</strong> le #{I18n.l(remark.created_at, :long)} : <br/>"
 #        html += "<span class='indent'>"
 #        html += "#{remark.text}"
 #        html += "</span>"

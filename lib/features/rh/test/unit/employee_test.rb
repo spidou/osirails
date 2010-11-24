@@ -11,22 +11,22 @@ class EmployeeTest < ActiveSupport::TestCase
   
   should_have_many :in_progress_leave_requests, :accepted_leave_requests, :refused_leave_requests, :cancelled_leave_requests
   
-  should_journalize :attributes          => [ :first_name, :last_name, :birth_date, :civility_id, :social_security_number, :family_situation_id, :service_id, :email, :society_email ], 
-                    :attachments         => :avatar, 
-                    :subresources        => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
-                    :identifier_method   => :fullname
-  
   should_validate_presence_of :last_name, :first_name
   should_validate_presence_of :family_situation, :civility, :service, :with_foreign_key => :default
   
   should_allow_values_for :social_security_number, "1234567890123 45", "0123456789012 34"
-  should_not_allow_values_for :social_security_number, nil, "", "1", "0123456789012 3", "012345678901 34", "123456789012345", :message => "Le numéro de sécurité sociale doit comporter 15 chiffres"
+  should_not_allow_values_for :social_security_number, nil, "", "1", "0123456789012 3", "012345678901 34", "123456789012345", :message => "Social security number must contain 15 digits"
   
   should_allow_values_for :email, nil, "", "foo@bar.com", "foo.bar@bar.fr", "foo@bar.abcde"
-  should_not_allow_values_for :email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "L'adresse e-mail est incorrecte"
+  should_not_allow_values_for :email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "Email is incorrect"
   
   should_allow_values_for :society_email, nil, "", "foo@bar.com", "foo.bar@bar.fr", "foo@bar.abcde"
-  should_not_allow_values_for :society_email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "L'adresse e-mail entreprise est incorrecte"
+  should_not_allow_values_for :society_email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "Society email is incorrect"
+  
+  should_journalize :attributes          => [ :first_name, :last_name, :birth_date, :civility_id, :social_security_number, :family_situation_id, :service_id, :email, :society_email ], 
+                    :attachments         => :avatar, 
+                    :subresources        => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
+                    :identifier_method   => :fullname
   
   context "Thanks to 'has_contacts', a subcontractor" do
     setup do

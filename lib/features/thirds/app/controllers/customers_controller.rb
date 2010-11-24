@@ -5,7 +5,7 @@ class CustomersController < ApplicationController
   
   # GET /customers
   def index
-    @customers = Customer.activates.paginate(:page => params[:page], :per_page => Customer::CUSTOMERS_PER_PAGE)
+    build_query_for("customer_index")
   end
   
   # GET /customers/:id

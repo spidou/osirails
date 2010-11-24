@@ -12,9 +12,9 @@ class Order < ActiveRecord::Base
   belongs_to :approaching
   
   # steps
-  has_one :commercial_step,    :dependent => :nullify
-  has_one :pre_invoicing_step, :dependent => :nullify
-  has_one :invoicing_step,     :dependent => :nullify
+  has_one :commercial_step, :dependent => :nullify
+  has_one :production_step, :dependent => :nullify
+  has_one :invoicing_step,  :dependent => :nullify
   
   # quotes
   has_many :quotes, :order => 'created_at DESC'
@@ -34,7 +34,6 @@ class Order < ActiveRecord::Base
   
   # invoices
   has_many :invoices, :order => 'invoices.created_at DESC'
-  has_many :uncomplete_invoices, :class_name => 'Invoice', :conditions => [ 'status IS NULL' ], :order => "invoices.created_at DESC"
   
   has_many :ship_to_addresses
   has_many :end_products, :conditions => [ "cancelled_at IS NULL" ]
@@ -42,8 +41,6 @@ class Order < ActiveRecord::Base
   has_many :mockups
   has_many :graphic_documents
   
-  journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"}
-
   validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id
   validates_presence_of :customer,                :if => :customer_id
@@ -60,14 +57,15 @@ class Order < ActiveRecord::Base
   validate :validates_order_type_validity
   #TODO validates_date :previsional_delivery (check if the date is correct, if it's after order creation date), etc. )
   
+  journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"}
+  
+  has_search_index :only_attributes    => [ :title, :reference, :customer_needs ],
+                   :only_relationships => [ :customer ]
+  
   before_validation_on_create :update_reference
   
   after_save    :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
   after_create  :create_steps
-  
-  has_search_index :only_attributes    => [ :title, :reference, :customer_needs ],
-                   :only_relationships => [ :customer ],
-                   :main_model         => true
   
   # level constants
   CRITICAL  = 'critical'
@@ -75,6 +73,15 @@ class Order < ActiveRecord::Base
   TODAY     = 'today'
   SOON      = 'soon'
   FAR       = 'far'
+  
+  #TODO test this method
+  def ready_to_deliver_end_products_and_quantities
+    if production_step and production_step.manufacturing_step
+      production_step.manufacturing_step.ready_to_deliver_end_products_and_quantities
+    else
+      []
+    end
+  end
   
   # return all delivery_notes with an active invoice
   # delivery_notes_with_invoice
@@ -130,13 +137,35 @@ class Order < ActiveRecord::Base
     invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
   end
   
+  #TODO test this method
+  def paid_amount
+    invoices.paid.collect(&:already_paid_amount).sum
+  end
+  
+  #TODO test this method
+  def unpaid_amount
+    signed_quote.total_with_taxes - paid_amount
+  end
+  
+  #TODO test this method
+  def billed_amount
+    invoices.actives.collect(&:net_to_paid).sum
+  end
+  
+  #TODO test this method
+  def unbilled_amount
+    signed_quote.total_with_taxes - billed_amount
+  end
+  
   def build_delivery_note_with_remaining_end_products_to_deliver
     return if all_is_delivered_or_scheduled?
     
     dn = delivery_notes.build
-    signed_quote.quote_items.each do |quote_item|
-      next unless quote_item.remaining_quantity_to_deliver > 0
-      dn.delivery_note_items.build( :quote_item_id => quote_item.id, :quantity => quote_item.remaining_quantity_to_deliver )
+    signed_quote.end_products.each do |end_product|
+      next unless end_product.remaining_quantity_to_deliver > 0
+      dn.delivery_note_items.build(:order_id        => self.id,
+                                   :end_product_id  => end_product.id,
+                                   :quantity        => end_product.remaining_quantity_to_deliver)
     end
     
     return dn
@@ -378,9 +407,8 @@ class Order < ActiveRecord::Base
           step.name.camelize.constantize.find_or_create_by_order_id(self.id)
         else
           begin
-            step_model = step.name.camelize.constantize                # eg: SurveyStep
-            parent_step_model = step.parent.name.camelize.constantize  # eg: CommercialStep
-            
+            step_model        = step.name.camelize.constantize        # eg: SurveyStep
+            parent_step_model = step.parent.name.camelize.constantize # eg: CommercialStep
             step_model.send("find_or_create_by_#{parent_step_model.table_name.singularize}_id", self.send(step.parent.name).id)
           rescue NameError => e
             error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"

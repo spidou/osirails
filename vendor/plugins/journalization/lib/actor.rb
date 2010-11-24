@@ -23,16 +23,16 @@ module Journalization
           base.extend ClassMethods
         end
       end
-
+      
       module ClassMethods
         def acts_on_journalization_with identifier 
           if Journalization.const_defined?("ActorClassName") && Journalization::ActorClassName != self.name
             raise "acts_on_journalization_with cannot be called more than once" 
           else
             Journalization.const_set("ActorClassName", self.name)
-
+            
             raise ArgumentError, "acts_on_journalization_with expected a symbol or a string corresponding to a method name" unless identifier.instance_of?(Symbol) || identifier.instance_of?(String)
-            self.journalize :identifier_method => identifier unless (Journalization.const_defined?("SubjectsClassName") && Journalization::SubjectsClassName.include?(self.name))
+            self.journalize :identifier_method => identifier unless (Journalization.const_defined?("SubjectClassNames") && Journalization::SubjectClassNames.include?(self.name))
             
             class_eval do
               def self.journalization_actor_object=(actor_object)

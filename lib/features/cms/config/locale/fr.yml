@@ -1,0 +1,13 @@
+fr:
+  activerecord:
+    models:
+      content: "Contenu"
+      content_version: "Version de contenu"
+    attributes: 
+      content:
+        title: "Titre"
+        description: "Description"
+
+  view:
+    contextual_menu_sections:
+      content_history: "Historique des modifications"

@@ -1,14 +1,7 @@
-<% add_contextual_menu_item :survey_step do %>
-  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir l'étape \"Survey\"", :title => list_text) + " " + list_text, order_commercial_step_survey_step_path(@order)) if SurveyStep.can_view?(current_user) %>
-<% end %>
+<%= generate_survey_step_contextual_menu_partial %>
+<%= generate_quote_step_contextual_menu_partial %>
+<%= generate_press_proof_step_contextual_menu_partial %>
+<%= generate_graphic_items_contextual_menu_partial %>
 
-<% add_contextual_menu_item :quote_step do %>
-  <%= display_quote_add_button(@order) %>
-  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir l'étape \"Devis\"", :title => list_text) + " " + list_text, order_commercial_step_quote_step_path(@order)) if QuoteStep.can_view?(current_user) %>
-<% end %>
-
-<% add_contextual_menu_item :press_proof_step do %>
-  <%= display_press_proof_add_button(@order) %>
-  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir l'étape \"BAT\"", :title => list_text) + " " + list_text, order_commercial_step_press_proof_step_path(@order)) if PressProofStep.can_list?(current_user) %>
-  <%= new_graphic_item_link(Mockup) %>
-<% end %>
+<%= generate_production_step_minimal_contextual_menu_partial %>
+<%= generate_invoicing_step_minimal_contextual_menu_partial %>

@@ -1,12 +1,2 @@
-<% contextual_search_for_customer %>
-
-<% add_contextual_menu_item :useful_links do %>
-  <%= customers_link(:link_text => "Voir tous les clients") %>
-<% end %>
-
-<% content_for :header do %>
-  <%= javascript_include_tag "thirds/thirds" %>
-<% end %>
-
 <h1>Nouveau client</h1>
 <%= render :partial => @customer %>

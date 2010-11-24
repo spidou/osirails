@@ -1,74 +1,76 @@
 <%
-id_attr = end_product.new_record? ? '' : "id=\"end_product_#{end_product.id}\""
+id      = end_product.new_record? ? generate_random_id : end_product.id
+id_attr = "end_product_#{id}"
 style   = "style=\"display:none\"" if end_product.should_destroy?
-selected_class = end_product.new_record? ? ' selected' : ' selected' #TODO remove the class "selected" when end_product is not a new record
-disabled_class = end_product.new_record? ? ' disabled' : ''
 
-end_product_headers = { :end_product_details    => "Produit",
-                        :end_product_checklist  => "Checklist Environnement (#{end_product.checklist_responses.count})" }
+parent_navigator ||= nil
 
-end_product_errors  = { :end_product_details    => end_product.errors.empty? ? '' : ' errors',
-                        :end_product_checklist  => end_product.errors.on(:checklists) ? ' errors' : '' }
+end_product_errors  = { :details    => end_product.errors.empty? ? '' : ' errors',
+                        :checklist  => end_product.errors.on(:checklists) ? ' errors' : '' }
 %>
 
-<div class="end_product root_nav resource" <%=id_attr%> <%= style %>>
-  <ul class="end_product_nav tab_nav">
-    <li class="end_product_details<%= selected_class + end_product_errors[:end_product_details] %>"><%= end_product_headers[:end_product_details] %></li>
-    <li class="end_product_checklist<%= disabled_class + end_product_errors[:end_product_checklist] %>"><%= end_product_headers[:end_product_checklist] %></li>
-  </ul>
+<div id="<%= id_attr %>" class="end_product root_nav standard resource" <%= style %>>
   
-  
-  <p class="end_product_summary">
-    <% unless end_product.new_record? %>
-      <span class="end_product_position"><%= end_product_counter %></span>
-      <span class="end_product_label">Nom :</span> <span class="end_product_name"><%= end_product.name_was %></span>
-      <span class="end_product_label">Côtes :</span> <span class="end_product_dimensions"><%= end_product.dimensions_was %></span>
-      <span class="end_product_label">Qté :</span> <span class="end_product_quantity"><%= end_product.quantity_was %></span>
-      <span class="end_product_actions"><%= display_end_product_delete_button_in_survey_step(end_product) %></span>
-    <% else %>
-      <span class="end_product_new">Nouveau produit</span>
+  <% tab_navigator "#{id_attr}_nav", :parent => parent_navigator, :javascript_options => { :can_unfold_all => true } do |t| %>
+    <% t.nav_buttons do %>
+      <%= t.tab :details,   "Produit",  :class    => end_product_errors[:details],
+                                        :selected => end_product.new_record? %>
+      <%= t.tab :checklist, "Checklist Environnement (#{end_product.checklist_responses.count})",
+                                        :class    => end_product_errors[:checklist],
+                                        :disabled => end_product.new_record? %>
     <% end %>
-  </p>
-  
-  <h2 class="end_product_details section_nav"><%= end_product_headers[:end_product_details] %></h3>
-  <div class="end_product_details section_nav<%= selected_class %>">
-    <% fields_for 'survey_step[end_product_attributes][]', end_product, :index => nil do |form| %>
-      <%= form.error_messages %>
-      <p>
-        <%= form.label :product_reference_id %>
-        <%= form.hidden_field :product_reference_id %>
-        <%= strong("#{end_product.product_reference.reference} - #{end_product.product_reference.designation}") %> <%= product_reference_link(end_product.product_reference, :link_text => "Voir la fiche de cette référence", :html_options => { :popup => true }) %>
-      </p>
-      <p>
-        <%= form.label :name %>
-        <%= form.text_field :name, :value => end_product.name || end_product.product_reference.designation, :size => 50 %>
-        
-        <%= form.label :dimensions %>
-        <%= form.text_field :dimensions %>
-      </p>
-      <p>
-        <%= form.label :description %>
-        <%= form.text_area_autoresize :description, :value => (end_product.description || end_product.product_reference.description), :index => nil %>
-      </p>
-      <p>
-        <%= form.label :quantity %>
-        <%= form.text_field :quantity, :value => end_product.quantity || 1, :size => 3 %>
-      </p>
-      <p style="display:none">
-        <%= form.hidden_field :id %>
-        <%= form.hidden_field :should_destroy, :class => :should_destroy %>
-      </p>
-      
-      <% if end_product.new_record? %>
+    
+    <p class="end_product_summary">
+      <% unless end_product.new_record? %>
+        <span class="end_product_position"><%= end_product_counter + 1 %></span>
+        <span class="end_product_label">Nom :</span> <span class="end_product_name"><%= end_product.name_was %></span>
+        <span class="end_product_label">Côtes :</span> <span class="end_product_dimensions"><%= end_product.dimensions_was %></span>
+        <span class="end_product_label">Qté :</span> <span class="end_product_quantity"><%= end_product.quantity_was %></span>
+        <span class="end_product_actions"><%= display_end_product_delete_button_in_survey_step(end_product) %></span>
+      <% else %>
+        <span class="end_product_new">Nouveau produit</span>
+      <% end %>
+    </p>
+    
+    <% t.content_for :details do %>
+      <% fields_for 'survey_step[end_product_attributes][]', end_product, :index => nil do |form| %>
+        <%= form.error_messages %>
         <p>
-          <%= link_to_function "Annuler la création de ce produit", "this.up('.end_product').remove()" %>
+          <%= form.label :product_reference_id %>
+          <%= form.hidden_field :product_reference_id %>
+          <%= strong("#{end_product.product_reference.reference} - #{end_product.product_reference.designation}") %> <%= product_reference_link(end_product.product_reference, :link_text => "Voir la fiche de cette référence", :html_options => { :popup => true }) %>
         </p>
+        <p>
+          <%= form.label :name %>
+          <%= form.text_field :name, :value => end_product.name, :size => 50 %>
+          
+          <%= form.label :dimensions %>
+          <%= form.text_field :dimensions, :value => end_product.dimensions %>
+        </p>
+        <p>
+          <%= form.label :description %>
+          <%= form.text_area_autoresize :description, :value => end_product.description, :index => nil %>
+        </p>
+        <p>
+          <%= form.label :quantity %>
+          <%= form.text_field :quantity, :size => 3 %>
+        </p>
+        <p style="display:none">
+          <%= form.hidden_field :id %>
+          <%= form.hidden_field :should_destroy, :class => :should_destroy %>
+        </p>
+        
+        <% if end_product.new_record? %>
+          <p>
+            <%= link_to_function "Annuler la création de ce produit", "this.up('.end_product').remove()" %>
+          </p>
+        <% end %>
       <% end %>
     <% end %>
-  </div>
-  
-  <h2 class="end_product_checklist section_nav"><%= end_product_headers[:end_product_checklist] %></h3>
-  <div class="end_product_checklist section_nav<%= disabled_class %>">
-    <%= display_environment_checklist_for(end_product) unless end_product.new_record? %>
-  </div>  
+    
+    <% t.content_for :checklist do %>
+      <%= display_environment_checklist_for(end_product) unless end_product.new_record? %>
+    <% end %>
+    
+  <% end %>
 </div>

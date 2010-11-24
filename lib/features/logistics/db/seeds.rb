@@ -1,5 +1,8 @@
 require 'lib/seed_helper'
 
+# default observable function
+WatchableFunction.create! :watchable_type => "Commodity", :name => "stock_quantity_smaller_than_threshold?", :description => "Lorsque la quantité en stock est en-dessous du seuil minimum", :on_modification => :false, :on_schedule => true
+
 # default measure units
 metre   = UnitMeasure.create! :name => "Mètre",       :symbol => "m"
 mmetre  = UnitMeasure.create! :name => "Millimètre",  :symbol => "mm"

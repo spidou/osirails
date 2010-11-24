@@ -16,14 +16,16 @@ class EndProduct < Product
   belongs_to :order
   
   has_many :checklist_responses, :dependent => :destroy
-  has_many :quote_items,         :dependent => :nullify
-  has_many :quotes,              :through   => :quote_items
   has_many :mockups,             :dependent => :nullify
   has_many :press_proofs,        :dependent => :nullify, :order => 'created_at DESC'
   
-  acts_as_list :scope => :order
+  has_many :quote_items,         :dependent => :nullify
+  has_many :quotes,              :through   => :quote_items
   
-  journalize :identifier_method => :name
+  has_many :delivery_note_items, :dependent => :nullify
+  has_many :delivery_notes,      :through   => :delivery_note_items
+  
+  acts_as_list :scope => :order
   
   validates_presence_of :product_reference_id, :order_id
   validates_presence_of :product_reference, :if => :product_reference_id
@@ -40,16 +42,24 @@ class EndProduct < Product
   
   validates_associated :checklist_responses
   
+  journalize :identifier_method => :name
+  
   before_validation_on_create :update_reference
   
   after_save :save_checklist_responses
   
-  attr_accessor :should_destroy
-  
   END_PRODUCTS_PER_PAGE = 15
   
-  def should_destroy?
-    should_destroy.to_i == 1
+  def name
+    self[:name] ||= product_reference ? product_reference.designation : nil
+  end
+  
+  def description
+    self[:description] ||= product_reference ? product_reference.description : nil
+  end
+  
+  def dimensions
+    self[:dimensions] ||= product_reference ? product_reference.dimensions : nil
   end
   
   def cancelled?
@@ -80,7 +90,23 @@ class EndProduct < Product
   end
   
   def designation
-    @designation ||= name + ( dimensions.blank? ? "" : " (#{dimensions})" )
+    return unless name
+    name + ( dimensions.blank? ? "" : " (#{dimensions})" )
+  end
+  
+  #TODO test this method
+  def already_delivered_or_scheduled_quantity
+    return 0 if new_record? or delivery_note_items.empty?
+    #OPTIMIZE how can I replace that find method by a call to the named_scope ':actives' in delivery_note.rb (conditions are the same)
+    delivery_note_items.find( :all,
+                              :include    => :delivery_note,
+                              :conditions => [ "delivery_notes.status IS NULL or delivery_notes.status != ?", DeliveryNote::STATUS_CANCELLED ]
+                             ).collect(&:really_delivered_quantity).sum
+  end
+  
+  #TODO test this method
+  def remaining_quantity_to_deliver
+    ( quantity || 0 ) - already_delivered_or_scheduled_quantity
   end
   
   def checklist_responses_attributes=(checklist_responses_attributes)

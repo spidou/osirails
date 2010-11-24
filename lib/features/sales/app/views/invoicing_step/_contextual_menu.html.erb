@@ -1,4 +1,4 @@
-<% add_contextual_menu_item :invoice_step do %>
-  <%= display_invoice_add_button(@order) %>
-  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir l'étape \"Factures\"", :title => list_text) + " " + list_text, order_invoicing_step_invoice_step_path(@order)) if InvoiceStep.can_view?(current_user) %>
-<% end %>
+<%= generate_commercial_step_minimal_contextual_menu_partial %>
+<%= generate_production_step_minimal_contextual_menu_partial %>
+
+<%= generate_invoice_step_contextual_menu_partial %>

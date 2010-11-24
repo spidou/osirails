@@ -13,7 +13,7 @@ module ApplicationHelper
     html.empty? ? "" : "<div class=\"flash_container\">#{html}</div>"
   end
   
-  def current_user
+  def current_user # same as ApplicationController#current_user
     @current_user ||= User.find_by_id(session[:user_id], :joins => [:roles])
   end
   
@@ -175,26 +175,29 @@ module ApplicationHelper
   # You can override this behaviour by passing true in second argument
   #
   # Examples :
-  #   add_contextual_menu_item(:section_name, true, item)
+  #   add_contextual_menu_item(:section_name, :force_not_list => true, item)
   #
-  #   add_contextual_menu_item(:section_name, true) do
+  #   add_contextual_menu_item(:section_name, :force_not_list => true) do
   #     item
   #   end
   #
-  def add_contextual_menu_item(*args, &block)
-    if block_given?
-      section = args.first
-      force_not_list = args.last.instance_of?(TrueClass)
-      items = capture(&block).split("\n")
-    else
-      section = args.shift
-      force_not_list = args.first.instance_of?(TrueClass)
-      args.shift if force_not_list
-      items = [args].flatten
-    end
+  # You can manage to insert your item at a given position
+  #
+  # Examples :
+  #   add_contextual_menu_item(:section_name, :position => :first, :item)
+  #   add_contextual_menu_item(:section_name, :position => :first) do
+  #     item
+  #   end
+  #   add_contextual_menu_item(:section_name, :position => :last, :item) 
+  #   add_contextual_menu_item(:section_name, :position => 2, :item)
+  #
+  def add_contextual_menu_item(section, *args, &block)
+    default_options = { :force_not_list => false, :position => :last }
+    options = (args.first.is_a?(Hash) ? default_options.merge(args.shift) : default_options)
+    items   = block_given? ? capture(&block).split("\n") : args.dup
     
     items.each do |item|
-      @contextual_menu.add_item(section, force_not_list, item)
+      @contextual_menu.add_item(section, options[:force_not_list], options[:position], item)
     end
   end
   
@@ -225,7 +228,7 @@ module ApplicationHelper
     html
   end
   
-  def generate_random_id(length = 8)
+  def generate_random_id(length = 8) # same as ApplicationController#generate_random_id
     chars = ['A'..'Z', 'a'..'z', '0'..'9'].map{|r|r.to_a}.flatten
     Array.new(length).map{chars[rand(chars.size)]}.join
   end
@@ -257,7 +260,7 @@ module ApplicationHelper
   #   <%= new_user_link( :link_text => "Add a user" ) %>
   # 
   def method_missing(method, *args)
-    # did somebody tried to use a dynamic link helper?
+    # did somebody try to use a dynamic link helper?
     return super(method, *args) unless method.to_s =~ METHOD_MATCH
     
     # retrieve objects and options hash into args array
@@ -285,20 +288,25 @@ module ApplicationHelper
     # define what is the permission method name according to the given method
     if model_name != model_name.singularize       # users
       permission_name = :list
+      icon_name = :index
       model_name = model_name.singularize
     
     elsif path_name.match(/^(formatted_)?new_/)   # new_user    | formatted_new_user
       permission_name = :add
+      icon_name = :new
     
     elsif path_name.match(/^(formatted_)?edit_/)  # edit_user   | formatted_edit_user
       permission_name = :edit
+      icon_name = :edit
     
     elsif path_name.match(/^delete_/)             # delete_user
       permission_name = :delete
+      icon_name = :delete
       path_name = path_name.gsub("delete_","")    # the prefix "delete_" is removed because it doesn't match to any path method name
 
     elsif path_name.match(/^(formatted_)?/)       # user       | formatted_user  | great_model |  formatted_great_model
       permission_name = :view
+      icon_name = :show
     
     else
       raise NameError, "'#{method}' seems to be a dynamic helper link, but it has an unexpected form. Maybe you misspelled it? "
@@ -307,15 +315,16 @@ module ApplicationHelper
     # define the corresponding model, and check the permissions
     model                     = model_name.camelize.constantize # this will raise a NameError Exception if the constant is not defined
 	  has_model_permission      = model.respond_to?("business_object?") ? model.send("can_#{permission_name}?", current_user) : true
-	  has_controller_permission = controller.current_menu.send("can_access?", current_user)
+	  has_controller_permission = controller.send(:current_menu).send("can_access?", current_user)
+    
+    # default html_options
+    html_options = { 'data-icon' => icon_name }.merge(options.delete(:html_options) || {})
     
     # default options
 	  options = { :link_text    => default_title = dynamic_link_catcher_default_link_text(permission_name, model_name.tableize),
-	              :image_tag    => image_tag( "#{permission_name}_16x16.png",
-	                                          :title => default_title,
-	                                          :alt => default_title ),
+	              :image_tag    => nil,
                 :options      => {},
-                :html_options => {}
+                :html_options => html_options
               }.merge(options)
     
     # return the correspondong link_to tag if permissions are allowing that!

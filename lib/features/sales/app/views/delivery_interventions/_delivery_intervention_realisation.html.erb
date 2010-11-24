@@ -142,6 +142,6 @@ form.force_show_view = delivery_intervention.was_realized?
 <div id="delivery_intervention_delivered_false_div" class="presentation_large" style="<%= delivered_false_style %>">
   <p>
     <%= form.label :comments %>
-    <%= form.form_or_view(form.text_area_autoresize(:comments), :comments) %> <span class="help_text">(client absent, intempéries, etc)</span>
+    <%= form.form_or_view(form.text_area_autoresize(:comments), :comments) %> <% unless delivery_intervention.was_realized? %> <span class="help_text">(client absent, intempéries, etc)</span> <% end %>
   </p>
 </div>

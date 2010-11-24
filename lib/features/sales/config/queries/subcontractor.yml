@@ -1,0 +1,71 @@
+conf_filters: &filters
+  filters:
+conf_columns: &columns
+  columns:
+    - name
+    - legal_form.name
+    - siret_number
+    - address.formatted
+    - phone.number
+    - fax.number
+    - website
+    - activity_sector_reference.code
+    - activity_sector_reference.get_activity_sector_name
+conf_group: &group
+  group:
+    - legal_form.name
+conf_order: &order
+  order:
+    - name
+    - legal_form.name
+conf_pagination: &pagination
+  per_page:
+    - 50
+    - 100
+    - 200
+
+advanced_subcontractor:
+  filters:
+    - name
+    - legal_form.name
+    - siret_number
+    - address: address.formatted
+    - phone_number: phone.number
+    - fax_number: fax.number
+    - website
+    - activity_sector_reference.id
+    - activity_sector_reference.code
+    - activity_sector_reference.get_activity_sector_name
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+
+subcontractor_index:
+  filters:
+    - name
+    - legal_form.id
+    - siret_number
+    - address: address.formatted
+    - phone_number: phone.number
+    - fax_number: fax.number
+    - website
+    - activity_sector_reference.id
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+  quick_search:
+    - name
+    - legal_form.name
+    - siret_number
+    #- phone.number # got an error when using quick search if this line is commented out
+    #- fax.number   # idem
+  default_query:
+    columns:
+      - name
+      - legal_form.name
+      - activity_sector_reference.get_activity_sector_name
+    order:
+      - name
+    per_page: 50

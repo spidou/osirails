@@ -1,0 +1,75 @@
+<%
+  page_config     = HasSearchIndex::HTML_PAGES_OPTIONS[query.page_name.to_sym].clone
+  per_page_config = page_config[:per_page] + [['all', nil]]
+  search_type_config = [
+    [I18n.t('view.search_types.and'),'and'],
+    [I18n.t('view.search_types.or'),'or'],
+    [I18n.t('view.search_types.not'),'not']
+  ]
+%>
+
+<div class="presentation_medium">
+
+  <div class="search_form">
+    <% form_for(query) do |form| %>
+      <%= form.error_messages %>
+      <p>
+        <%= form.label(:name) %>
+        <%= form.text_field(:name) %>
+      </p>
+      <p>
+        <%= form.label(:public_access) %>
+        <%= form.check_box(:public_access) %>
+      </p>
+      
+      <%= render :partial => "shared/criteria_form", :locals => { :query => query } %>
+      
+      <fieldset>
+        <%= toggle_options_legend %>
+        <div>
+        <% if page_config[:columns].any? %>
+          <div class='inline_div'>
+            <%= simple_label :query, :columns %>
+            <%= render :partial => 'shared/sortable_selects',
+                       :locals => { :selected => query.columns || [], :all => page_config[:columns], :suffix => 'columns' } %>
+          </div>
+        <% end %>
+        
+        <% if page_config[:group].any? %>
+          <div class='inline_div'> 
+            <%= simple_label :query, :group %>
+            <%= render :partial => 'shared/sortable_selects',
+                       :locals => { :selected => query.group || [], :all => page_config[:group], :suffix => 'group' } %>
+          </div>
+        <% end %>
+        
+        <% if page_config[:order].any? %>
+          <div class='inline_div'>
+            <%= simple_label :query, :order %>
+            <div>
+              <%= render :partial => "shared/order_option", :collection => query.order || [],
+                         :locals => { :page_config => page_config } %>
+            </div>
+            <div class='add_order_link'>
+              <%= add_order_link(page_config) %>
+            </div>
+          </div>
+        <% end %>
+        
+        <% if page_config[:per_page].any? %>
+          <p>
+            <%= form.label :per_page %>
+            <%= form.form_or_view(select_tag("query[per_page]", options_for_select(per_page_config, query.per_page)), :per_page) %>
+          </p>
+        <% end %>
+        </div>
+      </fieldset>
+      
+      <%= hidden_field_tag('return_uri', @return_uri) %>
+      <%= hidden_field_tag('query[page_name]', query.page_name) %>
+      
+      <%= form.form_buttons(:onclick => "validSelectOptions('group columns');") %>
+    <% end %>
+  </div>
+
+</div>

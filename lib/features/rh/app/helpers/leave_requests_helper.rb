@@ -50,38 +50,38 @@ module LeaveRequestsHelper
   
   def accepted_leave_requests_link
     text = "Voir toutes mes demandes acceptées"
-    link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, accepted_leave_requests_path)
+    link_to(text, accepted_leave_requests_path, 'data-icon' => :index)
   end
   
   def refused_leave_requests_link
     text = "Voir toutes mes demandes refusées"
-    link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, refused_leave_requests_path)
+    link_to(text, refused_leave_requests_path, 'data-icon' => :index)
   end
   
   def cancelled_leave_requests_link
     text = "Voir toutes mes demandes annulées"
-    link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, cancelled_leave_requests_path)
+    link_to(text, cancelled_leave_requests_path, 'data-icon' => :index)
   end
   
   def leave_request_check_form_link(leave_request)
     text = "Traiter la demande de congés"
-    link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_check_form_path(leave_request))
+    link_to(text, leave_request_check_form_path(leave_request), 'data-icon' => :treat_leave_request)
   end
   
   def leave_request_notice_form_link(leave_request)
     text = "Traiter la demande de congés"
-    link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_notice_form_path(leave_request))
+    link_to(text, leave_request_notice_form_path(leave_request), 'data-icon' => :treat_leave_request)
   end
   
   def leave_request_close_form_link(leave_request)
     text = "Traiter la demande de congés"
-    link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_close_form_path(leave_request))
+    link_to(text, leave_request_close_form_path(leave_request), 'data-icon' => :treat_leave_request)
   end  
   
   def cancel_leave_request_link(leave_request, button) 
     text = "Annuler la demande de congés"
     link_text = button ? "" : " #{text}"
-    link_to(image_tag("cancel_16x16.png", :alt => text, :title => text) + link_text, cancel_leave_request_path(leave_request), :confirm => "Êtes-vous sûr ?")
+    link_to(link_text, cancel_leave_request_path(leave_request), :confirm => "Êtes-vous sûr ?", 'data-icon' => :cancel)
   end
   
   def determine_action_for_pending_leave_request(leave_request)

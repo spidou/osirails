@@ -1,63 +1,65 @@
 fr:
   label_separator: " :"
-
+  
   welcome: "Bienvenue"
   
   date:
-    formats:
-      default: "%d/%m/%Y"
-      short: "%d %b %Y"
-      long: "%d %B %Y"
-      long_ordinal: "%A %d %B %Y"
-      only_day: "%d"
     day_names: [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
     abbr_day_names: [Dim, Lun, Mar, Mer, Jeu, Ven, Sam]
     month_names: [~, Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre]
     abbr_month_names: [~, Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sept, Oct, Nov, Déc]
     order: [ :day, :month, :year ]
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d %b %Y"
+      short_ordinal: "%a %d %b %Y"
+      long: "%d %B %Y"
+      long_ordinal: "%A %d %B %Y"
+      only_day: "%d"
   
   time:
     formats:
-      default: "%A %d %B %Y à %Hh%M"
+      default: "%d/%m/%Y à %Hh%M"
       time: "%Hh%M"
-      short: "%d %B %Y à %Hh%M"
-      long: "%A %d %B %Y à %Hh%M"
+      short: "%d %b %Y %Hh%M"
+      short_ordinal: "%a %d %b %Y %Hh%M"
+      long: "%d %B %Y à %Hh%M"
       long_ordinal: "%A %d %B %Y à %Hh%M"
       only_second: "%S"
     am: 'am'
     pm: 'pm'
-
+  
   datetime:
     distance_in_words:
       half_a_minute: "une demi-minute"
       less_than_x_seconds:
         zero: "moins d'une seconde"
-        one: "moins de 1 seconde"
+        one: "moins d'une seconde"
         other: "moins de {{count}} secondes"
       x_seconds:
         one: "1 seconde"
         other: "{{count}} secondes"
       less_than_x_minutes:
         zero: "moins d'une minute"
-        one: "moins de 1 minute"
+        one: "moins d'une minute"
         other: "moins de {{count}} minutes"
       x_minutes:
         one: "1 minute"
         other: "{{count}} minutes"
       about_x_hours:
-        one: "environ une heure"
+        one: "environ 1 heure"
         other: "environ {{count}} heures"
       x_days:
         one: "1 jour"
         other: "{{count}} jours"
       about_x_months:
-        one: "environ un mois"
+        one: "environ 1 mois"
         other: "environ {{count}} mois"
       x_months:
         one: "1 mois"
         other: "{{count}} mois"
       about_x_years:
-        one: "environ un an"
+        one: "environ 1 an"
         other: "environ {{count}} ans"
       over_x_years:
         one: "plus d'un an"
@@ -81,13 +83,19 @@ fr:
         precision: 2
         format: '%n %u'
   
+  support:
+    array:
+      sentence_connector: "et"
+  
   activerecord:
     errors:
       template:
         header:
           one: "{{count}} erreur est survenue lors de la sauvegarde"
           other: "{{count}} erreurs sont survenues lors de la sauvegarde"
-        body: "Les champs suivants ne sont pas valides :"
+        body:
+          one: "Le champ suivant n'est pas valide :"
+          other: "Les champs suivants ne sont pas valides :"
       messages:
         inclusion: "n'est pas inclus(e) dans la liste"
         exclusion: "est réservé"
@@ -108,4 +116,15 @@ fr:
         less_than_or_equal_to: "doit être inférieur ou égal à {{count}}"
         odd: "doit être impair"
         even: "doit être pair"
-        record_invalid: "La validation a échoué : {{errors}}"        
+        record_invalid: "La validation a échoué : {{errors}}"
+  
+  view:
+    links:
+      show: "Voir"
+      edit: "Modifier"
+      delete: "Supprimer"
+      index: "Lister"
+      confirm: "Êtes-vous sûr ?"
+    contextual_menu_sections:
+      possible_actions: "Actions Possibles"
+      useful_links: "Liens Utiles"

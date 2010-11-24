@@ -315,7 +315,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
 
   create_table "delivery_note_items", :force => true do |t|
     t.integer  "delivery_note_id"
-    t.integer  "quote_item_id"
+    t.integer  "end_product_id"
     t.integer  "quantity"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -350,7 +350,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   add_index "delivery_notes", ["reference"], :name => "index_delivery_notes_on_reference", :unique => true
 
   create_table "delivery_steps", :force => true do |t|
-    t.integer  "pre_invoicing_step_id"
+    t.integer  "production_step_id"
     t.string   "status"
     t.datetime "started_at"
     t.datetime "finished_at"
@@ -809,6 +809,28 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.datetime "updated_at"
   end
 
+  create_table "manufacturing_progresses", :force => true do |t|
+    t.integer  "manufacturing_step_id"
+    t.integer  "end_product_id"
+    t.integer  "progression"
+    t.integer  "building_quantity"
+    t.integer  "built_quantity"
+    t.integer  "available_to_deliver_quantity"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "manufacturing_steps", :force => true do |t|
+    t.integer  "production_step_id"
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.date     "manufacturing_started_on"
+    t.date     "manufacturing_finished_on"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "memorandums", :force => true do |t|
     t.integer  "user_id"
     t.string   "title"
@@ -1000,15 +1022,6 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.datetime "updated_at"
   end
 
-  create_table "pre_invoicing_steps", :force => true do |t|
-    t.integer  "order_id"
-    t.string   "status"
-    t.datetime "started_at"
-    t.datetime "finished_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "premia", :force => true do |t|
     t.integer  "employee_id"
     t.date     "date"
@@ -1073,6 +1086,15 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   add_index "product_reference_categories", ["name", "type"], :name => "index_product_reference_categories_on_name_and_type", :unique => true
   add_index "product_reference_categories", ["reference"], :name => "index_product_reference_categories_on_reference", :unique => true
 
+  create_table "production_steps", :force => true do |t|
+    t.integer  "order_id"
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "products", :force => true do |t|
     t.string   "type"
     t.integer  "product_reference_sub_category_id"
@@ -1089,6 +1111,22 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.text     "description"
     t.float    "vat"
     t.datetime "cancelled_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "queries", :force => true do |t|
+    t.integer  "creator_id"
+    t.string   "name"
+    t.string   "page_name"
+    t.string   "search_type"
+    t.string   "quick_search_value"
+    t.text     "criteria"
+    t.text     "columns"
+    t.text     "order"
+    t.text     "group"
+    t.boolean  "public_access"
+    t.integer  "per_page"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1406,15 +1444,14 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
 
   create_table "thirds", :force => true do |t|
     t.integer  "legal_form_id"
-    t.integer  "creator_id"
     t.string   "type"
     t.string   "name"
-    t.string   "siret_number"
     t.string   "website"
     t.boolean  "activated",                    :default => true
     t.date     "company_created_at"
     t.date     "collaboration_started_at"
     t.integer  "activity_sector_reference_id"
+    t.string   "siret_number"
     t.integer  "factor_id"
     t.integer  "customer_solvency_id"
     t.integer  "customer_grade_id"
@@ -1482,5 +1519,37 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.float   "rate"
     t.integer "position"
   end
+
+  create_table "watchable_functions", :force => true do |t|
+    t.string  "watchable_type"
+    t.string  "name"
+    t.string  "description"
+    t.boolean "on_modification"
+    t.boolean "on_schedule"
+  end
+
+  add_index "watchable_functions", ["name", "watchable_type"], :name => "index_watchable_functions_on_name_and_watchable_type", :unique => true
+
+  create_table "watchings", :force => true do |t|
+    t.integer "watchable_id"
+    t.string  "watchable_type"
+    t.integer "watcher_id"
+    t.boolean "all_changes"
+  end
+
+  add_index "watchings", ["watchable_id", "watchable_type", "watcher_id"], :name => "unique_index_watchings", :unique => true
+  add_index "watchings", ["watchable_id", "watchable_type"], :name => "index_watchings_on_watchable_id_and_watchable_type"
+  add_index "watchings", ["watcher_id"], :name => "index_watchings_on_watcher_id"
+
+  create_table "watchings_watchable_functions", :force => true do |t|
+    t.integer "watching_id"
+    t.integer "watchable_function_id"
+    t.boolean "on_modification"
+    t.boolean "on_schedule"
+    t.string  "time_quantity"
+    t.string  "time_unity"
+  end
+
+  add_index "watchings_watchable_functions", ["watching_id", "watchable_function_id"], :name => "unique_index_watchings_watchable_functions", :unique => true
 
 end

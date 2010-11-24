@@ -1,29 +1,10 @@
-<% contextual_search_for_user %>
-
 <% add_contextual_menu_item :possible_actions do %>
   <%= new_user_link %>
 <% end %>
 
-<h1>Liste des comptes utilisateurs</h1>
+
+<h1><%= title_for_search %></h1>
 
 <div>
-  <table>
-    <thead>
-      <tr>
-        <% for column in get_headers %>
-          <th><%= column %></th>
-        <% end%>
-      </tr>
-    </thead>
-    <tbody>
-      <% for user in @users %>
-        <tr>
-          <% for column in get_rows(user) %>
-            <td><%= column %></td>
-          <% end %>
-        </tr>
-      <% end %>
-    <tbody>
-  </table>
-  <%= will_paginate @users %>
+  <%= table_for_search %>
 </div>

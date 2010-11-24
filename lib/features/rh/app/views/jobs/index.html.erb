@@ -2,30 +2,8 @@
   <%= new_job_link(:link_text => "Nouvelle fiche de poste") %>
 <% end %>
 
-<h1>Les fiches de poste</h1>
+<h1><%= title_for_search %></h1>
 
-<div class="presentation_medium">
-  <table>
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Lié au service</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% for job in @jobs %>
-        <tr>
-          <td><%= job.name %></td>
-          <td><%= job.service.name %></td>
-          <td>
-            <%= job_link(job, :link_text => "") %>
-            <%= edit_job_link(job, :link_text => "") %>
-            <%= delete_job_link(job, :link_text => "") %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-</table>
-<%= will_paginate @jobs %>
+<div>
+  <%= table_for_search %>
 </div>

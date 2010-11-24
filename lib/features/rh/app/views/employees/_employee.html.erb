@@ -4,128 +4,28 @@
   <%= javascript_include_tag 'core/has_resources/has_resources' %>
 <% end %>
 
-<div class="presentation_medium">
-  <% form_for(employee, :html => {:multipart => true}) do |f| %>
-    <%= f.error_messages %>
+<div class="presentation_medium root_nav standard">
+  <% tab_navigator :employee_nav do |t| %>
+    <% t.nav_buttons do %>
+      <%= t.tab :informations,  "Informations générales", :class    => employee.errors.any? ? 'errors' : '',
+                                                          :selected => true %>
+      <%= t.tab_for_history(employee) %>
+    <% end %>
   
-    <div class="presentation_in_columns">
-      <h2>Fiche d&apos;identit&eacute;</h2>
-      <div>
-        <p>
-          <%= f.label :civility %>
-          <%= f.form_or_view(collection_select(:employee, :civility_id, Civility.find(:all), :id, :name), :civility, :name)%>  
-        </p>
-        <p>
-          <%= f.label :first_name %>
-          <%= f.form_or_view(f.text_field( :first_name), :first_name) %>
-        </p>
-        <p>
-          <%= f.label :last_name %>
-          <%= f.form_or_view(f.text_field( :last_name), :last_name)%>
-        </p>
-      </div>
+    <% form_for(employee, :html => {:multipart => true}) do |form| %>
       
-      <div>
-        <p>
-          <%= f.label :birth_date %>
-          <% if f.form_view? %>
-            <%= f.calendar_date_select(:birth_date)%>
-          <% else %>
-            <%= strong l(employee.birth_date, :format => :long) %>
-          <% end %>
-        </p>
-        <p>
-          <%= f.label :family_situation %>
-          <%= f.form_or_view(collection_select(:employee, :family_situation_id, FamilySituation.find(:all), :id, :name), :family_situation, :name)%>
-        </p>
-        <p>
-          <%= f.label 'social_security_number' %>
-          <%= f.form_or_view( display_social_security(@employee.nil? ? nil : @employee[:social_security_number]),:social_security_number) %>
-        </p>
-        <p>
-          <% if is_form_view? %>
-            <%= f.label :avatar %>
-            <%= f.file_field(:avatar) %>
-          <% end %>
-        </p>
-      </div>
-      
-      <div id="employee_avatar_container">
-        <%= image_tag @employee.avatar.url, :title => "Photo d'identité", :alt => "Photo d'identité" %>
-      </div>
-      
-    </div>
-    
-    <!--############## Address ##############-->
-    <h2>Coordonn&eacute;es</h2>
-    <% if Employee.can_view?(current_user) or @employee.user.id == current_user.id %>
-      <h3>Adresse postale</h3>
-      <%= render :partial => "addresses/address_form", :object => employee.address || employee.build_address, :locals => { :address_owner => employee }%>
-    <% end %>
-
-    <!--############## Emails ##############-->
-    <h3>Adresses &eacute;lectroniques</h3>
-    <% if Employee.can_view?(current_user) or @employee.user.id == current_user.id %> 
-      <p>
-        <%= f.label :email %>
-        <%= f.form_or_view(f.text_field( :email ), :email)%>
-      </p>
-      <p>
-        <%= f.label :society_email %>
-        <%= f.form_or_view(f.text_field( :society_email ), :society_email )%>
-      </p>
-    <% end %>
-    <%="<p>#{label_tag( "Entreprise :" )} #{strong(employee.intranet_email)}</p>" if !is_form_view?%>
-
-    <!--########### Numbers #################-->
-    <h3>Num&eacute;ro(s) de t&eacute;l&eacute;phone(s)</h3>
-    <%= display_numbers(@employee)%>
-
-    <!--########### Jobs ####################-->
-    <h2>Fiche de poste</h2>
-    <%= render :partial => 'jobs/jobs' , :locals => { :form => f, :job => Job.new, :jobs => @jobs, :service => @employee.service } %>
-
-    <!--########### Iban ####################-->
-    <% if Iban.can_view?(current_user) or @employee.user.id == current_user.id %>
-      <% iban = is_form_view? ? ( @employee.iban || @employee.build_iban ) : @employee.iban %>
-      <h2>Relev&eacute; d'identit&eacute; bancaire (RIB)</h2>
-      <% if iban %>
-        <%= render(:partial => 'shared/iban', :object => iban , :locals => { :iban_owner => @employee }) %>
-      <% else %>
-        <p>Aucun RIB enregistré<p>
+      <% t.content_for :informations do %>
+        <%= form.error_messages %>
+        <%= render :partial => 'employee_informations', :object => employee, :locals => { :form => form } %>
       <% end %>
-    <% end %>  
-
-    <!--########### JobContract #############-->
-    <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id %>
-      <%= render(:partial => 'job_contract/job_contract', :object => @employee.job_contract) unless is_form_view? %> 
-    <% end %>
-
-    <!--########## Premia ##################-->
-    <% if Premium.can_view?(current_user) or employee.user.id == current_user.id %>
-      <% if !is_form_view? %>    
-        <h2>Primes</h2>
-        <%= render :partial => 'premia/premium', :collection => employee.premia[0..4] %>     
-        <p><%= employee_premia_link(employee, :image_tag => "") %></p>
-      <% end %>
-    <% end %>
-
-    <!--###### Documents div #######-->
-    <h2>Documents</h2>
-      <%= display_documents_list(@employee) %>
-      <%= display_document_add_button(@employee) if is_form_view? %>
       
-    <!--###### Journals div #######-->
-    <% unless is_form_view? %>
-      <h2>Historique</h2>
-        <%= display_journals_list(@employee) %>
+      <% t.content_for_history(employee) %>
+      
+      <%= form.form_buttons %>
     <% end %>
-    
-    <%= f.form_buttons %>
-  <% end %><!--end form -->
+  <% end %>
 </div>
 
-   
 <% if is_form_view? %>
   <%= osibox_init :partial => 'job_form', :locals => { :job => Job.new }, :border_size => '32'%>
 <% end %>

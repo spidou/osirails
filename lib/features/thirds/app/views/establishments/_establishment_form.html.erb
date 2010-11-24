@@ -2,7 +2,7 @@
 
 <% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_form, :index => nil do |form| %>
   <div class="presentation_in_columns resource_form<%= ' new_record' if establishment.new_record? %>" id="establishment_<%=establishment.id%>_form" <%= "style=\"display:none\"" unless establishment.new_record? or !establishment.errors.empty? or establishment.should_update? %> >
-    <%= form.error_messages %>
+    <%= form.error_messages if establishment.errors_on_attributes_except_on_contacts? %>
     <%= render :partial => "establishments/establishment_fields", :object => establishment, :locals => {:form => form} %>
 
     <p>
