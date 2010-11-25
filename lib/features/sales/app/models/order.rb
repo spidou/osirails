@@ -404,17 +404,21 @@ class Order < ActiveRecord::Base
     def create_steps
       steps.each do |step|
         if step.parent.nil?
-          step.name.camelize.constantize.find_or_create_by_order_id(self.id)
+          new_step = step.name.camelize.constantize.find_or_create_by_order_id(self.id)
         else
           begin
             step_model        = step.name.camelize.constantize        # eg: SurveyStep
             parent_step_model = step.parent.name.camelize.constantize # eg: CommercialStep
             step_model.send("find_or_create_by_#{parent_step_model.table_name.singularize}_id", self.send(step.parent.name).id)
+            
+            new_step = step_model.send("find_or_create_by_#{parent_step_model.table_name.singularize}_id", self.send(step.parent.name).id)
           rescue NameError => e
             error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
             RAKE_TASK ? puts(error) : raise(e)
           end
         end
+        
+        raise Exception, "the new step '#{new_step.class}' should have been created successfully. Errors : #{new_step.errors.full_messages.join(', ')}" if new_step and new_step.new_record?
       end
       
       activate_first_step

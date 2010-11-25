@@ -83,8 +83,8 @@ customer_index:
     - legal_form.name
     - head_office.name
     - head_office.siret_number
-    - head_office.phone.number
-    - head_office.fax.number
+    #- head_office.phone.number # got an error when using quick search if this line is commented out
+    #- head_office.fax.number   # idem
   default_query:
     columns:
       - name

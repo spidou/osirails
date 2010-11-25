@@ -20,7 +20,7 @@
 <% end %>
 
 <%
-customer_errors  = {:informations   => customer.head_office.errors_on_attributes_except_on_contacts? || customer.errors.on(:bill_to_address) ||
+customer_errors  = {:informations   => (customer.head_office && customer.head_office.errors_on_attributes_except_on_contacts?) || customer.errors.on(:bill_to_address) ||
                                                 customer.errors.on(:name) || customer.errors.on(:legal_form) ||
                                                 customer.errors.on(:website) || customer.errors.on(:legal_form_id) ? ' errors' : '',
                     :establishments => customer.establishments.select {|n| n.errors_on_attributes_except_on_contacts? }.any? ? ' errors' : '',

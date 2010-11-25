@@ -35,6 +35,7 @@ conf_pagination: &pagination
     - 50
     - 100
     - 200
+    - 500
 
 advanced_commodity:
   <<: *filters
@@ -61,4 +62,4 @@ commodity_index:
     order:
       - supply_sub_category.supply_category.name
       - supply_sub_category.name
-    per_page: 50
+    per_page: 100

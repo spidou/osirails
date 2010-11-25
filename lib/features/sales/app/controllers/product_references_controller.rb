@@ -1,5 +1,5 @@
 class ProductReferencesController < ApplicationController
-  helper :product_reference_categories
+  helper :product_reference_categories, :products_catalog
   
   before_filter :find_product_reference, :only => [ :show, :edit, :update, :destroy ]
   

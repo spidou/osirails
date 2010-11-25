@@ -25,9 +25,9 @@ class OrderType < ActiveRecord::Base
     end
   end
   
-  ## Return activated step for order_type
+  ## Return activated step for order_type, and select only steps which are constantizable (so which are actually in LOAD_PATH)
   def activated_steps
-    sales_processes.select{ |sp| sp.activated? }.collect{ |sp| sp.step }
+    sales_processes.select{ |sp| sp.activated? }.collect{ |sp| sp.step }.select{ |step| step.name.camelize.constantize rescue false }
   end
   
 end

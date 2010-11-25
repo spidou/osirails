@@ -28,7 +28,7 @@ identifier = generate_random_id
     </p>
     <br/>
     
-    <% if is_form_view? %>
+    <% if form.form_view? %>
       <p class="contain_auto_completer">
         <%= form.label :zip_code, nil, options %>
         <%= custom_text_field_with_auto_complete_for_city_zip_code(address, identifier, form, options) %>
@@ -68,7 +68,7 @@ identifier = generate_random_id
     
     <div style="display:none;">
       <% #OPTIMIZE the herein hidden fields would not be exists if the fields_for command accept argument like 'customer[establishment_attributes][][address_attributes]' %>
-      <% if is_form_view? and !force_show_view %>
+      <% if form.form_view? %>
         <%= form.hidden_field :id, options %>
         <%= form.hidden_field :has_address_id, options %>
         <%= form.hidden_field :has_address_type, options %>
