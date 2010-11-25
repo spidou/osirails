@@ -112,7 +112,7 @@ module JSON
           when Hash
             new(opts)
           else
-            SAFE_STATE_PROTOTYPE
+            SAFE_STATE_PROTOTYPE.dup
           end
         end
 
@@ -163,7 +163,11 @@ module JSON
         # the generated JSON, max_nesting = 0 if no maximum is checked.
         attr_accessor :max_nesting
 
-        def check_max_nesting(depth) # :nodoc:
+        # This integer returns the current depth data structure nesting in the
+        # generated JSON.
+        attr_accessor :depth
+
+        def check_max_nesting # :nodoc:
           return if @max_nesting.zero?
           current_nesting = depth + 1
           current_nesting > @max_nesting and
@@ -196,6 +200,7 @@ module JSON
           @array_nl       = opts[:array_nl] if opts.key?(:array_nl)
           @allow_nan      = !!opts[:allow_nan] if opts.key?(:allow_nan)
           @ascii_only     = opts[:ascii_only] if opts.key?(:ascii_only)
+          @depth          = opts[:depth] || 0
           if !opts.key?(:max_nesting) # defaults to 19
             @max_nesting = 19
           elsif opts[:max_nesting]
@@ -210,7 +215,7 @@ module JSON
         # passed to the configure method.
         def to_h
           result = {}
-          for iv in %w[indent space space_before object_nl array_nl allow_nan max_nesting]
+          for iv in %w[indent space space_before object_nl array_nl allow_nan max_nesting ascii_only depth]
             result[iv.intern] = instance_variable_get("@#{iv}")
           end
           result
@@ -247,51 +252,41 @@ module JSON
           # _state_ is a JSON::State object, that can also be used to configure the
           # produced JSON string output further.
           # _depth_ is used to find out nesting depth, to indent accordingly.
-          def to_json(state = nil, depth = 0, *)
-            if state
-              state = State.from_state(state)
-              state.check_max_nesting(depth)
-            end
-            json_transform(state, depth)
+          def to_json(state = nil, *)
+            state = State.from_state(state)
+            state.check_max_nesting
+            json_transform(state)
           end
 
           private
 
-          def json_shift(state, depth)
-            state and not state.object_nl.empty? or return ''
-            state.indent * depth
+          def json_shift(state)
+            state.object_nl.empty? or return ''
+            state.indent * state.depth
           end
 
-          def json_transform(state, depth)
+          def json_transform(state)
             delim = ','
-            if state
-              delim << state.object_nl
-              result = '{'
-              result << state.object_nl
-              depth += 1
-              first = true
-              indent = state && !state.object_nl.empty?
-              each { |key,value|
-                result << delim unless first
-                result << state.indent * depth if indent
-                result << key.to_s.to_json(state, depth)
-                result << state.space_before
-                result << ':'
-                result << state.space
-                result << value.to_json(state, depth)
-                first = false
-              }
-              depth -= 1
-              result << state.object_nl
-              result << state.indent * depth if indent if indent
-              result << '}'
-            else
-              result = '{'
-              result << map { |key,value|
-                key.to_s.to_json << ':' << value.to_json
-              }.join(delim)
-              result << '}'
-            end
+            delim << state.object_nl
+            result = '{'
+            result << state.object_nl
+            depth = state.depth += 1
+            first = true
+            indent = !state.object_nl.empty?
+            each { |key,value|
+              result << delim unless first
+              result << state.indent * depth if indent
+              result << key.to_s.to_json(state)
+              result << state.space_before
+              result << ':'
+              result << state.space
+              result << value.to_json(state)
+              first = false
+            }
+            depth = state.depth -= 1
+            result << state.object_nl
+            result << state.indent * depth if indent if indent
+            result << '}'
             result
           end
         end
@@ -301,39 +296,32 @@ module JSON
           # this Array instance.
           # _state_ is a JSON::State object, that can also be used to configure the
           # produced JSON string output further.
-          # _depth_ is used to find out nesting depth, to indent accordingly.
-          def to_json(state = nil, depth = 0, *)
-            if state
-              state = State.from_state(state)
-              state.check_max_nesting(depth)
-            end
-            json_transform(state, depth)
+          def to_json(state = nil, *)
+            state = State.from_state(state)
+            state.check_max_nesting
+            json_transform(state)
           end
 
           private
 
-          def json_transform(state, depth)
+          def json_transform(state)
             delim = ','
-            if state
-              delim << state.array_nl
-              result = '['
-              result << state.array_nl
-              depth += 1
-              first = true
-              indent = state && !state.array_nl.empty?
-              each { |value|
-                result << delim unless first
-                result << state.indent * depth if indent
-                result << value.to_json(state, depth)
-                first = false
-              }
-              depth -= 1
-              result << state.array_nl
+            delim << state.array_nl
+            result = '['
+            result << state.array_nl
+            depth = state.depth += 1
+            first = true
+            indent = !state.array_nl.empty?
+            each { |value|
+              result << delim unless first
               result << state.indent * depth if indent
-              result << ']'
-            else
-              '[' << map { |value| value.to_json }.join(delim) << ']'
-            end
+              result << value.to_json(state)
+              first = false
+            }
+            depth = state.depth -= 1
+            result << state.array_nl
+            result << state.indent * depth if indent
+            result << ']'
           end
         end
 
@@ -345,15 +333,16 @@ module JSON
         module Float
           # Returns a JSON string representation for this Float number.
           def to_json(state = nil, *)
+            state = State.from_state(state)
             case
             when infinite?
-              if state && state.allow_nan?
+              if state.allow_nan?
                 to_s
               else
                 raise GeneratorError, "#{self} not allowed in JSON"
               end
             when nan?
-              if state && state.allow_nan?
+              if state.allow_nan?
                 to_s
               else
                 raise GeneratorError, "#{self} not allowed in JSON"
@@ -369,9 +358,8 @@ module JSON
             # This string should be encoded with UTF-8 A call to this method
             # returns a JSON string encoded with UTF16 big endian characters as
             # \u????.
-            def to_json(*args)
-              state, = *args
-              state ||= State.from_state(state)
+            def to_json(state = nil, *args)
+              state = State.from_state(state)
               if encoding == ::Encoding::UTF_8
                 string = self
               else
@@ -387,9 +375,8 @@ module JSON
             # This string should be encoded with UTF-8 A call to this method
             # returns a JSON string encoded with UTF16 big endian characters as
             # \u????.
-            def to_json(*args)
-              state, = *args
-              state ||= State.from_state(state)
+            def to_json(state = nil, *args)
+              state = State.from_state(state)
               if state.ascii_only?
                 '"' << JSON.utf8_to_json_ascii(self) << '"'
               else

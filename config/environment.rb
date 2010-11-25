@@ -93,10 +93,10 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
-  config.gem 'json'
-  config.gem 'RedCloth'
-  config.gem 'htmlentities'
-  config.gem 'mysql'
+  config.gem 'json', :version => '1.4.6'
+  config.gem 'RedCloth', :version => '4.2.3'
+  config.gem 'htmlentities', :version => '4.2.1'
+  config.gem 'mysql', :version => '2.8.1'
 end
 
 require 'version'
