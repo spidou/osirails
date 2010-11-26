@@ -29,7 +29,7 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
     <% if form.form_view? %>
       <%= form.calendar_date_select :published_on %> <% if invoice.was_uncomplete? and invoice.published_on.blank? %><span class="help_text">Laisser vide pour mettre automatiquement la date de validation</span><% end %>
     <% else %>
-      <%= strong l(invoice.published_on, :format => :long) %>
+      <%= strong(l(invoice.published_on, :format => :long)) if invoice.published_on %>
     <% end %>
   </p>
   

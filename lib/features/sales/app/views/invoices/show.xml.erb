@@ -5,7 +5,7 @@
     <Type>FACTURE</Type>
     <Type2><%= @invoice.invoice_type.title.upcase %></Type2>
     <Reference><%= @invoice.reference %></Reference>
-    <Date><%= l(Date.today) %></Date>
+    <Date><%= l(@invoice.published_on) if @invoice.published_on %></Date>
     <Currency>EUROS (€)</Currency>
     <FileName><%= @invoice.order.title%></FileName>
     <Supplier>

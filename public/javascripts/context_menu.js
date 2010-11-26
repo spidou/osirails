@@ -52,7 +52,7 @@ ContextMenu.prototype = {
   },
   
   hideMenu: function() {
-    Element.fade(this.identifier, {duration: 0.3});
+    Element.hide(this.identifier);
   },
   
   showMenu: function(e) {
