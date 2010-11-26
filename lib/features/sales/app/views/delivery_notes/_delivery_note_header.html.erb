@@ -23,7 +23,7 @@ default_ship_to_address = quote.ship_to_address
     <% if form.form_view? %>
       <%= form.calendar_date_select :published_on %> <% if delivery_note.was_uncomplete? and delivery_note.published_on.blank? %><span class="help_text">Laisser vide pour mettre automatiquement la date de validation</span><% end %>
     <% else %>
-      <%= strong(l(delivery_note.published_on, :format => :long)) if delivery_note.published_on %>
+      <%= strong l(delivery_note.published_on, :format => :long) %>
     <% end %>
   </p>
   
