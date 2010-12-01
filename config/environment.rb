@@ -5,8 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-# -- commented line since Rails freeze
-# RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.2.3' unless defined? RAILS_GEM_VERSION
 
 # Specifies if the application is launch from a rake task or not (set at TRUE in Rakefile)
 RAKE_TASK = false unless defined? RAKE_TASK
@@ -19,6 +18,7 @@ SEEDING_FEATURE = false unless defined? SEEDING_FEATURE
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
+
 require 'rails_hacks'
 require 'contextual_menu'
 require 'mysql'
@@ -96,11 +96,6 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
-  config.gem 'json', :version => '1.4.6'
-  config.gem 'RedCloth', :version => '4.2.3'
-  config.gem 'htmlentities', :version => '4.2.1'
-  config.gem 'mysql', :version => '2.8.1'
-  config.gem 'orderedhash'
 end
 
 # ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment

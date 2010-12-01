@@ -24,21 +24,22 @@
 #end
 
 every 1.hour do
-  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::HOURLY_UNITY)", :environment => "development"
+  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::HOURLY_UNITY)"
 end
 
 every 1.day do
-  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::DAILY_UNITY)", :environment => "development"
+  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::DAILY_UNITY)"
 end
 
 every 1.week do
-  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::WEEKLY_UNITY)", :environment => "development"
+  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::WEEKLY_UNITY)"
 end
 
 every 1.month do
-  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::MONTHLY_UNITY)", :environment => "development"
+  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::MONTHLY_UNITY)"
 end
 
-every 1.year do
-  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::YEARLY_UNITY)", :environment => "development"
-end
+# Don't work since we update to whenever 0.6.2
+#every 1.year do
+#  runner "WatchingSchedule.execute_function(WatchingsWatchableFunction::YEARLY_UNITY)"
+#end
