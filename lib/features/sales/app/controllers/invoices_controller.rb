@@ -84,6 +84,7 @@ class InvoicesController < ApplicationController
     
     @invoice.invoice_contact = @order.order_contact
     @invoice.creator = current_user
+    @invoice.invoicing_actor = current_user.employee
     @invoice.due_dates.build(:date => Date.today + 1.month, :net_to_paid => @invoice.net_to_paid) if @invoice.due_dates.empty?
   end
   
@@ -101,13 +102,13 @@ class InvoicesController < ApplicationController
         render :action => :new
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/invoices/:id/edit
   def edit
-    error_access_page(403) unless @invoice.can_be_edited?
+    error_access_page(412) unless @invoice.can_be_edited?
   end
   
   # PUT /orders/:order_id/:step/invoices/:id
@@ -120,7 +121,7 @@ class InvoicesController < ApplicationController
         render :action => :edit
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
@@ -132,27 +133,27 @@ class InvoicesController < ApplicationController
       end
       redirect_to send(@step.original_step.path)
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/invoices/:invoice_id/confirm
   def confirm
     if @invoice.can_be_confirmed?
-      unless @invoice.confirm
-        flash[:error] = "Une erreur est survenue à la validation de la facture"
-      else
+      if @invoice.confirm
         flash[:notice] = "La facture a été validée avec succès"
-        redirect_to send(@step.original_step.path)
+      else
+        flash[:error] = "Une erreur est survenue à la validation de la facture"
       end
+      redirect_to send(@step.original_step.path)
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/invoices/:invoice_id/cancel_form
   def cancel_form
-    error_access_page(403) unless @invoice.can_be_cancelled?
+    error_access_page(412) unless @invoice.can_be_cancelled?
   end
   
   # PUT /orders/:order_id/:step/invoices/:invoice_id/cancel
@@ -166,13 +167,13 @@ class InvoicesController < ApplicationController
         render :action => :cancel_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/invoices/:invoice_id/send_form
   def send_form
-    error_access_page(403) unless @invoice.can_be_sended?
+    error_access_page(412) unless @invoice.can_be_sended?
   end
   
   # PUT /orders/:order_id/:step/invoices/:invoice_id/send_to_customer
@@ -185,13 +186,13 @@ class InvoicesController < ApplicationController
         render :action => :send_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/invoices/:invoice_id/abandon_form
   def abandon_form
-    error_access_page(403) unless @invoice.can_be_abandoned?
+    error_access_page(412) unless @invoice.can_be_abandoned?
   end
   
   # PUT /orders/:order_id/:step/invoices/:invoice_id/sign
@@ -205,13 +206,13 @@ class InvoicesController < ApplicationController
         render :action => :abandon_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/invoices/:invoice_id/factoring_pay_form
   def factoring_pay_form
-    error_access_page(403) unless @invoice.can_be_factoring_paid?
+    error_access_page(412) unless @invoice.can_be_factoring_paid?
   end
   
   # PUT /orders/:order_id/:step/invoices/:invoice_id/factoring_pay
@@ -224,13 +225,13 @@ class InvoicesController < ApplicationController
         render :action => :factoring_pay_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/invoices/:invoice_id/factoring_recover_form
   def factoring_recover_form
-    error_access_page(403) unless @invoice.can_be_factoring_recovered?
+    error_access_page(412) unless @invoice.can_be_factoring_recovered?
   end
   
   # PUT /orders/:order_id/:step/invoices/:invoice_id/factoring_recover
@@ -243,13 +244,13 @@ class InvoicesController < ApplicationController
         render :action => :factoring_recover_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/invoices/:invoice_id/factoring_balance_pay_form
   def factoring_balance_pay_form
-    error_access_page(403) unless @invoice.can_be_factoring_balance_paid?
+    error_access_page(412) unless @invoice.can_be_factoring_balance_paid?
   end
   
   # PUT /orders/:order_id/:step/invoices/:invoice_id/factoring_balance_pay
@@ -262,13 +263,13 @@ class InvoicesController < ApplicationController
         render :action => :factoring_balance_pay_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/invoices/:invoice_id/totally_pay_form
   def totally_pay_form
-    error_access_page(403) unless @invoice.can_be_totally_paid?
+    error_access_page(412) unless @invoice.can_be_totally_paid?
   end
   
   # PUT /orders/:order_id/:step/invoices/:invoice_id/totally_pay
@@ -281,13 +282,13 @@ class InvoicesController < ApplicationController
         render :action => :totally_pay_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/invoices/:invoice_id/due_date_pay_form
   def due_date_pay_form
-    error_access_page(403) unless @invoice.can_be_due_date_paid?
+    error_access_page(412) unless @invoice.can_be_due_date_paid?
   end
   
   # PUT /orders/:order_id/:step/invoices/:invoice_id/due_date_pay
@@ -300,7 +301,7 @@ class InvoicesController < ApplicationController
         render :action => :due_date_pay_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   

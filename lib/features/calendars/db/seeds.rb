@@ -1,5 +1,7 @@
 require 'lib/seed_helper'
 
+User.create_missing_calendars # for admin
+
 Calendar.all.each do |object|
   object.permissions.each do |permission|
     permission.permissions_permission_methods.each do |object_permission|

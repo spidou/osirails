@@ -97,7 +97,9 @@ class DeliveryNotesController < ApplicationController
   # GET /orders/:order_id/:step/delivery_notes/:delivery_note_id/confirm
   def confirm
     if @delivery_note.can_be_confirmed?
-      unless @delivery_note.confirm
+      if @delivery_note.confirm
+        flash[:notice] = "Le bon de livraison a été validé avec succès"
+      else
         flash[:error] = "Une erreur est survenue à la validation du bon de livraison"
       end
       redirect_to send(@step.original_step.path)

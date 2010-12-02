@@ -122,7 +122,7 @@ fr:
         approaching: "Type d'approche"
         created_at: "Date de création"
         previsional_delivery: "Date prévisionnelle de livraison"
-        quotation_deadline: "Date butoire d'envoi du devis"
+        quotation_deadline: "Date butoir d'envoi du devis"
       payment:
         paid_on: "Règlement reçu le"
         amount: "Montant"

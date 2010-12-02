@@ -5,7 +5,7 @@ fr:
     attributes:
       address:
         street_name: "Nom de rue"
-        country_name: "Pays"
-        region_name: "Région"
-        city_name: "Ville"
         zip_code: "Code postal"
+        city_name: "Ville"
+        region_name: "Région"
+        country_name: "Pays"

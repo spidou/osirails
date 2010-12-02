@@ -11,6 +11,10 @@ class DeliveryNoteItemTest < ActiveSupport::TestCase
   
   #TODO test validates_quantity_range
   #          should_destroy?
+  #          reference
+  #          designation
+  #          description
+  #          order_quantity
   #          quantity
   #          discard_quantity
   #          ready_to_deliver_quantity

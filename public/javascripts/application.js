@@ -312,13 +312,17 @@ Event.observe(window, 'submit', function(ev) {
 window.onbeforeunload = preventClose;
 
 // Add an ajax indicator for all Ajax call
+var ajax_indicator_timer;
 Ajax.Responders.register({
   onCreate: function() {
-    new Effect.Appear('ajax_indicator', { duration: 0.3 });
+    clearTimeout(ajax_indicator_timer)
+    ajax_indicator_timer = setTimeout(function(){ new Effect.Appear('ajax_indicator', { duration: 0.2 }) }, 700);
   },
   onComplete: function() {
-    if (0 == Ajax.activeRequestCount)
-      new Effect.Fade('ajax_indicator', { duration: 0.3 });
+    if (0 == Ajax.activeRequestCount) {
+      new Effect.Fade('ajax_indicator', { duration: 0.5 });
+      clearTimeout(ajax_indicator_timer);
+    }
   }
 });
 

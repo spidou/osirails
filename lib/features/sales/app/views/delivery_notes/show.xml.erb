@@ -67,9 +67,9 @@
             <% @padding_bottom = "0.3" %>
           <% end %>
           <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>
-          <Reference><%= item.end_product.product_reference.reference if item.end_product && item.end_product.product_reference %></Reference>
-          <Name><%= item.end_product.name %></Name>
-          <Description><%= item.end_product.description %></Description>
+          <Reference><%= item.reference %></Reference>
+          <Name><%= item.designation %></Name>
+          <Description><%= item.description %></Description>
           <Quantity><%= item.quantity %></Quantity>
         </Line>
       <% end %>

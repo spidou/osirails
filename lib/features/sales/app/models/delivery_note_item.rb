@@ -15,10 +15,6 @@ class DeliveryNoteItem < ActiveRecord::Base
   
   attr_accessor :order_id
   
-  def quantity
-    self[:quantity] ||= 0
-  end
-  
   def validates_quantity_range
     return unless end_product and ( new_record? or quantity_changed? )
     min = 0
@@ -30,6 +26,22 @@ class DeliveryNoteItem < ActiveRecord::Base
   
   def should_destroy?
     quantity.zero?
+  end
+  
+  def reference
+    end_product && end_product.product_reference && end_product.product_reference.reference
+  end
+  
+  def designation
+    end_product && end_product.designation
+  end
+  
+  def description
+    end_product && end_product.description
+  end
+  
+  def order_quantity
+    end_product && end_product.quantity
   end
   
   def quantity

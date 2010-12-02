@@ -2,5 +2,6 @@ en:
   activerecord:
     attributes:
       address:
-        country_name: "Country"
         city_name: "City"
+        region_name: "Region"
+        country_name: "Country"

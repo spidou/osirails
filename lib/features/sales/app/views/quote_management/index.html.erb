@@ -15,6 +15,7 @@
       <table class="quote_list no_nth" id="quotes">
         <thead>
           <tr>
+            <th><%= toggle_selectable_items_link(image_tag('confirm_16x16.png'), 'quote') %></th>
             <th>N° Dossier</th>
             <th>Nom projet</th>
             <th>Contact commercial</th>
@@ -30,28 +31,27 @@
             <th>Acompte</th>
             <th>Derni&egrave;re relance effectu&eacute;e le</th>
             <th>État</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <% for quote in @quotes %>
             <tr class="quote <%= quote.status %>_quote <%= quote.priority_level %>">
-              <td><%= quote.order.reference %></td>
-              <td><%= link_to(quote.order.title, quote.order, :title => "Voir ce dossier", :class => "no_style") %></td>
-              <td><%= quote.quote_contact.fullname %></td>
-              <td><%= link_to(quote.order.customer.name, quote.order.customer, :title => "Voir fiche client", :class => "no_style") %></td>
-              <td><%= link_to(quote.order.commercial.fullname, quote.order.commercial, :title => "Voir fiche employé", :class => "no_style") %></td>
-              <td><%= l(quote.order.quotation_deadline.to_date, :format => :short) if quote.validity_date %></td>
-              <td><%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(quote.order, quote), :title => "Voir ce devis", :class => "no_style") if quote.reference %></td>
-              <td><%= l(quote.confirmed_on, :format => :short) if quote.confirmed_on %></td>
-              <td><%= "#{quote.validity_delay}  #{quote.validity_delay_unit}" if quote.validity_delay && quote.validity_delay_unit %></td>
-              <td><%= l(quote.validity_date.to_date, :format => :short) + display_remaining_days_for(quote) if quote.validity_date %></td>
-              <td><%= "#{l(quote.sended_on, :format => :short)} (#{quote.send_quote_method.name})" if quote.sended_on && quote.send_quote_method.name %></td>
-              <td><%= quote.total_with_taxes.to_f.round(2).to_s(2) %>&nbsp;&euro;</td>
-              <td><%= quote.deposit.to_f.round(2).to_s(2) %>&nbsp;%</td>
+              <td class="selector"><%= context_menu(quote, 'quote') %></td>
+              <td class="reference text"><%= quote.order.reference %></td>
+              <td class="order"><%= link_to(quote.order.title, quote.order, :title => "Voir ce dossier", :class => "no_style") %></td>
+              <td class="quote_contact"><%= quote.quote_contact.fullname %></td>
+              <td class="customer"><%= link_to(quote.order.customer.name, quote.order.customer, :title => "Voir fiche client", :class => "no_style") %></td>
+              <td class="commercial"><%= link_to(quote.order.commercial.fullname, quote.order.commercial, :title => "Voir fiche employé", :class => "no_style") %></td>
+              <td class="quotation_deadline"><%= l(quote.order.quotation_deadline.to_date, :format => :short) if quote.order.quotation_deadline %></td>
+              <td class="reference text"><%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(quote.order, quote), :title => "Voir ce devis", :class => "no_style") if quote.reference %></td>
+              <td class="confirmed_on"><%= l(quote.confirmed_on, :format => :short) if quote.confirmed_on %></td>
+              <td class="validity_delay"><%= "#{quote.validity_delay} #{quote.validity_delay_unit}" if quote.validity_delay && quote.validity_delay_unit %></td>
+              <td class="validity_date"><%= l(quote.validity_date.to_date, :format => :short) + display_remaining_days_for(quote) if quote.validity_date %></td>
+              <td class="sended_on"><%= "#{l(quote.sended_on, :format => :short)} (#{quote.send_quote_method.name})" if quote.sended_on && quote.send_quote_method.name %></td>
+              <td class="total_with_taxes amount"><%= quote.total_with_taxes.to_f.round(2).to_s(2) %>&nbsp;&euro;</td>
+              <td class="deposit amount"><%= quote.deposit.to_f.round(2).to_s(2) %>&nbsp;%</td>
               <td>#</td>
-              <td class="status"><%= status_text(quote) %></td>
-              <td><%= display_quote_action_buttons(quote.order, quote) %></td>
+              <td class="status"><%= quote_status_text(quote) %></td>
             </tr>
           <% end %>
         </tbody>

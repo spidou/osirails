@@ -114,12 +114,12 @@ class QuotesController < ApplicationController
   # GET /orders/:order_id/:step/quotes/:quote_id/confirm
   def confirm
     if @quote.can_be_confirmed?
-      unless @quote.confirm
-        flash[:error] = "Une erreur est survenue à la validation du devis"
-      else
+      if @quote.confirm
         flash[:notice] = "Le devis a été validé avec succès"
-        redirect_to send(@step.original_step.path)
+      else
+        flash[:error] = "Une erreur est survenue à la validation du devis"
       end
+      redirect_to send(@step.original_step.path)
     else
       error_access_page(412)
     end
