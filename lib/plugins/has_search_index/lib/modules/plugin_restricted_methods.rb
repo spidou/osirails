@@ -78,11 +78,11 @@ module RestrictedMethods
     if quick.any?
       additional_result = case search_type
         when 'and'
-          then additional_result && search_with_additional_attributes(quick, 'or')
+          then additional_result & search_with_additional_attributes(quick, 'and')
         when 'or'
-          then additional_result || search_with_additional_attributes(quick, 'or')
+          then additional_result | search_with_additional_attributes(quick, 'or')
         when 'not'
-          then additional_result && search_with_additional_attributes(quick, 'not')
+          then additional_result & search_with_additional_attributes(quick, 'not')
       end
     end
     
