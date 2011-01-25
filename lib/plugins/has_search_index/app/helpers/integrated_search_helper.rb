@@ -144,7 +144,7 @@ module IntegratedSearchHelper
     content_tag(:legend, 
       I18n.t("link.toggle_options.name"),
       :title => I18n.t("link.toggle_options.title"),
-      :class => collapse,
+      :class => collapse ? 'collapsed' : 'not-collapsed',
       :onclick => "toggleOptionsFieldset('#{ @page_name }', this);")
   end
   
@@ -152,7 +152,7 @@ module IntegratedSearchHelper
     content_tag(:legend, 
       I18n.t("link.toggle_criteria.name"),
       :title => I18n.t("link.toggle_criteria.title"),
-      :class => collapse,
+      :class => collapse ? 'collapsed' : 'not-collapsed',
       :onclick => "toggleCriteriaFieldset('#{ @page_name }', this);")
   end
   

@@ -22,7 +22,7 @@ private
   # return false if there's no criteria or at least one isn't additional
   #
   def only_additional_attributes?(criteria)
-    return false if criteria.empty?
+    return nil if criteria.empty?
     criteria.each_key {|attribute| return false unless is_additional?(attribute)}
     true
   end
@@ -31,7 +31,7 @@ private
   # return false if there's no criteria or at least one is additional
   #
   def only_database_attributes?(criteria)
-    return false if criteria.empty?
+    return nil if criteria.empty?
     criteria.each_key {|attribute| return false if is_additional?(attribute)}
     true
   end
@@ -148,7 +148,13 @@ private
     end
     result
   end
-
+  
+  # Method to make data case and accents insensible 
+  #
+  def pre_format(data)
+    data.to_s.strip_accents.downcase
+  end
+  
   # Method that permit to verify the match between object's attribute and the value passed into args according to data type (and action if there is one) 
   #
   # ==== examples:
@@ -169,56 +175,98 @@ private
     message += " plugin in order to use directly or undirectly the plugin"
     attribute  = attribute.downcase
     attributes = self.search_index[:additional_attributes]
-    data       = object.send(attribute).to_s.downcase                                  # downcase data to make the match method case insensitive
-    is_match   = nil
+    data       = pre_format(object.send(attribute))
 
     return false if data.nil?
     if !values.is_a?(Hash) and !values.is_a?(Array)
-      splited_values = split_value(object.class, attribute, values)                    # permit to manage when passsing multiple values in the same field
-
-      splited_values.each do |value|
-        value        = value.to_s.downcase                                             # downcase value to make the match method case insensitive
-        is_string    = ["string", "text"].include?(object.class.search_index_attribute_type(attribute))
-        is_match ||= is_string ? data.match(Regexp.new(value)) : data == value
-      end
-      return (search_type == 'not')? !is_match : is_match
+      array = split_value(object.class, attribute, values)                         # permit to manage when passsing multiple values in the same field
+      return data_match_simple_value(data, array, search_type, object, attribute)
+    else
+      array = (values.is_a?(Array))? values : [ values ]                           # manage the case when only one attribute
+      return data_match_value?(data, array, search_type, object, attribute, attributes[attribute])
     end
-
-    value_array = (values.is_a?(Array))? values : [ values ]                           # manage the case when only one attribute
-        
-    
-    value_array.each do |val|
-      message  = "#{self::ERROR_PREFIX} Argument missing into value hash :"
-      message += " if you use the value hash instead of value you must type it like {:value => foo :action => bar} "
-      raise(ArgumentError, message) if val[:action].nil?
-      
-      splited_values = split_value(object.class, attribute, val[:value])               # permit to manage when passsing multiple values in the same field 
-      tmp_match     = nil
-      
-      splited_values.each do |value|
-        is_like  = !data.match(Regexp.new(value.to_s.downcase)).nil?                   # downcase value to make the match method case insensitive
-        is_equal = data.send("==", value.to_s.downcase)
-
-        if ['not like', '!='].include?(val[:action])
-          tmp_match = true                                                            # initialise tmp_match to true because of using '&&='
-          tmp_match &&= (val[:action] == '!=')? !is_equal : !is_like
-        elsif ['like', '='].include?(val[:action])
-          tmp_match ||= (val[:action] == '=')? is_equal : is_like
-        elsif HasSearchIndex::ACTIONS[attributes[attribute].to_sym].include?(val[:action])
-          tmp_match ||= data.send(val[:action], value.to_s.downcase)
-        else
-          raise(ArgumentError, "#{self::ERROR_PREFIX} Unproper operator '#{val[:action]}' for #{attributes[attribute]} datatype")
-        end
-        tmp_match = !tmp_match if search_type == 'not'
-      end
-      
-      is_match = tmp_match if is_match.nil? 
-      search_type == 'or' ? is_match |= tmp_match : is_match &= tmp_match
-    end
-    
-    return is_match
   end
   
+  # Method used by #search_match to match simple values
+  # "attribute" => "simple_value" != "attribtue" => {:action => "=", :value => "complex_value" }
+  #
+  # ps:
+  # sbc -> separated by commas
+  # sbs -> separated by spaces
+  #
+  def data_match_simple_value(data, values_sbc, search_type, object, attribute)
+    data_match_value = nil
+    
+    values_sbc.each do |values_sbs|
+      data_match_part = true
+      values_sbs.each do |value|
+        value     = pre_format(value)
+        is_string = ["string", "text"].include?(object.class.search_index_attribute_type(attribute))
+        
+        data_match_part &= (is_string ? data.include?(value) : data == value)
+      end
+      
+      data_match_value |= data_match_part
+    end
+
+    return (search_type == 'not')? !data_match_value : data_match_value
+  end
+  
+  # Method used by #search_match to match complex value
+  # "attribute" => "simple_value" != "attribtue" => {:action => "=", :value => "complex_value" }
+  #
+  # ps:
+  # sbc -> separated by commas
+  # sbs -> separated by spaces
+  #
+  def data_match_value?(data, values, search_type, object, attribute, datatype)
+    message  = "#{ self::ERROR_PREFIX } Argument missing into value hash :"
+    message += " if you use the value hash instead of value you must type it like {:value => foo :action => bar} "
+    data_match_value = nil
+      
+    values.each do |option|
+      raise(ArgumentError, message) if option[:action].nil?
+      values_sbc                = split_value(object.class, attribute, option[:value])
+      action_is_negative        = ['not like', '!='].include?(option[:action])
+      data_pre_match_values_sbc = (action_is_negative ? true : nil)
+      
+      values_sbc.each do |values_sbs|
+        data_pre_match_values_sbs = (action_is_negative ? nil : true)
+        values_sbs.each do |value|
+          value    = pre_format(value)
+          is_like  = data.include?(value)
+          is_equal = data.send("==", value)
+          
+          if action_is_negative
+            data_pre_match_values_sbs |= (option[:action] == '!=')? !is_equal : !is_like
+          elsif ['like', '='].include?(option[:action])
+            data_pre_match_values_sbs &= (option[:action] == '=')? is_equal : is_like
+          elsif HasSearchIndex::ACTIONS[datatype.to_sym].include?(option[:action])
+            data_pre_match_values_sbs &= data.send(option[:action], value.to_s.downcase)
+          else
+            raise(ArgumentError, "#{self::ERROR_PREFIX} Unproper operator '#{option[:action]}' for #{ datatype } datatype")
+          end
+        end
+        
+        if action_is_negative
+          data_pre_match_values_sbc &= data_pre_match_values_sbs
+        else
+          data_pre_match_values_sbc |= data_pre_match_values_sbs
+        end
+      end
+      
+      data_pre_match_values_sbc ^= true if search_type == 'not'                    # revert boolean value if search_type is not
+      if data_match_value.nil?
+        data_match_value = data_pre_match_values_sbc
+      elsif search_type == 'or'
+        data_match_value |= data_pre_match_values_sbc
+      else
+        data_match_value &= data_pre_match_values_sbc
+      end
+    end
+    
+    return data_match_value
+  end
   
   # Method that permit to get nested resources of an object with an array of these nested resources
   #
@@ -502,22 +550,29 @@ private
         action = attribute_type == "string" ? 'like' : '='
       end
       
-      action       = search_type == "not" ? negative(action) : action                    # handle 'not' search_type
-      value_parts  = split_value(model, attribute, value)                                # handle when passing multiple values into a text field
-      sec_operator = ['like', '='].include?(action) ? ' or ' : ' and '
-      conditions   = []
+      action             = negative(action) if search_type == "not"                      # handle 'not' search_type
+      values_sbc         = split_value(model, attribute, value)
+      action_is_positive = ['like', '='].include?(action)
+  
+      # sbs -> separated by spaces
+      # sbc -> separated by commas
+      conditions = values_sbc.map do |values_sbs|
+        sub_conditions = values_sbs.map do |part|
+          sql = sql_condition(attribute_with_prefix, action, part, model)
+          conditions_array << (action =~ /like/ ? "%#{ part }%" : part) if sql.include?('?')
+          sql
+        end.join(action_is_positive ? ' and ' : ' or ')
+        (values_sbc.one? || values_sbs.one?) ? sub_conditions : "(#{ sub_conditions })"
+      end.join(action_is_positive ? ' or ' : ' and ')
       
-      value_parts.each do |part|
-        sql_condition     = sql_condition(attribute_with_prefix, action, part, model)
-        conditions_array << (action =~ /like/ ? "%#{ part }%" : part) if sql_condition.include?('?')
-        conditions       << sql_condition
-      end
       conditions_array[0] += " #{ operator } " unless conditions_array[0].blank?
-      conditions_array[0] += "(#{ conditions.join(sec_operator) })"
+      conditions_array[0] += "(#{ conditions })"
     end
     
     conditions_array
   end
+  
+  
   
   # Method to generate attribute prefix to put into conditions array
   # It is called by "search_database_attributes" method
@@ -625,42 +680,47 @@ private
   # === examples
   #
   #  split_value(Employee.first, last_name, "jo hn")
-  #  #=> ['jo', 'hn', 'jo hn']
+  #  #=> [['jo', 'hn']]
+  #
+  #  split_value(Employee.first, last_name, "jo, hn")
+  #  #=> [['jo'], ['hn']]
+  #
+  #  split_value(Employee.first, last_name, "jo h n, hn")
+  #  #=> [['jo', 'h', 'n'], ['hn']]
   #
   #  split_value(User.first, enabled, "1 0 true")
-  #  #=> [true, false, true]
+  #  #=> [[true, false, true]]
   #
-  #  split_value(User.first, username, "john D Doe \"john Doe\"")
-  #  #=> ['john', 'D', 'Doe','john Doe', "john D Doe \"john Doe\""]
+  #  split_value(User.first, username, "john D Doe \"john, Doe\"")
+  #  #=> [['john', 'D', 'Doe','john, Doe']]
   #
-  # OPTMIZE Maybe it can be optimized a little bit
   def split_value(model, attribute, value)
-    return [value] if value.blank?
-    prepared_value  = value.to_s.gsub('\"',"x22")
-    formatted_value = prepared_value.gsub('"','').gsub('x22','"')
-    raise ArgumentError, "Value '#{prepared_value}' is wrong. '\"' must be by pair" if prepared_value.count("\"")%2 == 1
-    
-    if prepared_value.include?('"')
-      values = prepared_value.split('"')
-      part1  = values.select {|n| values.index(n)%2 == 0}.join(' ').split(' ')
-      part2  = values.select {|n| values.index(n)%2 == 1}                            # values surrounded by double-quotes
-      values = part1 + part2
-    else
-      values = prepared_value.split(' ')         
+    return [[value]] if value.blank?
+    if value.to_s.count('"')%2 == 1                                                # remove the last '"' if there is not a pair quantity of '"'
+      chars = value.to_s.split('')
+      chars.delete_at(chars.rindex('"'))
+      value = chars.join
     end
-    values = values.collect {|n| n.gsub('x22','"')}
-
+    values_with_escaped    = value.to_s.split("\"")
+    escaped_values         = values_with_escaped.select {|n| values_with_escaped.index(n)%2 == 1}
+    values_without_escaped = values_with_escaped.map {|n| values_with_escaped.index(n)%2 == 1 ? "\"" : n}
+    
+    values_or  = values_without_escaped.join.split(',')
+    values_and = values_or.reject(&:blank?).map {|n| n.strip.split(' ').map(&:strip) }
+    
+    values = values_and.map {|m| m.map {|n| n == "\"" ? escaped_values.shift : n} }
+    
     case model.search_index_attribute_type(attribute)
       when 'boolean'
-        return values.map {|n| n.to_b.nil? ? n : n.to_b}           # | Avoid getting value returned for convertion failure,
-      when 'integer'                                          # | to preserve search consistency.
-        return values.map {|n| n.to_i.to_s == n ? n.to_i : n} # | ex: 'tre'.to_i == 0 --> the user may want to search for 'tre' not for 0
-      when 'float', 'decimal'                                 # |
-        return values.map {|n| n.to_f.to_s == n ? n.to_f : n} # |
+        return values.map{|m| m.map {|n| n.to_b.nil? ? n : n.to_b}}                # | Avoid getting value returned for convertion failure,
+      when 'integer'                                                               # | to preserve search consistency.
+        return values.map{|m| m.map {|n| n.to_i.to_s == n ? n.to_i : n}}           # | ex: 'tre'.to_i == 0 --> the user may want to search for 'tre' not for 0
+      when 'float', 'decimal'                                                      # |
+        return values.map{|m| m.map {|n| n.to_f.to_s == n ? n.to_f : n}}           # |
       when 'datetime'
-        return value.to_s.gsub('"','').to_a
+        return [value.to_s.gsub('"','').to_a]
       else
-        return formatted_value.to_a.fusion(values)
+        return values
     end
   end
 end
