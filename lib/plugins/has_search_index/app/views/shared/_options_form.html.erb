@@ -2,10 +2,9 @@
   require_locals query, page_config
   per_page_config = page_config[:per_page] + [['all', nil]]
   visible = cookies["#{ @page_name }_options"] == 'true' ? true : false
-  collapse = visible ? 'not-collapsed' : 'collapsed'
 %>
 <fieldset>
-  <%= toggle_options_legend(collapse) %>
+  <%= toggle_options_legend(!visible) %>
   
   <div class="presentation_medium" style="<%= 'display:none;' unless visible %>">
     <% if page_config[:columns].any? %>

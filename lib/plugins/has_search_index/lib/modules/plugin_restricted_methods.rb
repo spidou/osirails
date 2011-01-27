@@ -78,25 +78,27 @@ module RestrictedMethods
     if quick.any?
       additional_result = case search_type
         when 'and'
-          then additional_result && search_with_additional_attributes(quick, 'or')
+          then additional_result & search_with_additional_attributes(quick, 'and')
         when 'or'
-          then additional_result || search_with_additional_attributes(quick, 'or')
+          then additional_result | search_with_additional_attributes(quick, 'or')
         when 'not'
-          then additional_result && search_with_additional_attributes(quick, 'not')
+          then additional_result & search_with_additional_attributes(quick, 'not')
       end
     end
     
-    result = if database_result.empty?
-      additional_result
-    elsif additional_result.empty?
+    only_additional = only_additional_attributes?(criteria.merge(quick))
+    only_db         = only_database_attributes?(criteria.merge(quick))
+    
+    result = if only_db
       database_result
+    elsif only_additional
+      additional_result
     else
       (search_type == 'or' ? database_result | additional_result : database_result & additional_result)
     end
     
     ## manage the group and order by code because the additional attributes cannot be used into sql
     result = group_and_order(result, order, group) if (order + group).select {|n| is_additional?(HasSearchIndex.get_order_attribute(n)) }.any?
-    
     return result
   end
   

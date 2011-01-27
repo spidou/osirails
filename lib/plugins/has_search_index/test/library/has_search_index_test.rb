@@ -879,7 +879,7 @@ class HasSearchIndexTest < ActiveRecordTestCase
         
         context "with criterion's value like ( 'value value2' )" do
           setup do
-            @expected_conditions_array = ['(people.name like? or people.name like? or people.name like?)', '%go%','%od%','%go od%']
+            @expected_conditions_array = ['(people.name like? and people.name like?)', '%go%','%od%']
             @expected = Person.all(:conditions => @expected_conditions_array)
           end
         
@@ -889,6 +889,38 @@ class HasSearchIndexTest < ActiveRecordTestCase
 
           should "have expected conditions_array" do
             assert_equal @expected_conditions_array, Person.send(:conditions_array ,Person, 'go od', 'people.name', 'and')
+          end
+        end
+        
+        context "with criterion's value like ( 'value, value2' )" do
+          setup do
+            @expected_conditions_array = ['(people.name =? or people.name =?)', 'go','od']
+            @expected = Person.all(:conditions => @expected_conditions_array)
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => {:value => 'go, od', :action => "="})
+          end
+          
+          should "have expected conditions_array" do
+            assert_equal @expected_conditions_array,
+              Person.send(:conditions_array, Person, {:value => 'go, od', :action => "="}, 'people.name', 'and')
+          end
+        end
+        
+        context "with criterion's value like ( 'value, value2 value3')" do
+          setup do
+            @expected_conditions_array = ['(people.name =? or (people.name =? and people.name =?))', 'go','od', 'ad']
+            @expected = Person.all(:conditions => @expected_conditions_array)
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => {:value => 'go, od ad', :action => "="})
+          end
+          
+          should "have expected conditions_array" do
+            assert_equal @expected_conditions_array,
+              Person.send(:conditions_array, Person, {:value => 'go, od ad', :action => "="}, 'people.name', 'and')
           end
         end
         
@@ -910,7 +942,7 @@ class HasSearchIndexTest < ActiveRecordTestCase
           
         context "with criterion's value like ( {:value => 'value value2', ...} )" do
           setup do
-            @expected_conditions_array = ['(people.name =? or people.name =? or people.name =?)', 'go','od','go od']
+            @expected_conditions_array = ['(people.name =? and people.name =?)', 'go','od']
             @expected = Person.all(:conditions => @expected_conditions_array)
           end
         
@@ -943,10 +975,28 @@ class HasSearchIndexTest < ActiveRecordTestCase
         
         context "with criterion's value like ( [{:value => 'value value2', ...}, {:value => 'value3 value4', ...}] )" do
           setup do
-            conditions_text = '(people.name =? or people.name =? or people.name =?) and (people.name !=? and people.name !=? and people.name !=?)'
-            @expected_conditions_array = [conditions_text, 'go','od','go od','ba','ad','ba ad']
+            conditions_text = '(people.name =? and people.name =?) and (people.name !=? or people.name !=?)'
+            @expected_conditions_array = [conditions_text, 'go','od','ba','ad']
             @expected = Person.all(:conditions => @expected_conditions_array)
             @criterion_value = [{:value => 'go od', :action => "="}, {:value => 'ba ad', :action => "!="}]
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => @criterion_value)
+          end
+          
+          should "have expected conditions_array" do
+            assert_equal @expected_conditions_array,
+              Person.send(:conditions_array, Person, @criterion_value, 'people.name', 'and')
+          end
+        end
+        
+        context "with criterion's value like ( [{:value => 'value, value2', ...}, {:value => 'value3, value4', ...}] )" do
+          setup do
+            conditions_text = '(people.name =? or people.name =?) and (people.name !=? and people.name !=?)'
+            @expected_conditions_array = [conditions_text, 'go','od','ba','ad']
+            @expected = Person.all(:conditions => @expected_conditions_array)
+            @criterion_value = [{:value => 'go, od', :action => "="}, {:value => 'ba, ad', :action => "!="}]
           end
         
           should "return as expected" do
@@ -1108,7 +1158,27 @@ class HasSearchIndexTest < ActiveRecordTestCase
         
         context "with criterion's value like ( 'value value2' ) " do
           setup do
-            @expected = Person.all.select {|n| [ /go/, /od/, /go od/ ].select{|pattern| n.name =~ pattern}.any? }
+            @expected = Person.all.select {|n| [ /go/, /od/ ].select{|pattern| n.name =~ pattern}.many? }
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => 'go od')
+          end
+        end
+        
+        context "with criterion's value like ( 'value, value2' ) " do
+          setup do
+            @expected = Person.all.select {|n| [ /go/, /od/ ].select{|pattern| n.name =~ pattern}.any? }
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => 'go od')
+          end
+        end
+        
+        context "with criterion's value like ( 'value, value2 value3' ) " do
+          setup do
+            @expected = Person.all.select {|n| [ /go/, [ /od/, /ad/ ]].select{|m| (m.is_a?(Array) ? m.select{|pattern| n.name =~ pattern}.many? : n.name =~ m)}.any? }
           end
         
           should "return as expected" do
@@ -1138,23 +1208,35 @@ class HasSearchIndexTest < ActiveRecordTestCase
         
         context "with criterion's value like ( [{:value => 'value', ...}, {:value => 'value2', ...}] ))" do
           setup do
-            @expected = Person.all.select {|n| n.name == 'good' && n.name != 'bad' }
+            @expected = Person.all.select {|n| n.name.include?('good') && !n.name.include?('bad') }
           end
         
           should "return as expected" do
-            assert_equal @expected, Person.search_with('name' => [{:value => 'good', :action => "="}, {:value => 'bad', :action => "!="}])
+            assert_equal @expected, Person.search_with('name' => [{:value => 'good', :action => "like"}, {:value => 'bad', :action => "not like"}])
           end
         end
         
         context "with criterion's value like ( [{:value => 'value value2', ...}, {:value => 'value3 value4', ...}] )" do
           setup do
-            conditions_text = '(name =? or name =? or name =?) and (name !=? or name !=? or name !=?)'
-            @expected = Person.all.select {|n| [ /go/, /od/, /go od/ ].select{|pattern| n.name =~ pattern}.any? &&
-                                               [ /ba/, /ad/, /ba ad/ ].select{|pattern| n.name =~ pattern}.empty?}
+            conditions_text = '(name =? and name =?) and (name !=? or name !=?)'
+            @expected = Person.all.select {|n| [ /go/, /od/ ].select{|pattern| n.name =~ pattern}.many? &&
+                                               ![ /ba/, /ad/ ].select{|pattern| n.name =~ pattern}.any?}
           end
         
           should "return as expected" do
             assert_equal @expected, Person.search_with('name' => [{:value => 'go od', :action => "like"}, {:value => 'ba ad', :action => "not like"}])
+          end
+        end
+        
+        context "with criterion's value like ( [{:value => 'value, value2', ...}, {:value => 'value3, value4', ...}] )" do
+          setup do
+            conditions_text = '(name =? or name =?) and (name !=? and name !=?)'
+            @expected = Person.all.select {|n| [ /go/, /od/ ].select{|pattern| n.name =~ pattern}.any? &&
+                                               ![ /ba/, /ad/ ].select{|pattern| n.name =~ pattern}.many?}
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => [{:value => 'go, od', :action => "like"}, {:value => 'ba, ad', :action => "not like"}])
           end
         end
         
@@ -1207,8 +1289,8 @@ class HasSearchIndexTest < ActiveRecordTestCase
           boolean = {'=' => exp, '!='   => []}
           
           @types = {:string   => {:value => DataType.first.a_string,   :actions => string },
-                    :binary   => {:value => DataType.first.a_binary,   :actions => string },
-                    :text     => {:value => DataType.first.a_text,     :actions => string },
+                    :binary   => {:value => "\"#{ DataType.first.a_binary }\"",   :actions => string },
+                    :text     => {:value => "\"#{ DataType.first.a_text }\"",     :actions => string },
                     :integer  => {:value => DataType.first.a_integer,  :actions => integer },
                     :float    => {:value => DataType.first.a_float,    :actions => integer },
                     :decimal  => {:value => DataType.first.a_decimal,  :actions => integer },
@@ -1219,7 +1301,7 @@ class HasSearchIndexTest < ActiveRecordTestCase
           @types.each do |type, criterion|
             context "with criterion's :value is a #{ type.to_s.capitalize }" do
               criterion[:actions].each do |action, expected|
-                context "and :action is '#{ action }' #{ criterion[:value].class } #{ DataType.first.send("a_#{ type }").class }" do
+                context "and :action is '#{ action }' #{ criterion[:value] } #{ expected.first.inspect }" do
                   should "return as expected" do
                     assert_equal expected, DataType.search_with("a_#{ type }" => {:action => action, :value => criterion[:value].to_s})
                   end
@@ -1808,93 +1890,103 @@ class HasSearchIndexTest < ActiveRecordTestCase
       context "for an integer" do
         
         should "return an Array with 1 Integer" do
-          assert_equal [1], DataType.send(:split_value, DataType, 'a_integer', '1')
+          assert_equal [[1]], DataType.send(:split_value, DataType, 'a_integer', '1')
         end
         
-        should "return an Array of Integer" do
-          assert_equal [1, 0, 10], DataType.send(:split_value, DataType, 'a_integer', '1 0 10')
+        should "return an Array with 1 Array of Integer" do
+          assert_equal [[1, 0, 10]], DataType.send(:split_value, DataType, 'a_integer', '1 0 10')
+        end
+        
+        should "return an Array with 2 Arrays of Integer" do
+          assert_equal [[1],[ 0, 10]], DataType.send(:split_value, DataType, 'a_integer', '1, 0 10')
         end
       end
       
       context "for a boolean" do
 
         should "return an Array with 1 Boolean" do
-          assert_equal [true], DataType.send(:split_value, DataType, 'a_boolean', '1')
+          assert_equal [[true]], DataType.send(:split_value, DataType, 'a_boolean', '1')
         end
         
-        should "return an Array of Boolean" do
-          assert_equal [true, false, false], DataType.send(:split_value, DataType, 'a_boolean', '1 0 false')
+        should "return an Array with 1 Array of Boolean" do
+          assert_equal [[true, false, false]], DataType.send(:split_value, DataType, 'a_boolean', '1 0 false')
+        end
+        
+        should "return an Array with 2 Array of Boolean" do
+          assert_equal [[true], [false, false]], DataType.send(:split_value, DataType, 'a_boolean', '1, 0 false')
         end
       end
       
       context "for a float" do
 
         should "return an Array with 1 Float" do
-          assert_equal [1.2], DataType.send(:split_value, DataType, 'a_float', '1.2')
+          assert_equal [[1.2]], DataType.send(:split_value, DataType, 'a_float', '1.2')
         end
         
-        should "return an Array of Float" do
-          assert_equal [1.2, 0.45, 123.203], DataType.send(:split_value, DataType, 'a_float', '1.2 0.45 123.203')
+        should "return an Array with 1 Array of Float" do
+          assert_equal [[1.2, 0.45, 123.203]], DataType.send(:split_value, DataType, 'a_float', '1.2 0.45 123.203')
+        end
+        
+        should "return an Array with 2 Array of Float" do
+          assert_equal [[1.2], [0.45, 123.203]], DataType.send(:split_value, DataType, 'a_float', '1.2, 0.45 123.203')
         end
       end
       
       context "for a decimal" do
 
         should "return an Array with 1 Decimal" do
-          assert_equal [1000.2], DataType.send(:split_value, DataType, 'a_decimal', '1000.2')
+          assert_equal [[1000.2]], DataType.send(:split_value, DataType, 'a_decimal', '1000.2')
         end
         
-        should "return an Array of Decimals" do
-          assert_equal [15.2, 0.45, 13.2], DataType.send(:split_value, DataType, 'a_decimal', '15.2 0.45 13.2')
+        should "return an Array with 1 Array of Decimals" do
+          assert_equal [[15.2, 0.45, 13.2]], DataType.send(:split_value, DataType, 'a_decimal', '15.2 0.45 13.2')
+        end
+        
+        should "return an Array with 2 Array of Decimals" do
+          assert_equal [[15.2], [0.45, 13.2]], DataType.send(:split_value, DataType, 'a_decimal', '15.2, 0.45 13.2')
         end
       end
       
       context "for a datetime" do
 
         should "return date time formatted in String within an Array" do
-          assert_equal ['2009/9/30 9:43:00'], DataType.send(:split_value, DataType, 'a_datetime', '2009/9/30 9:43:00')
+          assert_equal [['2009/9/30 9:43:00']], DataType.send(:split_value, DataType, 'a_datetime', '2009/9/30 9:43:00')
         end
       end
       
       context "for a String" do
 
         should "return an Array with 1 String" do
-          assert_equal ['john'], DataType.send(:split_value, DataType, 'a_string', 'john')
+          assert_equal [['john']], DataType.send(:split_value, DataType, 'a_string', 'john')
         end
         
-        should "return an Array of String" do
-          assert_equal ['john', 'j', 'n', 'john j n'].sort, DataType.send(:split_value, DataType, 'a_string', 'john j n').sort
+        should "return an Array with 1 Array of String" do
+          assert_equal [['john', 'j', 'n']].sort, DataType.send(:split_value, DataType, 'a_string', 'john j n').sort
+        end
+        
+        should "return an Array with 2 Array of String" do
+          assert_equal [['john'], ['j', 'n']].sort, DataType.send(:split_value, DataType, 'a_string', 'john, j n').sort
         end
       end
       
       context "while skipping splitting" do
 
         should "return an Array with 1 String" do
-          assert_equal ['john is gone'], DataType.send(:split_value, DataType, 'a_text', '"john is gone"')
+          assert_equal [['john, is gone']], DataType.send(:split_value, DataType, 'a_text', '"john, is gone"')
         end
         
         should "return the unsplitted String with the splitted strings" do
-          assert_equal ['john is gone', 'j', 'n', 'john is gone j n'].sort,
-                 DataType.send(:split_value, DataType, 'a_text', '"john is gone" j n').sort
+          assert_equal [['john, is gone'], ['j', 'n']].sort,
+                 DataType.send(:split_value, DataType, 'a_text', '"john, is gone", j n').sort
         end
       end
       
-      context "while escaping caracter (\") used to skip splitting" do
+      context "while using an impair quantity of '\"'" do
 
-        should "return a text containing (\")" do
-          assert_equal ['john is "whoo"'], DataType.send(:split_value, DataType, 'a_string', '"john is \"whoo\""')
-        end
-        
-        should "return the unsplitted text containing (\")" do
-          assert_equal ['john is "whoo"'].sort,
-                 DataType.send(:split_value, DataType, 'a_string', '"john is \"whoo\""').sort
-        end
-      end
-      
-      context "while using sepcial caratere (\") alone" do
-
-        should "raise an ArgumentError" do
-          assert_raise(ArgumentError) {DataType.send(:split_value, DataType, 'a_string', 'some text " string')}
+        should "drop the last '\"'" do
+          assert_equal 3, '" test, a sentence with many spaces " with another one " special caratere'.count('"')
+          assert_equal [[' test, a sentence with many spaces ', 'with', 'another', 'one', 'special', 'caratere']],
+                  DataType.send(:split_value, DataType, 'a_text', '" test, a sentence with many spaces " with another one " special caratere')
         end
       end
     end

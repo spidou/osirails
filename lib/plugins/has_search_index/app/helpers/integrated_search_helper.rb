@@ -78,14 +78,16 @@ module IntegratedSearchHelper
     visible_class = visible ? '' : 'hidden'
     
     submit_function = remote_function({
-      :url    => params.reject{ |k,v| k.to_s == 'keyword' },
-      :method => :get,
-      :update => @class_for_ajax_update,
-      :with   => "'keyword=' + this.up().down('INPUT').value"
+      :url      => params.reject{ |k,v| k.to_s == 'keyword' },
+      :method   => :get,
+      :update   => @class_for_ajax_update,
+      :with     => "'keyword=' + escape(this.up().down('INPUT').value)",
+      :complete => "$('quick_input').focus(); $('quick_input').selectionStart = $('quick_input').selectionEnd;"
     })
   
     content  = text_field_tag(nil, @query.quick_search_value || restore_value,
                                    :onkeypress   => "if(event.which == Event.KEY_RETURN){ #{ submit_function }; return false }",
+                                   :id           => "quick_input",
                                    :restoreValue => restore_value,
                                    :style        => @query.quick_search_value ? '' : 'color: grey; font-style: italic;',
                                    :onfocus      => "if (this.value == this.getAttribute('restoreValue')) { this.value=''; this.style.color='inherit'; this.style.fontStyle='inherit' } else { select() }",
@@ -144,7 +146,7 @@ module IntegratedSearchHelper
     content_tag(:legend, 
       I18n.t("link.toggle_options.name"),
       :title => I18n.t("link.toggle_options.title"),
-      :class => collapse,
+      :class => collapse ? 'collapsed' : 'not-collapsed',
       :onclick => "toggleOptionsFieldset('#{ @page_name }', this);")
   end
   
@@ -152,7 +154,7 @@ module IntegratedSearchHelper
     content_tag(:legend, 
       I18n.t("link.toggle_criteria.name"),
       :title => I18n.t("link.toggle_criteria.title"),
-      :class => collapse,
+      :class => collapse ? 'collapsed' : 'not-collapsed',
       :onclick => "toggleCriteriaFieldset('#{ @page_name }', this);")
   end
   

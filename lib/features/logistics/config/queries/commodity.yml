@@ -51,11 +51,7 @@ commodity_index:
   <<: *order
   <<: *pagination
   quick_search:
-    - reference
-    - supply_sub_category.supply_category.name
-    - supply_sub_category.name
-    - name
-    - humanized_supply_sizes
+    - designation
   default_query:
     <<: *columns
     <<: *group
