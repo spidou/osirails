@@ -149,7 +149,7 @@ private
     result
   end
   
-  # Method to make data case and accents insensible 
+  # Method to make data case and accents insensitive
   #
   def pre_format(data)
     data.to_s.strip_accents.downcase

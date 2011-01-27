@@ -78,10 +78,10 @@ module IntegratedSearchHelper
     visible_class = visible ? '' : 'hidden'
     
     submit_function = remote_function({
-      :url    => params.reject{ |k,v| k.to_s == 'keyword' },
-      :method => :get,
-      :update => @class_for_ajax_update,
-      :with   => "'keyword=' + escape(this.up().down('INPUT').value)",
+      :url      => params.reject{ |k,v| k.to_s == 'keyword' },
+      :method   => :get,
+      :update   => @class_for_ajax_update,
+      :with     => "'keyword=' + escape(this.up().down('INPUT').value)",
       :complete => "$('quick_input').focus(); $('quick_input').selectionStart = $('quick_input').selectionEnd;"
     })
   
