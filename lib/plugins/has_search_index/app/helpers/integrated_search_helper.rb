@@ -31,7 +31,7 @@ module IntegratedSearchHelper
       query_path(query, :return_uri => url_for),
       :title => I18n.t('link.delete.title'),
       :method => :delete,
-      :confirm => 'Êtes vous sûr?')
+      :confirm => I18n.t('view.links.confirm'))
   end
   
   def reset_query_link(query)
@@ -81,7 +81,7 @@ module IntegratedSearchHelper
       :url      => params.reject{ |k,v| k.to_s == 'keyword' },
       :method   => :get,
       :update   => @class_for_ajax_update,
-      :with     => "'keyword=' + escape(this.up().down('INPUT').value)",
+      :with     => "'keyword=' + encodeURIComponent(this.up().down('INPUT').value)",
       :complete => "$('quick_input').focus(); $('quick_input').selectionStart = $('quick_input').selectionEnd;"
     })
   
@@ -145,16 +145,16 @@ module IntegratedSearchHelper
   def toggle_options_legend(collapse = true)
     content_tag(:legend, 
       I18n.t("link.toggle_options.name"),
-      :title => I18n.t("link.toggle_options.title"),
-      :class => collapse ? 'collapsed' : 'not-collapsed',
+      :title   => I18n.t("link.toggle_options.title"),
+      :class   => collapse ? 'collapsed' : 'not-collapsed',
       :onclick => "toggleOptionsFieldset('#{ @page_name }', this);")
   end
   
   def toggle_criteria_legend(collapse = false)
     content_tag(:legend, 
       I18n.t("link.toggle_criteria.name"),
-      :title => I18n.t("link.toggle_criteria.title"),
-      :class => collapse ? 'collapsed' : 'not-collapsed',
+      :title   => I18n.t("link.toggle_criteria.title"),
+      :class   => collapse ? 'collapsed' : 'not-collapsed',
       :onclick => "toggleCriteriaFieldset('#{ @page_name }', this);")
   end
   

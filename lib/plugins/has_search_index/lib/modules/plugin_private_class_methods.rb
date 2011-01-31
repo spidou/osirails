@@ -330,17 +330,17 @@ private
     
     # check relationship and get the model where to verify the attribute
     if attribute_with_prefix.include?(".")                                                              
-      prefix = attribute_with_prefix.chomp(".#{attribute}")
+      prefix = attribute_with_prefix.chomp(".#{ attribute }")
       prefix.split(".").each do |relationship|
-        prefix_mess = ( prefix.include?('.') ? "into '#{prefix}'" : '' ) 
-        message     = "#{self::ERROR_PREFIX} Association '#{relationship}' #{ prefix_mess }, undefined for has_search_index into '#{model.to_s}' model"
+        prefix_mess = ( prefix.include?('.') ? "into '#{ prefix }'" : '' ) 
+        message     = "#{self::ERROR_PREFIX} Association '#{ relationship }' #{ prefix_mess }, undefined for has_search_index into '#{ model.to_s }' model"
         raise(ArgumentError, message) unless model.search_index_relationships.include?(relationship.to_sym)
         model = model.reflect_relationship(relationship, check_implicit = true)
       end
     end
     
     # check the attribute
-    message = "#{self::ERROR_PREFIX} Attribute '#{attribute}', undefined for has_search_index into '#{model.to_s}' model"
+    message = "#{self::ERROR_PREFIX} Attribute '#{ attribute }', undefined for has_search_index into '#{ model.to_s }' model"
     raise(ArgumentError, message) unless model.search_index_attributes.include?(attribute)
   end
 
@@ -559,7 +559,8 @@ private
       conditions = values_sbc.map do |values_sbs|
         sub_conditions = values_sbs.map do |part|
           sql = sql_condition(attribute_with_prefix, action, part, model)
-          conditions_array << (action =~ /like/ ? "%#{ part }%" : part) if sql.include?('?')
+          pre_formatted = pre_format(part)                                               # make search case and accents insensitive
+          conditions_array << (action =~ /like/ ? "%#{ pre_formatted }%" : pre_formatted) if sql.include?('?')
           sql
         end.join(action_is_positive ? ' and ' : ' or ')
         (values_sbc.one? || values_sbs.one?) ? sub_conditions : "(#{ sub_conditions })"
