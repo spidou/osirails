@@ -2,6 +2,7 @@ ActiveRecord::Schema.define do
 
   create_table "people", :force => true do |t|
     t.column "name",       :string
+    t.column "identifier", :string
     t.column "gender_id",  :integer,   :limit => 11
     t.column "age",        :integer
     t.column "created_at", :datetime

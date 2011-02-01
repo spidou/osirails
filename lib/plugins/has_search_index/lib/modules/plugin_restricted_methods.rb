@@ -73,28 +73,23 @@ module RestrictedMethods
     check_criteria(quick)
     check_criteria(criteria)
     
-    database_result   = search_with_database_attributes(criteria, search_type, order, group, quick)
-    additional_result = search_with_additional_attributes(criteria, search_type)
-    if quick.any?
-      additional_result = case search_type
-        when 'and'
-          then additional_result & search_with_additional_attributes(quick, 'and')
-        when 'or'
-          then additional_result | search_with_additional_attributes(quick, 'or')
-        when 'not'
-          then additional_result & search_with_additional_attributes(quick, 'not')
-      end
-    end
-    
-    only_additional = only_additional_attributes?(criteria.merge(quick))
-    only_db         = only_database_attributes?(criteria.merge(quick))
-    
-    result = if only_db
-      database_result
-    elsif only_additional
-      additional_result
+    result = []
+    if only_database_attributes?(criteria.merge(quick))                            # use only one sql query if there's not additional attributes
+      result = search_with_database_attributes(criteria, search_type, order, group, quick)
     else
-      (search_type == 'or' ? database_result | additional_result : database_result & additional_result)
+      result = link_results(                                                       # manage searc from normal attributes
+        search_with_database_attributes(criteria, search_type, order, group, {}),
+        search_with_additional_attributes(criteria, search_type),
+        search_type,
+        criteria
+      )
+      
+      result &= link_results(                                                      #manage search from quick attributes
+        search_with_database_attributes({}, search_type, order, group, quick),
+        search_with_additional_attributes(quick, 'or'),
+        'or',
+        quick
+      ) if quick.any?
     end
     
     ## manage the group and order by code because the additional attributes cannot be used into sql

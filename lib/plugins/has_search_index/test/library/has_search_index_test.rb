@@ -1570,37 +1570,174 @@ class HasSearchIndexTest < ActiveRecordTestCase
             flunk "person should be created" unless Person.create(:name => '10', :age => 10)
             flunk "person should be created" unless Person.create(:name => '11', :age => 10)
             flunk "person should be created" unless Person.create(:name => '12', :age => 12)
+            @expected = Person.all(:conditions => ['age = ?', "10"]) | Person.all.select {|n| n.name =~ /10/ }
+          end
+            
+          should "return as expected" do
+            assert_equal @expected, Person.search_with(:quick => {:attributes => ['name', 'age'], :value => '10'})
+          end
+        end
+        
+        context "mixed with normal search attributes," do
+          setup do
+            Person.has_search_index(:only_attributes => [:identifier], :additional_attributes => {:name => :string})
+            @people = []
+            @people << Person.new(:name => 'franc',    :identifier => "10")
+            @people << Person.new(:name => 'john',     :identifier => "11")
+            @people << Person.new(:name => 'brian',    :identifier => "12")
+            @people << Person.new(:name => 'fancesca', :identifier => "20")
+            @people << Person.new(:name => 'jane',     :identifier => "21")
+            @people << Person.new(:name => 'brice',    :identifier => "22")
+            @people << Person.new(:name => 'foebe',    :identifier => "30")
+            @people << Person.new(:name => 'jim',      :identifier => "31")
+            @people << Person.new(:name => 'bayer',    :identifier => "32")
+            
+            (0..8).each do |i|
+              flunk "person should be created" unless @people[i].save
+            end
           end
           
-          context "with search_type is 'and'" do
+          context "from all people with identifier containing 2" do
             setup do
-              @expected = Person.all(:conditions => ['age = ?', "10"]).select {|n| n.name =~ /10/ }
+              @expected = @people.select {|n| n.identifier.include?('2')}
+              @options = {"identifier" => {:action => 'like', :value => '2'} }
             end
             
-            should "return as expected" do
-              assert_equal @expected, Person.search_with(:quick => {:attributes => ['name', 'age'], :value => '10'})
+            # a & qa
+            should "return all with identifier containing 3" do
+              a = @expected.select {|n| n.identifier.include?('30')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ['identifier'], :value => 30}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+            
+            # a & qb
+            should "return all with name containing 'e'" do
+              a = @expected.select {|n| n.name.include?('e') }
+              b = Person.search_with(@options.merge(:quick => {:attributes => ["name"], :value => 'e'}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+            
+            # a & qa | qb
+            should "return all with name containing '3' OR with identifier containing '3'" do
+              a = @expected.select {|n| n.name.include?('3') || n.identifier.include?('3') }
+              b = Person.search_with(@options.merge(:quick => {:attributes => ["name","identifier"], :value => '3'}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
           end
           
-          context "with search_type is 'or'" do
+          context "from all people with name containing 'n'" do 
             setup do
-              @expected = Person.all(:conditions => ['age = ?', "10"]) | Person.all.select {|n| n.name =~ /10/ }
+              @expected = @people.select {|n| n.name.include?('n')}
+              @options = {"name" => {:action => 'like', :value => 'n'} }
             end
             
-            should "return as expected" do
-              assert_equal @expected, Person.search_with(:quick => {:attributes => ['name', 'age'], :value => '10'}, :search_type => 'or')
+            # b & qa
+            should "return all with identifier containing '3'" do
+              a = @expected.select {|n| n.identifier.include?('3')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ['identifier'], :value => 3}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+            
+            # b & qb
+            should "return all with name containing 'o'" do
+              a = @expected.select {|n| n.name.include?('o') }
+              b = Person.search_with(@options.merge(:quick => {:attributes => ["name"], :value => 'o'}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+            
+            # b & qa | qb
+            should "return all with identifier containing 'a' OR with name containing 'a'" do
+              a = @expected.select {|n| n.name.include?('a') || n.identifier.include?('a')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ["name","identifier"], :value => 'a'}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
           end
           
-          context "with search_type is 'not'" do
+          context "from all people with name containing 'a' OR identifier containing '1'" do
             setup do
-              @expected = Person.all(:conditions => ['age != ?', "10"]).reject {|n| n.name =~ /10/ }
+              @expected = @people.select {|n| n.name.include?('a') || n.identifier.include?('1')}
+              @options = {"name" => {:action => 'like', :value => 'a'},"identifier" => {:action => 'like', :value => '1'}, :search_type => 'or'}
             end
             
-            should "return as expected" do
-              assert_equal @expected, Person.search_with(:quick => {:attributes => ['name', 'age'], :value => '10'}, :search_type => 'not')
+            # a | b & qa
+            should "return all with identifier containing 2" do
+              a = @expected.select {|n| n.identifier.include?('2')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ['identifier'], :value => 2}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+            
+            
+            # a | b & qb
+            should "return all with name contain 'j'" do
+              a = @expected.select {|n| n.name.include?('j')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ["name"], :value => 'j'}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+            
+            # a | b & qa | qb
+            should "return all with identifier containing '0' OR with name containing '0'" do
+              a = @expected.select {|n| n.name.include?('0') || n.identifier.include?('0')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ["name", "identifier"], :value => '0'}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
           end
+          
+          context "from all people with name not containing 'a' AND identifier not containing '1'" do
+            setup do
+              @expected = @people.select {|n| !n.name.include?('a') && !n.identifier.include?('1')}
+              @options = {"name" => {:action => 'like', :value => 'a'},"identifier" => {:action => 'like', :value => '1'}, :search_type => 'not'}
+            end
+            
+            # a !& b & qa
+            should "return all with identifier containing 2" do
+              a = @expected.select {|n| n.identifier.include?('2')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ['identifier'], :value => 2}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+            
+            # a !& b & qb
+            should "return all with name contain 'j'" do
+              a = @expected.select {|n| n.name.include?('j')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ["name"], :value => 'j'}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+            
+            # a !& b & qa | qb
+            should "return all with identifier containing '0' OR with name containing '0'" do
+              a = @expected.select {|n| n.name.include?('0') || n.identifier.include?('0')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ["name", "identifier"], :value => '0'}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+          end
+          
+          context "from all people with name containing 'a' AND identifier containing '1'" do
+            setup do
+              @expected = @people.select {|n| n.name.include?('a') && n.identifier.include?('1')}
+              @options = {"name" => {:action => 'like', :value => 'a'},"identifier" => {:action => 'like', :value => '1'} }
+            end
+            
+            # a & b & qa
+            should "return all with identifier containing 2" do
+              a = @expected.select {|n| n.identifier.include?('2')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ['identifier'], :value => 2}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+            
+            # a & b & qb
+            should "return all with name contain 'j'" do
+              a = @expected.select {|n| n.name.include?('j')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ["name"], :value => 'j'}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+            
+            # a & b & qa & qb
+            should "return all with identifier containing '0' OR with name containing '0'" do
+              a = @expected.select {|n| n.name.include?('0') || n.identifier.include?('0')}
+              b = Person.search_with(@options.merge(:quick => {:attributes => ["name", "identifier"], :value => '0'}))
+              assert_equal(a.map(&:id).sort, b.map(&:id).sort)
+            end
+          end
+          
         end
       end
       

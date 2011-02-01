@@ -404,7 +404,7 @@ private
     include_option    = generate_include_option(criteria.merge(quick), group, order)
     conditions_option = generate_conditions_option(criteria, include_option, search_type)
     if quick.any?
-      quick_conditions = generate_conditions_option(quick, include_option, (search_type == 'not' ? 'not' : 'or'))
+      quick_conditions = generate_conditions_option(quick, include_option, 'or')
       if quick_conditions != ['']
         conditions_option[0] += " #{ (search_type == 'not' ? 'not' : search_type) unless conditions_option[0].blank? } (#{ quick_conditions.shift })"
         conditions_option    += quick_conditions
@@ -480,6 +480,18 @@ private
   #
   def extract_attribute(attribute_with_path)
     return attribute_with_path.split('.').last
+  end
+  
+  # Method to logicaly link results from database and additionals results
+  #
+  def link_results(database_result, additional_result, search_type, criteria)
+    if only_database_attributes?(criteria)
+      database_result
+    elsif only_additional_attributes?(criteria)
+      additional_result
+    else
+      (search_type == 'or' ? database_result | additional_result : database_result & additional_result)
+    end
   end
   
   # Method to prepare an attribute to be added to where claue of a sql query
