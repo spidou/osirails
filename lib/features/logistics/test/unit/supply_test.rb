@@ -7,7 +7,7 @@ module SupplyTest
         # was_enabled_at
         # supplier_supply_attributes=
         # supplies_supply_size_attributes=
-        # update_supply_sub_category_counter
+        # update_supply_type_counter
         # self.was_enabled_at
         # self.restockables
         # self.stock_value
@@ -22,13 +22,13 @@ module SupplyTest
         should_have_many :supplies_supply_sizes
         should_have_many :supply_sizes, :through => :supplies_supply_sizes
 
-        should_validate_presence_of :name, :reference
-        should_validate_presence_of :supply_sub_category, :with_foreign_key => :default
+        should_validate_presence_of :reference
+        should_validate_presence_of :supply_type, :with_foreign_key => :default
         
         should_validate_numericality_of :unit_mass, :measure, :threshold, :packaging
         
         #TODO
-        #validates_persistence_of :supply_sub_category_id, :name, :reference, :measure, :unit_mass, :packaging, :supplies_supply_sizes, :if => :persistence_case?
+        #validates_persistence_of :supply_type_id, :reference, :measure, :unit_mass, :packaging, :supplies_supply_sizes, :if => :persistence_case?
         
         should "be enabled" do
           assert @supply.enabled?
@@ -50,15 +50,23 @@ module SupplyTest
           assert_nil @supply.supply_category_id
         end
         
-        should "have NO ancestors" do
+        should "NOT have a supply_sub_category" do
+          assert_nil @supply.supply_sub_category
+        end
+        
+        should "NOT have a supply_sub_category_id" do
+          assert_nil @supply.supply_sub_category_id
+        end
+        
+        should "NOT have any ancestors" do
           assert_equal [], @supply.ancestors
         end
         
-        should "have NO self_and_siblings" do
+        should "NOT have any self_and_siblings" do
           assert_equal [], @supply.self_and_siblings
         end
         
-        should "have NO siblings" do
+        should "NOT have any siblings" do
           assert_equal [], @supply.siblings
         end
         
@@ -67,8 +75,8 @@ module SupplyTest
           assert_nil @supply.reference
         end
         
-        should "generate a reference before validation if has a supply_sub_category_id" do
-          @supply.supply_sub_category_id = @supply_sub_category_type.first.id
+        should "generate a reference before validation if has a supply_type_id" do
+          @supply.supply_type_id = @supply_type_class.first.id
           @supply.valid?
           assert_not_nil @supply.reference
         end
@@ -89,8 +97,8 @@ module SupplyTest
           assert @supply.destroy
         end
         
-        should "NOT be able to be disabled" do
-          assert !@supply.can_be_disabled?
+        should "be able to be disabled" do
+          assert @supply.can_be_disabled?
         end
         
         should "NOT be disabled" do
@@ -105,12 +113,21 @@ module SupplyTest
           assert !@supply.enable
         end
         
-        context "with a supply_sub_category" do
+        context "with a supply_type" do
           setup do
-            @supply_sub_category = @supply_sub_category_type.first
+            @supply_type = @supply_type_class.first
+            @supply_sub_category = @supply_type.supply_sub_category
             @supply_category = @supply_sub_category.supply_category
             
-            @supply.supply_sub_category = @supply_sub_category
+            @supply.supply_type = @supply_type
+          end
+          
+          should "have a supply_sub_category" do
+            assert_equal @supply_sub_category, @supply.supply_sub_category
+          end
+          
+          should "have a supply_sub_category_id" do
+            assert_equal @supply_sub_category.id, @supply.supply_sub_category_id
           end
           
           should "have a supply_category" do
@@ -122,21 +139,22 @@ module SupplyTest
           end
           
           should "have ancestors" do
-            assert_equal [@supply_sub_category, @supply_category], @supply.ancestors
+            assert_equal [@supply_type, @supply_sub_category, @supply_category], @supply.ancestors
           end
           
           should "have self_and_siblings" do
             assert @supply.self_and_siblings.any?
           end
           
-          should "have siblings" do
-            assert @supply.siblings.any?
+          should "NOT have any siblings" do
+            assert @supply.siblings.empty?
           end
         end
         
         context "which is saved" do
           setup do
-            parent = @supply_sub_category_type.first
+            @first_supply_type = @supply_type_class.first
+            parent = @first_supply_type.supply_sub_category
             parent.attributes = { :supply_categories_supply_size_attributes => [
                                     { :supply_size_id   => supply_sizes(:diameter).id,
                                       :unit_measure_id  => unit_measures(:millimeter).id },
@@ -146,7 +164,7 @@ module SupplyTest
                                       :unit_measure_id  => unit_measures(:meter).id } ] }
             parent.save!
             
-            @supply.attributes = { :supply_sub_category_id => parent.id, :name => "Supply" }
+            @supply.attributes = { :supply_type_id => @first_supply_type.id }
             @supply.save!
           end
           
@@ -155,9 +173,9 @@ module SupplyTest
           end
           
           should "have a valid designation" do
-            expected_value = "#{@supply.supply_category.name} #{@supply.supply_sub_category.name} Supply" # supply_category.name      => "First Commodity Category"
-                                                                                                          # supply_sub_category.name  => "First Commodity Sub Category"
-                                                                                                          # name                      => "Supply"
+            expected_value = "#{@supply.supply_category.name} #{@supply.supply_sub_category.name} #{@supply.supply_type.name}" # supply_category.name      => "First Commodity Category"
+                                                                                                                               # supply_sub_category.name  => "First Commodity Sub Category"
+                                                                                                                               # supply_type.name          => "First Supply Type"
             assert_equal expected_value, @supply.designation
           end
           
@@ -188,10 +206,10 @@ module SupplyTest
             end
             
             should "have a valid designation" do
-              expected_value = "#{@supply.supply_category.name} #{@supply.supply_sub_category.name} Supply 20 mm" # supply_category.name      => "First Commodity Category"
-                                                                                                                  # supply_sub_category.name  => "First Commodity Sub Category"
-                                                                                                                  # name                      => "Supply"
-                                                                                                                  # humanized_supply_sizes    => "20 mm"
+              expected_value = "#{@supply.supply_category.name} #{@supply.supply_sub_category.name} #{@supply.supply_type.name} 20 mm" # supply_category.name      => "First Commodity Category"
+                                                                                                                                       # supply_sub_category.name  => "First Commodity Sub Category"
+                                                                                                                                       # supply_type.name          => "First Supply Type"
+                                                                                                                                       # humanized_supply_sizes    => "20 mm"
               assert_equal expected_value, @supply.designation
             end
           end
@@ -216,10 +234,10 @@ module SupplyTest
             end
             
             should "have a valid designation" do
-              expected_value = "#{@supply.supply_category.name} #{@supply.supply_sub_category.name} Supply 20 x 40 mm"  # supply_category.name      => "First Commodity Category"
-                                                                                                                        # supply_sub_category.name  => "First Commodity Sub Category"
-                                                                                                                        # name                      => "Supply"
-                                                                                                                        # humanized_supply_sizes    => "20 x 40 mm"
+              expected_value = "#{@supply.supply_category.name} #{@supply.supply_sub_category.name} #{@supply.supply_type.name} 20 x 40 mm"  # supply_category.name      => "First Commodity Category"
+                                                                                                                                             # supply_sub_category.name  => "First Commodity Sub Category"
+                                                                                                                                             # supply_type.name          => "First Supply Type"
+                                                                                                                                             # humanized_supply_sizes    => "20 x 40 mm"
               assert_equal expected_value, @supply.designation
             end
           end
@@ -245,10 +263,10 @@ module SupplyTest
             end
             
             should "have a valid designation" do
-              expected_value = "#{@supply.supply_category.name} #{@supply.supply_sub_category.name} Supply 20 mm, 6 m"  # supply_category.name      => "First Commodity Category"
-                                                                                                                        # supply_sub_category.name  => "First Commodity Sub Category"
-                                                                                                                        # name                      => "Supply"
-                                                                                                                        # humanized_supply_sizes    => "20 mm, 6 m"
+              expected_value = "#{@supply.supply_category.name} #{@supply.supply_sub_category.name} #{@supply.supply_type.name} 20 mm, 6 m"  # supply_category.name      => "First Commodity Category"
+                                                                                                                                             # supply_sub_category.name  => "First Commodity Sub Category"
+                                                                                                                                             # supply_type.name          => "First Supply Type"
+                                                                                                                                             # humanized_supply_sizes    => "20 mm, 6 m"
               assert_equal expected_value, @supply.designation
             end
           end
@@ -256,7 +274,8 @@ module SupplyTest
         
         context "which has at least 1 stock_flow" do
           setup do
-            @supply.attributes = { :supply_sub_category_id => @supply_sub_category_type.first.id, :name => "Supply" }
+            @first_supply_type = @supply_type_class.first
+            @supply.attributes = { :supply_type_id => @first_supply_type.id }
             @supply.save!
             
             create_stock_input_for_supply(@supply, :sleep_delay => true)
@@ -369,10 +388,14 @@ module SupplyTest
           end
         end
         
-        # test validates_uniqueness_of_supplies_supply_sizes_scoped_by_name
+        # test validates_uniqueness_of_supplies_supply_sizes_scoped_by_supply_type
         context "with another existing supply in the same parent_category," do
           setup do
-            parent = @supply_sub_category_type.first
+            flunk "#{@supply_type_class.name} should have at least 2 records" if @supply_type_class.count < 2
+            @first_supply_type = @supply_type_class.first
+            @second_supply_type = @supply_type_class.last
+            
+            parent = @first_supply_type.supply_sub_category
             parent.attributes = { :supply_categories_supply_size_attributes => [
                                     { :supply_size_id   => supply_sizes(:diameter).id,
                                       :unit_measure_id  => unit_measures(:millimeter).id },
@@ -380,24 +403,23 @@ module SupplyTest
                                       :unit_measure_id  => unit_measures(:millimeter).id } ] }
             parent.save!
             
-            @another_supply = parent.supplies.build(  :name => "Supply",
-                                                      :supplies_supply_size_attributes => [
-                                                       { :supply_size_id   => supply_sizes(:diameter).id,
-                                                         :unit_measure_id  => unit_measures(:millimeter).id,
-                                                         :value            => "20" },
-                                                       { :supply_size_id   => supply_sizes(:width).id,
-                                                         :unit_measure_id  => unit_measures(:millimeter).id,
-                                                         :value            => "1000" } ] )
+            @another_supply = @first_supply_type.supplies.build(  :supply_type_id => @first_supply_type.id,
+                                                                  :supplies_supply_size_attributes => [
+                                                                   { :supply_size_id   => supply_sizes(:diameter).id,
+                                                                     :unit_measure_id  => unit_measures(:millimeter).id,
+                                                                     :value            => "20" },
+                                                                   { :supply_size_id   => supply_sizes(:width).id,
+                                                                     :unit_measure_id  => unit_measures(:millimeter).id,
+                                                                     :value            => "1000" } ] )
             @another_supply.save!
             flunk "parent should have @another_supply has a child" unless parent.supplies.include?(@another_supply)
             flunk "@another_supply should have 2 supplies_supply_sizes" unless @another_supply.supplies_supply_sizes.count == 2
             
-            @supply = parent.supplies.build
+            @supply = @first_supply_type.supplies.build
           end
           
-          #FIXME this test is not reliable, see the TODO note on Supply#validates_uniqueness_of_supplies_supply_sizes_scoped_by_name
-          should "NOT be valid if name and supply_size's values are exactly the same" do
-            @supply.attributes = { :name => "Supply",
+          should "NOT be valid if supply_type and supply_size's values are exactly the same" do
+            @supply.attributes = { :supply_type_id => @first_supply_type.id,
                                    :supplies_supply_size_attributes => [
                                     { :supply_size_id   => supply_sizes(:diameter).id,
                                       :unit_measure_id  => unit_measures(:millimeter).id,
@@ -408,13 +430,13 @@ module SupplyTest
             @supply.valid?
             
             assert @supply.errors.invalid?(:supplies_supply_sizes), "<#{@another_supply.designation}> expected to be equal to\n<#{@supply.designation}>"
-            assert_match /La famille choisie contient déjà une fourniture avec le même type et les mêmes spécificités \(#{@supply.designation}\)/, @supply.errors.on(:supplies_supply_sizes)
-            assert @supply.errors.invalid?(:name)
+            assert_match /La famille choisie contient déjà un article avec le même type et les mêmes spécificités \(#{@another_supply.reference} - #{@another_supply.designation}\)/, @supply.errors.on(:supplies_supply_sizes)
+            assert @supply.errors.invalid?(:supply_type)
             assert_equal 2, @supply.supplies_supply_sizes.select{ |s| s.errors.on(:value) }.size
           end
           
-          should "be valid if name is the same, but not the supply_size's values" do
-            @supply.attributes = { :name => "Supply",
+          should "be valid if supply_type is the same, but not the supply_size's values" do
+            @supply.attributes = { :supply_type_id => @first_supply_type.id,
                                    :supplies_supply_size_attributes => [
                                     { :supply_size_id   => supply_sizes(:diameter).id,
                                       :unit_measure_id  => unit_measures(:millimeter).id,
@@ -427,8 +449,8 @@ module SupplyTest
             assert !@supply.errors.invalid?(:supplies_supply_sizes)
           end
           
-          should "be valid if the supply_size's values are the same, but not the name" do
-            @supply.attributes = { :name => "Second Supply",
+          should "be valid if the supply_size's values are the same, but not the supply_type" do
+            @supply.attributes = { :supply_type_id => @second_supply_type.id,
                                    :supplies_supply_size_attributes => [
                                     { :supply_size_id   => supply_sizes(:diameter).id,
                                       :unit_measure_id  => unit_measures(:millimeter).id,
@@ -443,7 +465,7 @@ module SupplyTest
           
           context "which is saved" do
             setup do
-              @supply.name = "Supply"
+              @supply.supply_type_id = @first_supply_type.id
               @supply.save!
             end
             
@@ -469,7 +491,8 @@ module SupplyTest
         # test validates_supplies_supply_sizes_according_to_sub_category
         context "belonging to a parent_category with specific supply_sizes" do
           setup do
-            parent = @supply_sub_category_type.first
+            @first_supply_type = @supply_type_class.first
+            parent = @first_supply_type.supply_sub_category
             parent.attributes = { :supply_categories_supply_size_attributes => [
                                     { :supply_size_id   => supply_sizes(:diameter).id,
                                       :unit_measure_id  => unit_measures(:millimeter).id },
@@ -477,12 +500,12 @@ module SupplyTest
                                       :unit_measure_id  => unit_measures(:millimeter).id } ] }
             parent.save!
             
-            @supply.attributes = { :name => "Supply", :supply_sub_category_id => parent.id }
+            @supply.attributes = { :supply_type_id => @first_supply_type.id }
           end
           
           should "be valid if has no supply_sizes" do
             @supply.valid?
-            assert !@supply.errors.invalid?(:supplies_supply_sizes)
+            assert !@supply.errors.invalid?(:supplies_supply_sizes), @supply.errors.inspect
           end
           
           should "be valid if has a part of supply_sizes among the parent_category's supply_sizes" do
@@ -514,13 +537,14 @@ module SupplyTest
             @supply.valid?
             
             assert @supply.errors.invalid?(:supplies_supply_sizes)
-            assert_match /Les spécificités de la fourniture ne correspondent pas à celles de la sous-famille choisie/, @supply.errors.on(:supplies_supply_sizes)
+            assert_match /Les spécificités de l'article ne correspondent pas à celles de la sous-famille choisie/, @supply.errors.on(:supplies_supply_sizes)
           end
         end
         
         context "which is saved and have many stock_flows" do
           setup do
-            @supply.attributes = { :supply_sub_category_id => @supply_sub_category_type.first.id, :name => "Supply" }
+            @first_supply_type = @supply_type_class.first
+            @supply.attributes = { :supply_type_id => @first_supply_type.id }
             @supply.save!
             
             @stock_flow1 = create_stock_input_for_supply(@supply, :unit_price => 100, :quantity => 100, :created_at => Time.zone.parse("2009-01-01"))
@@ -544,7 +568,8 @@ module SupplyTest
         
         context "which is saved and have many inventories" do
           setup do
-            @supply.attributes = { :supply_sub_category_id => @supply_sub_category_type.first.id, :name => "Supply" }
+            @first_supply_type = @supply_type_class.first
+            @supply.attributes = { :supply_type_id => @first_supply_type.id }
             @supply.save!
             
             @inventory1 = create_inventory_with( { @supply => 100 }, Time.zone.parse("2009-01-01") ) # generate a stock_input  with quantity at 100
@@ -566,7 +591,7 @@ module SupplyTest
             flunk "@stock_flow5 should be created with good quantity" unless @stock_flow5 and @stock_flow5.quantity == 300
             flunk "@stock_flow6 should be created with good quantity" unless @stock_flow6 and @stock_flow6.quantity == 500
             
-            flunk "@inventory3 should have no stock_flows" unless @inventory3.stock_flows.empty?
+            flunk "@inventory3 should not have any stock_flows" unless @inventory3.stock_flows.empty?
           end
           
           # test last_inventory
@@ -599,7 +624,8 @@ module SupplyTest
         
         context "which is saved and have many inventories and stock_flows" do
           setup do
-            @supply.attributes = { :supply_sub_category_id => @supply_sub_category_type.first.id, :name => "Supply" }
+            @first_supply_type = @supply_type_class.first
+            @supply.attributes = { :supply_type_id => @first_supply_type.id }
             @supply.save!
             
             @inventory1   = create_inventory_with( { @supply => 100 }, Time.zone.parse("2009-01-01") )            # generate a stock_input  with quantity at 100  => stock_quantity = 100
@@ -625,8 +651,8 @@ module SupplyTest
             flunk "@stock_flow2 should be created with good quantity" unless @stock_flow2 and @stock_flow2.quantity == 130
             flunk "@stock_flow4 should be created with good quantity" unless @stock_flow4 and @stock_flow4.quantity == 30
             
-            flunk "@inventory3 should have no stock_flows" unless @inventory3.stock_flows.empty?
-            flunk "@inventory5 should have no stock_flows" unless @inventory5.stock_flows.empty?
+            flunk "@inventory3 should not have any stock_flows" unless @inventory3.stock_flows.empty?
+            flunk "@inventory5 should not have any stock_flows" unless @inventory5.stock_flows.empty?
           end
           
           # test last_inventory_stock_flow
@@ -686,7 +712,8 @@ module SupplyTest
         
         context "which is saved and have many stock_inputs and stock_outputs" do
           setup do
-            @supply.attributes = { :supply_sub_category_id => @supply_sub_category_type.first.id, :name => "Supply", :measure => 5, :unit_mass => 15 }
+            @first_supply_type = @supply_type_class.first
+            @supply.attributes = { :supply_type_id => @first_supply_type.id, :measure => 5, :unit_mass => 15 }
             @supply.save!
             
             @stock_input1   = create_stock_input_for_supply( @supply, :unit_price => 100,                                         # stock_value               => 0 + ( 50 * 100 ) = 5000
@@ -781,7 +808,8 @@ module SupplyTest
         
         context "which is saved and have many stock_inputs and stock_outputs with different unit_price" do
           setup do
-            @supply.attributes = { :supply_sub_category_id => @supply_sub_category_type.first.id, :name => "Supply" }
+            @first_supply_type = @supply_type_class.first
+            @supply.attributes = { :supply_type_id => @first_supply_type.id }
             @supply.save!
             
             @stock_input1   = create_stock_input_for_supply( @supply, :unit_price => 100,                                         # stock_value               => 0 + ( 50 * 100 ) = 5000
@@ -871,8 +899,8 @@ module SupplyTest
         
         context "without supplier_supply" do
           setup do
-            @supply.attributes = { :supply_sub_category_id      => @supply_sub_category_type.first.id,
-                                   :name                        => "Supply" }
+            @first_supply_type = @supply_type_class.first
+            @supply.attributes = { :supply_type_id => @first_supply_type.id }
             @supply.save!
           end
           
@@ -899,8 +927,8 @@ module SupplyTest
         
         context "with 1 supplier_supply" do
           setup do
-            @supply.attributes = { :supply_sub_category_id      => @supply_sub_category_type.first.id,
-                                   :name                        => "Supply",
+            @first_supply_type = @supply_type_class.first
+            @supply.attributes = { :supply_type_id              => @first_supply_type.id,
                                    :supplier_supply_attributes  => [ { :supplier_id     => thirds(:first_supplier).id,
                                                                        :fob_unit_price  => 100,
                                                                        :taxes           => 10 } ] }
@@ -952,8 +980,8 @@ module SupplyTest
         
         context "with many supplier_supplies" do
           setup do
-            @supply.attributes = { :supply_sub_category_id => @supply_sub_category_type.first.id,
-                                   :name => "Supply",
+            @first_supply_type = @supply_type_class.first
+            @supply.attributes = { :supply_type_id => @first_supply_type.id,
                                    :supplier_supply_attributes  => [ { :supplier_id     => thirds(:first_supplier).id,
                                                                        :fob_unit_price  => 100,
                                                                        :taxes           => 10 },

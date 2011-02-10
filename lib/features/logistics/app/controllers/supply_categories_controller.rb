@@ -1,13 +1,13 @@
 class SupplyCategoriesController < ApplicationController
   helper :supplies_manager
   
-  before_filter :define_supply_type_and_supply_category_type
+  before_filter :define_supply_class_and_supply_category_class
   before_filter :find_supply_category
   
   # GET /commodity_categories
   # GET /consumable_categories
   def index
-    redirect_to send("#{@supply_type.name.tableize}_manager_path")
+    redirect_to send("#{@supply_class.name.tableize}_manager_path")
   end
   
   # GET /commodity_categories/:id
@@ -18,16 +18,16 @@ class SupplyCategoriesController < ApplicationController
   # GET /commodity_categories/new
   # GET /consumable_categories/new
   def new
-    @supply_category = @supply_category_type.new
+    @supply_category = @supply_category_class.new
   end
   
   # POST /commodity_categories
   # POST /consumable_categories
   def create
-    @supply_category = @supply_category_type.new(params["#{@supply_category_type.name.underscore}".to_sym])
+    @supply_category = @supply_category_class.new(params["#{@supply_category_class.name.underscore}".to_sym])
     if @supply_category.save
       flash[:notice] = "La famille a été créée"
-      redirect_to send("#{@supply_type.name.tableize}_manager_path")
+      redirect_to send("#{@supply_class.name.tableize}_manager_path")
     else
       custom_callback
       render :action => 'new'
@@ -42,9 +42,9 @@ class SupplyCategoriesController < ApplicationController
   # PUT /consumable_categories/:id
   def update
     if @supply_category.can_be_edited?
-      if @supply_category.update_attributes(params["#{@supply_category_type.name.underscore}".to_sym])
+      if @supply_category.update_attributes(params["#{@supply_category_class.name.underscore}".to_sym])
         flash[:notice] = "Le famille a été modifiée avec succès"
-        redirect_to send("#{@supply_type.name.tableize}_manager_path")
+        redirect_to send("#{@supply_class.name.tableize}_manager_path")
       else
         custom_callback
         render :action => 'edit'
@@ -63,7 +63,7 @@ class SupplyCategoriesController < ApplicationController
       else
         flash[:error] = "Une erreur est survenue à la suppression de la famille"
       end
-      redirect_to send("#{@supply_type.name.tableize}_manager_path")
+      redirect_to send("#{@supply_class.name.tableize}_manager_path")
     else
       error_access_page(412)
     end
@@ -78,7 +78,7 @@ class SupplyCategoriesController < ApplicationController
       else
         flash[:error] = "Une erreur est survenue à la désactivation de la famille"
       end
-      redirect_to send("#{@supply_type.name.tableize}_manager_path")
+      redirect_to send("#{@supply_class.name.tableize}_manager_path")
     else
       error_access_page(412)
     end
@@ -93,7 +93,7 @@ class SupplyCategoriesController < ApplicationController
       else
         flash[:error] = "Une erreur est survenue à la restauration de la famille"
       end
-      redirect_to send("#{@supply_type.name.tableize}_manager_path")
+      redirect_to send("#{@supply_class.name.tableize}_manager_path")
     else
       error_access_page(412)
     end
@@ -107,8 +107,8 @@ class SupplyCategoriesController < ApplicationController
   
   private
     def find_supply_category
-      id = params[:id] || params["#{@supply_category_type.name.underscore}_id".to_sym]
-      @supply_category = @supply_category_type.find(id) unless id.blank?
+      id = params[:id] || params["#{@supply_category_class.name.underscore}_id".to_sym]
+      @supply_category = @supply_category_class.find(id) unless id.blank?
     end
     
     def custom_callback

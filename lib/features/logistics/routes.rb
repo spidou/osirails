@@ -44,6 +44,9 @@ ActionController::Routing::Routes.add_routes do |map|
   map.update_commodity_sub_categories   'update_commodity_sub_categories',  :controller => 'commodity_categories',  :action => 'update_supply_sub_categories'
   map.update_consumable_sub_categories  'update_consumable_sub_categories', :controller => 'consumable_categories', :action => 'update_supply_sub_categories'
   
+  map.update_commodity_types  'update_commodity_types',  :controller => 'commodity_types',  :action => 'update_supply_types'
+  map.update_consumable_types 'update_consumable_types', :controller => 'consumable_types', :action => 'update_supply_types'
+  
   map.update_commodity_unit_measure   'update_commodity_unit_measure',  :controller => 'commodity_sub_categories',  :action => 'update_supply_unit_measure'
   map.update_consumable_unit_measure  'update_consumable_unit_measure', :controller => 'consumable_sub_categories', :action => 'update_supply_unit_measure'
   

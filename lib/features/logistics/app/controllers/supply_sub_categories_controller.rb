@@ -1,5 +1,5 @@
 class SupplySubCategoriesController < SupplyCategoriesController
-  before_filter :define_supply_type_and_supply_category_type
+  before_filter :define_supply_class_and_supply_category_class
   before_filter :find_supply_categories, :only => [ :show, :new, :create, :edit, :update ]
   
   before_filter :find_or_build_supply_categories_supply_sizes, :only => [ :show, :new, :edit ]
@@ -9,8 +9,8 @@ class SupplySubCategoriesController < SupplyCategoriesController
   # GET /commodity_categories/new?parent_id=:parent_id
   # GET /consumable_categories/new?parent_id=:parent_id
   def new
-    parent_category_id = @supply_parent_category_type.find_by_id(params[:parent_id]).id rescue nil
-    @supply_category = @supply_category_type.new( :supply_category_id => ( parent_category_id ) )
+    parent_category_id = @supply_parent_category_class.find_by_id(params[:parent_id]).id rescue nil
+    @supply_category = @supply_category_class.new( :supply_category_id => ( parent_category_id ) )
   end
   
   # GET /update_supply_unit_measure?id=:id (AJAX)
@@ -25,7 +25,7 @@ class SupplySubCategoriesController < SupplyCategoriesController
   
   private
     def find_supply_categories
-      @supply_categories = @supply_parent_category_type.enabled
+      @supply_categories = @supply_parent_category_class.enabled
     end
     
     def custom_callback

@@ -10,13 +10,63 @@ module SupplyCategoryTest
             assert_not_nil @supply_category.reference
           end
           
+          context "without children (sub categories)" do
+            setup do
+              @supply_category.attributes = { :name => "Supply Category" }
+              @supply_category.save!
+              
+              flunk "@supply_category should have 0 children" if @supply_category.children.to_a.any?
+            end
+            
+            should "be editable" do
+              assert @supply_category.can_be_edited?
+            end
+            
+            should "be destroyable" do
+              assert @supply_category.can_be_destroyed?
+            end
+            
+            should "be able to be disabled" do
+              assert @supply_category.can_be_disabled?
+            end
+            
+            should "be disabled successfully" do
+              @supply_category.disable
+              assert_equal false, @supply_category.enabled_was
+              assert_not_nil @supply_category.disabled_at_was
+            end
+            
+            should "NOT be able to be enabled" do
+              assert !@supply_category.can_be_enabled?
+            end
+            
+            should "be able to have children" do
+              assert @supply_category.can_have_children?
+            end
+            
+            should "NOT have children" do
+              assert !@supply_category.has_children?
+            end
+            
+            should "NOT have enabled children" do
+              assert !@supply_category.has_enabled_children?
+            end
+            
+            should "have no stock_value at this time" do
+              assert_equal 0.0, @supply_category.stock_value
+            end
+          end
+          
+          
           context "with active children (sub categories)" do
             setup do
               @supply_category.attributes = { :name => "Supply Category" }
               @supply_category.save!
               
-              @child_category = @supply_category.children.build(:name => "Child Category")
-              @child_category.save!
+              @supply_sub_category = @supply_category.children.build(:name => "Supply Sub Category")
+              @supply_sub_category.save!
+              
+              flunk "@supply_category should have at least 1 child" unless @supply_category.children.enabled.to_a.any?
             end
             
             should "be editable" do
@@ -54,7 +104,7 @@ module SupplyCategoryTest
             
             context "which have supplies with stock" do
               setup do
-                create_supply_with_stock_input_for(@child_category)
+                create_supply_with_stock_input_for(@supply_sub_category)
               end
               
               should "have a good stock_value" do
@@ -69,17 +119,11 @@ module SupplyCategoryTest
               @supply_category.attributes = { :name => "Supply Category" }
               @supply_category.save!
               
-              @child_category = @supply_category.children.build(:name => "Child Category")
-              @child_category.save!
-              
-              # create a supply and disable it in order to be able to disable child_category
-              @supply = create_supply_with_stock_input_for(@child_category)
-              disable_supply(@supply)
-              
-              flunk "@child_category should be able to be disabled" unless @child_category.can_be_disabled?
-              
-              @child_category.disable
-              flunk "@child_category should be disabled" if @child_category.enabled_was
+              # create a supply_sub_category and disable it (to have at least 1 disabled child)
+              @supply_sub_category = @supply_category.children.build(:name => "Supply Sub Category")
+              @supply_sub_category.save!
+              @supply_sub_category.disable
+              flunk "@supply_sub_category should be disabled" if @supply_sub_category.enabled_was
             end
             
             should "be editable" do
@@ -214,8 +258,8 @@ module SupplyCategoryTest
             assert @supply_category.can_be_destroyed?
           end
           
-          should "NOT be able to be disabled" do
-            assert !@supply_category.can_be_disabled?
+          should "be able to be disabled" do
+            assert @supply_category.can_be_disabled?
           end
           
           should "NOT be able to be enabled" do

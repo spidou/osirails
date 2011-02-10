@@ -23,7 +23,7 @@ module StockFlowTest
         
         context "associated to a supply" do
           setup do
-            @supply = Supply.first
+            @supply = create_default_supply
             flunk "@supply should NOT have any stock_flows" if @supply.stock_flows.any?
             
             @stock_flow.supply = @supply
@@ -73,7 +73,7 @@ module StockFlowTest
         
         context "associated to a disabled supply" do
           setup do
-            @supply = Supply.first
+            @supply = create_default_supply
             create_stock_input_for_supply(@supply, :sleep_delay => true)
             create_stock_output_to_set_stock_quantity_at_zero_for_supply(@supply)
             disable_supply(@supply)
@@ -99,7 +99,7 @@ module StockFlowTest
         
         context "associated to a supply and to an inventory" do
           setup do
-            @supply = Supply.first
+            @supply = create_default_supply
             flunk "@supply should NOT have any stock_flows" if @supply.stock_flows.any?
             
             @inventory = build_inventory_with( { @supply => 100 } )
@@ -116,7 +116,7 @@ module StockFlowTest
         
         context "which is saved (and associated to an inventory)" do
           setup do
-            @supply = Supply.first
+            @supply = create_default_supply
             flunk "@supply should NOT have any stock_flows" if @supply.stock_flows.any?
             
             @inventory = create_inventory_with( { @supply => 100 } )
@@ -124,11 +124,6 @@ module StockFlowTest
             
             @stock_flow = @inventory.stock_flows.first
             flunk "@stock_flow should NOT be a new record" if @stock_flow.new_record?
-          end
-          
-          #TODO
-          should "assert true" do
-            assert true
           end
         end
         

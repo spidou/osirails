@@ -1,8 +1,8 @@
 class CommoditiesManagerController < SuppliesManagerController
   
-  def define_supply_type_and_supply_category_type
-    @supply_type = Commodity
-    @supply_category_type = CommodityCategory
+  def define_supply_class_and_supply_category_class
+    @supply_class = Commodity
+    @supply_category_class = CommodityCategory
   end
   
 end

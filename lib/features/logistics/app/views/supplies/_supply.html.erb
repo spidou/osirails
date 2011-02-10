@@ -2,19 +2,44 @@
   <%= stylesheet_link_tag_with_theme_support 'logistics/supply' %>
 <% end %>
 
-<% add_contextual_menu_item :possible_actions do %>
-  <%= display_supply_category_add_button(@supply_category_type.new) %>
-  <%= display_supply_add_button(supply) %>
-  
-  <%= display_supply_edit_button(supply) unless is_edit_view? or supply.new_record? %>
-  <%= display_supply_enable_button(supply) unless supply.new_record? %>
-  <%= display_supply_disable_button(supply) unless supply.new_record? %>
-  <%= display_supply_delete_button(supply) unless supply.new_record? %>
+<% unless supply.new_record? %>
+  <% add_contextual_menu_item supply.class.human_name do %>
+    <% supply_action_buttons(supply).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% unless supply.new_record? %>
+  <% add_contextual_menu_item supply.supply_sub_category.class.human_name do %>
+    <% supply_sub_category_action_buttons(supply.supply_sub_category).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% unless supply.new_record? %>
+  <% add_contextual_menu_item supply.supply_category.class.human_name do %>
+    <% supply_category_action_buttons(supply.supply_category).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= display_supply_list_button(@supply_type) %>
+  <%= display_supply_list_button(@supply_class) %>
 <% end %>
+
+<%
+sub_category_select_id   = "#{@supply_class.name.underscore}_supply_sub_category_id"
+sub_category_select_name = "#{@supply_class.name.underscore}[supply_sub_category_id]"
+
+supply_type_select_id   = "#{@supply_class.name.underscore}_supply_type_id"
+supply_type_select_name = "#{@supply_class.name.underscore}[supply_type_id]"
+
+supply_type_input_id   = "#{@supply_class.name.underscore}_supply_type_name"
+supply_type_input_name = "#{@supply_class.name.underscore}[supply_type_name]"
+%>
 
 <div class="presentation_medium">
   <h2>Caractéristiques</h2>
@@ -36,8 +61,8 @@
           <%= form.label :supply_category_id %>
           <% if is_form_view? and supply.new_record? %>
             <%= form.collection_select :supply_category_id, @supply_categories, :id, :name, { :include_blank => "Veuillez choisir une famille" } %>
-            <%= observe_field("#{@supply_type.name.underscore}_supply_category_id", :url    => self.send("update_#{@supply_sub_category_type.name.tableize}_path"),
-                                                                                    :update => "#{@supply_type.name.underscore}_supply_sub_category_id",
+            <%= observe_field("#{@supply_class.name.underscore}_supply_category_id", :url    => self.send("update_#{@supply_sub_category_class.name.tableize}_path"),
+                                                                                    :update => "#{@supply_class.name.underscore}_supply_sub_category_id",
                                                                                     :with   => 'id') %>
           <% else %>
             <%= strong supply.supply_category.name %>
@@ -49,18 +74,17 @@
         <p>
           <%= form.label :supply_sub_category_id %>
           <% if is_form_view? and supply.new_record? %>
-            <%
-            sub_category_select_id   = "#{@supply_type.name.underscore}_supply_sub_category_id"
-            sub_category_select_name = "#{@supply_type.name.underscore}[supply_sub_category_id]"
-            %>
             <select id="<%= sub_category_select_id %>" name="<%= sub_category_select_name %>">
-              <%= render :partial => 'supply_categories/supply_sub_categories', :object => supply.supply_category ? supply.supply_category.children.enabled : [],
+              <%= render :partial => 'supply_categories/supply_sub_categories', :object => supply.supply_category ? supply.supply_category.children : [],
                                                                                 :locals => { :current => supply.supply_sub_category_id } %>
             </select>
-            <%= observe_field("#{@supply_type.name.underscore}_supply_sub_category_id", :url    => self.send("update_#{@supply_type.name.underscore}_supply_sizes_path"),
+            <%= observe_field("#{@supply_class.name.underscore}_supply_sub_category_id", :url    => self.send("update_#{@supply_type_class.name.tableize}_path"),
+                                                                                        :update => supply_type_select_id,
+                                                                                        :with   => 'id') %>
+            <%= observe_field("#{@supply_class.name.underscore}_supply_sub_category_id", :url    => self.send("update_#{@supply_class.name.underscore}_supply_sizes_path"),
                                                                                         :update => :supplies_supply_sizes,
                                                                                         :with   => 'parent_id') %>
-            <%= observe_field("#{@supply_type.name.underscore}_supply_sub_category_id", :url    => self.send("update_#{@supply_type.name.underscore}_unit_measure_path"),
+            <%= observe_field("#{@supply_class.name.underscore}_supply_sub_category_id", :url    => self.send("update_#{@supply_class.name.underscore}_unit_measure_path"),
                                                                                         :with   => 'id') %>
           <% else %>
             <%= strong supply.supply_sub_category.name %>
@@ -70,8 +94,21 @@
       
       <div>
         <p>
-          <%= form.label :name %>
-          <%= form.form_or_view(form.text_field(:name, :disabled => supply.has_been_used?), :name) %>
+          <%= form.label :supply_type %>
+          <% if is_form_view? and supply.new_record? %>
+            <span class="supply_type_name_select_container">
+              <select id="<%= supply_type_select_id %>" name="<%= supply_type_select_name %>" class="supply_type_id_input" onchange="if (this.value == '-1') { this.clear().up('.supply_type_name_select_container').hide().up().down('.supply_type_name_input_container').show().down('.supply_type_name_input').focus(); } else { }">
+                <%= render :partial => 'supply_types/supply_types', :object => supply.supply_sub_category ? supply.supply_sub_category.supply_types : [],
+                                                                    :locals => { :current => supply.supply_type_id } %>
+              </select>
+            </span>
+            <span class="supply_type_name_input_container" style="display:none">
+              <input id="<%= supply_type_input_id %>" name="<%= supply_type_input_name %>" class="supply_type_name_input" type="text" size="16" autocomplete="off"/>
+              <%= link_to image_tag("cross_16x16.png", :alt => "Annuler", :title => "Annuler"), '#', :onclick => "var input_container = this.up('.supply_type_name_input_container'); input_container.down('.supply_type_name_input').clear(); input_container.hide().up().down('.supply_type_name_select_container').show().down('select').focus();; return false;" %>
+            </span>
+          <% else %>
+            <%= strong supply.supply_type.name %>
+          <% end %>
         </p>
       </div>
     </fieldset>
@@ -112,24 +149,24 @@
         <div>
           <p>
             <%= form.label :average_unit_price %>
-            <%= form.strong number_with_precision(supply.average_unit_price, 2) %> &euro;
+            <%= form.strong number_with_precision(supply.average_unit_price, :precision => 2) %> &euro;
           </p>
           
           <p>
             <%= form.label :average_measure_price %>
-            <%= form.strong number_with_precision(supply.average_measure_price, 2) %> &euro;/<%= display_supply_unit_measure(supply) %>
+            <%= form.strong number_with_precision(supply.average_measure_price, :precision => 2) %> &euro;/<%= display_supply_unit_measure(supply) %>
           </p>
         </div>
         
         <div>
           <p>
             <%= form.label :higher_unit_price %>
-            <%= form.strong number_with_precision(supply.higher_unit_price, 2) %> &euro;
+            <%= form.strong number_with_precision(supply.higher_unit_price, :precision => 2) %> &euro;
           </p>
           
           <p>
             <%= form.label :higher_measure_price %>
-            <%= form.strong number_with_precision(supply.higher_measure_price, 2) %> &euro;/<%= display_supply_unit_measure(supply) %>
+            <%= form.strong number_with_precision(supply.higher_measure_price, :precision => 2) %> &euro;/<%= display_supply_unit_measure(supply) %>
           </p>
         </div>
       </div>
@@ -143,22 +180,22 @@
           </p>
           <p>
             <%= form.label :stock_value %>
-            <%= form.strong number_with_precision(supply.stock_value, 2) %> &euro;
+            <%= form.strong number_with_precision(supply.stock_value, :precision => 2) %> &euro;
           </p>
           <p>
             <%= form.label :average_unit_value %>
-            <%= form.strong number_with_precision(supply.average_unit_stock_value, 2) %> &euro;
+            <%= form.strong number_with_precision(supply.average_unit_stock_value, :precision => 2) %> &euro;
           </p>
         </div>
         
         <div>
           <p>
             <%= form.label :stock_measure %>
-            <%= form.strong number_with_precision(supply.stock_measure, 2) %> <%= display_supply_unit_measure(supply) %>
+            <%= form.strong number_with_precision(supply.stock_measure, :precision => 2) %> <%= display_supply_unit_measure(supply) %>
           </p>
           <p>
             <%= form.label :stock_mass %>
-            <%= form.strong number_with_precision(supply.stock_mass, 2) %> kg
+            <%= form.strong number_with_precision(supply.stock_mass, :precision => 2) %> kg
           </p>
         </div>
       </div>

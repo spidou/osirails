@@ -3,6 +3,7 @@ require 'test/test_helper'
 require File.dirname(__FILE__) + '/unit/supply_test'
 require File.dirname(__FILE__) + '/unit/supply_category_test'
 require File.dirname(__FILE__) + '/unit/supply_sub_category_test'
+require File.dirname(__FILE__) + '/unit/supply_type_test'
 require File.dirname(__FILE__) + '/unit/stock_flow_test'
 
 Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + '/fixtures/'
@@ -10,8 +11,27 @@ Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + '/fixtures/'
 class Test::Unit::TestCase
   fixtures :all
   
+  def create_default_supply(attributes = {})
+    supply_type = SupplyType.first
+    create_supply_for(supply_type, attributes)
+  end
+  
+  def create_supply_type_for(supply_sub_category)
+    supply_type = supply_sub_category.supply_types.build(:name => "Supply Type #{(rand*1000.to_i)}")
+    supply_type.save!
+    return supply_type
+  end
+  
+  def create_supply_for(supply_type, attributes = {})
+    supply = supply_type.supplies.build(attributes)
+    supply.save!
+    return supply
+  end
+  
   def create_supply_with_stock_input_for(supply_sub_category)
-    supply = supply_sub_category.supplies.build(:name => "Supply", :measure => 5)
+    supply_type = create_supply_type_for(supply_sub_category)
+    
+    supply = create_supply_for(supply_type, :measure => 5)
     supply.supplier_supply_attributes = [ { :supplier_id    => thirds(:first_supplier).id,
                                             :fob_unit_price => 100,
                                             :taxes          => 10 } ]
@@ -67,6 +87,12 @@ class Test::Unit::TestCase
     
     supply.disable
     flunk "supply should be disabled" if supply.enabled_was
+  end
+  
+  def disable_supply_type(supply_type)
+    #TODO perhaps we should disable all supplies of the supply_type before trying to disable it
+    supply_type.disable
+    flunk "supply_type should be disabled" if supply_type.enabled_was
   end
   
   def build_inventory_with(supplies_quantities = {}, datetime = Time.zone.now)

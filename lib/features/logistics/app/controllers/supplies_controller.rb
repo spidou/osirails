@@ -2,18 +2,18 @@ class SuppliesController < ApplicationController
   helper :supplies_manager, :supplies, :supplier_supplies
   
   before_filter :define_supply_type_and_supply_category_type
-  before_filter :find_supply,                       :except => [ :update_supplies_supply_sizes ]
-  before_filter :find_supply_categories,            :only   => [ :new, :create, :edit, :update ]
-  before_filter :find_supply_categories_ancestors,  :only   => [ :new, :create, :edit, :update ]
-  before_filter :find_suppliers,                    :only   => [ :new, :create ]
-  before_filter :find_unit_measure,                 :only   => [ :show, :new, :create, :edit, :update ]
+  before_filter :find_supply,           :except => [ :update_supplies_supply_sizes ]
+  before_filter :load_collections,      :only   => [ :new, :create, :edit, :update ]
+  before_filter :find_supply_ancestors, :only   => [ :new, :create, :edit, :update ]
+  before_filter :find_suppliers,        :only   => [ :new, :create ]
+  before_filter :find_unit_measure,     :only   => [ :show, :new, :create, :edit, :update ]
   
   before_filter :find_or_build_supplies_supply_sizes, :only => [ :show, :edit ]
 
   # GET /commodities
   # GET /consumables
   def index
-    redirect_to :controller => "#{@supply_type.name.tableize}_manager", :action => 'index'
+    redirect_to :controller => "#{@supply_class.name.tableize}_manager", :action => 'index'
   end
   
   # GET /commodities/:id
@@ -24,21 +24,30 @@ class SuppliesController < ApplicationController
   # GET /commodities/new
   # GET /consumables/new
   #
-  # GET /commodities/new?parent_id=:parent_id
-  # GET /consumables/new?parent_id=:parent_id
+  # GET /commodities/new?supply_category_id=:supply_category_id
+  # GET /consumables/new?supply_category_id=:supply_category_id
+  #
+  # GET /commodities/new?supply_sub_category_id=:supply_sub_category_id
+  # GET /consumables/new?supply_sub_category_id=:supply_sub_category_id
+  #
+  # GET /commodities/new?supply_type_id=:supply_type_id
+  # GET /consumables/new?supply_type_id=:supply_type_id
   def new
-    @supply = @supply_type.new( :supply_sub_category_id => ( @supply_sub_category.id rescue nil ) )
+    @supply = @supply_class.new( :supply_category_id      => ( @supply_category.id rescue nil ),
+                                 :supply_sub_category_id  => ( @supply_sub_category.id rescue nil ),
+                                 :supply_type_id          => ( @supply_type.id rescue nil ) )
     find_or_build_supplies_supply_sizes
   end
   
   # POST /commodities
   # POST /consumables
   def create
-    @supply = @supply_type.new(params[@supply_type.name.underscore.to_sym])
+    @supply = @supply_class.new(:supply_sub_category_id => params[@supply_class.name.underscore.to_sym].delete(:supply_sub_category_id)) #:supply_sub_category_id is required for other setter methods
+    @supply.attributes = params[@supply_class.name.underscore.to_sym]
     
     if @supply.save
-      flash[:notice] = "La fourniture a été créée avec succès"
-      redirect_to send("#{@supply_type.name.tableize}_manager_path")
+      flash[:notice] = "L'article a été créé avec succès"
+      redirect_to send("#{@supply_class.name.tableize}_manager_path")
     else
       find_or_build_supplies_supply_sizes
       render :action => 'new'
@@ -53,9 +62,9 @@ class SuppliesController < ApplicationController
   # PUT /commodities/:id
   # PUT /consumables/:id
   def update
-    if @supply.update_attributes(params["#{@supply_type.name.underscore}".to_sym])
-      flash[:notice] = "La fourniture a été modifiée avec succès"
-      redirect_to :controller => "#{@supply_type.name.tableize}_manager", :action => 'index'
+    if @supply.update_attributes(params["#{@supply_class.name.underscore}".to_sym])
+      flash[:notice] = "L'article a été modifié avec succès"
+      redirect_to :controller => "#{@supply_class.name.tableize}_manager", :action => 'index'
     else
       find_or_build_supplies_supply_sizes
       render :action => 'edit'
@@ -66,39 +75,39 @@ class SuppliesController < ApplicationController
   # DELETE /consumables/:id
   def destroy
     if @supply.destroy
-      flash[:notice] = "La fourniture a été supprimée avec succès"
+      flash[:notice] = "L'article a été supprimé avec succès"
     else
-      flash[:error] = "Une erreur est survenue à la suppression de la fourniture"
+      flash[:error] = "Une erreur est survenue à la suppression de l'article"
     end
-    redirect_to :controller => "#{@supply_type.name.tableize}_manager", :action => 'index'
+    redirect_to :controller => "#{@supply_class.name.tableize}_manager", :action => 'index'
   end
   
   # GET /commodities/:commodity_id/disable
   # GET /consumables/:consumable_id/disable
   def disable
     if @supply.disable
-      flash[:notice] = "La fourniture a été désactivée avec succès"
+      flash[:notice] = "L'article a été désactivé avec succès"
     else
-      flash[:error] = "Une erreur est survenue à la désactivation de la fourniture"
+      flash[:error] = "Une erreur est survenue à la désactivation de l'article"
     end
-    redirect_to :controller => "#{@supply_type.name.tableize}_manager", :action => 'index'
+    redirect_to :controller => "#{@supply_class.name.tableize}_manager", :action => 'index'
   end
   
   # GET /commodities/:commodity_id/enable
   # GET /consumables/:consumable_id/enable
   def enable
     if @supply.enable
-      flash[:notice] = "La fourniture a été restaurée avec succès"
+      flash[:notice] = "L'article a été restauré avec succès"
     else
-      flash[:error] = "Une erreur est survenue à la restauration de la fourniture"
+      flash[:error] = "Une erreur est survenue à la restauration de l'article"
     end
-    redirect_to :controller => "#{@supply_type.name.tableize}_manager", :action => 'index'
+    redirect_to :controller => "#{@supply_class.name.tableize}_manager", :action => 'index'
   end
   
   # GET /update_commodity_supply_sizes?parent_id=:parent_id
   # GET /update_consumable_supply_sizes?parent_id=:parent_id
   def update_supplies_supply_sizes
-    @supply = @supply_type.new(:supply_sub_category_id => params[:parent_id])
+    @supply = @supply_class.new(:supply_sub_category_id => params[:parent_id])
     find_or_build_supplies_supply_sizes
     
     render :partial => 'supplies_supply_sizes/supplies_supply_sizes_list', :object => @supplies_supply_sizes,
@@ -107,18 +116,20 @@ class SuppliesController < ApplicationController
   
   private
     def find_supply
-      id = params[:id] || params["#{@supply_type.name.underscore}_id".to_sym]
-      @supply = @supply_type.find(id) if id
+      id = params[:id] || params["#{@supply_class.name.underscore}_id".to_sym]
+      @supply = @supply_class.find(id) if id
     end
     
-    def find_supply_categories
-      @supply_categories = @supply_category_type.enabled
-      @supply_sub_categories = @supply_sub_category_type.enabled
+    def load_collections
+      @supply_categories = @supply_category_class.enabled
+      @supply_sub_categories = @supply_sub_category_class.enabled
+      @supply_types = @supply_type_class.enabled
     end
     
-    def find_supply_categories_ancestors
-      @supply_sub_category = @supply_sub_categories.find_by_id(params[:parent_id]) || @supply.supply_sub_category rescue nil
-      @supply_category = @supply_sub_category.supply_category if @supply_sub_category
+    def find_supply_ancestors
+      @supply_type = @supply_types.find_by_id(params[:supply_type_id]) || @supply.supply_type rescue nil
+      @supply_sub_category = ( @supply_type && @supply_type.supply_sub_category ) || @supply_sub_categories.find_by_id(params[:supply_sub_category_id]) || @supply.supply_sub_category rescue nil
+      @supply_category = ( @supply_sub_category && @supply_sub_category.supply_category ) || @supply_categories.find_by_id(params[:supply_category_id]) || @supply.supply_category rescue nil
     end
     
     def find_suppliers

@@ -19,7 +19,7 @@ module ApplicationHelper
   
   def display_version
     if !Rails.env.production? or params[:debug]
-      "<span class=\"version\">v#{Osirails::VERSION}<br/>#{Rails.env}</span>"
+      "<span class=\"version\">v#{Osirails.version}<br/>#{Rails.env}</span>"
     end
   end
   

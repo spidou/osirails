@@ -23,6 +23,7 @@ require 'rails_hacks'
 require 'contextual_menu'
 require 'mysql'
 require 'feature_manager'
+require 'version'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -97,9 +98,8 @@ Rails::Initializer.run do |config|
   config.gem 'RedCloth', :version => '4.2.3'
   config.gem 'htmlentities', :version => '4.2.1'
   config.gem 'mysql', :version => '2.8.1'
+  config.gem 'orderedhash'
 end
-
-require 'version'
 
 # ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment
 # to be sure to remove old references to unexistant methods (after disabling a feature for example)

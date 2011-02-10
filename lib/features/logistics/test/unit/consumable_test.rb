@@ -3,14 +3,16 @@ require File.dirname(__FILE__) + '/../logistics_test'
 class ConsumableTest < ActiveSupport::TestCase
   #TODO
   #has_permissions :as_business_object, :class_methods => [:list, :view, :add, :edit, :delete, :disable, :enable]
-  #has_reference   :symbols => [ :supply_sub_category ], :prefix => :logistics
+  #has_reference   :symbols => [ :supply_type ], :prefix => :logistics
   
-  should_belong_to :supply_sub_category
+  should_act_as_watchable
+  
+  should_belong_to :supply_type
   
   context "A consumable" do
     setup do
       @supply = Consumable.new
-      @supply_sub_category_type = ConsumableSubCategory
+      @supply_type_class = ConsumableType
     end
     teardown do
       @supply = nil

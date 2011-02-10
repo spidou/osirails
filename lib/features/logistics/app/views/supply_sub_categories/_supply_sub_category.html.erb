@@ -1,0 +1,13 @@
+<% unless supply_sub_category.new_record? %>
+  <% add_contextual_menu_item supply_sub_category.class.human_name do %>
+    <% supply_sub_category_action_buttons(supply_sub_category).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= render(:partial => "supply_categories/supply_category", :object => supply_sub_category) %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= new_supply_sub_category_link(supply_sub_category.class) %>
+<% end %>
