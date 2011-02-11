@@ -1,8 +1,2 @@
-<% add_contextual_menu_item :possible_actions do %>
-  <%= display_supply_category_add_button(@supply_category.class.new) %>
-  <%= display_supply_category_edit_button(@supply_category) %>
-  <%= display_supply_category_add_button(@supply_category) %>
-<% end %>
-
 <h1>Fiche détaillée de la famille de matière première</h1>
 <%= render(:partial => "supply_categories/supply_category", :object => @supply_category) %>

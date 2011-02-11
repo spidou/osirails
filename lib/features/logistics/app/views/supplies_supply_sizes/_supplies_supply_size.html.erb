@@ -14,7 +14,6 @@ should_destroy = item.should_destroy? ? "should_destroy" : ""
     
     <% if form.form_view? %>
       <%= form.hidden_field :supply_size_id, :disabled => supply.has_been_used? %>
-      <%= form.hidden_field :unit_measure_id, :disabled => supply.has_been_used? %>
       <%= form.hidden_field :id, :disabled => supply.has_been_used?, :class => "supplies_supply_size_id" %>
     <% end %>
     

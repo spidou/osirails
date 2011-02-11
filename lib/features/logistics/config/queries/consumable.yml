@@ -2,9 +2,9 @@ conf_filters: &filters
   filters:
     - reference
     - designation
-    - supply_category: supply_sub_category.supply_category.id
-    - supply_sub_category: supply_sub_category.name # don't use 'id' because it's inconsistent (sub_category names are not unique, so we can't choose exactly a sub_category with only its name)
-    - name
+    - supply_category: supply_type.supply_sub_category.supply_category.id
+    - supply_sub_category: supply_type.supply_sub_category.name # don't use 'id' because it's inconsistent (sub_category names are not unique, so we can't choose exactly a sub_category with only its name)
+    - supply_type: supply_type.name
     - humanized_supply_sizes
     - measure
     - unit_mass
@@ -20,12 +20,14 @@ conf_columns: &columns
     - average_measure_price
 conf_group: &group
   group:
-    - supply_sub_category.supply_category.name
-    - supply_sub_category.name
+    - supply_type.supply_sub_category.supply_category.name
+    - supply_type.supply_sub_category.name
+    - supply_type.name
 conf_order: &order
   order:
-    - supply_sub_category.supply_category.name
-    - supply_sub_category.name
+    - supply_type.supply_sub_category.supply_category.name
+    - supply_type.supply_sub_category.name
+    - supply_type.name
     - reference
     - designation
     - average_unit_price
@@ -51,15 +53,12 @@ consumable_index:
   <<: *order
   <<: *pagination
   quick_search:
-    - reference
-    - supply_sub_category.supply_category.name
-    - supply_sub_category.name
-    - name
-    - humanized_supply_sizes
+    - designation
   default_query:
     <<: *columns
-    <<: *group
+    group:
+      - supply_type.supply_sub_category.supply_category.name
+      - supply_type.supply_sub_category.name
     order:
-      - supply_sub_category.supply_category.name
-      - supply_sub_category.name
+      - reference
     per_page: 100

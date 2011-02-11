@@ -8,7 +8,7 @@ class SupplyCategory < ActiveRecord::Base
   
   validates_persistence_of :reference
   
-  named_scope :enabled,   :conditions => { :enabled => true }
+  named_scope :enabled, :conditions => { :enabled => true }
   named_scope :enabled_at, lambda{ |date| { :conditions => [ 'enabled = ? OR disabled_at > ?', true, date ] } }
   
   before_validation_on_create :update_reference
@@ -32,7 +32,7 @@ class SupplyCategory < ActiveRecord::Base
   end
   
   def can_be_disabled?
-    enabled? and has_children? and !has_enabled_children?
+    enabled? and !has_enabled_children?
   end  
   
   def can_be_enabled?
@@ -73,9 +73,9 @@ class SupplyCategory < ActiveRecord::Base
     @siblings ||= self_and_siblings - [ self ]
   end
   
-  # override the orignal method
+  # override the orignal method unless it's the last level of supply_category
   def supplies_count
-    if respond_to?(:supply_category)
+    if respond_to?(:supply_sub_category)
       super
     else
       children.collect(&:supplies_count).sum

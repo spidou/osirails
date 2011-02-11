@@ -22,6 +22,7 @@ fr:
         name: "Raison Sociale"
         legal_form: "Forme juridique"
         website: "Site Internet"
+        bill_to_address: "Adresse de facturation"
       customer:
         <<: *third_attributes
         factor: "Société d'affacturage"

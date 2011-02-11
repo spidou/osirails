@@ -6,7 +6,7 @@ class StockOutput < StockFlow
   def validates_stock_availability
     return unless supply and quantity
     supply = Supply.find(supply_id)
-    errors.add(:quantity, "La quantité choisie est supérieure au stock disponible pour cette fourniture (#{quantity} > #{supply.stock_quantity})") if quantity > supply.stock_quantity
+    errors.add(:quantity, "La quantité choisie est supérieure au stock disponible pour cet article (#{quantity} > #{supply.stock_quantity})") if quantity > supply.stock_quantity
   end
   
   def set_up_default_unit_price

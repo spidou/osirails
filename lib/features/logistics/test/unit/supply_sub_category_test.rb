@@ -52,14 +52,56 @@ module SupplySubCategoryTest
         end
         
         
-        context "with active children (supplies)" do
+        context "without children (supply_types)" do
           setup do
             @supply_sub_category.attributes = { :supply_category_id => @supply_category_type.first.id,
                                                 :name               => "Supply Sub Category" }
             @supply_sub_category.save!
             
-            @supply = @supply_sub_category.supplies.build(:name => "Child Category")
-            @supply.save!
+            flunk "@supply_sub_category should have 0 children" if @supply_sub_category.children.to_a.any?
+          end
+          
+          should "be editable" do
+            assert @supply_sub_category.can_be_edited?
+          end
+          
+          should "be destroyable" do
+            assert @supply_sub_category.can_be_destroyed?
+          end
+          
+          should "be able to be disabled" do
+            assert @supply_sub_category.can_be_disabled?
+          end
+          
+          should "NOT be able to be enabled" do
+            assert !@supply_sub_category.can_be_enabled?
+          end
+          
+          should "be able to have children" do
+            assert @supply_sub_category.can_have_children?
+          end
+          
+          should "NOT have children" do
+            assert !@supply_sub_category.has_children?
+          end
+          
+          should "NOT have enabled children" do
+            assert !@supply_sub_category.has_enabled_children?
+          end
+          
+          should "have no stock_value at this time" do
+            assert_equal 0.0, @supply_sub_category.stock_value
+          end
+        end
+        
+        context "with active children (supply_types)" do
+          setup do
+            @supply_sub_category.attributes = { :supply_category_id => @supply_category_type.first.id,
+                                                :name               => "Supply Sub Category" }
+            @supply_sub_category.save!
+            
+            @supply_type = @supply_sub_category.supply_types.build(:name => "Child Category")
+            @supply_type.save!
           end
           
           should "be editable" do
@@ -107,15 +149,15 @@ module SupplySubCategoryTest
         end
         
         
-        context "without active children (supplies)" do
+        context "without active children (supply_types)" do
           setup do
             @supply_sub_category.attributes = { :supply_category_id => @supply_category_type.first.id,
                                                 :name               => "Supply Sub Category" }
             @supply_sub_category.save!
             
-            # create a supply and disable it in order to be able to disable child_category
-            @supply = create_supply_with_stock_input_for(@supply_sub_category)
-            disable_supply(@supply)
+            # create a supply_type and disable it (to have at least 1 disabled child)
+            @supply_type = create_supply_type_for(@supply_sub_category)
+            disable_supply_type(@supply_type)
           end
           
           should "be editable" do

@@ -1,15 +1,21 @@
 thickness:
   name: Thickness
+  position: 1
 diameter:
   name: Diameter
+  position: 2
 width:
   name: Width
+  position: 3
 length:
   name: Length
+  position: 4
 
 accept_string:
   name: Accept String
+  position: 5
   accept_string: true
 not_accept_string:
   name: Not Accept String
+  position: 6
   accept_string: false

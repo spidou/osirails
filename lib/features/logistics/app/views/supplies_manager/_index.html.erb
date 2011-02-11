@@ -4,16 +4,16 @@
 <% end %>
 
 <% add_contextual_menu_item :statistics do %>
-  <span>Valeur estimative du stock actuel&nbsp;: <%= number_with_precision(@supply_type.stock_value, :precision => 2) %>&nbsp;&euro;</span>
+  <span>Valeur estimative du stock actuel&nbsp;: <%= number_with_precision(@supply_class.stock_value, :precision => 2) %>&nbsp;&euro;</span>
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= display_supply_category_add_button(@supply_category_type.new) %>
-  <%= display_supply_add_button(@supply_type.new) %>
+  <%= new_supply_category_link(@supply_category_class) %>
+  <%= new_supply_link(@supply_class) %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= params[:inactives] ? display_supply_list_button(@supply_type) : display_supply_list_all_button(@supply_type) %>
+  <%= params[:inactives] ? display_supply_list_button(@supply_class) : display_supply_list_all_button(@supply_class) %>
 <% end %>
 
 <h1><%= title_for_search %></h1>

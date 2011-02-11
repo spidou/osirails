@@ -3,8 +3,29 @@
   <%= javascript_include_tag 'logistics/supplies' %>
 <% end %>
 
+<%
+parent = supply_category.respond_to?(:supply_category) ? supply_category.supply_category : nil
+%>
+
+<% unless supply_category.new_record? %>
+  <% if parent %>
+    <% add_contextual_menu_item parent.class.human_name do %>
+      <% supply_category_action_buttons(parent).each do |button| %>
+        <%= button %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <% add_contextual_menu_item supply_category.class.human_name do %>
+      <% supply_category_action_buttons(supply_category).each do |button| %>
+        <%= button %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
 <% add_contextual_menu_item :useful_links do %>
-  <%= display_supply_list_button(@supply_type) %>
+  <%= new_supply_category_link(supply_category.class) %>
+  <%= display_supply_list_button(@supply_class) %>
 <% end %>
 
 <div class="presentation_small">
@@ -21,7 +42,7 @@
         </p>
       <% end %>
       
-      <% if supply_category.respond_to?(:supply_category) %>
+      <% if parent %>
         <div>
           <p>
             <%= form.label :supply_category_id %>
@@ -38,14 +59,14 @@
       </div>
     </fieldset>
     
-    <% if supply_category.respond_to?(:supply_category) %>
+    <% if parent %>
       <fieldset>
-        <legend>Spécificités des fournitures</legend>
+        <legend>Spécificités des articles</legend>
         
         <div id="supply_categories_supply_sizes">
           <% if @supply_categories_supply_sizes.any? %>
             <%= render :partial => 'supply_categories_supply_sizes/supply_categories_supply_size', :collection => @supply_categories_supply_sizes,
-                                                                                                   :locals => { :supply_category_type => @supply_category_type } %>
+                                                                                                   :locals => { :supply_category_class => @supply_category_class } %>
           <% else %>
             <p>Aucune spécificité n'a été définie.</p>
           <% end %>
@@ -58,7 +79,7 @@
           <%= form.form_or_view(form.collection_select(:unit_measure_id, UnitMeasure.all, :id, :symbol_and_name,
                                                        { :include_blank => "Veuillez choisir une grandeur unitaire" }),
                                 :unit_measure, :symbol_and_name) %>
-          <span class="help_text">(cette unité sera obligatoirement utilisée pour définir la grandeur/U des fournitures de cette famille)</span>
+          <span class="help_text">(cette unité sera obligatoirement utilisée pour définir la grandeur/U des articles de cette famille)</span>
         </p>
       </fieldset>
     <% end %>

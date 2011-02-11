@@ -1336,16 +1336,15 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   end
 
   create_table "supplies", :force => true do |t|
-    t.integer  "supply_sub_category_id"
+    t.integer  "supply_type_id"
     t.string   "type"
     t.string   "reference"
-    t.string   "name"
     t.string   "packaging"
-    t.decimal  "measure",                :precision => 65, :scale => 18
-    t.decimal  "unit_mass",              :precision => 65, :scale => 18
-    t.decimal  "threshold",              :precision => 65, :scale => 18
-    t.boolean  "enabled",                                                :default => true
-    t.date     "disabled_at"
+    t.decimal  "measure",        :precision => 65, :scale => 18
+    t.decimal  "unit_mass",      :precision => 65, :scale => 18
+    t.decimal  "threshold",      :precision => 65, :scale => 18
+    t.boolean  "enabled",                                        :default => true
+    t.datetime "disabled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1367,7 +1366,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.string   "name"
     t.integer  "supplies_count",     :default => 0
     t.boolean  "enabled",            :default => true
-    t.date     "disabled_at"
+    t.datetime "disabled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

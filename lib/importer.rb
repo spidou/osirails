@@ -131,7 +131,8 @@ Errors     => #{object.errors.full_messages}
     #          :product_reference_category_id  => 10,
     #          :name                           => "My Name" }
     #
-    def map_definitions(row, hash = definitions, result = {})
+    def map_definitions(row, hash = definitions)
+      result = hash.is_a?(ActiveSupport::OrderedHash) ? ActiveSupport::OrderedHash.new : Hash.new # it can be replaced by "result = {}" once we use ruby1.9
       hash.each do |key, value|
         begin
           
