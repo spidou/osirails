@@ -35,7 +35,7 @@ class Customer < Third
   
   journalize :attributes        => [ :name, :legal_form_id, :company_created_at, :collaboration_started_at, :factor_id, :customer_solvency_id, :customer_grade_id, :activated ],
              :attachments       => :logo,
-             :subresources      => [ :head_office, :establishments ],
+             :subresources      => [ :head_office, :establishments, :bill_to_address ],
              :identifier_method => :name
   
   has_search_index :only_attributes    => [:name, :siret_number, :website],
