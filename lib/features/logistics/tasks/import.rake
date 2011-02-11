@@ -62,7 +62,7 @@ namespace :osirails do
             file = File.open(file_path)
             rows = CSV::Reader.parse(file)
             
-            definitions = { :supply_category_id => { :find_by_name_and_type => [ 1, "CommoditySubCategory" ] },
+            definitions = { :supply_category_id => { :find_by_name_and_type_and_supply_category_id => [ 1, "CommoditySubCategory", { :supply_category_id => { :find_by_name_and_type => [ 0, "CommodityCategory"] } } ] },
                             :name               => 2 }
             
             importer = Osirails::Importer.new(:klass => :commodity_type, :identifiers => [ :name, :supply_category_id ], :definitions => definitions, :if_match => ENV["IF_MATCH"])
@@ -78,7 +78,7 @@ namespace :osirails do
             rows = CSV::Reader.parse(file)
             
             definitions = ActiveSupport::OrderedHash.new # it can be deleted once we use ruby1.9 (and use Hash)
-            definitions[:supply_type_id] = { :find_by_name_and_supply_category_id => [ 2, { :supply_category_id => { :find_by_name_and_type => [ 1, "CommoditySubCategory" ] } } ] }
+            definitions[:supply_type_id] = { :find_by_name_and_supply_category_id => [ 2, { :supply_category_id => { :find_by_name_and_type_and_supply_category_id => [ 1, "CommoditySubCategory", { :supply_category_id => { :find_by_name_and_type => [ 0, "CommodityCategory" ] } } ] } } ] }
             definitions[:supplies_supply_size_attributes] = [ { :supply_size_id   => { :find_by_name => "Épaisseur" },
                                                                     :value            => 3 },
                                                                   { :supply_size_id   => { :find_by_name => "Diamètre" },
@@ -197,7 +197,7 @@ namespace :osirails do
             file = File.open(file_path)
             rows = CSV::Reader.parse(file)
             
-            definitions = { :supply_category_id => { :find_by_name_and_type => [ 1, "ConsumableSubCategory" ] },
+            definitions = { :supply_category_id => { :find_by_name_and_type_and_supply_category_id => [ 1, "ConsumableSubCategory", { :supply_category_id => { :find_by_name_and_type => [ 0, "ConsumableCategory"] } } ] },
                             :name               => 2 }
             
             importer = Osirails::Importer.new(:klass => :consumable_type, :identifiers => [ :name, :supply_category_id ], :definitions => definitions, :if_match => ENV["IF_MATCH"])
@@ -213,7 +213,7 @@ namespace :osirails do
             rows = CSV::Reader.parse(file)
             
             definitions = ActiveSupport::OrderedHash.new # it can be deleted once we use ruby1.9 (and use Hash)
-            definitions[:supply_type_id] = { :find_by_name_and_supply_category_id => [ 2, { :supply_category_id => { :find_by_name_and_type => [ 1, "ConsumableSubCategory" ] } } ] }
+            definitions[:supply_type_id] = { :find_by_name_and_supply_category_id => [ 2, { :supply_category_id => { :find_by_name_and_type_and_supply_category_id => [ 1, "ConsumableSubCategory", { :supply_category_id => { :find_by_name_and_type => [ 0, "ConsumableCategory" ] } } ] } } ] }
             definitions[:supplies_supply_size_attributes] = [ { :supply_size_id   => { :find_by_name => "Épaisseur" },
                                                                     :value            => 3 },
                                                                   { :supply_size_id   => { :find_by_name => "Diamètre" },
