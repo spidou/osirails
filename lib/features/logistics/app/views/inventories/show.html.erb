@@ -1,19 +1,2 @@
-<% content_for :header do %>
-  <%= javascript_include_tag 'logistics/supplies' %>
-  <%= javascript_include_tag 'logistics/inventories' %>
-  <%= stylesheet_link_tag_with_theme_support 'logistics/inventory' %>
-<% end %>
-
-<% add_contextual_menu_item :possible_actions do %>
-  <%= new_inventory_link(Commodity.new, "Nouvel inventaire des matières premières") if params[:supply_type] == "Consumable" %>
-  <%= new_inventory_link(Consumable.new, "Nouvel inventaire des consommables") if params[:supply_type] == "Commodity" %>
-<% end %>
-
-<% add_contextual_menu_item :useful_links do %>
-  <%= inventories_link(:link_text => "Voir tous les inventaires") %>
-  <%= commodity_categories_link(:link_text => "Voir toutes les catégories de matières premières") %>
-  <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
-<% end %>
-
-<h1>Fiche détaillée de l'inventaire de <%= params[:supply_type] == "Commodity" ? "matières premières" : "consommables" %></h1>
-<%= render :partial => 'inventories/inventory', :object => @inventory, :locals => { :supplies => @supplies, :supply_categories => @supply_categories} %>
+<h1>Fiche détaillée de l'inventaire de <%= params[:supply_class] == "Commodity" ? "matières premières" : "consommables" %></h1>
+<%= render :partial => 'inventories/inventory', :object => @inventory, :locals => { :supplies => @supplies } %>

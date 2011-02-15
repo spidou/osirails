@@ -1,27 +1,24 @@
 class InventoriesController < ApplicationController
   helper :supplies_manager
   
-  before_filter :find_inventory,                              :only   => :show
-  before_filter :define_supply_type_and_supply_category_type, :except => :index
-  before_filter :define_date,                                 :except => :index
-  before_filter :find_supply_categories,                      :except => :index
-  before_filter :find_supplies,                               :except => :index
-  
-#  before_filter :supply_category_type, :except => [:index]
+  before_filter :find_inventory,      :only   => :show
+  before_filter :define_supply_class, :except => :index
+  before_filter :define_date,         :except => :index
+  before_filter :find_supplies,       :except => :index
   
   # GET /inventories
-  def index        
+  def index
     @inventories = Inventory.all(:order => "created_at DESC").paginate(:page => params[:page], :per_page => Inventory::INVENTORIES_PER_PAGE)
   end
   
-  # GET /inventories/new?supply_type=:supply_type
+  # GET /inventories/new?supply_class=:supply_class
   def new
-    @inventory = Inventory.new(:supply_type => params[:supply_type])
+    @inventory = Inventory.new(:supply_class => params[:supply_class])
   end
   
   # POST /inventories
   def create
-    attributes = { :supply_type => params[:supply_type] }.merge(params[:inventory])
+    attributes = { :supply_class => params[:supply_class] }.merge(params[:inventory])
     @inventory = Inventory.new(attributes)
     
     if @inventory.save
@@ -41,13 +38,11 @@ class InventoriesController < ApplicationController
       @inventory = Inventory.find(params[:id])
     end
     
-    def define_supply_type_and_supply_category_type
-      if ["Commodity","Consumable"].include?(params[:supply_type])
-        @supply_type          = params[:supply_type].constantize
-        @supply_category_type = "#{params[:supply_type]}Category".constantize
+    def define_supply_class
+      if ["Commodity","Consumable"].include?(params[:supply_class])
+        @supply_class = params[:supply_class].constantize
       elsif @inventory
-        @supply_type          = @inventory.supply_type.constantize
-        @supply_category_type = "#{@inventory.supply_type}Category".constantize
+        @supply_class = @inventory.supply_class.constantize
       else
         error_access_page(500)
       end
@@ -67,15 +62,7 @@ class InventoriesController < ApplicationController
       end
     end
     
-    def find_supply_categories
-      if [:new, :create].include?(params[:action])
-        @supply_categories = @supply_category_type.enabled
-      else
-        @supply_categories = @supply_category_type.all
-      end
-    end
-    
     def find_supplies
-      @supplies = @supply_type.was_enabled_at(@date)
+      @supplies = @supply_class.was_enabled_at(@date)
     end
 end

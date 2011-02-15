@@ -2,7 +2,7 @@ module InventoriesHelper
   def new_inventory_link(supply, text = nil)
     if Inventory.can_add?(current_user)
       text ||= "Nouvel inventaire"
-      link_to(image_tag( "add_16x16.png", :alt => text, :title => text )+ " " + text, new_inventory_path(:supply_type => supply.class.name))
+      link_to(image_tag( "add_16x16.png", :alt => text, :title => text )+ " " + text, new_inventory_path(:supply_class => supply.class.name))
     end
   end
 

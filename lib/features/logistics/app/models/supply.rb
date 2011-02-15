@@ -110,15 +110,15 @@ class Supply < ActiveRecord::Base
   end
   
   #TODO test this method
-  def sorted_supplies_supply_sizes
-    supplies_supply_sizes.sort_by{ |sss| sss.supply_size && sss.supply_size.position || 0 }
+  def sorted_supplies_supply_sizes(force_reload = false)
+    supplies_supply_sizes(force_reload).sort_by{ |sss| sss.supply_size && sss.supply_size.position || 0 }
   end
   
   def humanized_supply_sizes
     @humanized_supply_sizes ||= ""
     return @humanized_supply_sizes unless @humanized_supply_sizes.blank?
     
-    sorted_supplies_supply_sizes.each_with_index do |item, index|
+    sorted_supplies_supply_sizes(true).each_with_index do |item, index|
       next_item = supplies_supply_sizes[index.next]
       unit_measure = ( next_item && next_item.unit_measure_id == item.unit_measure_id ) ? "" : item.unit_measure && item.unit_measure.symbol
       
@@ -259,7 +259,7 @@ class Supply < ActiveRecord::Base
   
   # return the last inventory at the given date
   def last_inventory(date = Time.zone.now)
-    Inventory.last(:conditions => [ "supply_type = ? AND created_at < ?", self.class.name, date.to_s(:db) ])
+    Inventory.last(:conditions => [ "supply_class = ? AND created_at < ?", self.class.name, date.to_s(:db) ])
   end
   
   # return the last stock_flow providing by an inventory, at the given date

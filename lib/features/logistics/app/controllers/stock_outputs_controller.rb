@@ -1,6 +1,6 @@
 class StockOutputsController < StockFlowsController
   private
-    def define_stock_flow_type
-      @stock_flow_type = StockOutput
+    def define_stock_flow_class
+      @stock_flow_class = StockOutput
     end
 end
