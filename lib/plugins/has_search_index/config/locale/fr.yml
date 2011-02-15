@@ -75,6 +75,8 @@ fr:
     delete_criterion:
       title: "Supprimer un critère"
   view:
+    contextual_menu_sections:
+      personalized_queries: "Rapports personnalisés"
     quick_search:
       default: "Recherche rapide ..."
       title: "Rechercher"

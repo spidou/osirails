@@ -23,13 +23,15 @@
     </div>
     <% end %>
     
-    <% query.order.each do |o| %>
-      <%= hidden_field_tag('query[order][]', o) %>
-    <% end %>
+    <div id="options_hidden_fields">
+      <% query.order.each do |o| %>
+        <%= hidden_field_tag('query[order][]', o, {:id => "query_order_#{ o.split(':').first }", :class => "query_order_options"}) %>
+      <% end %>
     
-    <%= hidden_field_tag('query_id', query.id) %>
-    <%= hidden_field_tag('query[per_page]', query.per_page) %>
-    <%= hidden_field_tag('query[public_access]', query.public_access) %>
-    <%= hidden_field_tag('query[page_name]', query.page_name) %>
+      <%= hidden_field_tag('query_id', query.id) %>
+      <%= hidden_field_tag('query[per_page]', query.per_page) %>
+      <%= hidden_field_tag('query[public_access]', query.public_access) %>
+      <%= hidden_field_tag('query[page_name]', query.page_name) %>
+    </div>
   </div>
 </fieldset>

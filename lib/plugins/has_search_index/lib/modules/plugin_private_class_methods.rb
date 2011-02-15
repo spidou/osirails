@@ -571,8 +571,7 @@ private
       conditions = values_sbc.map do |values_sbs|
         sub_conditions = values_sbs.map do |part|
           sql = sql_condition(attribute_with_prefix, action, part, model)
-          pre_formatted = pre_format(part)                                               # make search case and accents insensitive
-          conditions_array << (action =~ /like/ ? "%#{ pre_formatted }%" : pre_formatted) if sql.include?('?')
+          conditions_array << (action =~ /like/ ? "%#{ part }%" : part) if sql.include?('?')
           sql
         end.join(action_is_positive ? ' and ' : ' or ')
         (values_sbc.one? || values_sbs.one?) ? sub_conditions : "(#{ sub_conditions })"

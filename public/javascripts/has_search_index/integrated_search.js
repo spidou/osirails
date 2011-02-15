@@ -249,3 +249,37 @@ function applySelection(select, hidden)
   }
   hidden.value = value.join(' ')
 }
+
+function gather_all_order_options(option, column)
+{
+  var options = []
+  $$(".query_order_options").each(function(element){
+    options.push("query[order][]=" + element.value)
+  })
+  
+  return options.join('&')
+}
+
+function persist_order_option(option, column)
+{
+  var hidden = new Element('input', {
+    'type' : 'hidden' ,
+    'name' : 'query[order][]' ,
+    'class': 'query_order_options',
+    'id'   : 'query_order_' + column,
+    'value': option
+   })
+  if( $('query_order_' + column) ) $('query_order_' + column).remove()
+  if( option.endsWith('asc') || option.endsWith('desc')  ) $('options_hidden_fields').insert(hidden)
+}
+
+function persist_paginate_option(option)
+{
+  if( $('query_per_page') ){
+    if(option == 'all'){
+      $('query_per_page').removeAttribute('value')
+    }else{
+      $('query_per_page').value = option
+    }
+  }
+}

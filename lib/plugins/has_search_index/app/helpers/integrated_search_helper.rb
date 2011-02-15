@@ -5,7 +5,7 @@ module IntegratedSearchHelper
       :url => url_for,
       :method => :get,
       :before => "validSelectOptions('group columns');",
-      :update => @class_for_ajax_update,
+      :update => @id_for_ajax_update,
       :with => "Form.serialize('query_form')"
     }
     link_to_remote(I18n.t('link.apply.name'),
@@ -42,7 +42,7 @@ module IntegratedSearchHelper
     remote_options = {
       :url => url_for,
       :method => :get,
-      :update => @class_for_ajax_update,
+      :update => @id_for_ajax_update,
       :with => "'#{ parameters.join('&') }'"
     }
     
@@ -80,7 +80,7 @@ module IntegratedSearchHelper
     submit_function = remote_function({
       :url      => params.reject{ |k,v| k.to_s == 'keyword' },
       :method   => :get,
-      :update   => @class_for_ajax_update,
+      :update   => @id_for_ajax_update,
       :with     => "'keyword=' + encodeURIComponent(this.up().down('INPUT').value)",
       :complete => "$('quick_input').focus(); $('quick_input').selectionStart = $('quick_input').selectionEnd;"
     })
@@ -112,12 +112,12 @@ module IntegratedSearchHelper
     end
   end
   
-  def paginate_per_page(query)
+  def paginate_per_page(query, with_scroll)
     per_pages = HasSearchIndex::HTML_PAGES_OPTIONS[query.page_name.to_sym][:per_page] + [ nil ]
     
     content_tag(:div, :class => 'pagination per_pages') do
       [content_tag(:span, "#{ I18n.t('view.paginate_per_page') } : ")] + per_pages.map do |per_page|
-        query.per_page.to_s == per_page.to_s ? content_tag(:span, paginate_text(per_page), :class => 'current') : content_tag(:span, paginate_link(per_page))
+        query.per_page.to_s == per_page.to_s ? content_tag(:span, paginate_text(per_page), :class => 'current') : content_tag(:span, paginate_link(per_page, with_scroll))
       end
     end
   end
@@ -131,11 +131,17 @@ module IntegratedSearchHelper
   
   # Method to create a link permitting to modify pagination option with Ajax
   #
-  def paginate_link(per_page)
-    link_to_remote(paginate_text(per_page),
-      :update => @class_for_ajax_update,
-      :method => :get,
-      :url => params.merge(:per_page => per_page || 'all'))
+  def paginate_link(per_page, with_scroll)
+    option  = per_page || 'all'
+    options = {
+      :update   => @id_for_ajax_update,
+      :method   => :get,
+      :url      => params.merge(:page => nil, :per_page => option),                # page = nil permit to bring user to page 1
+      :success  => "persist_paginate_option('#{ option }')"
+    }
+    options.merge!(:complete => "$('#{ @id_for_ajax_update }').scrollTo()") if with_scroll
+    
+    link_to_remote(paginate_text(per_page), options)
   end
   
   def paginate_text(per_page)
@@ -197,22 +203,28 @@ module IntegratedSearchHelper
     records = records_with_or_without_paginate(query, page)
     body    = generate_table_body(records, query.columns, query.group)
     table   = query_table("#{ header }#{ body }")
-    pagination = generate_pagination(records, query)
+    bottom_pagination = generate_pagination(records, query)
+    top_pagination    = generate_pagination(records, query, with_scroll = false)
     
-    records.empty? ? content_tag(:div, I18n.t("view.no_result"), :class => 'search_no_result') : "#{ table }#{ pagination }"
+    if records.empty?
+      content_tag(:div, I18n.t("view.no_result"), :class => 'search_no_result')
+    else
+      "#{ top_pagination if records.size >= 25 }#{ content_tag(:div, table, :class => 'results_table', :id => 'search_results') }#{ bottom_pagination }"
+    end
   end
   
   # Method to generate pagination links
   #
-  def generate_pagination(records, query)
+  def generate_pagination(records, query, with_scroll = true)
     options = {
       :renderer               => 'RemoteLinkRenderer',
       :method_for_remote_link => :get,
-      :remote                 => { :update => @class_for_ajax_update }
+      :remote                 => { :update => @id_for_ajax_update }
     }
+    options[:remote].merge!(:complete => "$('#{ @id_for_ajax_update }').scrollTo();") if with_scroll
     
     content_tag :div, :class => :pagination_container do
-      "#{ will_paginate(records, options) if with_paginate?(query) } #{ paginate_per_page(query) }"
+      "#{ will_paginate(records, options) if with_paginate?(query) } #{ paginate_per_page(query, with_scroll) }"
     end
   end
   
@@ -282,13 +294,18 @@ module IntegratedSearchHelper
   
   def generate_menu(elements, selected = nil)
     unless elements.is_a?(Array)
-      menu_li(apply_attribute_link(elements), :class => "#{ 'selected' if get_attribute(elements) == selected }") unless elements.is_a?(String) && elements.match(/id$/)
+      menu_li_class = "selected" if get_attribute(elements) == selected
+      menu_li(apply_attribute_link(elements), :class => menu_li_class) unless elements.is_a?(String) && elements.match(/id$/)
     else
-      group    = elements.first
-      paths    = elements.last
-      active   = paths.select{ |n| n.is_a?(String) && n.match(/.id$/) }.any?
-      sub_menu = paths.map{ |sub_paths| generate_menu(sub_paths, selected) }.join
-      menu_li("#{ content_tag(:ul, sub_menu, :style => 'display:none') if sub_menu.any? }#{ apply_group_link(group, active) }", :class => ("sub_menu" if sub_menu.any?))
+      group       = elements.first
+      paths       = elements.last
+      active      = paths.select{ |n| n.is_a?(String) && n.match(/.id$/) }.any?
+      sub_menu    = paths.map{ |sub_paths| generate_menu(sub_paths, selected) }.join
+      sub_menu_ul = content_tag(:ul, sub_menu, :style => 'display:none')
+        
+      menu_li_class = "selected" if sub_menu_ul.include?('class="selected"')
+      menu_li_class = "#{ menu_li_class } sub_menu" if sub_menu.any?
+      menu_li("#{ sub_menu_ul if sub_menu.any? }#{ apply_group_link(group, active) }", :class => menu_li_class)
     end
   end
   
@@ -503,14 +520,22 @@ module IntegratedSearchHelper
     def header_with_or_without_sort(column, order)
       content = humanize(column)
       if with_sort?(column, order)
-        link_to_remote("#{ content } #{ get_direction_img(column, order)}",
-          :update => 'integrated_search',
-          :method => :get,
-          :url => params.merge(:order_column => reverse_direction_for(column, order))
-        )
+        sort_link(content, get_direction_img(column, order), column, order)
+      elsif sortable?(column)
+        sort_link(content, nil, column, order)
       else
         content
       end
+    end
+    
+    def sort_link(content, img, column, order)
+      option = roll_direction_for(column, order)
+      link = link_to_remote("#{ content } #{ img }",
+        :update   => @id_for_ajax_update,
+        :method   => :get,
+        :url      => params.merge(:order_column => option),
+        :with     => "gather_all_order_options('#{ option }', '#{ column }')",
+        :success  => "persist_order_option('#{ option }', '#{ column }')")
     end
     
     # Methods to reverse order 
@@ -518,21 +543,32 @@ module IntegratedSearchHelper
     def get_direction_img(column, order)
       main      = order.at(0) == column_with_direction(column, order) ? 'main_' : ''
       direction = HasSearchIndex.get_order_direction(column_with_direction(column, order))
-      alt       = I18n.t("link.reverse_order.#{direction}")
-      image_tag("search/#{ main }#{ direction }_arrow.png",  :alt => alt, :title => alt)
+      image_tag("search/#{ main }#{ direction }_arrow.png",  :alt => direction, :title => direction)
     end
     
     def column_with_direction(column, order)
       order.detect { |n| n =~ Regexp.new("^#{ column }:(desc|asc)$")}
     end
     
-    def reverse_direction_for(column, order)
-      column = column_with_direction(column, order)
-      return column =~ /desc$/ ? column.gsub('desc','asc') : column.gsub('asc','desc')
+    # Permit to roll sort's direction as [asc, desc, no_sort]
+    #
+    def roll_direction_for(column, order)
+      column_with_d = column_with_direction(column, order)
+      if column_with_d.nil?
+        column + ':asc'
+      elsif column_with_d =~ /asc$/
+        column_with_d.gsub('asc','desc')
+      elsif column_with_d =~ /desc$/
+        column_with_d.gsub('desc','no_sort')
+      end
     end
     
     def with_sort?(column, order)
       order.map{ |n| HasSearchIndex.get_order_attribute(n) }.include?(column)
+    end
+    
+    def sortable?(column)
+      @query.page_configuration[:order].include?(column)
     end
       
     def records_with_or_without_paginate(query, page)

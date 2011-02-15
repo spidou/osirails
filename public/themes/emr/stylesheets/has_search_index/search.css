@@ -45,6 +45,16 @@ div.inline_div label{
   margin-top: 5px;
 }
 
+.results_table {
+  overflow: auto;
+  width: auto;
+  margin-top: 2px;
+}
+
+.results_table table {
+  margin-top: 0px;
+}
+
 /* ACTIONS */
 
 div.public_links {
@@ -89,7 +99,7 @@ div.integrated_search_form_footer {
   text-align: center;
   border: none;
   border-top: solid 5px #E99727;
-  margin: -5px -13px 0px;
+  margin: -5px -13px 10px;
 }
 
 /* toggle form link */
@@ -199,6 +209,7 @@ div.cancel_link a.reset_query_link:hover {
 #integrated_search .pagination_container {
   position: relative;
   height: 30px;
+  margin-top: 5px;
 }
 
 #integrated_search .pagination_container .pagination {
@@ -391,7 +402,7 @@ div.cancel_link a.reset_query_link:hover {
   background-color: orange;
 }
 
- /* hidden table used to oragnize criteria*/
+ /* hidden table used to organize criteria*/
 .search_form table.no_nth {
   background: none;
   border: none;

@@ -3,6 +3,13 @@
   query = filtered_table_container
 %>
 <div id="integrated_search">
-  <%= render :partial => 'shared/filtered_table', :object => query,
-                                                  :locals => { :page_name => page_name, :page => page, :url_for => url_for } %>
+  <% form_tag({:controller => 'queries', :action => 'new'},
+               :id         => 'query_form',
+               :class      => 'skip_prevent_close',
+               :onsubmit   => "validSelectOptions('group columns');") do %>
+    <%= hidden_field_tag('return_uri', url_for)%>
+    <%= render :partial => "shared/form" , :locals => { :page_name => page_name, :query => query } %>
+  <% end %>
+  
+  <%= render :partial => 'shared/filtered_table', :object => query, :locals => { :page_name => page_name, :page => page, :url_for => url_for } %>
 </div>

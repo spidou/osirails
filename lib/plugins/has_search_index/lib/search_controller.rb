@@ -21,9 +21,10 @@ module SearchController
     @query ||= Query.new( default_query ? default_query.attributes.reject {|k,v| k =~ /(_at|_id)$/ } : nil )
     
     if page_params[:query]
-      [:columns, :group, :search_type, :per_page, :order].each do |key|
-        @query.send("#{ key }=", page_params[:query][key])
+      [:columns, :group, :search_type, :order].each do |key|
+        @query.send("#{ key }=", page_params[:query][key]) unless page_params[:query][key].nil?
       end
+      @query.per_page = page_params[:query][:per_page].to_i if page_params[:query][:per_page]
     end
     
     @query.columns     ||= default_query ? default_query.columns : @page_configuration[:columns]
@@ -36,14 +37,7 @@ module SearchController
     @query.quick_search_value = nil    
     
     if page_params[:per_page]
-      @query.per_page = (page_params[:per_page] == 'all' ? nil : page_params[:per_page])
-    end
-    
-    if page_params[:order_column]
-      order = @query.order.dup
-      order.delete_if {|n| HasSearchIndex.get_order_attribute(n) == HasSearchIndex.get_order_attribute(page_params[:order_column])}
-      order.unshift(page_params[:order_column])
-      @query.order = order
+      @query.per_page = (page_params[:per_page] == 'all' ? nil : page_params[:per_page].to_i)
     end
     
     if @can_be_cancelled
@@ -60,8 +54,17 @@ module SearchController
     if page_params[:keyword]
       @query.quick_search_value = page_params[:keyword] unless page_params[:keyword].blank?
     end
+  
+    if page_params[:order_column]
+      order = @query.order.dup
+      order.delete_if {|n| HasSearchIndex.get_order_attribute(n) == HasSearchIndex.get_order_attribute(page_params[:order_column])}
+      order.unshift(page_params[:order_column]) unless page_params[:order_column].match(/:no_sort$/)
+      
+      @query.order = order
+    end
     
-    @class_for_ajax_update = 'integrated_search'
+    @id_for_ajax_update = 'integrated_search_table'
+#    @class_for_ajax_update = 'integrated_search'
     @query_render_options  = { 
       :partial => "shared/filtered_table_container",
       :object => @query,

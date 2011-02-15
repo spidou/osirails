@@ -77,14 +77,14 @@ module RestrictedMethods
     if only_database_attributes?(criteria.merge(quick))                            # use only one sql query if there's not additional attributes
       result = search_with_database_attributes(criteria, search_type, order, group, quick)
     else
-      result = link_results(                                                       # manage searc from normal attributes
+      result = link_results(                                                       # manage search from normal attributes
         search_with_database_attributes(criteria, search_type, order, group, {}),
         search_with_additional_attributes(criteria, search_type),
         search_type,
         criteria
       )
       
-      result &= link_results(                                                      #manage search from quick attributes
+      result &= link_results(                                                      # manage search from quick attributes
         search_with_database_attributes({}, search_type, order, group, quick),
         search_with_additional_attributes(quick, 'or'),
         'or',

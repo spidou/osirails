@@ -75,6 +75,8 @@ en:
     delete_criterion:
       title: "Delete criterion"
   view:
+    contextual_menu_sections:
+      personalized_queries: "Custom queries"
     quick_search:
       default: "Quick search..."
       title: "Search"

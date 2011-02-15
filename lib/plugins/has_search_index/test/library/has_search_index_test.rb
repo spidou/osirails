@@ -1603,21 +1603,21 @@ class HasSearchIndexTest < ActiveRecordTestCase
               @options = {"identifier" => {:action => 'like', :value => '2'} }
             end
             
-            # a & qa
+            # db & qdb
             should "return all with identifier containing 3" do
               a = @expected.select {|n| n.identifier.include?('30')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ['identifier'], :value => 30}))
               assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
             
-            # a & qb
+            # db & qadd
             should "return all with name containing 'e'" do
               a = @expected.select {|n| n.name.include?('e') }
               b = Person.search_with(@options.merge(:quick => {:attributes => ["name"], :value => 'e'}))
               assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
             
-            # a & qa | qb
+            # db & qdb | qadd
             should "return all with name containing '3' OR with identifier containing '3'" do
               a = @expected.select {|n| n.name.include?('3') || n.identifier.include?('3') }
               b = Person.search_with(@options.merge(:quick => {:attributes => ["name","identifier"], :value => '3'}))
@@ -1631,21 +1631,21 @@ class HasSearchIndexTest < ActiveRecordTestCase
               @options = {"name" => {:action => 'like', :value => 'n'} }
             end
             
-            # b & qa
+            # add & qdb
             should "return all with identifier containing '3'" do
               a = @expected.select {|n| n.identifier.include?('3')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ['identifier'], :value => 3}))
               assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
             
-            # b & qb
+            # add & qadd
             should "return all with name containing 'o'" do
               a = @expected.select {|n| n.name.include?('o') }
               b = Person.search_with(@options.merge(:quick => {:attributes => ["name"], :value => 'o'}))
               assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
             
-            # b & qa | qb
+            # add & qdb | qadd
             should "return all with identifier containing 'a' OR with name containing 'a'" do
               a = @expected.select {|n| n.name.include?('a') || n.identifier.include?('a')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ["name","identifier"], :value => 'a'}))
@@ -1659,7 +1659,7 @@ class HasSearchIndexTest < ActiveRecordTestCase
               @options = {"name" => {:action => 'like', :value => 'a'},"identifier" => {:action => 'like', :value => '1'}, :search_type => 'or'}
             end
             
-            # a | b & qa
+            # db | add & qdb
             should "return all with identifier containing 2" do
               a = @expected.select {|n| n.identifier.include?('2')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ['identifier'], :value => 2}))
@@ -1667,14 +1667,14 @@ class HasSearchIndexTest < ActiveRecordTestCase
             end
             
             
-            # a | b & qb
+            # db | add & qadd
             should "return all with name contain 'j'" do
               a = @expected.select {|n| n.name.include?('j')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ["name"], :value => 'j'}))
               assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
             
-            # a | b & qa | qb
+            # db | add & qdb | qadd
             should "return all with identifier containing '0' OR with name containing '0'" do
               a = @expected.select {|n| n.name.include?('0') || n.identifier.include?('0')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ["name", "identifier"], :value => '0'}))
@@ -1688,21 +1688,21 @@ class HasSearchIndexTest < ActiveRecordTestCase
               @options = {"name" => {:action => 'like', :value => 'a'},"identifier" => {:action => 'like', :value => '1'}, :search_type => 'not'}
             end
             
-            # a !& b & qa
+            # db !& add & qdb
             should "return all with identifier containing 2" do
               a = @expected.select {|n| n.identifier.include?('2')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ['identifier'], :value => 2}))
               assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
             
-            # a !& b & qb
+            # db !& add & qadd
             should "return all with name contain 'j'" do
               a = @expected.select {|n| n.name.include?('j')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ["name"], :value => 'j'}))
               assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
             
-            # a !& b & qa | qb
+            # db !& add & qdb | qadd
             should "return all with identifier containing '0' OR with name containing '0'" do
               a = @expected.select {|n| n.name.include?('0') || n.identifier.include?('0')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ["name", "identifier"], :value => '0'}))
@@ -1716,21 +1716,21 @@ class HasSearchIndexTest < ActiveRecordTestCase
               @options = {"name" => {:action => 'like', :value => 'a'},"identifier" => {:action => 'like', :value => '1'} }
             end
             
-            # a & b & qa
+            # db & add & qdb
             should "return all with identifier containing 2" do
               a = @expected.select {|n| n.identifier.include?('2')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ['identifier'], :value => 2}))
               assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
             
-            # a & b & qb
+            # db & add & qadd
             should "return all with name contain 'j'" do
               a = @expected.select {|n| n.name.include?('j')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ["name"], :value => 'j'}))
               assert_equal(a.map(&:id).sort, b.map(&:id).sort)
             end
             
-            # a & b & qa & qb
+            # db & add & qdb & qadd
             should "return all with identifier containing '0' OR with name containing '0'" do
               a = @expected.select {|n| n.name.include?('0') || n.identifier.include?('0')}
               b = Person.search_with(@options.merge(:quick => {:attributes => ["name", "identifier"], :value => '0'}))
