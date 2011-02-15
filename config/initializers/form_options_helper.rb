@@ -309,13 +309,13 @@ module ActionView
         show_select = @object.send(@method_name) || InstanceTag.value_before_type_cast(@object, choice_method_name.to_s).blank?
         
         content_tag_without_error_wrapping(
-          :div, to_collection_select_tag(collection, value_method, text_method, options, select_options.merge(show_select ? {} : { :value => '' })),
+          :span, to_collection_select_tag(collection, value_method, text_method, options, select_options.merge(show_select ? {} : { :value => '' })),
           :class => "#{choice_method_name}_select_container",
           :style => show_select ? '' : 'display:none'
         ) +
         content_tag_without_error_wrapping(
           #OPTIMIZE we shouldn't have to manually add the brackets '[]' after the object_name, but the call of 'to_collection_select_tag_with_custom_choice' remove end brackets to the object_name
-          :div, InstanceTag.new("#{@object_name}[]", choice_method_name, self, @object).to_input_field_tag("text", text_field_options.merge(show_select ? { :value => '' } : {})) +
+          :span, InstanceTag.new("#{@object_name}[]", choice_method_name, self, @object).to_input_field_tag("text", text_field_options.merge(show_select ? { :value => '' } : {})) +
                 link_to_function_without_error_wrapping(link_options.delete(:content), link_options.delete(:function), link_options),
           :class => "#{choice_method_name}_input_container",
           :style => show_select ? 'display:none' : ''

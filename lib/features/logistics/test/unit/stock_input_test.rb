@@ -22,7 +22,7 @@ class StockInputTest < ActiveSupport::TestCase
     
     context "which is saved" do
       setup do
-        @supply = Supply.first
+        @supply = create_default_supply
         flunk "@supply should NOT have any stock_flows" if @supply.stock_flows.any?
         
         @stock_flow.attributes = { :supply_id   => @supply.id,
@@ -65,7 +65,7 @@ class StockInputTest < ActiveSupport::TestCase
     
     context "associated to a supply and to an inventory" do
       setup do
-        @supply = Supply.first
+        @supply = create_default_supply
         flunk "@supply should NOT have any stock_flows" if @supply.stock_flows.any?
         
         @inventory = build_inventory_with( { @supply => 100 } )

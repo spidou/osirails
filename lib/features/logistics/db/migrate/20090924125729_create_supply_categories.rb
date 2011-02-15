@@ -2,10 +2,10 @@ class CreateSupplyCategories < ActiveRecord::Migration
   def self.up
     create_table :supply_categories  do |t|
       t.references :supply_category, :unit_measure
-      t.string  :type, :reference, :name
-      t.integer :supplies_count, :default => 0
-      t.boolean :enabled,        :default => true
-      t.date    :disabled_at
+      t.string    :type, :reference, :name
+      t.integer   :supplies_count, :default => 0
+      t.boolean   :enabled,        :default => true
+      t.datetime  :disabled_at
       
       t.timestamps
     end

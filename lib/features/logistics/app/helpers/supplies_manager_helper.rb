@@ -1,162 +1,140 @@
 module SuppliesManagerHelper
-  def display_supply_category_action_buttons(supply_category)
+  
+  def supply_category_action_buttons(supply_category)
+    supply_category_classname = supply_category.class.name.underscore # CommodityCategory => commodity_category
+    supply_sub_category_classname = supply_category_classname.gsub("_category", "_sub_category") # commodity_category => commodity_sub_category
+    supply_classname = supply_category_classname.gsub("_category", "") # commodity_category => commodity
+    
     html = []
-    html << display_supply_category_add_button(supply_category, '')
-    html << display_supply_category_show_button(supply_category, '')
-    html << display_supply_category_edit_button(supply_category, '')
-    html << display_supply_category_disable_button(supply_category, '')
-    html << display_supply_category_enable_button(supply_category, '')
-    html << display_supply_category_delete_button(supply_category, '')
-    html.compact.join("&nbsp;")
+    html << send("#{supply_category_classname}_link", supply_category) unless is_show_view?
+    html << send("edit_#{supply_category_classname}_link", supply_category) if !is_edit_view? and supply_category.can_be_edited?
+    html << disable_supply_category_link(supply_category)
+    html << enable_supply_category_link(supply_category)
+    html << send("delete_#{supply_category_classname}_link", supply_category) if supply_category.can_be_destroyed?
+    html << send("new_#{supply_sub_category_classname}_link", :link_text => "Nouvelle sous-famille",
+                                                              :options => { :supply_category_id => supply_category.id },
+                                                              :html_options => { "data-icon" => :new_sub_category }) if supply_category.can_have_children?
+    html << new_supply_link(supply_classname.camelize.constantize, :supply_category_id => supply_category.id) if supply_category.can_have_children?
+    html.compact
   end
   
-  def display_supply_category_add_button(supply_category, message = nil)
-    if supply_category.new_record? # to add a supply_category
-      
-      return unless supply_category.class.can_add?(current_user)
-      message ||= (supply_category.class == ConsumableCategory ? 'Nouvelle famille de consommable' : 'Nouvelle famille de matière première')
-      link_to(message,
-              self.send("new_#{supply_category.class.singularized_table_name}_path"),
-              'data-icon' => :new)
-      
-    elsif supply_category.respond_to?(:supply_category) # to add a supply
-      supply_type = supply_category.class.name.gsub("SubCategory", "").constantize
-      
-      return unless supply_type.can_add?(current_user) and supply_category.can_have_children?
-      message ||= (supply_type == Consumable ? 'Nouveau consommable' : 'Nouvelle matière première')
-      link_to(message,
-              self.send("new_#{supply_type.name.underscore}_path", :supply_category_id => supply_category.id),
-              'data-icon' => :new)
-      
-    else # to add a supply_sub_category
-      supply_sub_category_type = supply_category.class.name.gsub("Category", "SubCategory").constantize
-      
-      return unless supply_sub_category_type.can_add?(current_user) and supply_category.can_have_children?
-      message ||= (supply_category.class == ConsumableCategory ? 'Nouvelle sous-famille de consommable' : 'Nouvelle sous-famille de matière première')
-      link_to(message,
-              self.send("new_#{supply_sub_category_type.name.underscore}_path", :supply_category_id => supply_category.id),
-              'data-icon' => :new_sub_category)
-      
-    end
-  end
-  
-  def display_supply_category_show_button(supply_category, message = nil)
-    return unless supply_category.class.can_view?(current_user)
-    message ||= "Voir la famille"
+  def disable_supply_category_link(supply_category, message = nil) 
+    return unless supply_category.class.can_disable?(current_user) and supply_category.can_be_disabled?
+    message ||= "Désactiver"
     link_to(message,
-            self.send("#{supply_category.class.name.underscore}_path", supply_category),
-            'data-icon' => :show)
+            self.send("disable_#{supply_category.class.name.underscore}_path", supply_category),
+            :confirm => "Êtes-vous sûr ?",
+            'data-icon' => :disable_category)
   end
   
-  def display_supply_category_edit_button(supply_category, message = nil)
-    return unless supply_category.class.can_edit?(current_user) and supply_category.can_be_edited?
-    message ||= "Modifier la famille"
-    link_to(message,
-            self.send("edit_#{supply_category.class.name.underscore}_path", supply_category),
-            'data-icon' => :edit)
-  end
-  
-  def display_supply_category_enable_button(supply_category, message = nil) 
+  def enable_supply_category_link(supply_category, message = nil) 
     return unless supply_category.class.can_enable?(current_user) and supply_category.can_be_enabled?
-    message ||= "Restaurer la famille"
+    message ||= "Restaurer"
     link_to(message,
             self.send("enable_#{supply_category.class.name.underscore}_path", supply_category),
             :confirm => "Êtes-vous sûr ?",
             'data-icon' => :enable_category)
   end
   
-  def display_supply_category_disable_button(supply_category, message = nil)
-    return unless supply_category.class.can_disable?(current_user) and supply_category.can_be_disabled?
-    message ||= "Désactiver la famille"
+  def supply_sub_category_action_buttons(supply_sub_category)
+    supply_sub_category_classname = supply_sub_category.class.name.underscore # CommoditySubCategory => commodity_sub_category
+    supply_classname = supply_sub_category_classname.gsub("_sub_category", "") # commodity_sub_category => commodity
+    
+    html = []
+    html << send("#{supply_sub_category_classname}_link", supply_sub_category) unless is_show_view?
+    html << send("edit_#{supply_sub_category_classname}_link", supply_sub_category) unless is_edit_view?
+    html << disable_supply_sub_category_link(supply_sub_category)
+    html << enable_supply_sub_category_link(supply_sub_category)
+    html << send("delete_#{supply_sub_category_classname}_link", supply_sub_category)
+    html << new_supply_link(supply_classname.camelize.constantize, :supply_sub_category_id => supply_sub_category.id)
+    html.compact
+  end
+  
+  def disable_supply_sub_category_link(supply_sub_category, message = nil) 
+    return unless supply_sub_category.class.can_disable?(current_user) and supply_sub_category.can_be_disabled?
+    message ||= "Désactiver"
     link_to(message,
-            self.send("disable_#{supply_category.class.name.underscore}_path", supply_category),
+            self.send("disable_#{supply_sub_category.class.name.underscore}_path", supply_sub_category),
             :confirm => "Êtes-vous sûr ?",
-            'data-icon' => 'disable_category')
+            'data-icon' => :disable_category)
   end
   
-  def display_supply_category_delete_button(supply_category, message = nil)
-    return unless supply_category.class.can_delete?(current_user) and supply_category.can_be_destroyed?
-    message ||= "Supprimer la famille"
+  def enable_supply_sub_category_link(supply_sub_category, message = nil) 
+    return unless supply_sub_category.class.can_enable?(current_user) and supply_sub_category.can_be_enabled?
+    message ||= "Restaurer"
     link_to(message,
-            supply_category,
-            :method => :delete,
-            :confirm => 'Êtes vous sûr ?',
-            'data-icon' => :delete)
+            self.send("enable_#{supply_sub_category.class.name.underscore}_path", supply_sub_category),
+            :confirm => "Êtes-vous sûr ?",
+            'data-icon' => :enable_category)
   end
   
-  def display_supply_add_button(supply, message = nil)
-    return unless supply.class.can_add?(current_user) and supply.enabled?
-    message ||= supply.is_a?(Consumable) ? "Nouveau consommable" : "Nouvelle matière première"
-    link_to(message,
-            self.send("new_#{supply.class.singularized_table_name}_path"),
+  def new_supply_category_link(supply_category_class)
+    return unless supply_category_class.can_add?(current_user)
+    link_to("Nouvelle famille",
+            self.send("new_#{supply_category_class.name.underscore}_path"),
+            'data-icon' => :new)
+  end
+  
+  def new_supply_sub_category_link(supply_sub_category_class)
+    return unless supply_sub_category_class.can_add?(current_user)
+    link_to("Nouvelle sous-famille",
+            self.send("new_#{supply_sub_category_class.name.underscore}_path"),
+            'data-icon' => :new_sub_category)
+  end
+  
+  def new_supply_link(supply_class, link_options = {})
+    return unless supply_class.can_add?(current_user)
+    link_to("Nouvel article",
+            self.send("new_#{supply_class.name.underscore}_path", link_options ),
             'data-icon' => :new)
   end
   
   def supply_action_buttons(supply)
+    supply_classname = supply.class.name.underscore # Commodity => commodity
+    
     html = []
+    html << send("#{supply_classname}_link", supply) unless is_show_view?
+    html << send("edit_#{supply_classname}_link", supply) unless is_edit_view?
+    html << disable_supply_link(supply)
+    html << enable_supply_link(supply)
+    html << send("delete_#{supply_classname}_link", supply)
     html << watching_link(supply)
-    html << display_supply_show_button(supply)
-    html << display_supply_edit_button(supply)
-    html << display_supply_disable_button(supply)
-    html << display_supply_enable_button(supply)
-    html << display_supply_delete_button(supply)
     html.compact
   end
   
-  def display_supply_show_button(supply, message = nil) 
-    return unless supply.class.can_view?(current_user)
-    link_to(message || "Voir",
-            send("#{supply.class.singularized_table_name}_path", supply),
-            'data-icon' => :show)
-  end
-  
-  def display_supply_edit_button(supply, message = nil) 
-    return unless supply.class.can_edit?(current_user) and supply.can_be_edited?
-    link_to(message || "Modifier",
-            send("edit_#{supply.class.singularized_table_name}_path", supply),
-            'data-icon' => :edit)
-  end
-  
-  def display_supply_disable_button(supply, message = nil) 
+  def disable_supply_link(supply)
     return unless supply.class.can_disable?(current_user) and supply.can_be_disabled?
-    link_to(message || "Désactiver",
+    message ||= "Désactiver"
+    link_to(message,
             self.send("disable_#{supply.class.name.underscore}_path", supply),
             :confirm => "Êtes-vous sûr ?",
             'data-icon' => :disable_supply)
   end
   
-  def display_supply_enable_button(supply, message = nil) 
+  def enable_supply_link(supply)
     return unless supply.class.can_enable?(current_user) and supply.can_be_enabled?
-    link_to(message || "Restaurer",
+    message ||= "Restaurer"
+    link_to(message,
             self.send("enable_#{supply.class.name.underscore}_path", supply),
             :confirm => "Êtes-vous sûr ?",
             'data-icon' => :enable_supply)
   end
   
-  def display_supply_delete_button(supply, message = nil) 
-    return unless supply.class.can_delete?(current_user) and supply.can_be_destroyed?
-    link_to(message || "Supprimer",
-            supply,
-            :method => :delete,
-            :confirm => 'Êtes vous sûr ?',
-            'data-icon' => :delete)
-  end
-  
   #TODO remove that helper after creating additional queries via has_search_index plugin (seeds)
-  def display_supply_list_button(supply_type)
-    return unless supply_type.can_list?(current_user)
-    message ||= (supply_type == Consumable ? 'Voir tous les consommables' : 'Voir toutes les matières premières')
+  def display_supply_list_button(supply_class)
+    return unless supply_class.can_list?(current_user)
+    message ||= (supply_class == Consumable ? 'Voir tous les consommables' : 'Voir toutes les matières premières')
     link_to(message,
-            self.send("#{supply_type.name.tableize}_manager_path"),
+            self.send("#{supply_class.name.tableize}_manager_path"),
             'data-icon' => :index)
   end
   
   #TODO remove that helper after creating additional queries via has_search_index plugin (seeds)
-  def display_supply_list_all_button(supply_type, all = false)
-    return unless supply_type.can_list?(current_user)
-    message ||= (supply_type == Consumable ? 'Voir tous les consommables (y compris ceux qui sont désactivés)' : 'Voir toutes les matières premières (y compris celles qui sont désactivées)')
+  def display_supply_list_all_button(supply_class, all = false)
+    return unless supply_class.can_list?(current_user)
+    message ||= (supply_class == Consumable ? 'Voir tous les consommables (y compris ceux qui sont désactivés)' : 'Voir toutes les matières premières (y compris celles qui sont désactivées)')
     link_to(message,
-            self.send("#{supply_type.name.tableize}_manager_path", :inactives => "1"),
+            self.send("#{supply_class.name.tableize}_manager_path", :inactives => "1"),
             'data-icon' => :index)
   end
   

@@ -15,8 +15,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-require 'matchers/act_on_journalization_with_matcher'
-require 'matchers/journalize_matcher'
+require File.join(File.dirname(__FILE__), '..', 'lib', 'matchers', 'act_on_journalization_with_matcher')
+require File.join(File.dirname(__FILE__), '..', 'lib', 'matchers', 'journalize_matcher')
 
 module Journalization
   module Shoulda

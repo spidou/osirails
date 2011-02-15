@@ -55,6 +55,19 @@ namespace :osirails do
           else
             raise "No such file '#{file_path}'"
           end
+          
+          file_path = File.join(File.dirname(__FILE__), "..", "import", "commodities.csv")
+          if File.exists?(file_path)
+            puts "Import third level of commodity_categories"
+            file = File.open(file_path)
+            rows = CSV::Reader.parse(file)
+            
+            definitions = { :supply_category_id => { :find_by_name_and_type => [ 1, "CommoditySubCategory" ] },
+                            :name               => 2 }
+            
+            importer = Osirails::Importer.new(:klass => :commodity_type, :identifiers => [ :name, :supply_category_id ], :definitions => definitions, :if_match => ENV["IF_MATCH"])
+            importer.import_data(rows)
+          end
         end
         
         desc "Import commodities from CSV file. Give IF_MATCH in 'SKIP', 'OVERRIDE', 'DUPLICATE'"
@@ -64,9 +77,9 @@ namespace :osirails do
             file = File.open(file_path)
             rows = CSV::Reader.parse(file)
             
-            definitions = { :supply_sub_category_id => { :find_by_name_and_supply_category_id => [ 1, { :supply_category_id => { :find_by_name_and_type => [ 0, "CommodityCategory" ] } } ] },
-                            :name => 2,
-                            :supplies_supply_size_attributes => [ { :supply_size_id   => { :find_by_name => "Épaisseur" },
+            definitions = ActiveSupport::OrderedHash.new # it can be deleted once we use ruby1.9 (and use Hash)
+            definitions[:supply_type_id] = { :find_by_name_and_supply_category_id => [ 2, { :supply_category_id => { :find_by_name_and_type => [ 1, "CommoditySubCategory" ] } } ] }
+            definitions[:supplies_supply_size_attributes] = [ { :supply_size_id   => { :find_by_name => "Épaisseur" },
                                                                     :value            => 3 },
                                                                   { :supply_size_id   => { :find_by_name => "Diamètre" },
                                                                     :value            => 4 },
@@ -85,15 +98,44 @@ namespace :osirails do
                                                                   { :supply_size_id   => { :find_by_name => "Tension" },
                                                                     :value            => 11 },
                                                                   { :supply_size_id   => { :find_by_name => "Intensité" },
-                                                                    :value            => 12 }, ],
-                            :packaging  => 13,
-                            :unit_mass  => 14,
-                            :measure    => 15,
-                            :supplier_supply_attributes => [ { :supplier_id           => { :find_by_name => 16 },
+                                                                    :value            => 12 }, ]
+            definitions[:packaging] = 13
+            definitions[:unit_mass] = 14
+            definitions[:measure] = 15
+            definitions[:supplier_supply_attributes] = [ { :supplier_id           => { :find_by_name => 16 },
                                                                :supplier_reference    => 17,
                                                                #:supplier_designation  => 18,
                                                                :fob_unit_price        => 21,
-                                                               :taxes                 => 22 } ] }
+                                                               :taxes                 => 22 } ]
+            #definitions = { :supply_type_id => { :find_by_name_and_supply_category_id => [ 2, { :supply_category_id => { :find_by_name_and_type => [ 1, "CommoditySubCategory" ] } } ] },
+            #                :supplies_supply_size_attributes => [ { :supply_size_id   => { :find_by_name => "Épaisseur" },
+            #                                                        :value            => 3 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Diamètre" },
+            #                                                        :value            => 4 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Largeur" },
+            #                                                        :value            => 5 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Longueur" },
+            #                                                        :value            => 6 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Hauteur" },
+            #                                                        :value            => 7 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Angle" },
+            #                                                        :value            => 8 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Volume" },
+            #                                                        :value            => 9 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Puissance" },
+            #                                                        :value            => 10 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Tension" },
+            #                                                        :value            => 11 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Intensité" },
+            #                                                        :value            => 12 }, ],
+            #                :packaging  => 13,
+            #                :unit_mass  => 14,
+            #                :measure    => 15,
+            #                :supplier_supply_attributes => [ { :supplier_id           => { :find_by_name => 16 },
+            #                                                   :supplier_reference    => 17,
+            #                                                   #:supplier_designation  => 18,
+            #                                                   :fob_unit_price        => 21,
+            #                                                   :taxes                 => 22 } ] }
             
             importer = Osirails::Importer.new(:klass => :commodity, :identifiers => nil, :definitions => definitions, :if_match => ENV["IF_MATCH"])
             importer.import_data(rows)
@@ -148,6 +190,19 @@ namespace :osirails do
           else
             raise "No such file '#{file_path}'"
           end
+          
+          file_path = File.join(File.dirname(__FILE__), "..", "import", "consumables.csv")
+          if File.exists?(file_path)
+            puts "Import third level of consumable_categories"
+            file = File.open(file_path)
+            rows = CSV::Reader.parse(file)
+            
+            definitions = { :supply_category_id => { :find_by_name_and_type => [ 1, "ConsumableSubCategory" ] },
+                            :name               => 2 }
+            
+            importer = Osirails::Importer.new(:klass => :consumable_type, :identifiers => [ :name, :supply_category_id ], :definitions => definitions, :if_match => ENV["IF_MATCH"])
+            importer.import_data(rows)
+          end
         end
         
         desc "Import consumables from CSV file. Give IF_MATCH in 'SKIP', 'OVERRIDE', 'DUPLICATE'"
@@ -157,9 +212,9 @@ namespace :osirails do
             file = File.open(file_path)
             rows = CSV::Reader.parse(file)
             
-            definitions = { :supply_sub_category_id => { :find_by_name_and_supply_category_id => [ 1, { :supply_category_id => { :find_by_name_and_type => [ 0, "ConsumableCategory" ] } } ] },
-                            :name => 2,
-                            :supplies_supply_size_attributes => [ { :supply_size_id   => { :find_by_name => "Épaisseur" },
+            definitions = ActiveSupport::OrderedHash.new # it can be deleted once we use ruby1.9 (and use Hash)
+            definitions[:supply_type_id] = { :find_by_name_and_supply_category_id => [ 2, { :supply_category_id => { :find_by_name_and_type => [ 1, "ConsumableSubCategory" ] } } ] }
+            definitions[:supplies_supply_size_attributes] = [ { :supply_size_id   => { :find_by_name => "Épaisseur" },
                                                                     :value            => 3 },
                                                                   { :supply_size_id   => { :find_by_name => "Diamètre" },
                                                                     :value            => 4 },
@@ -178,15 +233,45 @@ namespace :osirails do
                                                                   { :supply_size_id   => { :find_by_name => "Tension" },
                                                                     :value            => 11 },
                                                                   { :supply_size_id   => { :find_by_name => "Intensité" },
-                                                                    :value            => 12 }, ],
-                            :packaging  => 13,
-                            :unit_mass  => 14,
-                            :measure    => 15,
-                            :supplier_supply_attributes => [ { :supplier_id           => { :find_by_name => 16 },
+                                                                    :value            => 12 }, ]
+            definitions[:packaging] = 13
+            definitions[:unit_mass] = 14
+            definitions[:measure]   = 15
+            definitions[:supplier_supply_attributes] = [ { :supplier_id           => { :find_by_name => 16 },
                                                                :supplier_reference    => 17,
                                                                #:supplier_designation  => 18,
                                                                :fob_unit_price        => 21,
-                                                               :taxes                 => 22 } ] }
+                                                               :taxes                 => 22 } ]
+            
+            #definitions = { :supply_type_id => { :find_by_name_and_supply_category_id => [ 2, { :supply_category_id => { :find_by_name_and_type => [ 1, "ConsumableSubCategory" ] } } ] },
+            #                :supplies_supply_size_attributes => [ { :supply_size_id   => { :find_by_name => "Épaisseur" },
+            #                                                        :value            => 3 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Diamètre" },
+            #                                                        :value            => 4 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Largeur" },
+            #                                                        :value            => 5 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Longueur" },
+            #                                                        :value            => 6 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Hauteur" },
+            #                                                        :value            => 7 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Angle" },
+            #                                                        :value            => 8 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Volume" },
+            #                                                        :value            => 9 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Puissance" },
+            #                                                        :value            => 10 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Tension" },
+            #                                                        :value            => 11 },
+            #                                                      { :supply_size_id   => { :find_by_name => "Intensité" },
+            #                                                        :value            => 12 }, ],
+            #                :packaging  => 13,
+            #                :unit_mass  => 14,
+            #                :measure    => 15,
+            #                :supplier_supply_attributes => [ { :supplier_id           => { :find_by_name => 16 },
+            #                                                   :supplier_reference    => 17,
+            #                                                   #:supplier_designation  => 18,
+            #                                                   :fob_unit_price        => 21,
+            #                                                   :taxes                 => 22 } ] }
             
             importer = Osirails::Importer.new(:klass => :consumable, :identifiers => nil, :definitions => definitions, :if_match => ENV["IF_MATCH"])
             importer.import_data(rows)

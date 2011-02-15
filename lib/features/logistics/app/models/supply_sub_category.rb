@@ -5,7 +5,9 @@ class SupplySubCategory < SupplyCategory
   has_many :supply_sizes, :through => :supply_categories_supply_sizes
   
   validates_presence_of :supply_category_id
+  validates_presence_of :supply_category, :if => :supply_category_id
   
+  validates_persistence_of :supply_category_id
   validates_persistence_of :name, :unit_measure_id, :if => :has_children?
   
   validates_associated :supply_categories_supply_sizes
@@ -25,11 +27,17 @@ class SupplySubCategory < SupplyCategory
   
   # this is an override of the method defined on supply_category.rb
   def children
-    supplies
+    supply_types
   end
   
   def ancestors
     [ supply_category ] + supply_category.ancestors
+  end
+  
+  #TODO test this method
+  def supplies
+    #OPTIMIZE by using a SQL statement
+    supply_types.collect(&:supplies).flatten
   end
   
   def supply_categories_supply_size_attributes=(supply_categories_supply_size_attributes)

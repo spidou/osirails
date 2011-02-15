@@ -12,7 +12,7 @@ stock_flow_type = stock_flow.class.name.underscore
       
       <p>
         <%= form.label :supply_id %>
-        <%= form.collection_select(:supply_id, supplies, :id, :designation, :include_blank => "Veuillez choisir la fourniture concernée") %>
+        <%= form.collection_select(:supply_id, supplies, :id, :designation, :include_blank => "Veuillez choisir l'article concerné") %>
         <%= observe_field("#{stock_flow_type}_supply_id", :url => update_supply_stock_infos_path, :with => "supply_id") if stock_flow.is_a?(StockInput) %>
       </p>
       <p>
@@ -27,13 +27,13 @@ stock_flow_type = stock_flow.class.name.underscore
       <% if stock_flow.is_a?(StockInput) %>
         <p>
           <%= form.label :unit_price %>
-          <%= form.text_field(:unit_price, :value => number_with_precision(stock_flow.unit_price, 2), :size => 10) + " &euro;" %>
+          <%= form.text_field(:unit_price, :value => number_with_precision(stock_flow.unit_price, :precision => 2), :size => 10) + " &euro;" %>
         </p>
       <% end %>
       
       <%= form.form_buttons %>
     <% end %>
   <% else %>
-    <p>Aucune fourniture disponible pour effectuer un mouvement de stock</p>
+    <p>Aucun article disponible pour effectuer un mouvement de stock</p>
   <% end %>
 </div>

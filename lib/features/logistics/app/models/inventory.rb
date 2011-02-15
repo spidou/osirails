@@ -18,15 +18,15 @@ class Inventory < ActiveRecord::Base
   
   def validates_stock_flows_uniqueness_of_supply
     supply_ids = stock_flows.collect(&:supply_id)
-    errors.add(:stock_flows, "L'inventaire fait 2 fois référence à la même fourniture") if supply_ids.size != supply_ids.uniq.size
+    errors.add(:stock_flows, "L'inventaire fait 2 fois référence au même article") if supply_ids.size != supply_ids.uniq.size
   end
   
   def validates_stock_flows_supply_type
     return unless supply_type
     
     supply_types = stock_flows.collect(&:supply).collect(&:type)
-    errors.add(:stock_flows, "L'inventaire faire référence à des fournitures de types de différents") if supply_types.uniq.many?
-    errors.add(:stock_flows, "L'inventaire doit faire référence à des fournitures du type #{supply_type}") if supply_types.any? and supply_types.first != supply_type
+    errors.add(:stock_flows, "L'inventaire faire référence à des articles de types différents") if supply_types.uniq.many?
+    errors.add(:stock_flows, "L'inventaire doit faire référence à des articles du type #{supply_type}") if supply_types.any? and supply_types.first != supply_type
   end
   
   def date

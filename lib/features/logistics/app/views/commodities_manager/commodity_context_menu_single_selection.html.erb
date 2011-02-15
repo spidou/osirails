@@ -1,23 +1,29 @@
-<% category = @object.supply_category %>
+<%
+supply_category = @object.supply_category
+supply_sub_category = @object.supply_sub_category
+supply_type = @object.supply_type
+%>
 
 <% display_context_menu do |c| %>
-  <% c.submenu "#{category.name}" do %>
-    <%= display_supply_category_add_button(category, 'Nouvelle sous-famille') %>
-    <%= display_supply_category_show_button(category, 'Voir') %>
-    <%= display_supply_category_edit_button(category, 'Modifier') %>
-    <%= display_supply_category_disable_button(category, 'Désactiver') %>
-    <%= display_supply_category_enable_button(category, 'Activer') %>
-    <%= display_supply_category_delete_button(category, 'Supprimer') %>
+  <%= c.title Commodity.human_name %>
+  
+  <% c.submenu "#{supply_category.name}" do %>
+    <%= c.title CommodityCategory.human_name %>
+    <% supply_category_action_buttons(supply_category).each do |button| %>
+      <%= c.entry button %>
+    <% end %>
   <% end %>
   
-  <% sub_category = @object.supply_sub_category %>
-  <% c.submenu "#{sub_category.name}" do %>
-    <%= display_supply_category_add_button(sub_category, 'Nouvelle matière première') %>
-    <%= display_supply_category_show_button(sub_category, 'Voir') %>
-    <%= display_supply_category_edit_button(sub_category, 'Modifier') %>
-    <%= display_supply_category_disable_button(sub_category, 'Désactiver') %>
-    <%= display_supply_category_enable_button(sub_category, 'Activer') %>
-    <%= display_supply_category_delete_button(sub_category, 'Supprimer') %>
+  <% c.submenu "#{supply_sub_category.name}" do %>
+    <%= c.title CommoditySubCategory.human_name %>
+    <% supply_sub_category_action_buttons(supply_sub_category).each do |button| %>
+      <%= c.entry button %>
+    <% end %>
+  <% end %>
+  
+  <% c.submenu "#{supply_type.name}" do %>
+    <%= c.title CommodityType.human_name %>
+    <%= c.entry new_supply_link(@object.class, :supply_type_id => supply_type.id) %>
   <% end %>
   
   <% supply_action_buttons(@object).each do |button| %>

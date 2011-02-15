@@ -1,14 +1,16 @@
 fr:
   activerecord:
     models:
-      supply: "Fourniture"
+      supply: "Article"
       commodity: "Matière première"
-      commodity_category: "Catégorie de matière première"
-      commodity_sub_category: "Sous-catégorie de matière première"
+      commodity_category: "Famille de matière première"
+      commodity_sub_category: "Sous-famille de matière première"
+      commodity_type: "Type de matière première"
       computer: "Ordinateur"
       consumable: "Consommable"
-      consumable_category: "Catégorie de consommable"
-      consumable_sub_category: "Sous-catégorie de consommable"
+      consumable_category: "Famille de consommable"
+      consumable_sub_category: "Sous-famille de consommable"
+      consumable_type: "Type de consommable"
       device: "Périphérique"
       inventory: "Inventaire"
       machine: "Machine"
@@ -16,13 +18,14 @@ fr:
       stock_flow: "Mouvement de stock"
       stock_input: "Entrée de stock"
       stock_output: "Sortie de stock"
-      supplier_supply: "Fourniture fournisseur"
+      #supplier_supply:
       #supplies_supply_size:
       #supply_categories_supply_size:
-      supply_category: "Catégorie de fourniture"
+      supply_category: "Famille d'article"
+      supply_sub_category: "Sous-famille d'article"
+      supply_type: "Type d'article"
       supply_size: "Grandeur"
       #supply_size_unit_measure:
-      supply_sub_category: "Sous-catégorie de fourniture"
       tool: "Équipement"
       tool_event: "Évènement"
       unit_measure: "Unité de mesure"
@@ -49,6 +52,7 @@ fr:
       supply: &supply
         supply_category: "Famille"
         supply_sub_category: "Sous-famille"
+        supply_type: "Type"
         name: "Type"
         reference: "Référence"
         supplier: "Fournisseur principal"
@@ -75,7 +79,7 @@ fr:
         fob_unit_price: "Prix HT"
         lead_time: "Délai d'approvisionnement"
       stock_flow:
-        supply: "Fourniture"
+        supply: "Article"
         quantity: "Quantité"
       stock_input:
         identifier: "Numéro d'achat"
@@ -112,16 +116,28 @@ fr:
         name: "Famille"
       commodity_sub_category:
         name: "Sous-Famille"
+      commodity_type:
+        name: "Type"
       consumable_category:
         name: "Famille"
       consumable_sub_category:
         name: "Sous-Famille"
+      consumable_type:
+        name: "Type"
       commodity:
         supply_category: "Famille"           # for alias on filters
         supply_sub_category: "Sous-Famille"  # for alias on filters
+        supply_type: "Type"                  # for alias on filters
+        humanized_supply_sizes: "Spécificités"
+      consumable:
+        supply_category: "Famille"           # for alias on filters
+        supply_sub_category: "Sous-Famille"  # for alias on filters
+        supply_type: "Type"                  # for alias on filters
         humanized_supply_sizes: "Spécificités"
     filters:
       commodity:
+        humanized_supply_sizes: "Spécificités (dimensions, etc.)"
+      consumable:
         humanized_supply_sizes: "Spécificités (dimensions, etc.)"
     page_names:      
       commodity:

@@ -22,7 +22,7 @@ class StockOutputTest < ActiveSupport::TestCase
     
     context "which is saved" do
       setup do
-        @supply = Supply.first
+        @supply = create_default_supply
         create_stock_input_for_supply(@supply, :sleep_delay => true)
         
         flunk "@supply should have a stock_value at 10000.0\nbut was #{@supply.stock_value}" if @supply.stock_value != 10000.0
@@ -73,7 +73,7 @@ class StockOutputTest < ActiveSupport::TestCase
     
     context "associated to a supply" do
       setup do
-        @supply = Supply.first
+        @supply = create_default_supply
         flunk "@supply should NOT have any stock_flows" if @supply.stock_flows.any?
         
         @stock_flow.supply = @supply
@@ -95,7 +95,7 @@ class StockOutputTest < ActiveSupport::TestCase
             @stock_flow.quantity = q
             @stock_flow.valid?
             
-            assert_match /La quantité choisie est supérieure au stock disponible pour cette fourniture/, @stock_flow.errors.on(:quantity)
+            assert_match /La quantité choisie est supérieure au stock disponible pour cet article/, @stock_flow.errors.on(:quantity)
           end
         end
         
@@ -119,7 +119,7 @@ class StockOutputTest < ActiveSupport::TestCase
     
     context "associated to a supply and to an inventory" do
       setup do
-        @supply = Supply.first
+        @supply = create_default_supply
         flunk "@supply should NOT have any stock_flows" if @supply.stock_flows.any?
         
         @inventory = build_inventory_with( { @supply => 100 } )

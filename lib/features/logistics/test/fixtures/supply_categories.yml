@@ -1,21 +1,46 @@
 first_commodity_category:
   type: CommodityCategory
-  reference: 100
+  reference: M.01
   name: First Commodity Category
 first_commodity_sub_category:
   type: CommoditySubCategory
   supply_category: first_commodity_category
-  reference: 110
+  reference: M.01.01
   name: First Commodity Sub Category
   unit_measure_id: millimeter
+first_commodity_type:
+  type: CommodityType
+  supply_sub_category: first_commodity_sub_category
+  reference: M.01.01.01
+  name: First Commodity Type
+  enabled: true
+second_commodity_type:
+  type: CommodityType
+  supply_sub_category: first_commodity_sub_category
+  reference: M.01.01.02
+  name: Second Commodity Type
+  enabled: true
+
 
 first_consumable_category:
   type: ConsumableCategory
-  reference: 200
+  reference: C.01
   name: First Consumable Category
 first_consumable_sub_category:
   type: ConsumableSubCategory
   supply_category: first_consumable_category
-  reference: 210
+  reference: C.01.01
   name: First Consumable Sub Category
   unit_measure_id: millimeter
+first_consumable_type:
+  type: ConsumableType
+  supply_sub_category: first_consumable_sub_category
+  reference: C.01.01.01
+  name: First Consumable Type
+  enabled: true
+second_consumable_type:
+  type: ConsumableType
+  supply_sub_category: first_consumable_sub_category
+  reference: C.01.01.02
+  name: Second Consumable Type
+  enabled: true
