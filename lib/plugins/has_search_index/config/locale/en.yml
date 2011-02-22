@@ -83,6 +83,7 @@ en:
     paginate_per_page: "Per page"
     paginate_all: "All"
     no_result: "No result found"
+    forbidden_options: "You're not allowed to perform that search"
     search_for: "Match"
     search_types:
       and: 'all of the following'

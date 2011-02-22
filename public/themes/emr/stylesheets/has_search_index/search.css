@@ -42,7 +42,7 @@ div.inline_div label{
   padding: 5px;
   color: #000;   
   text-align: center;
-  margin-top: 5px;
+  margin-bottom: 35px;
 }
 
 .results_table {
@@ -281,12 +281,12 @@ div.cancel_link a.reset_query_link:hover {
 
 .criterion a.toggle_multiple_link {
   display: inline;
-  background: url('/themes/emr/images/search/toggle_plus_16x16.png') no-repeat center #fff;
+  background: url('/themes/emr/images/search/toggle_plus_16x16.png') no-repeat center;
   padding: 8px;
 }
 
 .criterion a.toggle_multiple_link.multiple {
-  background: url('/themes/emr/images/search/toggle_minus_16x16.png') no-repeat center #fff;
+  background: url('/themes/emr/images/search/toggle_minus_16x16.png') no-repeat center;
 }
 
 .criterion ul.attribute_chooser a {

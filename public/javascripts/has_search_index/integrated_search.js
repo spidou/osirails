@@ -134,11 +134,11 @@ function toggleIntegratedForm(page_name, link)
 }
 
 //-------------------------------------------- dynamique attribute chooser methods------------------------------ 
-function showSubMenu(li)
+function showSubMenu(li, only_selected)
 {
   li.siblings('LI').each(function(li){ hideSubMenu(li) })
-  ul = li.down('UL')
-  if( ul != null){
+  ul       = li.down('UL')
+  if(ul != null && (only_selected != null ? ul.down('.selected') != null : true) ){
     ul.style.left = li.parentNode.getStyle('width')
     ul.show()
     ul.addClassName('visible_menu')
@@ -179,7 +179,7 @@ function showAttributeChooser(element)
     // show the selection
     var li = element.up('.criterion').down('.selected')
     while(li != null){
-      showSubMenu(li)
+      showSubMenu(li, only_selected = true)
       li = li.down('.selected')
     }
   }
@@ -193,7 +193,7 @@ function replaceAttribute(element, content)
 
 function footPrint(element)
 {
-  // forget the old selectipon
+  // forget the old selection
   var li = element.up('.attribute_chooser').down('.selected')
   while(li != null) {
     li.removeClassName('selected')

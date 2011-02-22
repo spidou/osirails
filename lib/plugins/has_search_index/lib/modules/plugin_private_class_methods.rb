@@ -671,19 +671,21 @@ private
   # # => Employee.relationship_class_name_from("employees.numbers.number_type", :employees) -> 'Employee'
   #
   # the +path+ must begin by main model table_name (Employee -> 'employees') or a direct relationship (Employee has_many :numbers --> 'numbers')
-  # # => Employee.retrieve_relationship_class("numbers.number_type", "numbers") -> 'Number'
+  # # => Employee.relationship_class_name_from("numbers.number_type", "numbers") -> 'Number'
   #
   def relationship_class_name_from(path, relationship)
-    model = self
     return self.to_s if relationship == self.table_name
-    path.gsub("#{self.table_name}.","").split(".").each do |part|
+
+    model = self
+    path.gsub("#{ self.table_name }.","").split(".").each do |part|
       if model.reflect_on_association(part.to_sym).nil?
-        raise(ArgumentError, "#{self::ERROR_PREFIX} Association '#{ part }' undefined for '#{self}' model")
+        raise(ArgumentError, "#{self::ERROR_PREFIX} Association '#{ part }' undefined for '#{ self }' model")
       end
-      class_name = model.reflect_on_association(part.to_sym).class_name
-      model      = class_name.constantize
-      return class_name if part == relationship.to_s
+      model = model.reflect_on_association(part.to_sym).class_name.constantize
+      return model.name if part == relationship.to_s
     end
+    return model.name if relationship.nil?
+    
     nil
   end
   

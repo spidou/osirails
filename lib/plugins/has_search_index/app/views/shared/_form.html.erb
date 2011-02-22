@@ -1,6 +1,6 @@
 <%
   require_locals page_name, query
-  page_config = HasSearchIndex::HTML_PAGES_OPTIONS[page_name.to_sym].clone
+  page_config = @page_configuration.clone
   visible = cookies["#{ page_name }_form_visible"] == 'true'
 %>
 

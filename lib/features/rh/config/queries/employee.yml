@@ -5,6 +5,7 @@ conf_columns: &columns
     - last_name
     - first_name
     - fullname
+    - society_email
     - service.name
     - civility.name
     - jobs.name

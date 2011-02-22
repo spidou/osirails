@@ -1,5 +1,5 @@
 <%
-  page_config     = HasSearchIndex::HTML_PAGES_OPTIONS[query.page_name.to_sym].clone
+  page_config     = @page_configuration.clone
   per_page_config = page_config[:per_page] + [['all', nil]]
   search_type_config = [
     [I18n.t('view.search_types.and'),'and'],
@@ -13,6 +13,7 @@
   <div class="search_form">
     <% form_for(query) do |form| %>
       <%= form.error_messages %>
+      
       <p>
         <%= form.label(:name) %>
         <%= form.text_field(:name) %>

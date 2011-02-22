@@ -6,14 +6,16 @@ class QueriesController < ApplicationController
   # GET /queries/:id/edit
   def edit
     @query = Query.find(params[:id])
-    params[:query].each {|k,v| @query.send("#{ k }=",v)} if params[:query] 
-    @return_uri = params[:return_uri] + "?query_id=#{ @query.id }"
+    params[:query].each {|k,v| @query.send("#{ k }=",v)} if params[:query]
+    @query.group = [] unless params[:query][:group]
+    @return_uri  = params[:return_uri] + "?query_id=#{ @query.id }"
   end
   
   # PUT /queries/:id
   def update
     @query = Query.find(params[:id])
-    @query.order = get_order(params[:query].delete(:order)) 
+    @query.order   = get_order(params[:query].delete(:order)) 
+    @query.group   = [] unless params[:query][:group]
     
     if @query.update_attributes(params[:query])
       flash[:notice] = "La requête a été modifiée avec succés"

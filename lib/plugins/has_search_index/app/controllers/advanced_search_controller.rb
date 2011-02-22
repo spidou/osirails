@@ -12,7 +12,15 @@ class AdvancedSearchController < ApplicationController
       params[:p]
     end
     
-    build_query_for(page_name.to_sym) if page_name
+    if page_name
+      model = HasSearchIndex::HTML_PAGES_OPTIONS[page_name.to_sym][:model].constantize
+      if !model.respond_to?(:can_view?) || !model.can_view?(current_user)
+        error_access_page(403) 
+      else
+        build_query_for(page_name.to_sym) 
+      end
+    end
+    
   end
   
 end

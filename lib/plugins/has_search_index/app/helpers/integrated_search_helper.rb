@@ -391,12 +391,12 @@ module IntegratedSearchHelper
       :limit      => reflection.options[:limit]
     }
     
-    collection = model.all(options).map {|n| [n.send(identifier), "#{ n.id }"]}
+    collection = model.all(options).map {|n| [n.send(identifier), "#{ n.id }"]}.sort
     multiple   = value && value.split(' ').many?
-    input      = select_tag(nil, options_for_select(collection.sort, value ? value.split(' ') : value),
+    input      = select_tag(nil, options_for_select(collection, value ? value.split(' ') : value),
                         :multiple => multiple,
                         :onchange => 'applySelection(this, this.next("INPUT"))')
-    input     += hidden_field_tag("criteria[#{ attribute }][value][]", value)
+    input     += hidden_field_tag("criteria[#{ attribute }][value][]", value.nil? ? collection[0][1] : value)
     input     += link_to_function(nil, 'toggleMultiple(this)', :class => "toggle_multiple_link #{ 'multiple' if multiple }")
   end
   
