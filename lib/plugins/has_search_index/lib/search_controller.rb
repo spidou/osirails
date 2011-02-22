@@ -24,7 +24,7 @@ module SearchController
       [:columns, :group, :search_type, :order].each do |key|
         @query.send("#{ key }=", page_params[:query][key]) unless page_params[:query][key].nil?
       end
-      @query.per_page = page_params[:query][:per_page].to_i if page_params[:query][:per_page]
+      @query.per_page = page_params[:query][:per_page].to_i unless page_params[:query][:per_page].blank?
     end
     
     @query.columns     ||= default_query ? default_query.columns : @page_configuration[:columns]
