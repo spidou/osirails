@@ -1,6 +1,6 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_stock_flow_link(StockOutput, Commodity.new) unless params[:supply_type] == "Commodity" %>
-  <%= new_stock_flow_link(StockOutput, Consumable.new) unless params[:supply_type] == "Consumable" %>
+  <%= new_stock_flow_link(StockOutput, Commodity.new) unless params[:supply_class] == "Commodity" %>
+  <%= new_stock_flow_link(StockOutput, Consumable.new) unless params[:supply_class] == "Consumable" %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
@@ -10,5 +10,5 @@
 <% end %>
 
 <h1>Nouvelle sortie de stock</h1>
-<%= render :partial => 'stock_flows/stock_flow', :object => @stock_flow, :locals => { :supply_type  => @supply_type,
+<%= render :partial => 'stock_flows/stock_flow', :object => @stock_flow, :locals => { :supply_class => @supply_class,
                                                                                       :supplies     => @supplies } %>

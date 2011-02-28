@@ -1,19 +1,19 @@
 <%
-require_locals supply_type, supplies
+require_locals supply_class, supplies
 
-stock_flow_type = stock_flow.class.name.underscore
+stock_flow_class = stock_flow.class.name.underscore
 %>
 
 <div class="presentation_medium">
   <% unless supplies.empty? %>
     <% form_for(stock_flow) do |form| %>
       <%= form.error_messages %>
-      <%= hidden_field_tag :supply_type, supply_type %>
+      <%= hidden_field_tag :supply_class, supply_class %>
       
       <p>
         <%= form.label :supply_id %>
         <%= form.collection_select(:supply_id, supplies, :id, :designation, :include_blank => "Veuillez choisir l'article concerné") %>
-        <%= observe_field("#{stock_flow_type}_supply_id", :url => update_supply_stock_infos_path, :with => "supply_id") if stock_flow.is_a?(StockInput) %>
+        <%= observe_field("#{stock_flow_class}_supply_id", :url => update_supply_stock_infos_path, :with => "supply_id") if stock_flow.is_a?(StockInput) %>
       </p>
       <p>
         <%= form.label :identifier %>

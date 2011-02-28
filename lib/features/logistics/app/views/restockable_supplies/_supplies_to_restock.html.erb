@@ -1,4 +1,4 @@
-<%= "<h2>#{supplies_to_restock.first.class.name == "Commodity" ? "Matières premières" : "Consommables"}</h2>" %> 
+<h2><%= supplies_to_restock.first.class.human_name %></h2>
 <table>
   <thead>
     <tr>

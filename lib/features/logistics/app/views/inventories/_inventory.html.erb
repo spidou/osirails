@@ -1,4 +1,21 @@
-<% require_locals supplies, supply_categories %>
+<% require_locals supplies %>
+
+<% content_for :header do %>
+  <%= javascript_include_tag 'logistics/supplies' %>
+  <%= javascript_include_tag 'logistics/inventories' %>
+  <%= stylesheet_link_tag_with_theme_support 'logistics/inventory' %>
+<% end %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_inventory_link(Commodity.new, "Nouvel inventaire des matières premières") if params[:supply_class] == "Consumable" %>
+  <%= new_inventory_link(Consumable.new, "Nouvel inventaire des consommables") if params[:supply_class] == "Commodity" %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= inventories_link(:link_text => "Voir tous les inventaires") %>
+  <%= commodity_categories_link(:link_text => "Voir toutes les catégories de matières premières") %>
+  <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
+<% end %>
 
 <div>
   <% if supplies.any? %>
@@ -10,27 +27,22 @@
           <thead>
             <tr>
               <th rowspan="2">Réf.</th>
-              <th colspan="4">Désignation</th>
+              <th rowspan="2">Désignation</th>
               <th colspan="3">Quantité</th>
             </tr>  
             <tr>
-              <th>Famille</th>
-              <th>Sous-famille</th>
-              <th>Type</th>
-              <th>Spécificités&#160;et&#160;conditionnement</th>
-              
               <th>au précédent<br/>inventaire</th>
               <th>estimée</th>
               <th>ajustée</th>
             </tr>
           </thead>
           
-          <%= render :partial => "inventories/supply_category_in_one_line", :collection => supply_categories, :locals => { :form => form } %>
+          <%= render :partial => "inventories/supply_in_one_line", :collection => supplies, :locals => { :form => form } %>
         </table>
       </div>
       
       <p style="display:none">
-        <%= hidden_field_tag "supply_type", params[:supply_type] %>
+        <%= hidden_field_tag "supply_class", params[:supply_class] %>
       </p>
       
       <%= form.form_buttons %>

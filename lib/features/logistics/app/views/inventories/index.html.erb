@@ -23,7 +23,7 @@
         <% for inventory in @inventories %>
           <tr>
             <td><%= l(inventory.date, :format => :long) %></td>
-            <td><%= inventory.supply_type == "Commodity" ? "Matières premières" : "Consommables" %></td>
+            <td><%= inventory.supply_class == "Commodity" ? "Matières premières" : "Consommables" %></td>
             <td><%= inventory_link(inventory, :link_text => "") %></td>
           </tr>
         <% end %>

@@ -1,6 +1,6 @@
 class CommoditiesController < SuppliesController
   private
-    def define_supply_type_and_supply_category_type
+    def define_classes
       @supply_class = Commodity
       @supply_category_class = CommodityCategory
       @supply_sub_category_class = CommoditySubCategory

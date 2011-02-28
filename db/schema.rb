@@ -625,7 +625,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   end
 
   create_table "inventories", :force => true do |t|
-    t.string   "supply_type"
+    t.string   "supply_class"
     t.datetime "created_at"
   end
 

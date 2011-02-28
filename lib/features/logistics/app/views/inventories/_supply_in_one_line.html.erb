@@ -50,17 +50,14 @@ end
 %>
 
 <tr id="<%= tr_id %>" class="<%= tr_class %>">
-  <td class="reference"><%= supply.reference %></td>
-  <td></td>
-  <td></td>
-  <td class="type text"><%= supply.name %></td>
-  <td class="specificity text"><%= humanized_supply_sizes_and_packaging(supply) %></td>
+  <td class="reference text"><%= supply.reference %></td>
+  <td class="type text"><%= supply.designation %></td>
   <td class="stock_quantity_at_last_inventory"><%= supply.stock_quantity_at_last_inventory(@date) %></td>
   <td class="stock_quantity <%= evolution %>" title="Évolution en fonction du précédent inventaire"><%= supply.stock_quantity(@date) %></td>
   <td class="new_stock_quantity <%= new_evolution %> <%= new_quantity_error %>" title="Évolution en fonction de la quantité estimée">
     <% if is_form_view? %>
       <% fields_for "inventory[stock_flow_attributes][#{supply.id}]", inventory.stock_flows.build do |f| %>
-        <%= f.text_field   :new_quantity, :value => new_quantity, :size => 4, :onkeyup => "update_new_quantity_evolution(this)" %>
+        <%= f.text_field :new_quantity, :value => new_quantity, :size => 4, :onkeyup => "update_new_quantity_evolution(this)" %>
       <% end %>
     <% else %>
       <%= strong new_quantity %>
