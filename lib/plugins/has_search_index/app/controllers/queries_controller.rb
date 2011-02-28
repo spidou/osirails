@@ -14,8 +14,8 @@ class QueriesController < ApplicationController
   # PUT /queries/:id
   def update
     @query = Query.find(params[:id])
-    @query.order   = get_order(params[:query].delete(:order)) 
-    @query.group   = [] unless params[:query][:group]
+    @query.order = get_order(params[:query].delete(:order)) 
+    @query.group = [] unless params[:query][:group]
     
     if @query.update_attributes(params[:query])
       flash[:notice] = "La requête a été modifiée avec succés"
