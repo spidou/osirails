@@ -45,6 +45,14 @@ advanced_consumable:
   <<: *group
   <<: *order
   <<: *pagination
+  default_query:
+    <<: *columns
+    group:
+      - supply_type.supply_sub_category.supply_category.name
+      - supply_type.supply_sub_category.name
+    order:
+      - reference
+    per_page: 100
     
 consumable_index:
   <<: *filters

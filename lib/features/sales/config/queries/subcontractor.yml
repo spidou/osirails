@@ -40,6 +40,14 @@ advanced_subcontractor:
   <<: *group
   <<: *order
   <<: *pagination
+  default_query:
+    columns:
+      - name
+      - legal_form.name
+      - activity_sector_reference.get_activity_sector_name
+    order:
+      - name
+    per_page: 50
 
 subcontractor_index:
   filters:

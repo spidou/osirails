@@ -25,12 +25,6 @@ conf_order: &order
     - last_connection
     - last_activity
 
-advanced_user:
-  <<: *filters
-  <<: *columns
-  <<: *group
-  <<: *order
-
 user_index:
   <<: *filters
   <<: *columns

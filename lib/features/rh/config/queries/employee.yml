@@ -53,6 +53,15 @@ advanced_employee:
   <<: *group
   <<: *order
   <<: *pagination
+  default_query:
+    columns:
+      - civility.name
+      - fullname
+      - society_email
+      - service.name
+      - job_contract.start_date
+      - job_contract.job_contract_type.name
+    per_page: 25
     
 employee_index:
   filters:
@@ -61,7 +70,7 @@ employee_index:
     - user_name: user.username
     - service_name: service.name
     - civility: civility.id
-    - contract_end: job_contract.departure
+    - contract_end: job_contract.departure # user with basic permissions may not have rights to show 'job_contract', so they may not be able to view this page
     - contract_type: job_contract.job_contract_type.id
   <<: *columns
   <<: *group
