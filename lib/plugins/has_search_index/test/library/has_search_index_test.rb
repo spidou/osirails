@@ -255,6 +255,45 @@ class HasSearchIndexTest < ActiveRecordTestCase
           assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
         end
       end
+      
+      [:group, :columns].each do |option|
+        context "with default_query:#{ option } OPTION that do not match :#{ option } OPTION" do
+          setup do
+            Person.has_search_index :only_relationships => [:summer_jobs]
+            SummerJob.has_search_index
+            @options['person'][option.to_s] = []
+            @options['person']['default_query'] = {option.to_s  => ['summer_jobs.id']}
+          end
+          
+          should "raise Argument Error" do
+            assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options) }
+          end
+        end
+      end
+      
+      context "with default_query:order OPTION that do not match :order OPTION" do
+        setup do
+          Person.has_search_index :only_relationships => [:summer_jobs]
+          SummerJob.has_search_index
+          @options['person']['order'] = []
+          @options['person']['default_query'] = { 'order' => ['summer_jobs.id:DESC']}
+        end
+        
+        should "raise Argument Error" do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options) }
+        end
+      end
+      
+      context "with default_query:per_page OPTION that do not match :per_page OPTION" do
+        setup do
+          @options['person']['per_page'] = [10,20,30]
+          @options['person']['default_query'] = {'per_page' => 25}
+        end
+        
+        should "raise Argument Error" do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options) }
+        end
+      end
     end
     ####################################################
     ### Plugin Implementation into an ActiveRecord Model
@@ -299,7 +338,7 @@ class HasSearchIndexTest < ActiveRecordTestCase
           assert_equal 1, Person.search_index[:attributes].size
         end
         
-        should "store it inot search_index_attributes" do
+        should "store it into search_index_attributes" do
           assert Person.search_index_attributes.keys.include?('name')
         end
         

@@ -51,6 +51,13 @@ module HasSearchIndex
         page[:per_page] = page_options['per_page']
       end
       
+      # Check ATTRIBUTE_PATHs of Keys [:columns, :group, :order]
+      [:group, :order, :quick_search].each do |key|
+        page[key] = check_page_option(key.to_s, page_options, model, error_prefix)
+      end
+      page[:columns] = check_page_option_columns(page_options, model, error_prefix)
+      page[:filters] = check_page_option_filters(page_options, model, error_prefix)
+      
       # Check default_query
       if page_options.include?('default_query') && page_options['default_query']
         default_query_err =  "#{ error_prefix } >> default_query:"
@@ -60,6 +67,13 @@ module HasSearchIndex
         page[:default_query].order    = check_page_option_order(page_options['default_query'], model, default_query_err)
         page[:default_query].per_page = page_options['default_query']['per_page'].to_i if page_options['default_query']['per_page']
         
+        # Check that each default_query:OPTION option match OPTION 
+        [:group, :columns].each do |key|
+          check_default_query_option(key, page[key], page[:default_query].send(key), default_query_err)
+        end
+        check_default_query_option(:order, page[:order], (page[:default_query].order||[]).map {|n|  n.split(':').first}, default_query_err)
+        check_default_query_option(:per_page, page[:per_page], [page[:default_query].per_page], default_query_err)
+         
 #        # Check :name
 #        if page_options['default_query']['name']
 #          page[:default_query].name = page_options['default_query']['name']
@@ -75,12 +89,6 @@ module HasSearchIndex
         end
       end
       
-      # Check ATTRIBUTE_PATHs of Keys [:columns, :group, :order]
-      [:group, :order, :quick_search].each do |key|
-        page[key] = check_page_option(key.to_s, page_options, model, error_prefix)
-      end
-      page[:columns] = check_page_option_columns(page_options, model, error_prefix)
-      page[:filters] = check_page_option_filters(page_options, model, error_prefix)
       
       # Save the model where the search will be performed
       page[:model] = model.to_s
@@ -133,6 +141,13 @@ module HasSearchIndex
   
   private
   
+    def self.check_default_query_option(key, option, default_query_option, error_prefix)
+      return unless option && default_query_option
+      message  = "#{ error_prefix }#{ key } Wrong values (#{ (default_query_option - option).inspect }), "
+      message += "should contain only values from :#{ key } (#{ option.inspect })"
+      raise(ArgumentError, message) unless option.include_all?(default_query_option)
+    end
+    
     def self.check_value_is_an_array(value, error_prefix)
       message = "#{ error_prefix } Expected to be an Array but was sort of #{ value.class }"
       raise ArgumentError, message unless value.is_a?(Array)

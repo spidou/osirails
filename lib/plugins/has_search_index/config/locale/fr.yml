@@ -30,11 +30,11 @@ fr:
               different_from_configuration: "ne correspond pas à la configuration"
             order:
               bad_type: "n'est pas au bon format"
-              different_form_configuration: "ne correspond pas à la configuration"
+              different_from_configuration: "ne correspond pas à la configuration"
               bad_syntax: "contient des erreurs"
             criteria:
               bad_type: "n'est pas au bon format"
-              different_form_configuration: "ne correspond pas à la configuration"
+              different_from_configuration: "ne correspond pas à la configuration"
               bad_syntax: "contient des erreurs"
   form:
     query:

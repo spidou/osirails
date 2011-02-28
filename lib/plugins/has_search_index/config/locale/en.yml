@@ -29,11 +29,11 @@ en:
               different_from_configuration: "does not respect configuration"
             order:
               bad_type: "has not expected data type"
-              different_form_configuration: "does not respect configuration"
+              different_from_configuration: "does not respect configuration"
               bad_syntaxe: "contient des erreurs"
             criteria:
               bad_type: "has not expected data type"
-              different_form_configuration: "does not respect configuration"
+              different_from_configuration: "does not respect configuration"
               bad_syntaxe: "contains errors"
   form:
     query:

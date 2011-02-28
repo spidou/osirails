@@ -30,7 +30,7 @@
         <div>
         <% if page_config[:columns].any? %>
           <div class='inline_div'>
-            <%= simple_label :query, :columns %>
+            <%= form.label(:columns) %>
             <%= render :partial => 'shared/sortable_selects',
                        :locals => { :selected => query.columns || [], :all => page_config[:columns], :suffix => 'columns' } %>
           </div>
@@ -38,7 +38,7 @@
         
         <% if page_config[:group].any? %>
           <div class='inline_div'> 
-            <%= simple_label :query, :group %>
+            <%= form.label(:group) %>
             <%= render :partial => 'shared/sortable_selects',
                        :locals => { :selected => query.group || [], :all => page_config[:group], :suffix => 'group' } %>
           </div>
@@ -46,7 +46,7 @@
         
         <% if page_config[:order].any? %>
           <div class='inline_div'>
-            <%= simple_label :query, :order %>
+            <%= form.label(:order) %>
             <div>
               <%= render :partial => "shared/order_option", :collection => query.order || [],
                          :locals => { :page_config => page_config } %>
@@ -59,7 +59,7 @@
         
         <% if page_config[:per_page].any? %>
           <p>
-            <%= form.label :per_page %>
+            <%= form.label(:per_page) %>
             <%= form.form_or_view(select_tag("query[per_page]", options_for_select(per_page_config, query.per_page)), :per_page) %>
           </p>
         <% end %>

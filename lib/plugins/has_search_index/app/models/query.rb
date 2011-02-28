@@ -77,7 +77,7 @@ class Query < ActiveRecord::Base
           unless self.send(option).is_a?(Array)
             errors.add(option, message_for_validates_custom(option, :bad_type))
           else
-            errors.add(option, message_for_validates_custom(option, :different_form_configuration)) unless page_configuration(option).include_all?(self.send(option))
+            errors.add(option, message_for_validates_custom(option, :different_from_configuration)) unless page_configuration(option).include_all?(self.send(option))
           end
         end
       end
@@ -104,7 +104,7 @@ class Query < ActiveRecord::Base
           errors.add(:order, message_for_validates_custom(:order, :bad_type))
         else
           order_attributes = self.send(:order).map {|n| n.split(':').first}
-          errors.add(:order, message_for_validates_custom(:order, :different_form_configuration)) unless page_configuration(:order).include_all?(order_attributes)
+          errors.add(:order, message_for_validates_custom(:order, :different_from_configuration)) unless page_configuration(:order).include_all?(order_attributes)
         end
         errors.add(:order, message_for_validates_custom(:order, :bad_syntax)) if self.send(:order).reject {|option| option.split(':').last =~ /(desc|asc)$/ }.any?
       end
@@ -119,7 +119,7 @@ class Query < ActiveRecord::Base
             errors.add(:criteria, message_for_validates_custom(:criteria, :bad_syntax)) unless is_valid?(options)
           end
           unless page_configuration(:filters).map {|n| n.is_a?(Hash) ? n.values.first : n}.include_all?(self.criteria.keys)
-            errors.add(:criteria, message_for_validates_custom(:criteria, :different_form_configuration))
+            errors.add(:criteria, message_for_validates_custom(:criteria, :different_from_configuration))
           end
         end
       end
