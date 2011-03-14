@@ -7,7 +7,7 @@
   <% end %>
   
   <% if @query %>
-    <%= content_tag(:h2, "#{I18n.t('view.advanced_search.criteria_h2')} #{ "- #{title_for_search}" if @query.name }")%>
+    <%= content_tag(:h2, "#{I18n.t('view.advanced_search.criteria_h2')} - #{ title_for_search }")%>
     <%= table_for_search %>
   <% end %>
 </div>

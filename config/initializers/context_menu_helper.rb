@@ -201,6 +201,18 @@ module ActionView
         override_for(helper) ? send(override_for(helper), content) : content_tag(:tr, content, :class => html_class)
       end
       alias_method_chain :query_tr, :context_menu
+      
+      ## same as #query_thead_tr_with_context_menu
+      # override that helper method to add 1 to colspan attribute ( eg. selector column )
+      #
+      def query_group_td_with_context_menu(group_by, columns)
+        return query_group_td_without_context_menu(group_by, columns) if @hide_selector_column
+        
+        helper = "query_group_td"
+        content = query_group_td_content(group_by)
+        override_for(helper) ? send(override_for(helper), content) : content_tag(:td, content, :colspan => columns.size + 1, :class => 'group')
+      end
+      alias_method_chain :query_group_td, :context_menu
   end
 end
 

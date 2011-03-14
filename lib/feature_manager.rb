@@ -229,7 +229,7 @@ class FeatureManager
     
     def load_paths
       # load models, controllers and helpers
-      %w{ lib app/models app/controllers app/helpers }.each do |dir|
+      %w{ lib app/models app/controllers app/helpers app/queries}.each do |dir|
         dir_path = File.join(@path, dir)
         
         $LOAD_PATH.unshift(dir_path)

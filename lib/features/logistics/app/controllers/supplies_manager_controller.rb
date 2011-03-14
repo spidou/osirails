@@ -1,5 +1,6 @@
 class SuppliesManagerController < ApplicationController
   helper :supplies_manager, :supplies
+  query :consumables, :commodities
   
   before_filter :define_supply_class_and_supply_category_class
   

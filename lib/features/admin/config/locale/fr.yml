@@ -55,3 +55,6 @@ fr:
     page_names:      
       user:
         user_index: "Les utilisateurs"
+  view:
+    user:
+      never_connected: "Jamais"

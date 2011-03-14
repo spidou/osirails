@@ -1,4 +1,5 @@
-module UsersHelper
+module UsersQuery
+
   def query_td_content_for_username_in_user
     link_to(@query_object.username, user_path(@query_object))
   end
@@ -7,7 +8,7 @@ module UsersHelper
     if @query_object.last_connection
       @query_object.last_connection.humanize
     else
-      'Jamais' #:never_conected
+      I18n.t('view.user.never_connected')
     end
   end
   

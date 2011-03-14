@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
-
+  
+  helper :employees
+    
   #Callbacks
   before_filter :load_collections, :only => [:new, :create, :edit, :update]
 

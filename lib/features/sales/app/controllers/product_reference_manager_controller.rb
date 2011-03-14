@@ -1,5 +1,6 @@
 class ProductReferenceManagerController < ApplicationController
   helper :product_references, :product_reference_categories
+  query :product_references
   
   # GET /product_reference_manager
   def index

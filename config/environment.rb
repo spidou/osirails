@@ -57,6 +57,8 @@ Rails::Initializer.run do |config|
     File.directory?(lib = "#{dir}/lib") ? lib : dir
   end
   
+  config.load_paths += %W(#{RAILS_ROOT}/app/queries)
+  
   config.plugin_paths = Dir["#{RAILS_ROOT}/{lib,vendor}/{features,plugins}"]
   
   config.action_mailer.perform_deliveries = false

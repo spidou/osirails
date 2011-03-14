@@ -159,7 +159,6 @@ module RestrictedMethods
   # # => Employee.search_index_relationship_class_name("employees.numbers.number_type", :employees) -> 'Employee'
   #
   # the +path+ must begin by main model table_name (Employee -> 'employees') or a direct relationship (Employee has_many :numbers --> 'numbers')
-  # # => Employee.retrieve_relationship_class("numbers.number_type", "numbers") -> 'Number'
   #
   def search_index_relationship_class_name(path, relationship = nil)
     relationship_class_name_from(path, relationship)

@@ -213,3 +213,12 @@ en:
             signed_on:
               on_or_after: "must not be BEFORE the quote send date&#160;({{restriction}})"
               on_or_before: "must not be AFTER today&#160;({{restriction}})"
+
+  integrated_search:
+    page_names:
+      product_reference:
+        advanced_product_reference: "All products references"
+        product_reference_index: "products references"
+      subcontractor:
+        advanced_subcontractor: "All subcontractors"
+        subcontractor_index: "Subcontractors"

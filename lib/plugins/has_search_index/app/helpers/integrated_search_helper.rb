@@ -34,7 +34,7 @@ module IntegratedSearchHelper
       :confirm => I18n.t('view.links.confirm'))
   end
   
-  def reset_query_link(query)
+  def reset_query_link(query, absolute_position)
     page_name  = (params[:query] && params[:query][:page_name]) || params[:p]
     parameters = []
     parameters << "query_id=#{ query.id }" if query.id
@@ -46,7 +46,7 @@ module IntegratedSearchHelper
       :with => "'#{ parameters.join('&') }'"
     }
     
-    content_tag(:div, :class => 'cancel_link') do
+    content_tag(:div, :class => "cancel_link #{ 'absolute_position' if absolute_position }") do
       link_to_remote("#{ I18n.t('link.reset.name') }",
         remote_options,
         :title => I18n.t('link.reset.title'),
@@ -203,14 +203,21 @@ module IntegratedSearchHelper
     records = records_with_or_without_paginate(query, page)
     body    = generate_table_body(records, query.columns, query.group)
     table   = query_table("#{ header }#{ body }")
-    bottom_pagination = generate_pagination(records, query)
-    top_pagination    = generate_pagination(records, query, with_scroll = false)
+    
     
     if records.empty?
       content_tag(:div, I18n.t("view.no_result"), :class => 'search_no_result')
     else
-      "#{ top_pagination if records.size >= 25 }#{ content_tag(:div, table, :class => 'results_table', :id => 'search_results') }#{ bottom_pagination }"
+      bottom_pagination = generate_pagination(records, query)
+      top_pagination    = top_pagination?(records) ? generate_pagination(records, query, with_scroll = false) : nil
+      cancel_link       = reset_query_link(query, top_pagination?(records))
+      
+      "#{ cancel_link }#{ top_pagination }#{ content_tag(:div, table, :class => 'results_table', :id => 'search_results') }#{ bottom_pagination }"
     end
+  end
+  
+  def top_pagination?(records)
+    records.size >= 25
   end
   
   # Method to generate pagination links
@@ -282,7 +289,7 @@ module IntegratedSearchHelper
     drop_down_menu_content ||= @organized_filters.map{ |n| generate_menu(n) }  ## cache that part to avoid resource wasting for each new criteria
     drop_down_menu = content_tag(:div, display_menu_link, :class => 'attribute') +
                      content_tag(:ul, drop_down_menu_content, :style => 'display:none;', :class => 'attribute_chooser')
-    content_tag(:tr, :class => 'criterion new_criterion') do
+    content_tag(:tr, :class => 'criterion new') do
       [content_tag(:td, drop_down_menu),
        content_tag(:td, tag(:span, :class =>'inputs'))]
     end
@@ -299,13 +306,14 @@ module IntegratedSearchHelper
     else
       group       = elements.first
       paths       = elements.last
-      active      = paths.select{ |n| n.is_a?(String) && n.match(/.id$/) }.any?
+      group_active   = paths.select{ |n| n.is_a?(String) && n.match(/.id$/) }.any?
+      group_selected = paths.select{ |n| n.is_a?(String) && n.match(/.id$/) && get_attribute(n) == selected}.any?
       sub_menu    = paths.map{ |sub_paths| generate_menu(sub_paths, selected) }.join
       sub_menu_ul = content_tag(:ul, sub_menu, :style => 'display:none')
         
-      menu_li_class = "selected" if sub_menu_ul.include?('class="selected"')
+      menu_li_class = "selected" if group_selected || sub_menu_ul.include?('class="selected"')
       menu_li_class = "#{ menu_li_class } sub_menu" if sub_menu.any?
-      menu_li("#{ sub_menu_ul if sub_menu.any? }#{ apply_group_link(group, active) }", :class => menu_li_class)
+      menu_li("#{ sub_menu_ul if sub_menu.any? }#{ apply_group_link(group, group_active) }", :class => menu_li_class)
     end
   end
   
@@ -402,7 +410,7 @@ module IntegratedSearchHelper
   
   def delete_link
     title = I18n.t('link.delete_criterion.title')
-    link_to_function(image_tag('delete_16x16.png', :alt => title, :title => title), "this.up('.criterion').remove()", :class => 'delete_link')
+    link_to_function(image_tag('delete_16x16.png', :alt => title, :title => title), "removeAttributeChooser(this)", :class => 'delete_link')
   end
   
   def generate_inputs_for(attribute, options = {})
@@ -533,8 +541,8 @@ module IntegratedSearchHelper
       link = link_to_remote("#{ content } #{ img }",
         :update   => @id_for_ajax_update,
         :method   => :get,
-        :url      => params.merge(:order_column => option),
-        :with     => "gather_all_order_options('#{ option }', '#{ column }')",
+        :url      => params.merge(:order_column => option, :order => []),
+        :with     => "gather_all_order_options()",
         :success  => "persist_order_option('#{ option }', '#{ column }')")
     end
     

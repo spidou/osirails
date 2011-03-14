@@ -9,9 +9,4 @@ module ThirdsHelper
     html << delete_subcontractor_link(subcontractor)
     html.compact
   end
-  
-  alias_method :query_td_for_name_in_subcontractor, :query_td_for_name_in_customer # original method in thirds > thirds_helper
-  alias_method :query_td_for_legal_form_name_in_subcontractor, :query_td_for_legal_form_name_in_customer # original method in thirds > thirds_helper
-  alias_method :query_td_for_activity_sector_reference_get_activity_sector_name_in_subcontractor,
-               :query_td_for_activity_sector_reference_get_activity_sector_name_in_supplier # original method in thirds > thirds_helper
 end

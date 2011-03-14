@@ -342,8 +342,10 @@ fr:
         fax_number: "N° Fax"
     page_names:
       product_reference:
+        advanced_product_reference: "Tous les produits références"
         product_reference_index: "Les produits références"
       subcontractor:
+        advanced_subcontractor: "Tous les sous-traitants"
         subcontractor_index: "Les sous-traitants"
   
   view:

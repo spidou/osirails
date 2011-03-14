@@ -213,8 +213,14 @@ function insertAttributeChooser(element)
 {
   if(element.up('.criterion').down('.attribute').down().className == 'new_criterion'){
     attribute_chooser_content = element.up('.criterion').innerHTML
-    element.up('.criteria').down('TABLE').insert({bottom: "<tr class='criterion'>" + attribute_chooser_content + "</tr>"})
+    element.up('.criteria').down('TBODY').insert({bottom: "<tr class='criterion new'>" + attribute_chooser_content + "</tr>"})
+    element.up('.criterion').hide().removeClassName('new').appear()
   }
+}
+
+function removeAttributeChooser(element)
+{
+  element.up('.criterion').remove()
 }
 
 function insertInputs(element, content)
@@ -247,14 +253,14 @@ function applySelection(select, hidden)
   else{
     value.push(select.options[select.selectedIndex].value)
   }
-  hidden.value = value.join(' ')
+  hidden.value = value.join(',')  // separate values with a ',' to use a logical 'OR' between values
 }
 
-function gather_all_order_options(option, column)
+function gather_all_order_options()
 {
   var options = []
   $$(".query_order_options").each(function(element){
-    options.push("query[order][]=" + element.value)
+    options.push("order[]=" + element.value)
   })
   
   return options.join('&')

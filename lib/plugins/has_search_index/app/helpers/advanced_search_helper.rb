@@ -1,5 +1,5 @@
 module AdvancedSearchHelper
-
+  
   def page_select(page_names, selected = nil)
     disabled = []
     values  = page_names.map do |page_name|
@@ -23,6 +23,4 @@ module AdvancedSearchHelper
      
     select_tag('p', options, :onchange => "$('page_select_form').submit()")
   end
-  
-  include EmployeesHelper
 end

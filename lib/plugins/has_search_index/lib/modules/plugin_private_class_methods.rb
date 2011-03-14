@@ -671,7 +671,6 @@ private
   # # => Employee.relationship_class_name_from("employees.numbers.number_type", :employees) -> 'Employee'
   #
   # the +path+ must begin by main model table_name (Employee -> 'employees') or a direct relationship (Employee has_many :numbers --> 'numbers')
-  # # => Employee.relationship_class_name_from("numbers.number_type", "numbers") -> 'Number'
   #
   def relationship_class_name_from(path, relationship)
     return self.to_s if relationship == self.table_name

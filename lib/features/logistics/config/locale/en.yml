@@ -45,6 +45,8 @@ en:
   integrated_search:
     page_names:      
       commodity:
+        advanced_commodity: "All commodities"
         commodity_index: "Commodities"
       consumable:
+        advanced_consumable: "All consumables"
         consumable_index: "Consumables"

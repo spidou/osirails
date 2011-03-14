@@ -141,8 +141,10 @@ fr:
         humanized_supply_sizes: "Spécificités (dimensions, etc.)"
     page_names:      
       commodity:
+        advanced_commodity: "Toutes les matières premières"
         commodity_index: "Les matières premières"
       consumable:
+        advanced_consumable: "Tous les consommables"
         consumable_index: "Les consommables"
 
   view:

@@ -123,8 +123,10 @@ fr:
         id: "Civilité"
     page_names:
       employee:
+        advanced_employee: "Tous les employés"
         employee_index: "Les employés actifs"
       job:
+        advanced_job: "Toutes les fiches de poste"
         job_index: "Les fiches de poste"
     filters:
       civility:
@@ -138,3 +140,7 @@ fr:
   seeds:
     query:
       all_employees: "Tous les employés"
+  view:
+    user:
+      enabled_users: "Utilisateurs activés"
+      disabled_users: "Utilisateurs désactivés"

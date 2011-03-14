@@ -51,7 +51,7 @@
 # ==== Example
 ##############
 conf_pagination: &pagination                                              # All page_name like "conf_*" will not be considered as page_configuration key,
-  per_page:                                                               #  you can it use as the example to respect DRY and use one configuration for many pages
+  per_page:                                                               #  you can use it as the example to respect DRY and use one configuration for many pages
     - 5
     - 10
     - 15

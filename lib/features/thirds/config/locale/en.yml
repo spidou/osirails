@@ -19,6 +19,8 @@ en:
         get_activity_sector_name: "Activity sector name"
     page_names:      
       customer:
+        advanced_customer: "All customers"
         customer_index: "Customers"
       supplier:
+        advanced_supplier: "All suppliers"
         supplier_index: "Suppliers"

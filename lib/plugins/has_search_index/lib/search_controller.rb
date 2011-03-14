@@ -5,10 +5,10 @@ module SearchController
     raise Exception, "No query configuration have been found for '#{@page_name}'. You'll find an example of configuration into the file: 'has_search_index/model.example.yml'" unless HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym]
     
     @page_model          = HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym][:model]
-    @page_configuration  = filter_authorized_options(HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym].clone)
-    default_query        = @page_configuration[:default_query]
+    @page_configuration  = filter_authorized_options(HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym])
+    default_query        = @page_configuration[:default_query] ? @page_configuration[:default_query].attributes.symbolize_keys : {}
     @organized_filters ||= HasSearchIndex.organized_filters(@page_configuration[:filters], @page_model)
-    @can_be_cancelled    = page_params.keys.include_any?(['query', 'per_page', 'order_column', 'criteria'])
+    @can_be_cancelled    = page_params.keys.include_any?(['query', 'per_page', 'order_column', 'criteria', 'keyword'])
     @can_quick_search    = @page_configuration[:quick_search].any?
     
     @data_types = { @page_name => {} }
@@ -17,55 +17,17 @@ module SearchController
       @data_types[@page_name][attribute] = HasSearchIndex.get_nested_attribute_type(@page_model, filter)
     end
     
-    @query = Query.find(page_params[:query_id]) unless page_params[:query_id].blank? rescue nil
-    # TODO filter unauthorized columns in saved queries or bloc them if there's unauthorized path in criteria, order, group
-    @query ||= Query.new( default_query ? default_query.attributes.reject {|k,v| k =~ /(_at|_id)$/ } : nil )
-    
-    if page_params[:query]
-      [:columns, :order, :search_type].each do |key|
-        @query.send("#{ key }=", page_params[:query][key]) if page_params[:query][key]
-      end
-      @query.group    = page_params[:query][:group]
-      @query.per_page = page_params[:query][:per_page].to_i unless page_params[:query][:per_page].blank?
-    end
-    
-    @query.columns     ||= default_query ? default_query.columns : @page_configuration[:columns]
+    @query             ||= get_query_from(page_params, default_query)
+    @query.columns     ||= default_query['columns'] || @page_configuration[:columns]
     @query.group       ||= []
     @query.order       ||= []
     @query.criteria    ||= {}
     @query.search_type ||= 'and'
     @query.page_name     = @page_name
     @query.public_access = true if @query.public_access.nil?
-    @query.quick_search_value = nil    
+    @query.quick_search_value = nil 
     
-    if page_params[:per_page]
-      @query.per_page = (page_params[:per_page] == 'all' ? nil : page_params[:per_page].to_i)
-    end
-    
-    if @can_be_cancelled
-      @query.criteria = {}
-      if page_params[:criteria]
-        page_params[:criteria].each do |attribute, options|
-          options[:value].each_with_index do |value, index|
-            (@query.criteria[attribute] ||= []) << {:action => options[:action].at(index), :value => value}
-          end
-        end
-      end
-    end
-    
-    if page_params[:keyword]
-      @query.quick_search_value = page_params[:keyword] unless page_params[:keyword].blank?
-    end
-  
-    if page_params[:order_column]
-      order = @query.order.dup
-      order.delete_if {|n| HasSearchIndex.get_order_attribute(n) == HasSearchIndex.get_order_attribute(page_params[:order_column])}
-      order.unshift(page_params[:order_column]) unless page_params[:order_column].match(/:no_sort$/)
-      
-      @query.order = order
-    end
-    
-    # drop column(s) that user can't view
+    # filter columns to suite permissions
     @query.columns = filter_authorized_columns(@query.columns)
     
     common_options = {
@@ -76,7 +38,7 @@ module SearchController
     @query_render_options_for_ajax = common_options.merge(:partial => "shared/filtered_table")
     @id_for_ajax_update            = 'integrated_search_table'
     
-    if !has_permission_to_search_with?(@query)
+    if @page_configuration[:columns].empty? || @query.columns.empty? || !has_permission_to_search_with?(@query)
       respond_to do |format|
         format.js { render(:text => "<div class='search_no_result'>#{ I18n.t('view.forbidden_options') }</div>") }
         format.html { error_access_page(403) }
@@ -98,6 +60,46 @@ end
 
 private 
   
+  def get_query_from(params, default_query)
+    
+    query   = Query.find(params[:query_id]) unless params[:query_id].blank? rescue nil
+    query ||= Query.new(default_query.reject {|k,v| k.to_s =~ /(_at|_id)$/ })
+    
+    if params[:query]
+      [:columns, :order, :search_type, :group].each do |key|
+        query.send("#{ key }=", params[:query][key])
+      end
+      query.per_page = params[:query][:per_page].to_i unless params[:query][:per_page].blank?
+    end
+
+    if params[:per_page]
+      query.per_page = (params[:per_page] == 'all' ? nil : params[:per_page].to_i)
+    end
+    
+    if params[:criteria]
+      query.criteria = {}
+      params[:criteria].each do |attribute, options|
+        options[:value].each_with_index do |value, index|
+          (query.criteria[attribute] ||= []) << {:action => options[:action].at(index), :value => value}
+        end
+      end
+    end
+    
+    if params[:keyword]
+      query.quick_search_value = params[:keyword] unless params[:keyword].blank?
+    end
+  
+    if params[:order_column]
+      query.order = params[:order] || []
+      query.order.delete_if {|n| HasSearchIndex.get_order_attribute(n) == HasSearchIndex.get_order_attribute(params[:order_column])}
+      query.order.unshift(params[:order_column]) unless params[:order_column].match(/:no_sort$/)
+    end
+    
+    query
+  end
+  
+  # Method to filter option according to permisions
+  #
   def filter_authorized_options(page_config)
     [:order, :group, :filters, :columns].each do |option|
       page_config[option] = page_config[option].select {|attribute| user_can_view?(get_attribute_path(attribute))} if page_config[option]

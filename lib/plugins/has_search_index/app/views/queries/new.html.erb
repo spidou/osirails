@@ -2,6 +2,6 @@
   <%= link_to("#{ image_tag('cancel_16x16.png') } #{ I18n.t("form.query.new.cancel_link") }", @return_uri)%>
 <% end %>
 
-<h1><%= I18n.t("form.query.new.h1") %></h1>
+<h1><%= "#{I18n.t("activerecord.models.#{ @query.subject_model.downcase }")} - #{I18n.t("form.query.new.h1")}" %></h1>
 
 <%= render :partial => 'query', :object => @query %>

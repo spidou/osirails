@@ -93,6 +93,8 @@ fr:
         fax_number: "N° Fax"
     page_names:
       customer:
-        customer_index: "Les clients"
+        advanced_customer: "Tous les clients"
+        customer_index: "Les Clients"
       supplier:
+        advanced_supplier: "Tous les fournisseurs"
         supplier_index: "Les fournisseurs"

@@ -23,7 +23,7 @@
         <%= form.check_box(:public_access) %>
       </p>
       
-      <%= render :partial => "shared/criteria_form", :locals => { :query => query } %>
+      <%= render :partial => "shared/criteria_form", :locals => { :query => query } if page_config[:filters].any? %>
       
       <fieldset>
         <%= toggle_options_legend %>

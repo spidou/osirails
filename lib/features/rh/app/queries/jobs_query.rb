@@ -1,4 +1,4 @@
-module JobsHelper
+module JobsQuery
   def query_td_for_name_in_job(content)
     content_tag(:td, content, :class => :text) 
   end
