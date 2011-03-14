@@ -27,13 +27,6 @@ conf_pagination: &pagination
     - 50
     - 100
 
-advanced_user:
-  <<: *filters
-  <<: *columns
-  <<: *group
-  <<: *order
-  <<: *pagination
-
 user_index:
   <<: *filters
   <<: *columns

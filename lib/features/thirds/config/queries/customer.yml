@@ -60,6 +60,16 @@ advanced_customer:
   <<: *group
   <<: *order
   <<: *pagination
+  default_query:
+    columns:
+      - name
+      - legal_form.name
+      - brand_names
+      - head_office.activity_sector_reference.get_activity_sector_name
+      - customer_grade.name
+    order:
+      - name
+    per_page: 50
 
 customer_index:
   filters:

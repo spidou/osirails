@@ -35,6 +35,19 @@ advanced_job:
   <<: *group
   <<: *order
   <<: *pagination
+  default_query:
+    columns:
+      - name
+      - responsible
+      - mission
+      - activity
+      - goal
+    group:
+      - service.name
+    order:
+      - 'responsible:desc'
+      - name
+    per_page: 25
     
 job_index:
   <<: *filters

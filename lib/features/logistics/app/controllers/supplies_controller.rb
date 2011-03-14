@@ -1,7 +1,7 @@
 class SuppliesController < ApplicationController
   helper :supplies_manager, :supplies, :supplier_supplies
   
-  before_filter :define_supply_type_and_supply_category_type
+  before_filter :define_classes
   before_filter :find_supply,           :except => [ :update_supplies_supply_sizes ]
   before_filter :load_collections,      :only   => [ :new, :create, :edit, :update ]
   before_filter :find_supply_ancestors, :only   => [ :new, :create, :edit, :update ]
@@ -115,6 +115,13 @@ class SuppliesController < ApplicationController
   end
   
   private
+    def define_classes
+      @supply_class = Supply
+      @supply_category_class = SupplyCategory
+      @supply_sub_category_class = SupplySubCategory
+      @supply_type_class = SupplyType
+    end
+    
     def find_supply
       id = params[:id] || params["#{@supply_class.name.underscore}_id".to_sym]
       @supply = @supply_class.find(id) if id

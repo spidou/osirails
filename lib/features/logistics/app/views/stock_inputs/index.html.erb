@@ -4,9 +4,9 @@
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= stock_inputs_link(:link_text => "Voir toutes les entrées de stocks") if params[:supply_type] %>
-  <%= stock_flows_link(StockInput, Commodity.new) unless params[:supply_type] == "Commodity" %>
-  <%= stock_flows_link(StockInput, Consumable.new) unless params[:supply_type] == "Consumable" %>
+  <%= stock_inputs_link(:link_text => "Voir toutes les entrées de stocks") if params[:supply_class] %>
+  <%= stock_flows_link(StockInput, Commodity.new) unless params[:supply_class] == "Commodity" %>
+  <%= stock_flows_link(StockInput, Consumable.new) unless params[:supply_class] == "Consumable" %>
   <%= commodity_categories_link(:link_text => "Voir toutes les catégories de matières premières") %>
   <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>

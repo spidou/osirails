@@ -37,6 +37,15 @@ advanced_product_reference:
   <<: *group
   <<: *order
   <<: *pagination
+  default_query:
+    columns:
+      - reference
+      - designation
+      - description
+    group:
+      - product_reference_sub_category.product_reference_category.name
+      - product_reference_sub_category.name
+    per_page: 50
 
 product_reference_index:
   filters:

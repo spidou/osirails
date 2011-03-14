@@ -45,6 +45,14 @@ advanced_commodity:
   <<: *group
   <<: *order
   <<: *pagination
+  default_query:
+    <<: *columns
+    group:
+      - supply_type.supply_sub_category.supply_category.name
+      - supply_type.supply_sub_category.name
+    order:
+      - reference
+    per_page: 100
     
 commodity_index:
   <<: *filters
