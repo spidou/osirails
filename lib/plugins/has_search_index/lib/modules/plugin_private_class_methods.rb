@@ -502,7 +502,6 @@ private
     else
       self.table_name
     end
-    
     return "#{ attribute_sql_prefix }.#{ extract_attribute(attribute_with_path) }"
   end
   
@@ -628,7 +627,9 @@ private
     #        children is a service belonging to another service that's why there is a redundancy but the fact is that we need to add one 's'
     #        to 'chidren' to make it work properly.
     
-    basic_prefix = (table == sub_table && model == sub_model) ? "#{ sub_relationship.pluralize }_#{ relationship.pluralize }" : "#{ sub_table }_#{ table }"
+    sub_alias = ( table == sub_table ? sub_relationship.pluralize : sub_table )
+    
+    basic_prefix = (table == sub_table && model == sub_model) ? "#{ sub_relationship.pluralize }_#{ relationship.pluralize }" : "#{ sub_alias }_#{ table }"
     
     return sub_table if prefix_array.first == attribute_prefix
     case prefix_index

@@ -78,10 +78,9 @@ module IntegratedSearchHelper
     visible_class = visible ? '' : 'hidden'
     
     submit_function = remote_function({
-      :url      => params.reject{ |k,v| k.to_s == 'keyword' },
       :method   => :get,
       :update   => @id_for_ajax_update,
-      :with     => "'keyword=' + encodeURIComponent(this.up().down('INPUT').value)",
+      :with     => "Form.serialize('quick_search_form') + '&keyword=' + encodeURIComponent(this.up().down('INPUT').value)",
       :complete => "$('quick_input').focus(); $('quick_input').selectionStart = $('quick_input').selectionEnd;"
     })
   
@@ -379,7 +378,7 @@ module IntegratedSearchHelper
   
   # Method to generate inputs to give to user an object list where to pick up one or many as criterion value
   #
-  def oject_input(value, attribute)
+  def object_input(value, attribute)
     model        = @page_configuration[:model].constantize
     relationship = attribute.split('.').at(-2)
     if attribute.chomp('.id').include?('.')
@@ -427,7 +426,7 @@ module IntegratedSearchHelper
     inputs += unless attribute.match(/.id$/)
       value_input(attribute_type, value, attribute)
     else
-      oject_input(value, attribute)
+      object_input(value, attribute)
     end
     
     return "#{ inputs }#{ delete_link }"

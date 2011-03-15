@@ -12,7 +12,7 @@ class Query < ActiveRecord::Base
   
   validates_numericality_of :per_page, :if => :per_page
   
-  validates_length_of :columns, :minimum => 1, :too_short => "n'a pas assez d'éléments ({{count}} minimum)" #TODO use I18n
+  validates_length_of :columns, :minimum => 1, :too_short => "n'a pas assez d'éléments ({{count}} minimum)" #TODO use I18n #FIXME I18n does not work
   
   validates_inclusion_of :public_access, :in => [true, false]
   validates_inclusion_of :search_type,   :in => ['and', 'or', 'not']
@@ -21,13 +21,14 @@ class Query < ActiveRecord::Base
   
   before_validation :prepare_attributes
   
+  attr_accessor :option_cache
   def page_configuration(key = nil)
-    hash = HasSearchIndex::HTML_PAGES_OPTIONS[self.page_name.to_sym]
-    (hash.nil? || key.nil?) ? hash : hash[key] 
+    self.option_cache ||= HasSearchIndex::HTML_PAGES_OPTIONS[self.page_name.to_sym]
+    (self.option_cache.nil? || key.nil?) ? self.option_cache : self.option_cache[key] 
   end
   
   def subject_model
-    model ||=  page_configuration(:model)
+    model ||= page_configuration(:model)
   end
   
   def is_public?
@@ -39,8 +40,8 @@ class Query < ActiveRecord::Base
   end
   
   def quick_search_attributes
-    attributes = page_configuration[:quick_search]
-    attributes ? attributes.map {|n| n.is_a?(Hash) ? n.values.first : n } : nil
+    attributes = page_configuration(:quick_search)
+    attributes ? attributes.map {|n| n.is_a?(Hash) ? n.values.first : n} : nil
   end
   
   def quick_search_option

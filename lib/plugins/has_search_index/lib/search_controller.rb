@@ -5,7 +5,7 @@ module SearchController
     raise Exception, "No query configuration have been found for '#{@page_name}'. You'll find an example of configuration into the file: 'has_search_index/model.example.yml'" unless HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym]
     
     @page_model          = HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym][:model]
-    @page_configuration  = filter_authorized_options(HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym])
+    @page_configuration  = filter_authorized_options(HasSearchIndex::HTML_PAGES_OPTIONS[@page_name.to_sym].dup)
     default_query        = @page_configuration[:default_query] ? @page_configuration[:default_query].attributes.symbolize_keys : {}
     @organized_filters ||= HasSearchIndex.organized_filters(@page_configuration[:filters], @page_model)
     @can_be_cancelled    = page_params.keys.include_any?(['query', 'per_page', 'order_column', 'criteria', 'keyword'])
@@ -25,10 +25,11 @@ module SearchController
     @query.search_type ||= 'and'
     @query.page_name     = @page_name
     @query.public_access = true if @query.public_access.nil?
-    @query.quick_search_value = nil 
+    @query.quick_search_value ||= nil 
     
-    # filter columns to suite permissions
-    @query.columns = filter_authorized_columns(@query.columns)
+    # filter Query to suite permissions
+    @query.columns      = filter_authorized_columns(@query.columns)
+    @query.option_cache = @page_configuration.dup
     
     common_options = {
       :object  => @query,
@@ -76,8 +77,8 @@ private
       query.per_page = (params[:per_page] == 'all' ? nil : params[:per_page].to_i)
     end
     
+    query.criteria = {}
     if params[:criteria]
-      query.criteria = {}
       params[:criteria].each do |attribute, options|
         options[:value].each_with_index do |value, index|
           (query.criteria[attribute] ||= []) << {:action => options[:action].at(index), :value => value}
@@ -101,7 +102,7 @@ private
   # Method to filter option according to permisions
   #
   def filter_authorized_options(page_config)
-    [:order, :group, :filters, :columns].each do |option|
+    [:order, :group, :filters, :columns, :quick_search].each do |option|
       page_config[option] = page_config[option].select {|attribute| user_can_view?(get_attribute_path(attribute))} if page_config[option]
     end
     

@@ -5,4 +5,28 @@
 
 <div id="integrated_search_table">
   <%= generate_table(query, page)%>
+  
+  <form id="quick_search_form">
+    <% query.order.each do |o|%>
+      <%= hidden_field_tag( "query[order][]", o )%>
+    <% end %>
+    
+    <% query.group.each do |g|%>
+      <%= hidden_field_tag( "query[groups][]", g )%>
+    <% end %>
+    
+    <% query.columns.each do |c|%>
+      <%= hidden_field_tag( "query[columns][]", c )%>
+    <% end %>
+    
+    <% query.criteria.each_pair do |attribute, options|%>
+      <% options = [options] unless options.is_a?(Array)%>
+      <% options.each do |option| %>
+        <%= hidden_field_tag( "criteria[#{ attribute }][action][]", option[:action] )%>
+        <%= hidden_field_tag( "criteria[#{ attribute }][value][]", option[:value] )%>
+      <% end %>
+    <% end %>
+    
+    <%= hidden_field_tag( "query[per_page]", query.per_page )%>
+  </form>
 </div>
