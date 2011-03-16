@@ -2,7 +2,7 @@ class CreatePermissionsPermissionMethods < ActiveRecord::Migration
   def self.up
     create_table :permissions_permission_methods do |t|
       t.references :permission, :permission_method
-      t.boolean    :active
+      t.boolean    :active, :default => false
       
       t.timestamps
     end

@@ -4,7 +4,7 @@
     <BackgroundImage><%= "#{RAILS_ROOT}/public/fo/images/background.png" %></BackgroundImage>
     <Type>DEVIS</Type>
     <Reference><%= @quote.reference %></Reference>
-    <Date><%= l(@quote.confirmed_on) %></Date>
+    <Date><%= l(@quote.published_on) if @quote.published_on %></Date>
     <Currency>EUROS (€)</Currency>
     <FileName><%= @quote.order.title%></FileName>
     <Supplier>
@@ -76,9 +76,9 @@
             <% @is_page_first_element = "false" %>
           <% end %>
           <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %>
-          <Reference><%= item.end_product.product_reference.reference unless item.free_item? %></Reference>
-          <Name><%= item.designation %></Name>
-          <Description><%= item.description %></Description>
+          <Reference><%= item.reference %></Reference>
+          <Name><%= item.designation %> <%= delivery_service_rate_text(item) %></Name>
+          <Description><%= display_description_and_pro_rata_billing_for_xml(item) %></Description>
           <Quantity><%= item.quantity %></Quantity>
           <UnitPrice><%= item.unit_price.to_f.round_to(2).to_s(2) %></UnitPrice>
           <Prizegiving><%= item.prizegiving.to_f.round_to(2).to_s(2) %></Prizegiving>
@@ -101,12 +101,11 @@
     <Prizegiving><%= @quote.prizegiving.to_f.round_to(2).to_s(2) %></Prizegiving>
     <TotalDutyFreeNetPrice><%= @quote.net.to_f.round_to(2).to_s(2) %></TotalDutyFreeNetPrice>
     <Postage><%= @quote.carriage_costs.to_f.round_to(2).to_s(2) %></Postage>
-    <Discount><%= @quote.discount.to_f.round_to(2).to_s(2) %></Discount>
     <TotalTaxes><%= @quote.summon_of_taxes.to_f.round_to(2).to_s(2) %></TotalTaxes>
     <TotalInclusiveOfTaxNetPrice><%= @quote.net_to_paid.to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxNetPrice>
     <SalesTerms>
       <Description><%= @quote.sales_terms %></Description>
-      <QuoteValidity><%= "#{@quote.validity_delay} #{@quote.validity_delay_unit}" %></QuoteValidity>
+      <QuoteValidity><%= display_validity_delay_and_unit_for(@quote) %></QuoteValidity>
       <Deposit><%= @quote.deposit %></Deposit>
     </SalesTerms>
   </Document>
@@ -139,7 +138,6 @@
     <TotalDutyFreeGrossPrice>Total Brut HT :</TotalDutyFreeGrossPrice>
     <TotalDutyFreeNetPrice>Net HT :</TotalDutyFreeNetPrice>
     <Postage>Frais de port :</Postage>
-    <Discount>Escompte :</Discount>
     <TotalTaxes>Total taxes :</TotalTaxes>
     <TotalInclusiveOfTaxNetPrice>NET A PAYER :</TotalInclusiveOfTaxNetPrice>
     <SalesTerms>Conditions commerciales</SalesTerms>

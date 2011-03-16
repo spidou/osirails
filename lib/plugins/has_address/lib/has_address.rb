@@ -43,7 +43,7 @@ module HasAddress
         Address.create(attributes.merge({:has_address_id => self.id, :has_address_type => self.class.class_name, :has_address_key => name.to_s}))
       end
       
-      after_save "save_#{name}"
+      after_save "save_#{name}".to_sym
       
       define_method "save_#{name}" do
         self.send(name).save unless self.send(name).nil?

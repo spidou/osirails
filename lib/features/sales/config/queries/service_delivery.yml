@@ -1,0 +1,66 @@
+conf_filters: &filters
+  filters:
+    - reference
+    - name
+    - description
+    - unit_price
+    - time_scale
+    - pro_rata_billable
+conf_columns: &columns
+  columns:
+    - reference
+    - name
+    - description
+    - unit_price
+    - time_scale
+    - pro_rata_billable
+conf_group: &group
+  group:
+    - time_scale
+conf_order: &order
+  order:
+    - reference
+    - name
+    - unit_price
+    - time_scale
+    - pro_rata_billable
+conf_pagination: &pagination
+  per_page:
+    - 25
+    - 50
+    - 100
+
+
+advanced_service_delivery:
+  <<: *filters
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+  default_query:
+    columns:
+      - reference
+      - designation
+      - description
+    order:
+      - name
+    per_page: 50
+
+service_delivery_index:
+  <<: *filters
+  <<: *columns
+  <<: *group
+  <<: *order
+  <<: *pagination
+  quick_search:
+    - reference
+    - name
+    - description
+  default_query:
+    columns:
+      - reference
+      - designation
+      - description
+    order:
+      - name
+    per_page: 50

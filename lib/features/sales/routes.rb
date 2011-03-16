@@ -1,5 +1,7 @@
 ActionController::Routing::Routes.add_routes do |map|
   map.resources :orders do |order|
+    order.current_step 'current', :controller => 'orders', :action => 'current_step'
+    
     # commercial step
     order.commercial_step 'commercial', :controller => 'commercial_step'
     
@@ -333,6 +335,8 @@ ActionController::Routing::Routes.add_routes do |map|
   map.update_product_reference_sub_categories 'update_product_reference_sub_categories', :controller  => 'product_reference_categories',
                                                                                          :action      => 'update_product_reference_sub_categories'
   ##
+  
+  map.resources :service_deliveries
   
   map.resources :subcontractors
   

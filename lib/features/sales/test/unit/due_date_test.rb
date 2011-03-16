@@ -11,6 +11,10 @@ class DueDateTest < ActiveSupport::TestCase
   should_validate_presence_of :date
   should_validate_numericality_of :net_to_paid
   
+  should_journalize :attributes        => [:date, :net_to_paid],
+                    :subresources      => [:payments, :adjustments]#,
+                    #:identifier_method => Proc.new{ |d| "#{d.date} - #{d.net_to_paid.to_f.round_to(2).to_s(2)}" }
+  
   #TODO test validates_persistence_of :date, :net_to_paid, :payments
   
   context "In an order with a 'non-factorised' and 'confirmed' invoice with 1 due_date, that due_date" do

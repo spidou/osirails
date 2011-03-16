@@ -1,0 +1,39 @@
+<% require_locals quote %>
+
+<% unless quote.new_record? or quote.was_signed? or quote.was_cancelled? %>
+  <% if quote.missing_end_products.any? %>
+    <div class="notification">
+      <p>Attention, certains produits ne sont pas présents sur ce devis, et seront supprimés si vous l'enregistrez tel quel. Vous devriez <strong>annuler ce devis et en créer un nouveau</strong> pour prendre en compte les nouveaux produits suivants :</p>
+      <ul>
+        <li><strong><%= quote.missing_end_products.collect(&:designation).join("</strong></li><li><strong>")%></strong></li>
+      </ul>
+    </div>
+  <% end %>
+  
+  <% if quote.missing_orders_service_deliveries.any? %>
+    <div class="notification">
+      <p>Attention, certaines prestations ne sont pas présentes sur ce devis, et seront supprimées si vous l'enregistrez tel quel. Vous devriez <strong>annuler ce devis et en créer un nouveau</strong> pour prendre en compte les nouvelles prestations suivantes :</p>
+      <ul>
+        <li><strong><%= quote.missing_orders_service_deliveries.collect(&:designation).join("</strong></li><li><strong>")%></strong></li>
+      </ul>
+    </div>
+  <% end %>
+  
+  <% if quote.excess_product_quote_items.any? %>
+    <div class="notification">
+      <p>Attention, certains produits présents dans ce devis ont déjà été supprimé (via l'étape de précédente par exemple), et seront "re-créés" si vous enregistrez le devis tel quel. Vous devriez <strong>annuler ce devis et en créer un nouveau</strong> OU <strong>supprimer immédiatement les lignes</strong> de produits suivantes :</p>
+      <ul>
+        <li><strong><%= quote.excess_product_quote_items.collect(&:designation).join("</strong></li><li><strong>")%></strong></li>
+      </ul>
+    </div>
+  <% end %>
+  
+  <% if quote.excess_service_quote_items.any? %>
+    <div class="notification">
+      <p>Attention, certaines prestations présentes dans ce devis ont déjà été supprimée (via l'étape précédente par exemple), et seront "re-créées" si vous enregistrez le devis tel quel. Vous devriez <strong>annuler ce devis et en créer un nouveau</strong> OU <strong>supprimer immédiatement les lignes</strong> de prestations suivantes :</p>
+      <ul>
+        <li><strong><%= quote.excess_service_quote_items.collect(&:designation).join("</strong></li><li><strong>")%></strong></li>
+      </ul>
+    </div>
+  <% end %>
+<% end %>

@@ -21,8 +21,8 @@
           <%= context_menu(quote, 'quote', :display_checkbox => false) %>
           <%= quote.reference %>
         </td>
-        <td><%= quote.confirmed_on.humanize %></td>
-        <td><%= quote.signed_on.humanize %></td>
+        <td><%= l(quote.confirmed_at, :format => :short) if quote.confirmed_at %></td>
+        <td><%= l(quote.signed_on, :format => :short) if quote.signed_on %></td>
         <td><%= quote.number_of_products %></td>
         <td><%= quote.net_to_paid.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
         <td><%= quote.deposit %>&nbsp;%</td>

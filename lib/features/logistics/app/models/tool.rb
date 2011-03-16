@@ -1,4 +1,4 @@
-class Tool < ActiveRecord::Base
+class Tool < ActiveRecord::Base # @abstract
   has_many :tool_events
   
   belongs_to :service
@@ -16,6 +16,8 @@ class Tool < ActiveRecord::Base
   validates_numericality_of :purchase_price
   
   validate :validates_edit
+  
+  journalize :identifier_method => :name_and_serial_number
   
   def status
     all_current_status = tool_events.currents.collect(&:status)

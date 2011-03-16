@@ -3,7 +3,7 @@ class CreateJobs < ActiveRecord::Migration
     create_table :jobs do |t|
       t.references :service
       t.string  :name
-      t.boolean :responsible
+      t.boolean :responsible, :default => false
       t.text    :mission, :activity, :goal
       
       t.timestamps

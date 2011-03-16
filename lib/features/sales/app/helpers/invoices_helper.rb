@@ -6,7 +6,7 @@ module InvoicesHelper
   end
   
   def display_transition_table_for_other_invoices(order)
-    return unless Invoice.can_add?(current_user) and ( order.invoices.build.can_create_status_invoice? or order.invoices.build.can_create_balance_invoice? )
+    return unless Invoice.can_add?(current_user) and ( order.unbilled_delivery_notes.any? )
     render :partial => 'invoices/transition_table_for_other_invoices', :object => order.unbilled_delivery_notes
   end
   
@@ -163,7 +163,7 @@ module InvoicesHelper
       when Invoice::STATUS_TOTALLY_PAID           then "Payée en totalité par le CLIENT"
       when Invoice::STATUS_FACTORING_PAID         then "Payée partiellement par le FACTOR"
       when Invoice::STATUS_FACTORING_RECOVERED    then "Définancée par le FACTOR"
-      when Invoice::STATUS_FACTORING_BALANCE_PAID then "Payée totallement par le FACTOR"
+      when Invoice::STATUS_FACTORING_BALANCE_PAID then "Payée totalement par le FACTOR"
     end
   end
   

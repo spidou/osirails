@@ -2,7 +2,7 @@ class CreateUsers < ActiveRecord::Migration
   def self.up
     create_table :users do |t|
       t.string   :username, :password
-      t.boolean  :enabled
+      t.boolean  :enabled, :default => false
       t.datetime :password_updated_at, :last_connection, :last_activity
       
       t.timestamps

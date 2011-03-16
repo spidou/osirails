@@ -1,5 +1,13 @@
 require 'lib/seed_helper'
 
+# default payment methods
+PaymentMethod.create! :name => "Chèque"
+PaymentMethod.create! :name => "Carte banquaire"
+PaymentMethod.create! :name => "Espèce"
+PaymentMethod.create! :name => "Virement"
+PaymentMethod.create! :name => "Mandat"
+PaymentMethod.create! :name => "Prélèvement"
+
 # default VAT rates
 Vat.create! :name => "19.6",  :rate => "19.6"
 Vat.create! :name => "8.5",   :rate => "8.5"

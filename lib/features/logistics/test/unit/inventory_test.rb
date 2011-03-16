@@ -8,7 +8,7 @@ class InventoryTest < ActiveSupport::TestCase
   should_have_many :stock_inputs
   should_have_many :stock_outputs
   
-  should_validate_presence_of :supply_type
+  should_validate_presence_of :supply_class
   
   #TODO
   #validates_stock_flows_uniqueness_of_supply

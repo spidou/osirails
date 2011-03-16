@@ -19,7 +19,6 @@ module EndProductsHelper
     default_value_for_autocomplete_field = "Cherchez un produit référence dans la base"
     
     html =  "<div id=\"survey_step_search_product_reference\">"
-    html << hidden_field_tag('add_end_product_with_this_product_reference_id')
     html << label_tag(:product_reference_reference, "Nouveau produit :")
     html << custom_text_field_with_auto_complete( :product_reference, :reference,
                                                   { :value      => default_value_for_autocomplete_field,
@@ -27,20 +26,9 @@ module EndProductsHelper
                                                     :onkeydown  => "if (event.keyCode == 13) { return false; }",
                                                     :class      => :product_reference_reference_input,
                                                     :id         => :product_reference_reference },
-                                                  { :update_id  => 'add_end_product_with_this_product_reference_id' } )
+                                                  { :with => "value+'&only=product_references'" } )
     html << "&nbsp;"
-    
-    html << ( button_to_remote "Ajouter", :update     => :new_end_products,
-                                          :position   => :bottom,
-                                          :url        => { :controller => :survey_step, :action => :new },
-                                          :method     => :get,
-                                          :condition  => "parseInt($('add_end_product_with_this_product_reference_id').value) > 0",
-                                          :with       => "'product_reference_id=' + $('add_end_product_with_this_product_reference_id').value",
-                                          :complete   => "$('new_end_products').show();" +
-                                                         "$('new_end_products').select('.end_product').last().scrollTo().show().highlight();" +
-                                                         "initialize_autoresize_text_areas();" +
-                                                         "$('add_end_product_with_this_product_reference_id').value = '';" +
-                                                         "$('product_reference_reference').value = '#{default_value_for_autocomplete_field}';" ) #TODO $('id').value = ''; $('id').blur() => but it doesn't work!! how can I do this ?
+    html << tag(:input, :type => :button, :value => "Ajouter", :class => :add_item, 'data-field-id' => :product_reference_reference, 'data-remote-path' => new_order_commercial_step_survey_step_path(order) , 'data-token' => form_authenticity_token)
     html << "</div>"
   end
   

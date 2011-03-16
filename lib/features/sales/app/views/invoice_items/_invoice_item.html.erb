@@ -1,19 +1,24 @@
-<% collection_length    ||= 1 %>
-<% invoice_item_counter ||= 1 %>
+<%
+collection_length    ||= 1
+invoice_item_counter ||= 1
 
-<% fields_for 'invoice[invoice_item_attributes][]', invoice_item, :index => nil do |form| %>
+if invoice_item.free_item?
+  partial_name  = 'invoice_items/free_invoice_item'
+  resource_name = 'free_invoice_item'
+elsif invoice_item.product_item?
+  partial_name = 'invoice_items/product_invoice_item'
+  resource_name = 'product_invoice_item'
+elsif invoice_item.service_item?
+  partial_name = 'invoice_items/service_invoice_item'
+  resource_name = 'service_invoice_item'
+else
+  raise "invoice_item expected to be a free_item, a product_item or a service_item... but was => #{invoice_item.inspect}"
+end
+%>
+
+<% fields_for "invoice[#{resource_name}_attributes][]", invoice_item, :index => nil do |form| %>
   <% form.force_form_view = (params[:action] == "ajax_request_for_invoice_items") %>
-  
-  <% if invoice_item.free_item? %>
-    <%= render :partial => 'invoice_items/free_invoice_item', :object => invoice_item,
-                                                              :locals => { :collection_length => collection_length,
-                                                                           :counter           => invoice_item_counter,
-                                                                           :form              => form } %>
-  <% else %>
-    <%= render :partial => 'invoice_items/product_invoice_item', :object => invoice_item,
-                                                                 :locals => { :collection_length  => collection_length, 
-                                                                              :counter            => invoice_item_counter,
-                                                                              :form               => form } %>
-  <% end %>
-  
+  <%= render :partial => partial_name, :object => invoice_item, :locals => { :collection_length => collection_length,
+                                                                             :counter           => invoice_item_counter,
+                                                                             :form              => form }%>
 <% end %>

@@ -1,4 +1,4 @@
-class PaymentTimeLimit < ActiveRecord::Base
+class GrantedPaymentMethod < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
 end

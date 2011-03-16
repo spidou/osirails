@@ -51,9 +51,9 @@ function toggle_disable_comments_for_discard(element) {
   input = element.up('tr').down('.comments')
   if (element.value == "0") {
     input.clear()
-    input.disable()
+    input.writeAttribute('readonly', 'readonly')
   } else {
-    input.enable()
+    input.removeAttribute('readonly')
     input.focus()
   }
 }

@@ -1,12 +1,25 @@
 <% 
-collection_length  ||= 1 
-quote_item_counter ||= 1 
+collection_length  ||= 1
+
+quote_item_counter ||= 0
+quote_item_counter += 1 # since rails 2.2.x, counter starts at 0 :\
+
+if quote_item.free_item?
+  partial_name  = 'quote_items/free_quote_item'
+  resource_name = 'free_quote_item'
+elsif quote_item.product_item?
+  partial_name  = 'quote_items/product_quote_item'
+  resource_name = 'product_quote_item'
+elsif quote_item.service_item?
+  partial_name  = 'quote_items/service_quote_item'
+  resource_name = 'service_quote_item'
+else
+  raise "quote_item expected to be a free_item, a product_item or a service_item... but was => #{quote_item.inspect}"
+end
 %>
 
-<% if quote_item.free_item? %>
-  <%= render :partial => 'quote_items/free_quote_item', :object => quote_item,
-                                                        :locals => { :collection_length => collection_length, :counter => quote_item_counter } %>
-<% else %>
-  <%= render :partial => 'quote_items/product_quote_item', :object => quote_item,
-                                                           :locals => { :collection_length => collection_length, :counter => quote_item_counter } %>
+<% fields_for "quote[#{resource_name}_attributes][]", quote_item, :index => nil do |form| %>
+  <%= render :partial => partial_name, :object => quote_item, :locals => { :collection_length => collection_length,
+                                                                           :counter           => quote_item_counter,
+                                                                           :form              => form } %>
 <% end %>

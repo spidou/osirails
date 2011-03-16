@@ -133,6 +133,10 @@ module HasReference
       self.class.pattern
     end
     
+    def reference_or_id
+      reference || "##{self[:id]}"
+    end
+    
     private
       def validates_not_reached_sequence_number_limit
         errors.add(:reference, "La limite du numéro de séquence a été atteinte (#{sequence_number_limit})") unless sequence_number_limit.nil?

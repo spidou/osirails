@@ -1,3 +1,10 @@
+## DATABASE STRUCTURE
+# A integer  "invoice_id"
+# A date     "date"
+# A decimal  "net_to_paid", :precision => 65, :scale => 20
+# A datetime "created_at"
+# A datetime "updated_at"
+
 class DueDate < ActiveRecord::Base
   has_permissions :as_business_object
   
@@ -14,6 +21,10 @@ class DueDate < ActiveRecord::Base
   validates_persistence_of :payments, :if => :was_paid?
   
   validates_associated :payments
+  
+  journalize :attributes        => [:date, :net_to_paid],
+             :subresources      => [:payments, :adjustments],
+             :identifier_method => Proc.new{ |d| "#{d.date} - #{d.net_to_paid.to_f.round_to(2).to_s(2)}" }
   
   after_save :save_payments, :save_adjustments
   

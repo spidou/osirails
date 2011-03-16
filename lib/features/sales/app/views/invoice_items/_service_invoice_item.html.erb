@@ -1,0 +1,58 @@
+<%
+# this partial should not be called directly, you may call _invoice_item.html.erb with the appropriate instance of invoice_item
+require_locals form, counter, collection_length
+
+invoice_item  = service_invoice_item
+invoiceable   = invoice_item.invoiceable
+
+position = invoice_item.position.zero? ? counter : invoice_item.position
+
+should_destroy = invoice_item.should_destroy? ? ' should_destroy' : ''
+%>
+
+<tr class="invoice_item service_item<%= should_destroy %>">
+  <td class="reference"><%= invoice_item.reference_object && invoice_item.reference_object.reference %></td>
+  <td class="designation">
+    <span class="name"><%= invoice_item.name %></span><%= display_delivery_service_rate_text(invoice_item) %>
+    <% unless invoice_item.description.blank? %>
+      <br/>
+      <span class="description"><%= h(invoice_item.description) %></span>
+    <% end %>
+    <%= display_pro_rata_billing_text(invoice_item) %>
+  </td>
+  <td class="unit_price amount">
+    <%= invoice_item.unit_price.to_f.round_to(2).to_s(2) %>
+  </td>
+  <td class="from_quote quote_prizegiving"><%= invoice_item.prizegiving.to_f.round_to(2).to_s(2) %></td>
+  <td class="from_quote quote_unit_price_with_prizegiving amount">
+    <span class="unit_price" real-value="<%= invoice_item.unit_price_with_prizegiving %>"><%= invoice_item.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %></span>
+  </td>
+  <td class="from_quote quote_quantity"><%= invoiceable.quantity %></td>
+  <td class="from_quote quote_total amount"><%= invoiceable.total.to_f.round_to(2).to_s(2) %></td>
+  <td class="quantity">
+    <% if invoiceable.pro_rata_billing %>
+      <%= form.text_field :quantity, :size => 4, :class => :quantity, :autocomplete => :off %>
+    <% else %>
+      <%= form.select :quantity, [0, invoiceable.quantity], {}, :class => :quantity %>
+    <% end %>
+  </td>
+  <td class="total amount">
+    <span class="total" real-value="<%= invoice_item.total %>"><%= invoice_item.total.to_f.round_to(2).to_s(2) %></span>
+  </td>
+  <td class="vat">
+    <span class="vat" real-value="<%= invoice_item.vat %>"><%= invoice_item.vat %></span>
+  </td>
+  <td class="total_with_taxes amount">
+    <span class="total_with_taxes" real-value="<%= invoice_item.total_with_taxes %>"><%= invoice_item.total_with_taxes.to_f.round_to(2).to_s(2) %></span>
+  </td>
+  
+  <% if form.form_view? %>
+    <td class="actions">
+      <%= form.hidden_field :id, :class => :invoice_item_id %>
+      <%= form.hidden_field :invoiceable_id %>
+      <%= form.hidden_field :invoiceable_type %>
+      <%= form.hidden_field :position, :class => :position, :value => position %>
+      <%= form.hidden_field :should_destroy, :class => :should_destroy %>
+    </td>
+  <% end %>
+</tr>

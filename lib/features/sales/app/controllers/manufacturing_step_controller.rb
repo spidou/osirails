@@ -1,5 +1,5 @@
 class ManufacturingStepController < ApplicationController
-  helper :manufacturing_steps, :delivery_notes
+  helper :delivery_notes
   
   acts_as_step_controller
   

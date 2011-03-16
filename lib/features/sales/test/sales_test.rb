@@ -66,12 +66,11 @@ class Test::Unit::TestCase
       create_default_end_product(order)
     end
     
-    quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
-    quote.creator = users(:sales_user)
-    quote.quote_contact_id = order.all_contacts.first.id
+    quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :commercial_actor_id => Employee.first.id, :quote_contact_id => order.all_contacts.first.id)
     
     order.end_products.each do |end_product|
-      quote.build_quote_item(:end_product_id  => end_product.id,
+      quote.build_quote_item(:quotable_type   => end_product.class.name,
+                             :quotable_id     => end_product.id,
                              :name            => "Product Name",
                              :description     => "Product description",
                              :dimensions      => "1000x2000",
@@ -123,24 +122,34 @@ class Test::Unit::TestCase
   end
   
   ## DELIVERY_NOTE METHODS
-  def create_valid_delivery_note_for(order, delivery_note_type = nil)
-    # setup production step
+  def prepare_delivery_note_for(order, attributes = {})
+    # prepapre address for ship_to_address
+    default_address_attributes = { :street_name       => "Street Name",
+                                   :country_name      => "Country",
+                                   :city_name         => "City",
+                                   :zip_code          => "01234",
+                                   :has_address_type  => "DeliveryNote",
+                                   :has_address_key   => "ship_to_address" }
+    address = Address.create!(default_address_attributes.merge(attributes.delete(:ship_to_address) || {}))
+    
+    # prepare delivery note
+    default_dn_attributes = { :creator_id               => users(:sales_user).id,
+                              :ship_to_address          => address,
+                              :delivery_note_contact_id => order.all_contacts.first.id,
+                              :delivery_note_type_id    => delivery_note_types(:delivery_and_installation).id }
+    
+    dn = order.delivery_notes.build
+    dn.attributes = default_dn_attributes.merge(attributes)
+    
+    return dn
+  end
+  
+  def create_valid_delivery_note_for(order, attributes = {})
+    # prepare production step
     manufacture_and_make_deliverable_all_end_products_for(order)
     order.reload
     
-    address = Address.create( :street_name       => "Street Name",
-                              :country_name      => "Country",
-                              :city_name         => "City",
-                              :zip_code          => "01234",
-                              :has_address_type  => "DeliveryNote",
-                              :has_address_key   => "ship_to_address" )
-    
-    # prepare delivery note
-    dn = order.delivery_notes.build
-    dn.creator          = users(:sales_user)
-    dn.ship_to_address  = address
-    dn.delivery_note_contact_id = order.all_contacts.first.id
-    dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
+    dn = prepare_delivery_note_for(order, attributes)
     
     dn.build_missing_delivery_note_items_from_ready_to_deliver_end_products
     dn.delivery_note_items.each{ |item| item.quantity = item.end_product.quantity }
@@ -150,23 +159,11 @@ class Test::Unit::TestCase
     return dn
   end
   
-  def create_valid_partial_delivery_note_for(order, delivery_note_type = nil)
-    # setup production step
+  def create_valid_partial_delivery_note_for(order, attributes = {})
+    # prepare production step
     manufacture_and_make_deliverable_all_end_products_for(order)
     
-    address = Address.create( :street_name       => "Street Name",
-                              :country_name      => "Country",
-                              :city_name         => "City",
-                              :zip_code          => "01234",
-                              :has_address_type  => "DeliveryNote",
-                              :has_address_key   => "ship_to_address" )
-    
-    # prepare delivery note
-    dn = order.delivery_notes.build
-    dn.creator            = users(:sales_user)
-    dn.ship_to_address    = address
-    dn.delivery_note_contact_id = order.all_contacts.first.id
-    dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
+    dn = prepare_delivery_note_for(order, attributes)
     
     count = 0
     dn.signed_quote.end_products.each do |end_product|
@@ -182,20 +179,9 @@ class Test::Unit::TestCase
     return dn
   end
   
-  def create_valid_complementary_delivery_note_for(order, delivery_note_type = nil)
-    address = Address.create( :street_name       => "Street Name",
-                              :country_name      => "Country",
-                              :city_name         => "City",
-                              :zip_code          => "01234",
-                              :has_address_type  => "DeliveryNote",
-                              :has_address_key   => "ship_to_address" )
-    
-    # prepare delivery note
-    dn = order.build_delivery_note_with_remaining_end_products_to_deliver
-    dn.creator          = users(:sales_user)
-    dn.ship_to_address  = address
-    dn.delivery_note_contact_id = order.all_contacts.first.id
-    dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
+  def create_valid_complementary_delivery_note_for(order, attributes = {})
+    dn = prepare_delivery_note_for(order, attributes)
+    dn.build_delivery_note_items_from_remaining_quantity_of_end_products_to_deliver
     
     dn.save!
     
@@ -227,19 +213,26 @@ class Test::Unit::TestCase
     return intervention
   end
   
-  def create_delivered_delivery_intervention_for(delivery_note)
+  def create_delivered_delivery_intervention_for(delivery_note, with_discard = false)
     create_scheduled_delivery_intervention_for(delivery_note)
-    delivery_note = DeliveryNote.find(delivery_note.id)
+    #delivery_note = DeliveryNote.find(delivery_note.id)
+    delivery_note.reload
     
-    flunk "delivery_note should have a pending_delivery_intervention" unless delivery_note.pending_delivery_intervention
+    flunk "delivery_note should have a pending_delivery_intervention" unless intervention = delivery_note.pending_delivery_intervention
     
-    intervention = delivery_note.pending_delivery_intervention
     intervention.attributes = { :delivered          => true,
                                 :delivery_at        => intervention.scheduled_delivery_at,
                                 :internal_actor_id  => intervention.scheduled_internal_actor_id,
                                 :intervention_hours => intervention.scheduled_intervention_hours }
     intervention.delivery_subcontractor_id      = intervention.scheduled_delivery_subcontractor_id      if delivery_note.delivery?
     intervention.installation_subcontractor_id  = intervention.scheduled_installation_subcontractor_id  if delivery_note.installation?
+    
+    if with_discard
+      dn_item = delivery_note.delivery_note_items.first
+      intervention.discards.build(:delivery_note_item_id  => dn_item.id,
+                                  :quantity               => dn_item.quantity,
+                                  :comments               => "this is a discard")
+    end
     
     intervention.save!
     
@@ -248,24 +241,8 @@ class Test::Unit::TestCase
     return intervention
   end
   
-#  def create_valid_discard_for(delivery_note)
-#    intervention = create_valid_delivery_intervention_for(delivery_note)
-#    intervention.delivered = true
-#    intervention.comments = "my special comment"
-#    
-#    flunk "delivery_note should be valid" unless delivery_note.valid?
-#    
-#    reference = delivery_note.delivery_note_items.first
-#    discard = reference.build_discard(:comments => "my special comment",
-#                                      :quantity => reference.quantity,
-#                                      :discard_type_id => discard_types(:low_quality).id)
-#    
-#    flunk "delivery_note should be saved > #{delivery_note.errors.full_messages.join(', ')}" unless delivery_note.save
-#    return discard
-#  end
-  
-  def sign_delivery_note(delivery_note)
-    intervention = create_delivered_delivery_intervention_for(delivery_note)
+  def sign_delivery_note(delivery_note, with_discard = false)
+    create_delivered_delivery_intervention_for(delivery_note, with_discard)
     
     delivery_note.signed_on = Date.today
     delivery_note.attachment = File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_note_attachment.pdf"))
@@ -275,9 +252,9 @@ class Test::Unit::TestCase
     return delivery_note
   end
   
-  def create_signed_delivery_note_for(order)
+  def create_signed_delivery_note_for(order, with_discard = false)
     delivery_note = create_valid_delivery_note_for(order)
-    delivery_note = sign_delivery_note(delivery_note)
+    delivery_note = sign_delivery_note(delivery_note, with_discard)
     return delivery_note
   end
   
@@ -308,7 +285,6 @@ class Test::Unit::TestCase
     invoice = order.invoices.build
     
     invoice.invoice_type        = invoice_types(:deposit_invoice)
-    invoice.creator             = users(:sales_user)
     invoice.invoicing_actor_id  = employees(:john_doe).id
     invoice.invoice_contact_id  = order.all_contacts.first.id
     invoice.bill_to_address     = order.bill_to_address
@@ -318,7 +294,7 @@ class Test::Unit::TestCase
     invoice.deposit_amount  = invoice.signed_quote.net_to_paid * 0.4
     invoice.deposit_vat     = 19.6
     invoice.deposit_comment = "This is a deposit invoice."
-    invoice.build_or_update_free_item_for_deposit_invoice
+    invoice.build_or_update_free_invoice_item_for_deposit_invoice
     
     invoice.due_dates.build(:date => Date.today, :net_to_paid => ( invoice.net_to_paid ))
     invoice.save!

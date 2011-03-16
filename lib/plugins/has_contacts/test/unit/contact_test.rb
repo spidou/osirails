@@ -18,7 +18,10 @@ class ContactTest < ActiveSupport::TestCase
   should_allow_values_for :gender, "M", "F"
   should_not_allow_values_for :gender, nil, "", 1, "anything"
   
-  should_journalize :identifier_method => :fullname
+  should_journalize :attributes        => [ :gender, :first_name, :last_name, :job, :email ],
+                    :subresources      => [ :numbers ],
+                    :attachments       => :avatar,
+                    :identifier_method => :fullname
   
   context "A new contact" do
     setup do

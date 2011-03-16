@@ -1,4 +1,17 @@
-class Supply < ActiveRecord::Base
+## DATABASE STRUCTURE
+# A integer  "supply_type_id"
+# A string   "type"
+# A string   "reference"
+# A string   "packaging"
+# A decimal  "measure",        :precision => 65, :scale => 18
+# A decimal  "unit_mass",      :precision => 65, :scale => 18
+# A decimal  "threshold",      :precision => 65, :scale => 18
+# A boolean  "enabled",                                        :default => true
+# A datetime "disabled_at"
+# A datetime "created_at"
+# A datetime "updated_at"
+
+class Supply < ActiveRecord::Base # @abstract
   has_many :supplier_supplies
   has_many :suppliers, :through => :supplier_supplies
   
@@ -114,11 +127,10 @@ class Supply < ActiveRecord::Base
     supplies_supply_sizes(force_reload).sort_by{ |sss| sss.supply_size && sss.supply_size.position || 0 }
   end
   
-  def humanized_supply_sizes
-    @humanized_supply_sizes ||= ""
-    return @humanized_supply_sizes unless @humanized_supply_sizes.blank?
+  def humanized_supply_sizes(force_reload = false)
+    @humanized_supply_sizes = ""
     
-    sorted_supplies_supply_sizes(true).each_with_index do |item, index|
+    sorted_supplies_supply_sizes(force_reload).each_with_index do |item, index|
       next_item = supplies_supply_sizes[index.next]
       unit_measure = ( next_item && next_item.unit_measure_id == item.unit_measure_id ) ? "" : item.unit_measure && item.unit_measure.symbol
       
@@ -139,7 +151,8 @@ class Supply < ActiveRecord::Base
   end
   
   def designation
-    @designation ||= "#{supply_category.name} #{supply_sub_category.name} #{supply_type.name} #{humanized_supply_sizes}".strip if supply_type
+    return unless supply_category and supply_sub_category and supply_type
+    "#{supply_category.name} #{supply_sub_category.name} #{supply_type.name} #{humanized_supply_sizes}".strip
   end
   
   def threshold
@@ -159,7 +172,7 @@ class Supply < ActiveRecord::Base
   end
   
   def supply_sub_category_id
-    @supply_sub_category_id ||= supply_sub_category.id if supply_sub_category
+    @supply_sub_category_id ||= supply_sub_category && supply_sub_category.id
   end
   
   def supply_category
@@ -175,21 +188,21 @@ class Supply < ActiveRecord::Base
   end
   
   def supply_category_id
-    @supply_category_id ||= supply_category.id if supply_category
+    @supply_category_id ||= supply_category && supply_category.id
   end
   
   #delegate :unit_measure, :to => :supply_sub_category, :allow_nil => true #TODO uncomment this part of code and remove the following method once we have migrated to rails 2.3.2
   def unit_measure
-    @unit_measure ||= supply_sub_category.unit_measure if supply_sub_category
+    supply_sub_category && supply_sub_category.unit_measure
   end
   
   # return the class of the parent
   def supply_type_class
-    @supply_type_class ||= self.class.reflect_on_association(:supply_type).klass
+    self.class.reflect_on_association(:supply_type).klass
   end
   
   def can_be_edited?
-    enabled? && !new_record?
+    enabled? and !new_record?
   end
   
   def can_be_destroyed?
@@ -209,9 +222,7 @@ class Supply < ActiveRecord::Base
   end
   
   def self_and_siblings
-    @self_and_siblings ||= []
-    return @self_and_siblings unless @self_and_siblings.empty?
-    
+    @self_and_siblings = []
     @self_and_siblings << self if new_record?
     @self_and_siblings += supply_type_class.find(supply_type_id).supplies
   rescue ActiveRecord::RecordNotFound
@@ -219,7 +230,7 @@ class Supply < ActiveRecord::Base
   end
   
   def siblings
-    @siblings ||= self_and_siblings - [ self ]
+    self_and_siblings - [ self ]
   end
   
   # return if the supply has already been used by a stock flow
@@ -301,23 +312,23 @@ class Supply < ActiveRecord::Base
   end
   
   def supplier_supplies_unit_prices
-    @supplier_supplies_unit_prices ||= supplier_supplies.reject(&:new_record?).collect(&:unit_price)
+    supplier_supplies.reject(&:new_record?).collect(&:unit_price)
   end
   
   def average_unit_price
-    @average_unit_price ||= (supplier_supplies_unit_prices.sum / supplier_supplies_unit_prices.size) if supplier_supplies_unit_prices.any?
+    (supplier_supplies_unit_prices.sum / supplier_supplies_unit_prices.size) if supplier_supplies_unit_prices.any?
   end
   
   def average_measure_price
-    @average_measure_price ||= average_unit_price / measure if average_unit_price and measure and measure > 0
+    average_unit_price && measure && measure > 0 && average_unit_price / measure
   end
   
   def higher_unit_price
-    @higher_unit_price ||= supplier_supplies_unit_prices.max
+    supplier_supplies_unit_prices.max
   end
   
   def higher_measure_price
-    @higher_measure_price ||= higher_unit_price / measure if higher_unit_price and measure and measure > 0
+    higher_unit_price && measure && measure > 0 && higher_unit_price / measure
   end
   
   def supplier_supply_attributes=(supplier_supply_attributes)

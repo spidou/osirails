@@ -5,6 +5,7 @@ var TabNavigator = Class.create({
     this.select         = options.select // can be 'none', 'first', 'last', an integer (2, 3, etc), or a tab_name ('summary', 'products', etc)
     
     this.element = $(name)
+    this.root_element = this.element.up()
     this.tabs = []
     
     Event.observe(window, 'load', this.initialize_event_listeners.bindAsEventListener(this) )
@@ -63,15 +64,15 @@ var TabNavigator = Class.create({
     var selected = options.selected || false
     var disabled = options.disabled || false
     
-    var li_class = ""
-    if (disabled) { li_class = "disabled" } else if (selected) { li_class = "selected" }
+    var li_class = options.class || ""
+    if (disabled) { li_class += " disabled" } else if (selected) { li_class += " selected" }
     
     var a = new Element('a', { 'onclick': 'return false;', 'href': '#' } ).update(title)
     var li = new Element('li', { 'tab': name, 'title': title, 'class': li_class }).update(a)
     this.element.insert({ bottom: li })
     
     var div = new Element('div', { 'class': 'content_nav', 'rel': this.name, 'tab': name }).update(content)
-    this.tabs.last().content_element.insert({ after: div })
+    this.root_element.insert({ bottom: div })
     
     this.initialize_tab(this.nav_elements().last())
     
@@ -112,6 +113,8 @@ var Tab = Class.create({
     
     this.nav_element.onmousedown   = function() { return false; } // disable text selection (Firefox)
     this.nav_element.onselectstart = function() { return false; } // disable text selection (IE)
+    
+    this.bind_select = this.select.bindAsEventListener(this)
     
     // call status function according to given classes in HTML
     if (this.enabled()) { this.enable() } else { this.disable() }
@@ -160,14 +163,14 @@ var Tab = Class.create({
   
   disable: function() {
     this.nav_element.addClassName(this.disabledClassName)
-    // TODO remove observer
+    this.nav_element.stopObserving('click', this.bind_select)
     this.content_element.addClassName(this.disabledClassName)
   },
   
   enable: function() {
     this.nav_element.removeClassName(this.disabledClassName)
-    Event.observe(this.nav_element, 'click', this.select.bindAsEventListener(this) )
-    this.nav_element.removeClassName(this.disabledClassName)
+    this.nav_element.observe('click', this.bind_select)
+    this.content_element.removeClassName(this.disabledClassName)
   },
   
   select: function() {

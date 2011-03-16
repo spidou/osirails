@@ -6,6 +6,10 @@ class Consumable < Supply
   
   belongs_to :supply_type, :class_name => 'ConsumableType', :counter_cache => :supplies_count
   
+  journalize :attributes        => [:reference, :measure, :unit_mass, :packaging, :threshold, :enabled, :disabled_at],
+             :subresources      => [:supplier_supplies],
+             :identifier_method => Proc.new{ |s| "#{s.reference} - #{s.designation}" }
+  
   has_search_index  :only_attributes        => [ :reference, :measure, :unit_mass ],
                     :additional_attributes  => { :humanized_supply_sizes  => :string,
                                                  :designation             => :string,

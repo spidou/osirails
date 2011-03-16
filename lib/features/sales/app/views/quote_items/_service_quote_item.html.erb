@@ -1,0 +1,119 @@
+<%
+require_locals form
+
+# this partial should not be called directly, you may call _quote_item.html.erb with the appropriate instance of quote_item
+quote_item = service_quote_item
+collection_length ||= 1
+counter ||= 1
+
+id = quote_item.new_record? ? generate_random_id : quote_item.id
+%>
+
+<tr class="quote_item service_item" <%= "style=\"display:none\"" if quote_item.should_destroy? %>>
+  
+  <td class="reference">
+    <%= quote_item.reference %>
+  </td>
+
+  <td class="designation">
+    <% if is_form_view? %>
+      <%= form.text_field :name, :value => quote_item.name, :size => 45, :class => :input_name, :readonly => true %>
+    <% else %>
+      <span class="name"><%= h(quote_item.designation) %></span>
+    <% end %>
+    <%= display_delivery_service_rate_text(quote_item) %>
+    
+    <% if is_form_view? %>
+      <br/>
+      <%= form.text_area_autoresize :description, :value => quote_item.description, :cols => 55, :rows => 2, :class => :input_description, :title => "Entrer une description pour cette prestation", :index => nil %>
+      <%= hidden_field_tag :original_description, quote_item.original_description, :class => :input_original_description %>
+      <span>
+        <%= link_to( image_tag("eraser_16x16.png", :alt => "Valeur par défaut", :title => "Valeur par défaut"), "#default",
+                     :onclick => "restore_original_value(this.up('.quote_item'), 'description')" ) %>
+      </span>
+    <% else %>
+      <% unless quote_item.description.blank? %>
+        <br/>
+        <span class="description"><%= h(quote_item.description) %></span>
+      <% end %>
+    <% end %>
+    <%= display_pro_rata_billing_text(quote_item, form) %>
+  </td>
+  
+  <% if is_form_view? %>
+    <td class="dimensions">&nbsp;</td>
+  <% end %>
+  
+  <td class="unit_price amount">
+    <span class="unit_price" real-value="<%= quote_item.unit_price %>" title="<%= quote_item.unit_price %>">
+      <% if is_form_view? %>
+        <%= form.hidden_field :unit_price, :value => quote_item.unit_price %>
+      <% end %>
+      <%= quote_item.unit_price.to_f.round_to(2).to_s(2) %>
+    </span>
+  </td>
+  <td class="prizegiving rate">
+    <span class="prizegiving">
+      <% if is_form_view? %>
+        <%= form.text_field :prizegiving, :value => ( quote_item.prizegiving.to_f.round_to(2).to_s(2) if quote_item.prizegiving ), :size => 3, :maxlength => 5, :autocomplete => :off, :title => "Entrer une remise pour cette prestation" %>
+      <% else %>
+        <%= quote_item.prizegiving.to_f.round_to(2).to_s(2) %>
+      <% end %>
+    </span>
+  </td>
+  <td class="unit_price_with_prizegiving amount">
+    <span class="unit_price_with_prizegiving" real-value="<%= quote_item.unit_price_with_prizegiving %>" title="<%= quote_item.unit_price_with_prizegiving %>">
+      <%= quote_item.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %>
+    </span>
+  </td>
+  <td class="quantity">
+    <span class="quantity">
+      <% if is_form_view? %>
+        <%= form.text_field :quantity, :value => quote_item.quantity, :size => 3, :maxlength => 5, :autocomplete => :off, :title => "Entrer la quantité pour cette prestation" %>
+      <% else %>
+        <%= quote_item.quantity %>
+      <% end %>
+    </span>
+  </td>
+  <td class="total amount">
+    <span class="total" real-value="<%= quote_item.total %>" title="<%= quote_item.total %>">
+      <%= quote_item.total.round_to(2).to_s(2) %>
+    </span>
+  </td>
+  <td class="vat rate">
+    <span class="vat">
+      <% if is_form_view? %>
+        <%= form.select(:vat, Vat.find(:all, :order => :position).collect{ |vat| [ vat.name, vat.rate ] }, { :include_blank => "" }, :title => "Entrer le taux de TVA s'appliquant à cette référence", :readonly => true) %>
+        <%= hidden_field_tag :original_vat, quote_item.original_vat, :class => :input_original_vat %>
+        <span>
+          <%= link_to( image_tag("eraser_16x16.png", :alt => "Valeur par défaut", :title => "Valeur par défaut"), "#default",
+                       :onclick => "restore_original_value(this.up('.quote_item'), 'vat')" ) %>
+        </span>
+      <% else %>
+        <%= quote_item.vat %>
+      <% end%>
+    </span>
+  </td>
+  <td class="total_with_taxes amount">
+    <span class="total_with_taxes" real-value="<%= quote_item.total_with_taxes %>" title="<%= quote_item.total_with_taxes %>">
+      <%= quote_item.total_with_taxes.round_to(2).to_s(2) %>
+    </span>
+  </td>
+  
+  <% if is_form_view? %>
+    <td class="actions">
+      <%= link_to("<span>#{text_up = 'Monter'}</span>", '#up', :title => text_up, 'data-icon' => :move_up) %>
+      <%= link_to("<span>#{text_down = 'Descendre'}</span>", '#down', :title => text_down, 'data-icon' => :move_down) %>
+      <%= link_to("<span>#{text_delete = 'Supprimer'}</span>", '#delete', :title => text_delete, 'data-icon' => :delete_line, 'data-confirm' => "Êtes-vous sûr ? Attention, les modifications seront appliquées à la soumission du formulaire.") %>
+      
+      
+      <%= form.hidden_field :id, :class => :quote_item_id %>
+      <%= form.hidden_field :quotable_id %>
+      <%= form.hidden_field :quotable_type %>
+      <%= form.hidden_field :reference_object_id, :class => :reference_object_id %>
+      <%= form.hidden_field :reference_object_type, :class => :reference_object_type %>
+      <%= form.hidden_field :should_destroy, :class => :should_destroy %>
+      <%= form.hidden_field :position, :class => :position, :value => counter %>
+    </td>
+  <% end %>
+</tr>

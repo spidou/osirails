@@ -1,3 +1,13 @@
+## DATABASE STRUCTURE
+# A integer  "supplier_id"
+# A integer  "supply_id"
+# A string   "supplier_reference"
+# A integer  "lead_time"
+# A decimal  "fob_unit_price",     :precision => 65, :scale => 18
+# A decimal  "taxes",              :precision => 65, :scale => 18
+# A datetime "created_at"
+# A datetime "updated_at"
+
 class SupplierSupply < ActiveRecord::Base
   has_permissions :as_business_object
   
@@ -14,6 +24,9 @@ class SupplierSupply < ActiveRecord::Base
   
   validates_persistence_of :supply_id
   validates_persistence_of :supplier_id, :unless => :should_destroy?
+  
+  journalize :attributes        => [:supplier_id, :supplier_reference, :lead_time, :fob_unit_price, :taxes],
+             :identifier_method => Proc.new{ |s| "#{s.supplier.name}" }
   
   attr_accessor :should_destroy
   

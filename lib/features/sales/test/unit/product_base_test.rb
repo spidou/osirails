@@ -25,7 +25,7 @@ module ProductBaseTest
           should "have a correct 'unit_price_with_prizegiving' value when prizegiving is equal to '#{prizegiving}'" do
             prizegiving = BigDecimal.new(prizegiving.to_s)
             @product.prizegiving = prizegiving
-            expected_value = BigDecimal.new(@product.unit_price.to_s) / ( 1 + ( prizegiving / 100 ) )
+            expected_value = BigDecimal.new(@product.unit_price.to_s) * ( 1 - ( prizegiving / 100 ) )
             
             assert_equal expected_value, @product.unit_price_with_prizegiving
           end

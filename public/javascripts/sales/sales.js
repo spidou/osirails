@@ -1,112 +1,30 @@
-function move_up(link)
-{
-  move_tr(true, link);
-}
-
-function move_down(link)
-{
-  move_tr(false, link);
-}
-
-// Method the parse next or previous siblings until the first visible, and return it
-//
-function nearly_visible(to_up, element)
-{
-  do { element = (to_up ? element.previous() : element.next()) }
-  while(element != null && !element.visible())
-  return element;
-}
-
-function move_tr(to_up, link)
-{
-  var element   = $(link).up("TR");
-  var neighbour = $(nearly_visible(to_up, element));
+OsirailsBase.addMethods({
   
-  if (neighbour == null) return;
+  update_real_value_element: function(element, value) { //TODO rename to update_real_value_numeric_element
+    element.writeAttribute('real-value', value)
+    element.writeAttribute('title', value)
+  },
   
-  (to_up ? neighbour.insert({before: element}) : neighbour.insert({after: element}) );
-  new Effect.Highlight(element, {afterFinish: function(){ element.setStyle({backgroundColor: ''}) }})
+  update_displayed_value_element: function(element, value, precision) { //TODO rename to update_displayed_value_numeric_element
+    if (isNaN(value))
+      element.update(value)
+    else if (!isFinite(value))
+      element.update('∞')
+    else
+      element.update(roundNumber(value, precision || 2))
+  },
   
-  update_up_down_links_and_positions(element.up('tbody'))
-}
-
-var move_up_image   = "arrow_up_16x16.png";
-var move_down_image = "arrow_down_16x16.png";
-var move_up_image_disabled   = "arrow_up_disable_16x16.png";
-var move_down_image_disabled = "arrow_down_disable_16x16.png";
-
-function update_up_down_links(parent)
-{
-  var elements = parent.childElements().reject(function(item) {
-    return parseInt(item.down('.should_destroy').value) == 1
-  }).select(function(item) {
-    return item.down('.position') != undefined
-  })
+  highlight_element: function(element) {
+    new Effect.Highlight(element, {afterFinish: function(){ element.setStyle({backgroundColor: ''}) }})
+  },
   
-  for (var i = 0; i < elements.length; i++) {
-    reset_up_down_link_for(elements[i]);
+  update_and_highlight_element: function(element, value, precision) { //TODO rename to update_and_highlight_numeric_element
+    this.update_real_value_element(element, value)
+    this.update_displayed_value_element(element, value, precision || 2)
+    this.highlight_element(element)
   }
   
-  if (elements.length > 0) {
-    disable_first_link(elements.first());
-    disable_last_link(elements.last());
-  }
-}
-
-function reset_up_down_link_for(element)
-{
-  var image = element.down('img');
-  
-  if (image)
-    var image_prefix = image.getAttribute('src').substring(0, image.getAttribute('src').lastIndexOf('/') + 1);
-  
-  if (element.down(".arrow_up") && image_prefix)
-    element.down(".arrow_up").setAttribute('src', image_prefix + move_up_image);
-  
-  if (element.down(".arrow_down") && image_prefix)
-    element.down(".arrow_down").setAttribute('src', image_prefix + move_down_image);
-}
-
-function update_positions(parent) {
-  var elements = parent.childElements().reject(function(item) {
-    return parseInt(item.down('.should_destroy').value) == 1
-  }).select(function(item) {
-    return item.down('.position') != undefined
-  })
-  
-  for (var i = 0; i < elements.length; i++) {
-    //update_position_for(elements[i], i + 1);
-    if (input_position = elements[i].down('.position'))
-      input_position.value = i + 1
-  }
-}
-
-function update_up_down_links_and_positions(parent) {
-  update_up_down_links(parent)
-  update_positions(parent)
-}
-
-// Method to mark the previous link as disabled.
-//
-function disable_first_link(element)
-{
-  move_up_img = element.down('.arrow_up');
-  if (move_up_img) {
-    image_prefix = move_up_img.getAttribute('src').substring(0, move_up_img.getAttribute('src').lastIndexOf('/') + 1);
-    move_up_img.setAttribute('src', image_prefix + move_up_image_disabled);
-  }
-}
-
-// Method to mark the next link as disabled.
-//
-function disable_last_link(element)
-{
-  move_down_img = $(element.down('.arrow_down'));
-  if (move_down_img) {
-    image_prefix  = move_down_img.getAttribute('src').substring(0, move_down_img.getAttribute('src').lastIndexOf('/') + 1);
-    move_down_img.setAttribute('src', image_prefix + move_down_image_disabled);
-  }
-}
+})
 
 function restore_original_value(element, value) {
   if (value.length > 0) {

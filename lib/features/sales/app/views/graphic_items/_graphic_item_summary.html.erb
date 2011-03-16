@@ -2,42 +2,45 @@
   <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
 <% end -%>
 
-<% press_proof ||= nil %>
+<%
+graphic_item = graphic_item_summary
+press_proof ||= nil
+%>
 
 <div class="resource document">
   <div class="thumb">
     <% if image||= nil %>
       <%= image_tag(image)%>
     <% else %>
-      <%= image_tag(graphic_item_summary.current_image.url(:thumb)) %>
+      <%= image_tag(graphic_item.current_image.url(:thumb)) %>
     <% end %>
   </div>
   <div class="details">
-    <%= content_tag(:h1, h(graphic_item_summary.name)) unless graphic_item_summary.name.blank? %>
-      <%= content_tag(:span, graphic_item_summary.send("#{graphic_item_summary.class.name.underscore}_type").name) + content_tag(:br) unless graphic_item_summary.send("#{graphic_item_summary.class.name.underscore}_type").name.blank? %>
-      <%= content_tag(:span, l(graphic_item_summary.created_at)) + content_tag(:br) unless graphic_item_summary.created_at.nil? %>
-      <% if graphic_item_summary.class.name == "Mockup" %>
-        <%= content_tag(:span, graphic_item_summary.end_product.name) + content_tag(:br) unless graphic_item_summary.end_product.name.blank? %>
+    <%= content_tag(:h1, h(graphic_item.name)) unless graphic_item.name.blank? %>
+      <%= content_tag(:span, graphic_item.send("#{graphic_item.class.name.underscore}_type").name) + content_tag(:br) unless graphic_item.send("#{graphic_item.class.name.underscore}_type").name.blank? %>
+      <%= content_tag(:span, l(graphic_item.created_at)) + content_tag(:br) unless graphic_item.created_at.nil? %>
+      <% if graphic_item.instance_of?(Mockup) %>
+        <%= content_tag(:span, graphic_item.end_product.name) + content_tag(:br) unless graphic_item.end_product.name.blank? %>
       <% end %>
       
-      <%= display_graphic_item_summary_preview_button(graphic_item_summary, press_proof) %>
-      <%= display_graphic_item_summary_download_button(graphic_item_summary) %>
-      <%= display_graphic_item_summary_view_button(graphic_item_summary) %>
+      <%= display_graphic_item_preview_button(graphic_item, press_proof) %>
+      <%= display_graphic_item_download_button(graphic_item) %>
+      <%= display_graphic_item_view_button(graphic_item) %>
       <% unless without_action||=false %>
-        <%= display_graphic_item_summary_edit_button(graphic_item_summary) %>
-        <%= display_graphic_item_summary_delete_button(graphic_item_summary) %>
-        <%= display_graphic_item_summary_cancel_button(graphic_item_summary) %>
+        <%= display_graphic_item_edit_button(graphic_item) %>
+        <%= display_graphic_item_delete_button(graphic_item) %>
+        <%= display_graphic_item_cancel_button(graphic_item) %>
         <br/>
-          <% alt_and_title = graphic_item_summary.class.human_attribute_name("image") %>
+          <% alt_and_title = graphic_item.class.human_attribute_name("image") %>
           <%= image_tag("picture_file_16x16.png", :alt => alt_and_title, :title => alt_and_title) %> 
-          <%= link_to("Télécharger", graphic_item_summary.current_image.url) %> /
-          <%= display_graphic_item_summary_image_spool_actions(graphic_item_summary) %>
+          <%= link_to("Télécharger", graphic_item.current_image.url) %> /
+          <%= display_graphic_item_image_spool_actions(graphic_item) %>
         <br/>
-        <% if graphic_item_summary.current_version.source_file_name %>
-          <% alt_and_title = graphic_item_summary.class.human_attribute_name("source") %>
+        <% if graphic_item.current_version.source_file_name %>
+          <% alt_and_title = graphic_item.class.human_attribute_name("source") %>
           <%= image_tag("picture_source_16x16.png", :alt => alt_and_title, :title => alt_and_title) %> 
-          <%= link_to("Télécharger", graphic_item_summary.current_source.url) %> /
-          <%= display_graphic_item_summary_source_spool_actions(graphic_item_summary) %>
+          <%= link_to("Télécharger", graphic_item.current_source.url) %> /
+          <%= display_graphic_item_source_spool_actions(graphic_item) %>
         <% end %>
       <% end %>
   </div>

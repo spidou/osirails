@@ -11,6 +11,10 @@ class PaymentTest < ActiveSupport::TestCase
   
   #TODO test validates_persistence_of :due_date_id, :payment_method_id, :amount, :paid_on, :attachment_file_name, :attachment_file_size, :attachment_content_type
   
+  should_journalize :attributes        => [:paid_on, :amount, :payment_method_id, :bank_name, :payment_identifier],
+                    :attachments       =>  :attachment#,
+                    #:identifier_method => Proc.new{ |p| "#{p.payment_method && p.payment_method.name}#{" n°#{p.payment_identifier}" unless p.payment_identifier.blank?} - #{p.amount}" }
+  
   context "A new payment" do
     setup do
       @payment = Payment.new

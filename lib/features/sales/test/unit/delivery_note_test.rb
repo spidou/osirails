@@ -75,7 +75,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         flunk "@order should have any ready_to_deliver_end_products" if @order.ready_to_deliver_end_products_and_quantities.empty?
         
         @dn = @order.delivery_notes.build # the object must be clear to perform the test, so don't add any attributes on that object
-        @end_product = @signed_quote.end_products(true).first
+        @end_product = @signed_quote.end_products.first
       end
       
       should "be able to be added" do
@@ -660,7 +660,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
     def update_delivery_note_items_by_adding_item
       @dn.delivery_note_items.reload
       
-      end_product = @signed_quote.end_products(true).last
+      end_product = @signed_quote.end_products.last
       @dn.delivery_note_items.build(:order_id       => @order.id,
                                     :end_product_id => end_product.id,
                                     :quantity       => end_product.quantity)

@@ -117,26 +117,30 @@ module ActionView
                         :id           => "#{object}_#{method}_#{identifier}",
                         :name         => "#{object}[#{method}]" }.merge(tag_options)
         
-        update_id = completion_options.delete(:update_id) || "#{object}_#{method}_id"
-        
         indicator = "auto_complete_indicator_for_#{tag_options[:id]}"
         
-        completion_options =  { :update_id            => update_id,
-                                :skip_style           => true,
+        before_after_update_element = completion_options.delete(:before_after_update_element) || ""
+        after_after_update_element  = completion_options.delete(:after_after_update_element) || ""
+        
+        completion_options =  { :skip_style           => true,
                                 :frequency            => 0.7,
                                 :url                  => send("auto_complete_for_#{object}_#{method}_path"),
-                                #:indicator            => indicator,
                                 :update_element       => "function(li){
-                                                            this.element = $('#{tag_options[:id]}')
-                                                            target_value = li.down('.#{object}_#{method}_value')
-                                                            if (target_value) { this.element.value = target_value.innerHTML };
+                                                            this.element = $('#{tag_options[:id]}');
+                                                            this.element.value = li.readAttribute('data-autocomplete-value');
                                                             if (this.afterUpdateElement) { this.afterUpdateElement(this.element, li) }
                                                           }",
                                 :after_update_element => "function(input,li){
-                                                            target_id = li.down('.#{object}_#{method}_id')
-                                                            target_value = li.down('.#{object}_#{method}_value')
-                                                            if (target_id) { $('#{update_id}').value = target_id.innerHTML }
-                                                            if (target_value) { input.setAttribute('restoreValue', target_value.innerHTML); input.value = input.getAttribute('restoreValue'); }
+                                                            #{before_after_update_element}
+                                                            li.attributes.select(function(attr){  // get all data-autocomplete-* attributes
+                                                              return attr.name.startsWith('data-autocomplete-')
+                                                            }).each(function(attr){               // and copy these attributes on input field
+                                                              input.writeAttribute(attr.name, attr.value)
+                                                            })
+                                                            var value = li.readAttribute('data-autocomplete-value');
+                                                            input.writeAttribute('restoreValue', value);
+                                                            input.value = value;
+                                                            #{after_after_update_element}
                                                           }",
                                 :start_indicator      => "function(){ $('#{indicator}').addClassName('loading'); }",
                                 :stop_indicator       => "function(){ $('#{indicator}').removeClassName('loading'); }"
@@ -177,9 +181,9 @@ module ActionView
           text = fields.map { |field| entry[field] }.join(" - ")
           #OPTIMIZE return less data to save bandwith, like => { "1" => "reference 1", "2" => "reference 2" }.to_json
           # and make all the treatment by the client (in javascript)
-          content_tag 'li', content_tag( 'div', phrase ? highlight(text, phrase) : h(text) ) +
-                            content_tag( 'div', h(text),  :style => 'display:none', :class => "#{entry.class.singularized_table_name}_#{fields.first}_value" ) +
-                            content_tag( 'div', entry.id, :style => 'display:none', :class => "#{entry.class.singularized_table_name}_#{fields.first}_id" )
+          content_tag :li, 'data-autocomplete-value' => h(text), 'data-autocomplete-id' => entry.id do
+            content_tag :div, phrase ? highlight(text, phrase) : h(text)
+          end
         end
         content_tag('ul', items.uniq)
       end
@@ -254,18 +258,18 @@ module ActionView
         options[:disabled]    ||= false
         
         textfield_value      = I18n.l(options[:default], :format => options[:displayed_format]) rescue options[:default]
-        text_field_options   = { :readonly => true,
-                                 :class    => :calendar_displayed_field,
-                                 :value    => textfield_value }.merge(text_field_options)
+        text_field_options   = { :readonly          => true,
+                                 'data-calendar-id' => :calendar_displayed_field,
+                                 :value             => textfield_value }.merge(text_field_options)
         
-        button_action        = "this.up('.calendar_container').down('.calendar_field').value = ''; this.up('.calendar_container').down('.calendar_displayed_field').value = ''"
+        button_action        = "this.up('.calendar_container').down('[data-calendar-id=calendar_field]').value = ''; this.up('.calendar_container').down('[data-calendar-id=calendar_displayed_field]').value = ''"
         button_options       = { :class    => :calendar_cleaner, :title => "Effacer" }
         
         hidden_field_value   = I18n.l(options[:default], :format => options[:database_format]) rescue options[:default]
-        hidden_field_options = { :name     => object_name + "[#{@method_name}]",
-                                 :class    => :calendar_field,
-                                 :disabled => options[:disabled],
-                                 :value    => hidden_field_value }
+        hidden_field_options = { :name              => object_name + "[#{@method_name}]",
+                                 'data-calendar-id' => :calendar_field,
+                                 :disabled          => options[:disabled],
+                                 :value             => hidden_field_value }
         
         trigger_options      = { :class => :calendar_trigger }
         

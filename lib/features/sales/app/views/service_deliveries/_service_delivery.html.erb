@@ -1,0 +1,37 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "sales/service_delivery" if is_form_view? %>
+<% end %>
+
+<% unless service_delivery.new_record? %>
+  <% add_contextual_menu_item ServiceDelivery.human_name do %>
+    <% service_delivery_action_buttons(service_delivery).each do |button| %>
+      <%= button %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= new_service_delivery_link(:link_text => 'Nouvelle prestation') unless is_new_view? %>
+  <%= service_deliveries_link(:link_text => "Voir toutes les prestations") %>
+<% end %>
+
+<div class="presentation_medium root_nav standard">
+  
+  <% tab_navigator :service_delivery_nav do |t| %>
+    <% t.nav_buttons do %>
+      <%= t.tab :informations,    "Informations générales", :selected => true %>
+      <%= t.tab :price_evolution, "Évolution des prix" %>
+      <%= t.tab_for_history(service_delivery) %>
+    <% end %>
+  
+    <% t.content_for :informations do %>
+      <%= render :partial => "service_delivery_main_info", :object => service_delivery %>
+    <% end %>
+    
+    <% t.content_for :price_evolution do %>
+      <%= "comming soon" %>
+    <% end %>
+    
+    <% t.content_for_history(service_delivery) %>
+  <% end %>
+</div>

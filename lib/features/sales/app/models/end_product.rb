@@ -19,8 +19,8 @@ class EndProduct < Product
   has_many :mockups,             :dependent => :nullify
   has_many :press_proofs,        :dependent => :nullify, :order => 'created_at DESC'
   
-  has_many :quote_items,         :dependent => :nullify
-  has_many :quotes,              :through   => :quote_items
+  has_many :quote_items, :as => :quotable, :dependent => :nullify
+  has_many :quotes, :through => :quote_items
   
   has_many :delivery_note_items, :dependent => :nullify
   has_many :delivery_notes,      :through   => :delivery_note_items

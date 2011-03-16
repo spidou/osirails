@@ -1,3 +1,348 @@
+// TODO puts into this class all methods which concern due_dates or other stuffs related to Invoice
+var InvoiceBase = Class.create(OsirailsBase, {
+  initialize: function(root_element) {
+    this.due_dates = []
+    
+    Event.observe(window, 'load', this.initialize_due_dates.bindAsEventListener(this))
+  },
+  
+  initialize_due_dates: function() {
+    //TODO
+  }
+})
+
+
+var DepositInvoice = Class.create(InvoiceBase, {
+  initialize: function($super) {
+    $super()
+  }
+})
+
+
+var Invoice = Class.create(InvoiceBase, {
+  initialize: function($super, root_element) {
+    $super(root_element)
+    
+    this.root = Object.isElement(root_element) ? root_element : $(root_element)
+    this.invoice_items = []
+    
+    this.invoice_items_selector = '#invoice_items'
+    
+    this._total           = this.root.down('tfoot .aggregates span.aggregate_total')
+    this._summon_of_taxes = this.root.down('tfoot .aggregates span.aggregate_summon_of_taxes')
+    this._net_to_paid     = this.root.down('tfoot .aggregates span.aggregate_net_to_paid')
+    
+    this.quote_total    = parseFloat(this.root.down('tfoot .invoicing_state span.invoicing_state_quote_total').readAttribute('real-value')) || 0.0
+    this.already_billed = parseFloat(this.root.down('tfoot .invoicing_state span.invoicing_state_already_billed').readAttribute('real-value')) || 0.0
+    
+    this._total_billed    = this.root.down('tfoot .invoicing_state span.invoicing_state_total_billed')
+    this._balance         = this.root.down('tfoot .invoicing_state span.invoicing_state_balance')
+    
+    this._add_free_item = this.root.down('input.add_free_item')
+    
+    Event.observe(window, 'load', this.initialize_invoice_items.bindAsEventListener(this))
+    Event.observe(window, 'load', this.initialize_event_listeners.bindAsEventListener(this))
+  },
+  
+  initialize_invoice_items: function() {
+    this.update_invoice_items()
+  },
+  
+  initialize_event_listeners: function() {
+    Event.observe(this._add_free_item, 'click', this.add_free_item.bindAsEventListener(this))
+  },
+  
+  update_invoice_items: function() {
+    var position = 0
+    this.root.select(this.invoice_items_selector + ' tr.invoice_item').each(function(tr){
+      position++ // position = 1 on first pass
+      
+      var existing_item = this.invoice_items.detect(function(item){ return item.root == tr })
+      if (existing_item == undefined)
+        this.initialize_invoice_item(tr, position)
+      else
+        existing_item.update_position(position)
+      
+    }, this)
+    
+    this.invoice_items = this.invoice_items.select(function(item){ // remove invoice_items which are not present anymore in the table
+      return this.root.select(this.invoice_items_selector + ' tr.invoice_item').detect(function(i){ return i == this.root }, item)
+    }, this) 
+    this.invoice_items = this.invoice_items.reject(function(item){ return item.should_destroy() }).sortBy(function(item){ return item.position() })
+    
+    //this.update_all_up_down_links()
+    this.update_total()
+  },
+  
+  initialize_invoice_item: function(tr, position) {
+    position = position || 0
+    this.invoice_items.push(new InvoiceItem(tr, { invoice: this, position: position }))
+    return this.invoice_items.last()
+  },
+  
+  add_free_item: function() {
+    tfoot = this.root.down(this.invoice_items_selector + ' > tfoot')
+    tbody = this.root.down(this.invoice_items_selector + ' #other_invoice_items_body')
+    
+    new_line = tfoot.down('.invoice_item').cloneNode(true)
+    tbody.insert({'bottom' : new_line})
+    
+    new_line = tbody.childElements().last();
+    new_line.down('.should_destroy').removeAttribute('value');
+    new_line.removeAttribute('style');
+    
+    new Effect.Highlight(new_line, {afterFinish: function(){ new_line.setStyle({backgroundColor: ''}) }})
+    
+    this.update_invoice_items()
+  },
+  
+  total: function() {
+    return parseFloat(this._total.readAttribute('real-value')) || 0.0
+  },
+  
+  update_total: function() {
+    var total = this.invoice_items.reject(function(item){ return item.should_destroy() }).collect(function(item){ return item.total() }).sum()
+    this.update_and_highlight_element(this._total, total)
+    
+    this.update_summon_of_taxes()
+  },
+  
+  summon_of_taxes: function() {
+    return parseFloat(this._summon_of_taxes.readAttribute('real-value')) || 0.0
+  },
+  
+  update_summon_of_taxes: function() {
+    var summon_of_taxes = this.invoice_items.reject(function(item){ return item.should_destroy() }).collect(function(item){ return item.taxes() }).sum()
+    this.update_and_highlight_element(this._summon_of_taxes, summon_of_taxes)
+    
+    this.update_net_to_paid()
+  },
+  
+  net_to_paid: function() {
+    return parseFloat(this._net_to_paid.readAttribute('real-value')) || 0.0
+  },
+  
+  update_net_to_paid: function() {
+    var net_to_paid = this.invoice_items.reject(function(item){ return item.should_destroy() }).collect(function(item){ return item.total_with_taxes() }).sum()
+    this.update_and_highlight_element(this._net_to_paid, net_to_paid)
+    
+    this.update_invoicing_state()
+    check_values_of_total_and_due_dates()
+  },
+  
+  total_billed: function() {
+    return parseFloat(this._total_billed.readAttribute('real-value')) || 0.0
+  },
+  
+  update_total_billed: function() {
+    var total_billed = this.already_billed + this.net_to_paid()
+    this.update_and_highlight_element(this._total_billed, total_billed)
+  },
+  
+  balance: function() {
+    return parseFloat(this._balance.readAttribute('real-value')) || 0.0
+  },
+  
+  update_balance: function() {
+    var balance = this.quote_total - this.total_billed()
+    this.update_and_highlight_element(this._balance, balance)
+  },
+  
+  update_invoicing_state: function() {
+    this.update_total_billed()
+    this.update_balance()
+  }
+  
+});
+
+var InvoiceItem = Class.create(OsirailsBase, {
+  initialize: function(root_element, options) {
+    this.root = Object.isElement(root_element) ? root_element : $(root_element)
+    this.invoice = options.invoice
+    
+    this._position = this.root.down('input.position')
+    
+    if (this.is_free_item()) {
+      this._unit_price  = this.root.down('input.unit_price')
+      this._quantity    = this.root.down('input.quantity')
+      this._vat         = this.root.down('select.vat')
+      this._remove_free_item = this.root.down('.remove_free_item')
+    } else {
+      this._unit_price  = this.root.down('span.unit_price')
+      this._vat         = this.root.down('span.vat')
+    }
+    
+    if (this.is_product_item())
+      this._quantity    = this.root.down('span.quantity')
+    else if (this.is_service_item())
+      this._quantity    = this.root.down('select.quantity') || this.root.down('input.quantity')
+    
+    this._total             = this.root.down('span.total')
+    this._total_with_taxes  = this.root.down('span.total_with_taxes')
+    
+    if (options.position != undefined)
+      this.update_position(options.position)
+    
+    this.bind_update_total = this.update_total.bindAsEventListener(this)
+    this.bind_update_total_with_taxes = this.update_total_with_taxes.bindAsEventListener(this)
+    this.bind_remove = this.remove.bindAsEventListener(this)
+    this.bind_update_should_destroy_state = this.update_should_destroy_state.bindAsEventListener(this)
+    
+    this.initialize_event_listeners()
+  },
+  
+  initialize_event_listeners: function() {
+    if (this.is_free_item()) {
+//      // remove existing observer to avoid multiple observers for the same action on the same object
+//      this._unit_price.stopObserving('keyup', this.bind_update_total)
+//      this._vat.stopObserving('change', this.bind_update_total_with_taxes)
+//      this._remove_free_item.stopObserving('click', this.bind_remove)
+      
+      // add observers
+      this._unit_price.observe('keyup', this.bind_update_total)
+      this._vat.observe('change', this.bind_update_total_with_taxes)
+      this._remove_free_item.observe('click', this.bind_remove)
+    }
+    
+    if (this._quantity.nodeName == "SELECT") {
+      this._quantity.observe('change', this.bind_update_total)
+      this._quantity.observe('change', this.bind_update_should_destroy_state)
+    }
+    else if (this._quantity.nodeName == "INPUT") {
+      this._quantity.observe('keyup', this.bind_update_total)
+      this._quantity.observe('keyup', this.bind_update_should_destroy_state)
+    }
+  },
+  
+  is_free_item: function() {
+    return this.root.hasClassName('free_item')
+  },
+  
+  is_product_item: function() {
+    return this.root.hasClassName('product_item')
+  },
+  
+  is_service_item: function() {
+    return this.root.hasClassName('service_item')
+  },
+  
+  identifier: function() {
+    return parseInt(this.root.down('.invoice_item_id').value)
+  },
+  
+  position: function() {
+    return parseInt(this._position.value) || 0
+  },
+  
+  update_position: function(position) {
+    this._position.value = position
+  },
+  
+  update_should_destroy_state: function() { // only used for service_item
+    if (this.quantity() == 0)
+      this.mark_to_destroy()
+    else
+      this.unmark_to_destroy()
+    
+    this.invoice.update_invoice_items()
+  },
+  
+  should_destroy: function() {
+    if (this.is_free_item())
+      return this.root.down('.should_destroy').value > 0
+    else
+      return this.root.hasClassName('should_destroy') // don't know if it really used
+  },
+  
+  mark_to_destroy: function() {
+    if (this.is_free_item())
+      this.root.down('.should_destroy').value = 1
+    else
+      this.root.addClassName('should_destroy')
+  },
+  
+  unmark_to_destroy: function() { // only used for service_item
+    if (this.is_free_item())
+      this.root.down('.should_destroy').value = 0 // never used...
+    else
+      this.root.removeClassName('should_destroy')
+  },
+  
+  unit_price: function() {
+    if (this.is_free_item())
+      return parseFloat(this._unit_price.value) || 0.0
+    else
+      return parseFloat(this._unit_price.readAttribute('real-value')) || 0.0
+  },
+  
+  quantity: function() {
+    if (this.is_product_item())
+      return parseFloat(this._quantity.readAttribute('real-value')) || 0.0
+    else {
+      return parseFloat(this._quantity.value) || 0.0
+    }
+  },
+  
+  vat: function() {
+    if (this.is_free_item())
+      return parseFloat(this._vat.value) || 0.0
+    else
+      return parseFloat(this._vat.readAttribute('real-value')) || 0.0
+  },
+  
+  taxes: function() {
+    return ( this.total() * this.vat() / 100.0 ) || 0.0
+  },
+  
+  total: function() {
+    return parseFloat(this._total.readAttribute('real-value')) || 0.0
+  },
+  
+  update_total: function() {
+    var total = this.unit_price() * this.quantity()
+    
+    if (total != this.total()) {
+      this.update_and_highlight_element(this._total, total)
+      this.update_total_with_taxes()
+      return this.total()
+    }
+  },
+  
+  total_with_taxes: function() {
+    return parseFloat(this._total_with_taxes.readAttribute('real-value')) || 0.0
+  },
+  
+  update_total_with_taxes: function() {
+    var total_with_taxes = this.total() * ( 1 + ( this.vat()/100 ) )
+    
+    if (total_with_taxes != this.total_with_taxes()) {
+      this.update_and_highlight_element(this._total_with_taxes, total_with_taxes)
+      this.invoice.update_total()
+      return this.total_with_taxes()
+    }
+  },
+  
+  remove: function() {
+    if (this.is_free_item()) {
+      if (confirm(this._remove_free_item.readAttribute('data-confirm'))) {
+        if (this.identifier() == 0) {
+          this.mark_to_destroy()
+          this.root.hide()
+        } else {
+          this.root.remove()
+        }
+        
+        this.invoice.update_invoice_items()
+      }
+    } else {
+      return 'Hoho! A product item cannot be removed by this way. Only free item can be removed manually'
+    }
+  }
+  
+});
+
+
+
 function update_deposit_amount(element) {
   total = parseFloat($('signed_quote_total_with_taxes').innerHTML)
   $('invoice_deposit_amount').value = Math.round(total * parseFloat(element.value)) / 100
@@ -202,96 +547,4 @@ function update_invoice_items(checkbox, url_prefix) {
       //nothing to do here, see in .rjs called file
     }
   });
-}
-
-function add_free_item() {
-  foot = $('invoice_items_foot')
-  body = $('invoice_items_body')
-  
-  new_line = foot.down('.invoice_item').cloneNode(true);
-  body.insert( {'bottom' : new_line } );
-  
-  last_line = body.childElements().last();
-  last_line.down('.should_destroy').removeAttribute('value');
-  last_line.removeAttribute('style');
-  new Effect.Highlight(last_line, {afterFinish: function(){ last_line.setStyle({backgroundColor: ''}) }})
-  
-  update_up_down_links_and_positions($('invoice_items_body')); //defined in sales.js
-}
-
-function remove_free_item(element) {
-  item = element.up('tr.invoice_item')
-  
-  if (parseInt(item.down('.invoice_item_id').value) > 0) {
-    item.down('.should_destroy').value = 1;
-    item.hide();
-  } else {
-    item.remove();
-  }
-  
-  update_up_down_links_and_positions($('invoice_items_body')); //defined in sales.js
-  update_aggregates();
-}
-
-function calculate(tr) {
-  var unit_price  = parseFloat(tr.down('.input_unit_price').value)
-  var quantity    = parseFloat(tr.down('.input_quantity').value)
-  var vat         = parseFloat(tr.down('.input_vat').value)
-  
-  var td_total            = tr.down('.total')
-  var td_total_with_taxes = tr.down('.total_with_taxes')
-  
-  if (isNaN(unit_price)) { unit_price = 0 }
-  if (isNaN(quantity)) { quantity = 0 }
-  if (isNaN(vat)) { vat = 0 }
-  
-  // total
-  var total = ( unit_price * quantity )
-  td_total.update( roundNumber(total, 2) )
-  
-  // total with taxes
-  var total_with_taxes = ( total + ( total * ( vat / 100 ) ) )
-  td_total_with_taxes.update( roundNumber(total_with_taxes, 2) )
-  
-  update_aggregates();
-}
-
-function update_aggregates() {
-  var items_container     = $('invoice_items_body')
-  var aggregate_container = $('invoice_items_foot')
-  
-  var span_aggregate_without_taxes  = aggregate_container.down('.aggregate_without_taxes').down('span')
-  var span_aggregate_all_taxes      = aggregate_container.down('.aggregate_all_taxes').down('span')
-  var span_aggregate_net_to_paid    = aggregate_container.down('.aggregate_net_to_paid').down('span')
-  
-  // aggregates
-  var items = items_container.select('tr.invoice_item')
-  var totals_without_taxes = new Array()
-  var totals_with_taxes = new Array()
-  
-  items.each(function(item){
-    if (item.getStyle('display') != 'none') {
-      totals_without_taxes.push(item.down('.total'))
-      totals_with_taxes.push(item.down('.total_with_taxes'))
-    }
-  });
-  
-  // aggregate without taxes
-  var aggregate_without_taxes = parseFloat(0)
-  totals_without_taxes.each(function(item){
-    aggregate_without_taxes += parseFloat(item.innerHTML.toString().trim())
-  });
-  span_aggregate_without_taxes.update( roundNumber(aggregate_without_taxes, 2) )
-  
-  // aggregate with taxes
-  var aggregate_with_taxes = parseFloat(0)
-  totals_with_taxes.each(function(item){
-    aggregate_with_taxes += parseFloat(item.innerHTML.toString().trim())
-  });
-  span_aggregate_net_to_paid.update( roundNumber(aggregate_with_taxes, 2) )
-  
-  // aggregate all taxes
-  span_aggregate_all_taxes.update( roundNumber(aggregate_with_taxes - aggregate_without_taxes, 2) )
-  
-  check_values_of_total_and_due_dates();
 }

@@ -12,7 +12,7 @@ class CustomerTest < ActiveSupport::TestCase
   
   should_journalize :attributes        => [ :name, :legal_form_id, :company_created_at, :collaboration_started_at, :factor_id, :customer_solvency_id, :customer_grade_id, :activated ],
                     :attachments       => :logo,
-                    :subresources      => [ :head_office, :establishments ],
+                    :subresources      => [ :head_office, :establishments, :bill_to_address ],
                     :identifier_method => :name
 
   context "A new customer" do

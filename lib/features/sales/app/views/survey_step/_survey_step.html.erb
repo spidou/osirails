@@ -3,6 +3,7 @@
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
   <%= javascript_include_tag 'core/has_resources/has_resources' %>
   <%= javascript_include_tag 'core/has_resources/resources_picker' %>
+  <%= javascript_include_tag 'sales/survey_step' %>
 <% end -%>
 
 <%= order_header %>
@@ -39,7 +40,7 @@ survey_step_errors  = { :interventions   => survey_step.errors.on(:survey_interv
                                   :class => survey_step_errors[:remarks] %>
     <% end %>
     
-    <% form_for(survey_step, :url => { :controller => "survey_step", :action => :update }, :html => { :multipart => true }) do |form| %>
+    <% form_for(survey_step, :url => { :controller => "survey_step", :action => :update }, :html => { :multipart => true, :id => :survey_step_form }) do |form| %>
       
       <% t.content_for :interventions do %>
         <%= form.error_messages unless survey_step_errors[:interventions].blank? %>
@@ -83,6 +84,10 @@ survey_step_errors  = { :interventions   => survey_step.errors.on(:survey_interv
           <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
         </p>
       <% end %>
+    <% end %>
+    
+    <% if is_form_view? %>
+      <%= javascript_tag "var survey_step = new SurveyStep('survey_step_form')" %>
     <% end %>
   <% end %>
 </div>

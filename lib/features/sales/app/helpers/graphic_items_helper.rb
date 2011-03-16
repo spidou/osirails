@@ -66,20 +66,20 @@ module GraphicItemsHelper
     link_to(text, path, :confirm => "Êtes-vous sûr ?", 'data-icon' => :cancel)
   end
   
-  def display_graphic_item_summary_preview_button(object, press_proof = nil)
-    parent = press_proof || object.end_product
+  def display_graphic_item_preview_button(object, press_proof = nil)
+    parent = press_proof || object.instance_of?(Mockup) && object.end_product
     image = image_tag("preview_16x16.gif", :alt => text = "Aperçu", :title => text)
     link_to(image, object.current_image.url(:medium),
             :rel => "lightbox[#{parent.class.name.underscore}_#{parent.id}]",
             :title => "#{object.name} : #{object.short_description}")
   end
   
-  def display_graphic_item_summary_download_button(object)
+  def display_graphic_item_download_button(object)
     image = image_tag("download_16x16.png", :alt => text = "Télécharger", :title => text)
     link_to(image, object.current_image.url(:medium))
   end
   
-  def display_graphic_item_summary_view_button(object)
+  def display_graphic_item_view_button(object)
     if object.class.name == "Mockup" 
       text = "Voir cette maquette"
       path = order_mockup_path(object.order,object)
@@ -90,7 +90,7 @@ module GraphicItemsHelper
     link_to(image_tag("view_16x16.png", :alt => text, :title => text), path)
   end
   
-  def display_graphic_item_summary_edit_button(object)
+  def display_graphic_item_edit_button(object)
     if object.class.name == "Mockup" 
       text = "Modifier cette maquette"
       path = edit_order_mockup_path(object.order,object)
@@ -101,7 +101,7 @@ module GraphicItemsHelper
     link_to(image_tag("edit_16x16.png", :alt => text, :title => text), path)
   end
   
-  def display_graphic_item_summary_delete_button(object)
+  def display_graphic_item_delete_button(object)
     if object.class.name == "Mockup" 
       text = "Supprimer cette maquette"
       path = order_mockup_path(object.order,object)
@@ -112,7 +112,7 @@ module GraphicItemsHelper
     link_to(image_tag("delete_16x16.png", :alt => text, :title => text), path, :method => :delete, :confirm => "Êtes-vous sûr ?")
   end
   
-  def display_graphic_item_summary_cancel_button(object)
+  def display_graphic_item_cancel_button(object)
     if object.class.name == "Mockup" 
       text = "Désactiver cette maquette"
       path = order_mockup_cancel_path(object.order,object)
@@ -123,7 +123,7 @@ module GraphicItemsHelper
     link_to(image_tag("cancel_16x16.png", :alt => text, :title => text), path, :confirm => "Êtes-vous sûr ?")
   end
   
-  def display_graphic_item_summary_image_spool_actions(object)
+  def display_graphic_item_image_spool_actions(object)
     if object.class.name == "Mockup" 
       remove_path = order_mockup_remove_from_spool_path({:mockup_id => object.id, :file_type => "image", :item_id => object.spool_item_id("image",current_user)})
       add_path = order_mockup_add_to_spool_path({:mockup_id => object.id, :file_type => "image"})
@@ -139,7 +139,7 @@ module GraphicItemsHelper
     end
   end
   
-  def display_graphic_item_summary_source_spool_actions(object)   
+  def display_graphic_item_source_spool_actions(object)   
     if object.class.name == "Mockup" 
       remove_path = order_mockup_remove_from_spool_path({:mockup_id => object.id, :file_type => "source", :item_id => object.spool_item_id("source",current_user)})
       add_path = order_mockup_add_to_spool_path({:mockup_id => object.id, :file_type => "source"})

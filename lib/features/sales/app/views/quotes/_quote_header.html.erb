@@ -11,6 +11,21 @@ default_ship_to_address = order.ship_to_addresses.first.address # TODO replace t
 %>
 
 <div id="quote_header">
+  <h3>Informations générales</h3>
+  <p>
+    <%= form.label :commercial_actor_id %>
+    <%= form.form_or_view(form.collection_select(:commercial_actor_id, Employee.all, :id, :fullname, :prompt => quote.new_record? ? "Veuillez sélectionner un employé" : false), :commercial_actor, :fullname) %>
+  </p>
+  <p>
+    <%= form.label :published_on %>
+    <% if form.form_view? %>
+      <%= form.calendar_date_select :published_on %> <% if quote.was_uncomplete? and quote.published_on.blank? %><span class="help_text">Laisser vide pour mettre automatiquement la date de validation</span><% end %>
+    <% else %>
+      <%= strong l(quote.published_on, :format => :long) %>
+    <% end %>
+  </p>
+  
+  
   <div class="presentation_in_columns small">
     <div>
       <h3>Adresse de facturation</h3>

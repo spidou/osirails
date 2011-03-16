@@ -4,7 +4,7 @@ class CreateGraphicItems < ActiveRecord::Migration
       t.references :creator, :graphic_unit_measure, :graphic_document_type, :mockup_type, :order, :press_proof, :end_product
       t.string  :type, :name, :reference
       t.text    :description
-      t.boolean :cancelled
+      t.boolean :cancelled, :default => false
       
       t.timestamps
     end

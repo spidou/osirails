@@ -32,7 +32,7 @@ module ActsAsStep
       elsif (step_children = step.children) # so it's a parent step
         belongs_to :order
         
-        write_inheritable_attribute(:list_children_steps, step_children.collect{ |child| child.name })
+        write_inheritable_attribute(:list_children_steps, step_children.collect(&:name))
         
         step_children.each do |child|
           step_model = step.name.camelize.constantize
@@ -214,6 +214,22 @@ module ActsAsStep
 
     def terminated?
       status == TERMINATED
+    end
+    
+    def was_unstarted?
+      status_was == UNSTARTED
+    end
+    
+    def was_pending?
+      status_was == PENDING
+    end
+
+    def was_in_progress?
+      status_was == IN_PROGRESS
+    end
+    
+    def was_terminated?
+      status_was == TERMINATED
     end
     
     def uncomplete?

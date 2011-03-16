@@ -6,14 +6,14 @@ title = quote.status ? " title=\"#{quote.status.titleize} quote\"" : ''
 
 <tr class="quote<%= status %>"<%= title %>>
   <td class="selector"><%= context_menu(quote, 'quote') %></td>
-  <td class="reference text"><%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(quote.order, quote)) if quote.reference %></td>
-  <td class="created_at"><%= quote.created_at.humanize if quote.created_at %></td>
-  <td class="confirmed_on"><%= quote.confirmed_on.humanize if quote.confirmed_on %></td>
+  <td class="reference text"><%= link_to(quote.reference_or_id, order_commercial_step_quote_step_quote_path(quote.order, quote)) %></td>
+  <td class="created_at"><%= l(quote.created_at, :format => :short) if quote.created_at %></td>
+  <td class="confirmed_at"><%= l(quote.confirmed_at, :format => :short) if quote.confirmed_at %></td>
   <td class="contact"><%= quote.quote_contact.fullname %></td>
   <td class="number_of_products"><%= quote.number_of_products %></td>
   <td class="net_to_paid amount"><%= quote.net_to_paid.round_to(2).to_s(2) %>&nbsp;&euro;</td>
   <td class="deposit amount"><%= quote.deposit %>&nbsp;%</td>
-  <td class="sended_on"><%= "#{quote.sended_on.humanize} (#{quote.send_quote_method.name})" if quote.sended_on and quote.send_quote_method %></td>
-  <td class="signed_on"><%= quote.signed_on.humanize if quote.signed_on %></td>
+  <td class="sended_on"><%= "#{l(quote.sended_on, :format => :short)} (#{quote.send_quote_method.name})" if quote.sended_on and quote.send_quote_method %></td>
+  <td class="signed_on"><%= l(quote.signed_on, :format => :short) if quote.signed_on %></td>
   <td class="status"><%= quote_status_text(quote) %></td>
 </tr>

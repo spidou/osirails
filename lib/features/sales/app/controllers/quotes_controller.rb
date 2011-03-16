@@ -1,6 +1,6 @@
 class QuotesController < ApplicationController
   include AdjustPdf
-  helper :orders, :contacts, :numbers, :address
+  helper :orders, :quote_items, :sales, :contacts, :numbers, :address
   # method_permission :edit => ['enable', 'disable']
   
   acts_as_step_controller :step_name => :quote_step, :skip_edit_redirection => true
@@ -42,12 +42,17 @@ class QuotesController < ApplicationController
   def new
     @quote = @order.quotes.build(:validity_delay      => ConfigurationManager.sales_quote_validity_delay,
                                  :validity_delay_unit => ConfigurationManager.sales_quote_validity_delay_unit)
-    @quote.creator = current_user # permit additional information displaying
     if @quote.can_be_added?
       @quote.quote_contact = @order.order_contact
+      @quote.commercial_actor = current_user.employee
       
       @order.end_products.each do |end_product|
-        @quote.build_quote_item(:end_product_id => end_product.id)
+        @quote.build_quote_item(:quotable_type  => "EndProduct",
+                                :quotable_id    => end_product.id)
+      end
+      @order.orders_service_deliveries.each do |service|
+        @quote.build_quote_item(:quotable_type  => "OrdersServiceDelivery",
+                                :quotable_id    => service.id)
       end
     else
       error_access_page(412)
@@ -60,7 +65,6 @@ class QuotesController < ApplicationController
     @quote.attributes = params[:quote]
     
     if @quote.can_be_added?
-      @quote.creator = current_user
       if @quote.save
         flash[:notice] = "Le devis a été créé avec succès"
         redirect_to send(@step.original_step.path)
@@ -106,7 +110,6 @@ class QuotesController < ApplicationController
   def preview
     @quote = @order.quotes.build
     @quote.attributes = params[:quote]
-    @quote.creator = current_user
     pdf_filename = "temp_quote_#{Time.now.strftime("%d%m%y%H%M%S")}"
     render_pdf(pdf_filename, "quotes/show.xml.erb", "public/fo/style/quote.xsl", "assets/pdf/quotes/#{pdf_filename}.pdf", true)
   end
@@ -187,9 +190,12 @@ class QuotesController < ApplicationController
     end
   end
   
-  # GET /orders/:order_id/:step/quotes/new_quote_item?product_reference_id=:product_reference_id (AJAX)
+  # GET /orders/:order_id/:step/quotes/new_quote_item?reference_object_type=:reference_object_type&reference_object_id=:reference_object_id (AJAX)
   def new_quote_item
-    render :partial => 'quote_items/quote_item', :object => QuoteItem.new(:product_reference_id => params[:product_reference_id].to_i)
+    quote_item = QuoteItem.new(:reference_object_type => params[:reference_object_type].to_s,
+                               :reference_object_id   => params[:reference_object_id].to_i,
+                               :quotable_type         => Quote::QUOTABLES_REFERENCES.index(params[:reference_object_type].to_s))
+    render :partial => 'quote_items/quote_item', :object => quote_item
   end
   
   private

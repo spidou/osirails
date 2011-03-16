@@ -98,9 +98,9 @@ class Test::Unit::TestCase
   def build_inventory_with(supplies_quantities = {}, datetime = Time.zone.now)
     supplies = supplies_quantities.keys
     
-    supply_types = supplies.collect{ |s| s.class.name }.uniq
-    flunk "all supplies should be of the same type\nbut was #{supply_types.inspect}" if supply_types.many?
-    inventory = Inventory.new(:supply_type => supply_types.first, :created_at => datetime)
+    supply_classes = supplies.collect{ |s| s.class.name }.uniq
+    flunk "all supplies should be of the same type\nbut was #{supply_classess.inspect}" if supply_classes.many?
+    inventory = Inventory.new(:supply_class => supply_classes.first, :created_at => datetime)
     
     attributes = []
     supplies_quantities.each do |supply, new_quantity|

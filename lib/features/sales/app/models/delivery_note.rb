@@ -1,3 +1,20 @@
+## DATABASE STRUCTURE
+# A integer  "order_id"
+# A integer  "creator_id"
+# A integer  "delivery_note_type_id"
+# A integer  "delivery_note_contact_id"
+# A string   "status"
+# A string   "reference"
+# A string   "attachment_file_name"
+# A string   "attachment_content_type"
+# A integer  "attachment_file_size"
+# A date     "published_on"
+# A date     "signed_on"
+# A datetime "confirmed_at"
+# A datetime "cancelled_at"
+# A datetime "created_at"
+# A datetime "updated_at"
+
 class DeliveryNote < ActiveRecord::Base
   STATUS_CONFIRMED    = 'confirmed'
   STATUS_CANCELLED    = 'cancelled'
@@ -27,7 +44,7 @@ class DeliveryNote < ActiveRecord::Base
   
   has_many :delivery_note_invoices
   has_many :all_invoices, :through => :delivery_note_invoices, :source => :invoice
-  has_one  :invoice,      :through => :delivery_note_invoices, :conditions => [ "status IS NULL OR status != ?", Invoice::STATUS_CANCELLED ] #TODO test that method
+  has_one  :invoice,      :through => :delivery_note_invoices, :conditions => [ "invoices.status IS NULL OR invoices.status != ?", Invoice::STATUS_CANCELLED ] #TODO test that method
   
   named_scope :actives, :conditions => [ 'status IS NULL or status != ?', STATUS_CANCELLED ]
   
@@ -90,7 +107,7 @@ class DeliveryNote < ActiveRecord::Base
     !delivery_interventions.select(&:new_record?).empty?
   end
   
-  # return if the delivery_note is associated to an active invoice (where status != cancelled)
+  # return if the delivery_note is associated to an active invoice (when status != cancelled)
   def billed?
     invoice.is_a?(Array) ? !invoice.empty? : !invoice.nil?
   end
@@ -107,6 +124,18 @@ class DeliveryNote < ActiveRecord::Base
   #TODO test this method
   def ready_to_deliver_end_products_and_quantities
     order ? order.ready_to_deliver_end_products_and_quantities : []
+  end
+  
+  #TODO test this method
+  def build_delivery_note_items_from_remaining_quantity_of_end_products_to_deliver
+    return unless order and order.signed_quote
+    
+    order.signed_quote.end_products.each do |end_product|
+      next unless end_product.remaining_quantity_to_deliver > 0
+      delivery_note_items.build(:order_id        => order.id,
+                                :end_product_id  => end_product.id,
+                                :quantity        => end_product.remaining_quantity_to_deliver)
+    end
   end
   
   #TODO test this method

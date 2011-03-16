@@ -2,7 +2,7 @@ class CreateEmployeeStates < ActiveRecord::Migration
   def self.up
     create_table :employee_states do |t|     
       t.string  :name
-      t.boolean :active
+      t.boolean :active, :default => false
       
       t.timestamps
     end

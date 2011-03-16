@@ -1,0 +1,6 @@
+<% display_context_menu do |c| %>
+  <%= c.title ServiceDelivery.human_name %>
+  <% service_delivery_action_buttons(@object).each do |button| %>
+    <%= c.entry button %>
+  <% end %>
+<% end %>

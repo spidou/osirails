@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100921125817) do
+ActiveRecord::Schema.define(:version => 20110215095634) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id"
@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.integer  "overtime_minutes"
     t.text     "absence_comment"
     t.text     "overtime_comment"
-    t.boolean  "cancelled"
+    t.boolean  "cancelled",        :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -111,7 +111,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   create_table "checklist_options_order_types", :force => true do |t|
     t.integer  "checklist_option_id"
     t.integer  "order_type_id"
-    t.boolean  "activated"
+    t.boolean  "activated",           :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -178,7 +178,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.string   "avatar_file_name"
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
-    t.boolean  "hidden"
+    t.boolean  "hidden",              :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -211,12 +211,12 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   end
 
   create_table "customer_grades", :force => true do |t|
-    t.integer "payment_time_limit_id"
+    t.integer "granted_payment_time_id"
     t.string  "name"
   end
 
   create_table "customer_solvencies", :force => true do |t|
-    t.integer "payment_method_id"
+    t.integer "granted_payment_method_id"
     t.string  "name"
   end
 
@@ -323,8 +323,8 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
 
   create_table "delivery_note_types", :force => true do |t|
     t.string   "title"
-    t.boolean  "delivery"
-    t.boolean  "installation"
+    t.boolean  "delivery",     :default => false
+    t.boolean  "installation", :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -427,7 +427,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
 
   create_table "employee_states", :force => true do |t|
     t.string   "name"
-    t.boolean  "active"
+    t.boolean  "active",     :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -473,7 +473,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.string   "type"
     t.string   "siret_number"
     t.boolean  "activated",                    :default => true
-    t.boolean  "hidden"
+    t.boolean  "hidden",                       :default => false
     t.string   "logo_file_name"
     t.string   "logo_content_type"
     t.integer  "logo_file_size"
@@ -552,6 +552,22 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.datetime "updated_at"
   end
 
+  create_table "granted_payment_methods", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "granted_payment_methods", ["name"], :name => "index_granted_payment_methods_on_name", :unique => true
+
+  create_table "granted_payment_times", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "granted_payment_times", ["name"], :name => "index_granted_payment_times_on_name", :unique => true
+
   create_table "graphic_document_types", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -575,7 +591,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.string   "image_content_type"
     t.integer  "source_file_size"
     t.integer  "image_file_size"
-    t.boolean  "is_current_version"
+    t.boolean  "is_current_version",  :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -592,7 +608,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.string   "name"
     t.string   "reference"
     t.text     "description"
-    t.boolean  "cancelled"
+    t.boolean  "cancelled",                :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -631,12 +647,13 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
 
   create_table "invoice_items", :force => true do |t|
     t.integer  "invoice_id"
-    t.integer  "end_product_id"
+    t.integer  "invoiceable_id"
+    t.string   "invoiceable_type"
     t.integer  "position"
     t.float    "quantity"
     t.string   "name"
     t.text     "description"
-    t.decimal  "unit_price",     :precision => 65, :scale => 20
+    t.decimal  "unit_price",       :precision => 65, :scale => 20
     t.float    "vat"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -654,7 +671,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   create_table "invoice_types", :force => true do |t|
     t.string   "name"
     t.string   "title"
-    t.boolean  "factorisable"
+    t.boolean  "factorisable", :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -664,9 +681,6 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.integer  "factor_id"
     t.integer  "invoice_type_id"
     t.integer  "send_invoice_method_id"
-    t.integer  "creator_id"
-    t.integer  "cancelled_by_id"
-    t.integer  "abandoned_by_id"
     t.integer  "invoicing_actor_id"
     t.integer  "invoice_contact_id"
     t.string   "reference"
@@ -702,7 +716,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
 
   create_table "job_contract_types", :force => true do |t|
     t.string   "name"
-    t.boolean  "limited"
+    t.boolean  "limited",    :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -721,7 +735,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   create_table "jobs", :force => true do |t|
     t.integer  "service_id"
     t.string   "name"
-    t.boolean  "responsible"
+    t.boolean  "responsible", :default => false
     t.text     "mission"
     t.text     "activity"
     t.text     "goal"
@@ -768,10 +782,10 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.datetime "noticed_at"
     t.datetime "ended_at"
     t.datetime "cancelled_at"
-    t.boolean  "start_half"
-    t.boolean  "end_half"
-    t.boolean  "responsible_agreement"
-    t.boolean  "director_agreement"
+    t.boolean  "start_half",            :default => false
+    t.boolean  "end_half",              :default => false
+    t.boolean  "responsible_agreement", :default => false
+    t.boolean  "director_agreement",    :default => false
     t.text     "comment"
     t.text     "responsible_remarks"
     t.text     "observer_remarks"
@@ -794,9 +808,9 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.integer  "leave_request_id"
     t.date     "start_date"
     t.date     "end_date"
-    t.boolean  "start_half"
-    t.boolean  "end_half"
-    t.boolean  "cancelled"
+    t.boolean  "start_half",       :default => false
+    t.boolean  "end_half",         :default => false
+    t.boolean  "cancelled",        :default => false
     t.float    "duration"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -858,7 +872,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.string   "description"
     t.string   "separator"
     t.integer  "position"
-    t.boolean  "hidden"
+    t.boolean  "hidden",      :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -953,6 +967,22 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
 
   add_index "orders", ["reference"], :name => "index_orders_on_reference", :unique => true
 
+  create_table "orders_service_deliveries", :force => true do |t|
+    t.integer  "order_id"
+    t.integer  "service_delivery_id"
+    t.string   "name"
+    t.text     "description"
+    t.decimal  "unit_price",          :precision => 65, :scale => 20
+    t.decimal  "prizegiving",         :precision => 65, :scale => 20
+    t.float    "quantity"
+    t.float    "vat"
+    t.integer  "position"
+    t.boolean  "pro_rata_billing",                                    :default => false
+    t.datetime "cancelled_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "participants", :force => true do |t|
     t.integer  "event_id"
     t.integer  "employee_id"
@@ -978,14 +1008,6 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "payment_time_limits", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "payment_time_limits", ["name"], :name => "index_payment_time_limits_on_name", :unique => true
 
   create_table "payments", :force => true do |t|
     t.integer  "due_date_id"
@@ -1017,7 +1039,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   create_table "permissions_permission_methods", :force => true do |t|
     t.integer  "permission_id"
     t.integer  "permission_method_id"
-    t.boolean  "active"
+    t.boolean  "active",               :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1125,7 +1147,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.text     "columns"
     t.text     "order"
     t.text     "group"
-    t.boolean  "public_access"
+    t.boolean  "public_access",      :default => false
     t.integer  "per_page"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1133,15 +1155,17 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
 
   create_table "quote_items", :force => true do |t|
     t.integer  "quote_id"
-    t.integer  "end_product_id"
+    t.integer  "quotable_id"
+    t.string   "quotable_type"
     t.string   "name"
     t.text     "description"
     t.string   "dimensions"
-    t.decimal  "unit_price",     :precision => 65, :scale => 20
-    t.decimal  "prizegiving",    :precision => 65, :scale => 20
+    t.decimal  "unit_price",       :precision => 65, :scale => 20
+    t.decimal  "prizegiving",      :precision => 65, :scale => 20
     t.float    "quantity"
     t.float    "vat"
     t.integer  "position"
+    t.boolean  "pro_rata_billing",                                 :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1157,26 +1181,26 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
 
   create_table "quotes", :force => true do |t|
     t.integer  "order_id"
-    t.integer  "creator_id"
     t.integer  "send_quote_method_id"
     t.integer  "order_form_type_id"
+    t.integer  "commercial_actor_id"
     t.integer  "quote_contact_id"
     t.string   "status"
     t.string   "reference"
     t.float    "carriage_costs",          :default => 0.0
     t.float    "prizegiving",             :default => 0.0
     t.float    "deposit",                 :default => 0.0
-    t.float    "discount",                :default => 0.0
     t.text     "sales_terms"
     t.string   "validity_delay_unit"
     t.integer  "validity_delay"
     t.string   "order_form_file_name"
     t.string   "order_form_content_type"
     t.integer  "order_form_file_size"
-    t.date     "confirmed_on"
-    t.date     "cancelled_on"
+    t.date     "published_on"
     t.date     "sended_on"
     t.date     "signed_on"
+    t.datetime "confirmed_at"
+    t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1250,6 +1274,19 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
 
   create_table "send_quote_methods", :force => true do |t|
     t.string "name"
+  end
+
+  create_table "service_deliveries", :force => true do |t|
+    t.string   "reference"
+    t.string   "name"
+    t.text     "description"
+    t.decimal  "unit_price",               :precision => 65, :scale => 20
+    t.float    "vat"
+    t.string   "time_scale"
+    t.boolean  "pro_rata_billable",                                        :default => false
+    t.boolean  "default_pro_rata_billing",                                 :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "services", :force => true do |t|
@@ -1385,8 +1422,8 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   create_table "supply_sizes", :force => true do |t|
     t.string  "name"
     t.string  "short_name"
-    t.boolean "display_short_name"
-    t.boolean "accept_string"
+    t.boolean "display_short_name", :default => false
+    t.boolean "accept_string",      :default => false
     t.integer "position"
   end
 
@@ -1503,7 +1540,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   create_table "users", :force => true do |t|
     t.string   "username"
     t.string   "password"
-    t.boolean  "enabled"
+    t.boolean  "enabled",             :default => false
     t.datetime "password_updated_at"
     t.datetime "last_connection"
     t.datetime "last_activity"
@@ -1523,8 +1560,8 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.string  "watchable_type"
     t.string  "name"
     t.string  "description"
-    t.boolean "on_modification"
-    t.boolean "on_schedule"
+    t.boolean "on_modification", :default => false
+    t.boolean "on_schedule",     :default => false
   end
 
   add_index "watchable_functions", ["name", "watchable_type"], :name => "index_watchable_functions_on_name_and_watchable_type", :unique => true
@@ -1533,7 +1570,7 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
     t.integer "watchable_id"
     t.string  "watchable_type"
     t.integer "watcher_id"
-    t.boolean "all_changes"
+    t.boolean "all_changes",    :default => false
   end
 
   add_index "watchings", ["watchable_id", "watchable_type", "watcher_id"], :name => "unique_index_watchings", :unique => true
@@ -1543,8 +1580,8 @@ ActiveRecord::Schema.define(:version => 20100921125817) do
   create_table "watchings_watchable_functions", :force => true do |t|
     t.integer "watching_id"
     t.integer "watchable_function_id"
-    t.boolean "on_modification"
-    t.boolean "on_schedule"
+    t.boolean "on_modification",       :default => false
+    t.boolean "on_schedule",           :default => false
     t.string  "time_quantity"
     t.string  "time_unity"
   end

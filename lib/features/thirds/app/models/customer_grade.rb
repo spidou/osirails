@@ -1,5 +1,5 @@
 class CustomerGrade < ActiveRecord::Base
-  belongs_to :payment_time_limit
+  belongs_to :granted_payment_time
   
   journalize :identifier_method => :name
   

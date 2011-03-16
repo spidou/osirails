@@ -3,36 +3,47 @@
 require_locals form, counter, collection_length
 
 invoice_item  = product_invoice_item
-end_product   = invoice_item.end_product
+invoiceable   = invoice_item.invoiceable
 
-position     = invoice_item.position.zero? ? counter : invoice_item.position
+position = invoice_item.position.zero? ? counter : invoice_item.position
+
+tr_style = invoice_item.should_destroy? ? "display:none" : ""
 %>
 
-<tr class="invoice_item">
-  <td class="reference"><%= end_product.product_reference.reference if end_product.product_reference %></td>
+<tr class="invoice_item product_item" style="<%= tr_style %>">
+  <td class="reference"><%= invoice_item.reference_object && invoice_item.reference_object.reference %></td>
   <td class="designation">
     <span class="name"><%= invoice_item.name %></span><br/><span class="description"><%= invoice_item.description %></span>
   </td>
-  <td class="unit_price amount"><%= invoice_item.unit_price.to_f.round_to(2).to_s(2) %></td>
-  <td class="from_quote quote_prizegiving"><%= end_product.prizegiving.to_f.round_to(2).to_s(2) %></td>
-  <td class="from_quote quote_unit_price_with_prizegiving amount"><%= end_product.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %></td>
-  <td class="from_quote quote_quantity"><%= end_product.quantity %></td>
-  <td class="from_quote quote_total amount"><%= end_product.total.to_f.round_to(2).to_s(2) %></td>
-  <td class="quantity"><%= invoice_item.quantity.to_f.round_to(2).to_s(2) %></td>
-  <td class="total amount"><%= invoice_item.total.to_f.round_to(2).to_s(2) %></td>
-  <td class="vat"><%= invoice_item.vat %></td>
-  <td class="total_with_taxes amount"><%= invoice_item.total_with_taxes.to_f.round_to(2).to_s(2) %></td>
+  <td class="unit_price amount">
+    <%= invoice_item.unit_price.to_f.round_to(2).to_s(2) %>
+  </td>
+  <td class="from_quote quote_prizegiving"><%= invoice_item.prizegiving.to_f.round_to(2).to_s(2) %></td>
+  <td class="from_quote quote_unit_price_with_prizegiving amount">
+    <span class="unit_price" real-value="<%= invoice_item.unit_price_with_prizegiving %>"><%= invoice_item.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %></span>
+  </td>
+  <td class="from_quote quote_quantity"><%= invoiceable.quantity %></td>
+  <td class="from_quote quote_total amount"><%= invoiceable.total.to_f.round_to(2).to_s(2) %></td>
+  <td class="quantity">
+    <span class="quantity" real-value="<%= invoice_item.quantity %>"><%= invoice_item.quantity.to_f.round_to(2).to_s(2) %></span>
+  </td>
+  <td class="total amount">
+    <span class="total" real-value="<%= invoice_item.total %>"><%= invoice_item.total.to_f.round_to(2).to_s(2) %></span>
+  </td>
+  <td class="vat">
+    <span class="vat" real-value="<%= invoice_item.vat %>"><%= invoice_item.vat %></span>
+  </td>
+  <td class="total_with_taxes amount">
+    <span class="total_with_taxes" real-value="<%= invoice_item.total_with_taxes %>"><%= invoice_item.total_with_taxes.to_f.round_to(2).to_s(2) %></span>
+  </td>
   
   <% if form.form_view? %>
     <td class="actions">
-      <%= form.hidden_field :name %>
-      <%= form.hidden_field :description %>
-      <%= form.hidden_field :unit_price %>
       <%= form.hidden_field :quantity %>
-      <%= form.hidden_field :vat %>
       
       <%= form.hidden_field :id, :class => :invoice_item_id %>
-      <%= form.hidden_field :end_product_id %>
+      <%= form.hidden_field :invoiceable_id %>
+      <%= form.hidden_field :invoiceable_type %>
       <%= form.hidden_field :position, :class => :position, :value => position %>
       <%= form.hidden_field :should_destroy, :class => :should_destroy %>
     </td>

@@ -1,18 +1,64 @@
 <% invoice = invoice_aggregates %>
 
 <tr class="aggregates">
-  <td colspan="8" rowspan="3"></td>
-  <td colspan="2" class="aggregate_label">Total HT :</td>
-  <td class="aggregate_amount aggregate_without_taxes"><span><%= invoice.total.round_to(2).to_s(2) %></span></td>
+  <td colspan="5">
+    <table class="aggregates invoicing_state no_nth">
+      <thead>
+        <tr>
+          <th colspan="2">État de facturation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="aggregate_label">Total devis (TTC)</td>
+          <td class="aggregate_value">
+            <span class="invoicing_state_quote_total" real-value="<%= invoice.signed_quote.net_to_paid %>"><%= invoice.signed_quote.net_to_paid.to_f.round_to(2).to_s(2) %></span>&nbsp;&euro;
+            <span class="invoicing_state_already_billed" real-value="<%= invoice.already_billed_amount %>"></span>
+          </td>
+        </tr>
+        <tr>
+          <td class="aggregate_label">Total facturé<br/><span class="nota">(y compris cette facture)</span></td>
+          <td class="aggregate_value">
+            <span class="invoicing_state_total_billed" real-value="<%= invoice.total_billed_amount %>"><%= invoice.total_billed_amount.to_f.round_to(2).to_s(2) %></span>&nbsp;&euro;
+          </td>
+        </tr>
+        <tr>
+          <td class="aggregate_label">Reste à facturer</td>
+          <td class="aggregate_value">
+            <span class="invoicing_state_balance" real-value="<%= invoice.balance_to_bill_amount %>"><%= invoice.balance_to_bill_amount.to_f.round_to(2).to_s(2) %></span>&nbsp;&euro;
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </td>
+  
+  <td colspan="6">
+    <table class="aggregates no_nth">
+      <tbody>
+        <tr>
+          <td class="aggregate_label">Total HT</td>
+          <td class="aggregate_value aggregate_without_taxes"> <!-- TODO supprimer la classe aggregate_without_taxes -->
+            <span class="aggregate_total" real-value="<%= invoice.total %>"><%= invoice.total.round_to(2).to_s(2) %></span>&nbsp;&euro;
+          </td>
+        </tr>
+        <tr>
+          <td class="aggregate_label">Total taxes</td>
+          <td class="aggregate_value aggregate_all_taxes"> <!-- TODO supprimer la classe aggregate_all_taxes -->
+            <span class="aggregate_summon_of_taxes" real-value="<%= invoice.summon_of_taxes %>"><%= invoice.summon_of_taxes.round_to(2).to_s(2) %></span>&nbsp;&euro;
+          </td>
+        </tr>
+        <tr class="highlight">
+          <td class="aggregate_label">Net à payer</td>
+          <td class="aggregate_value aggregate_net_to_paid"> <!-- TODO supprimer la classe aggregate_net_to_paid -->
+            <!-- TODO supprimer l'ID aggregate_net_to_paid -->
+            <span class="aggregate_net_to_paid" real-value="<%= invoice.net_to_paid %>" id="invoice_net_to_paid"><%= invoice.net_to_paid.round_to(2).to_s(2) %></span>&nbsp;&euro;
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </td>
+  
   <% if is_form_view? or params[:action] == "ajax_request_for_invoice_items" %>
-    <td rowspan="3"></td>
+    <td>&nbsp;</td>
   <% end %>
-</tr>
-<tr class="aggregates">
-  <td colspan="2" class="aggregate_label">Total taxes :</td>
-  <td class="aggregate_amount aggregate_all_taxes"><span><%= invoice.summon_of_taxes.round_to(2).to_s(2) %></span></td>
-</tr>
-<tr class="aggregates global">
-  <td colspan="2" class="aggregate_label">NET À PAYER</td>
-  <td class="aggregate_amount aggregate_net_to_paid"><span id="invoice_net_to_paid"><%= invoice.net_to_paid.round_to(2).to_s(2) %></span>&#160;&euro;</td>
 </tr>

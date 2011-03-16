@@ -25,15 +25,6 @@ table tr.quote_send_form p input[type=submit] {
   margin: 0 !important;
 }
 
-table tfoot tr.new_quote_item {
-  border: 1px solid #CCC;
-  text-align: left;
-}
-
-table tbody tr.free_quote_item {
-  background-color: #EFEFEF;
-}
-
 ul.quote_caption {
   list-style: none;
   padding-left: 25px;
@@ -68,4 +59,14 @@ ul.quote_caption {
 
 #quote_header > div h3 {
   text-align: center;
+}
+
+/* QUOTE BODY */
+table tfoot tr.new_quote_item {
+  border: 1px solid #CCC;
+  text-align: left;
+}
+
+table tbody tr.free_item {
+  background-color: #EFEFEF;
 }

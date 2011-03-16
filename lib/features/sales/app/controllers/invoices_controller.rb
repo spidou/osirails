@@ -1,6 +1,6 @@
 class InvoicesController < ApplicationController
   include AdjustPdf
-  helper :orders, :contacts, :payments, :adjustments, :numbers, :address
+  helper :orders, :invoice_items, :sales, :contacts, :payments, :adjustments, :numbers, :address
   
   acts_as_step_controller :step_name => :invoice_step, :skip_edit_redirection => true
   
@@ -62,17 +62,17 @@ class InvoicesController < ApplicationController
           delivery_notes = params[:delivery_note_ids].collect{ |x| DeliveryNote.find_by_id(x) }
          
           # return a 404 error if one of the delivery_note_ids is not found, or if one of the delivery_note_ids is not a delivery_note of the order
-          unless delivery_notes.select{ |dn| dn.nil? }.empty? and delivery_notes.reject{ |dn| @order.unbilled_delivery_notes.include?(dn) }.empty?
+          unless delivery_notes.select{ |dn| dn.nil? }.empty? and delivery_notes.reject{ |dn| @order.delivery_notes_without_confirmed_invoice.include?(dn) }.empty?
             error_access_page(404)
             return
           end
-        else
-          delivery_notes << @order.unbilled_delivery_notes.first
         end
           
         @invoice = @order.build_invoice_from( delivery_notes, Invoice::STATUS_INVOICE )
+        @invoice.build_service_invoice_items_from_unbilled_orders_service_deliveries
       when 'balance'
-        @invoice = @order.build_invoice_from( @order.unbilled_delivery_notes, Invoice::BALANCE_INVOICE )
+        @invoice = @order.build_invoice_from( @order.delivery_notes_without_confirmed_invoice, Invoice::BALANCE_INVOICE )
+        @invoice.build_service_invoice_items_from_unbilled_orders_service_deliveries
       when 'asset'
         @invoice.invoice_type = InvoiceType.find_by_name(Invoice::ASSET_INVOICE)
         
@@ -83,7 +83,6 @@ class InvoicesController < ApplicationController
     end
     
     @invoice.invoice_contact = @order.order_contact
-    @invoice.creator = current_user
     @invoice.invoicing_actor = current_user.employee
     @invoice.due_dates.build(:date => Date.today + 1.month, :net_to_paid => @invoice.net_to_paid) if @invoice.due_dates.empty?
   end
@@ -94,7 +93,6 @@ class InvoicesController < ApplicationController
     @invoice.attributes = params[:invoice]
     
     if @invoice.can_be_added?
-      @invoice.creator = current_user
       if @invoice.save
         flash[:notice] = "La facture a été créée avec succès"
         redirect_to send(@step.original_step.path)
@@ -159,8 +157,7 @@ class InvoicesController < ApplicationController
   # PUT /orders/:order_id/:step/invoices/:invoice_id/cancel
   def cancel
     if @invoice.can_be_cancelled?
-      attributes = ( params[:invoice] || {} ).merge(:cancelled_by_id => current_user.id)
-      if @invoice.cancel(attributes)
+      if @invoice.cancel(params[:invoice])
         flash[:notice] = "La facture a été annulée avec succès"
         redirect_to send(@step.original_step.path)
       else
@@ -198,8 +195,7 @@ class InvoicesController < ApplicationController
   # PUT /orders/:order_id/:step/invoices/:invoice_id/sign
   def abandon
     if @invoice.can_be_abandoned?
-      attributes = ( params[:invoice] || {} ).merge(:abandoned_by_id => current_user.id)
-      if @invoice.abandon(attributes)
+      if @invoice.abandon(params[:invoice])
         flash[:notice] = 'La facture a été abandonée (déclarée "sans suite") avec succès'
         redirect_to send(@step.original_step.path)
       else
@@ -310,7 +306,7 @@ class InvoicesController < ApplicationController
   def ajax_request_for_invoice_items
     delivery_notes = params[:delivery_note_ids] ? params[:delivery_note_ids].split(",") : []
     
-    @invoice = Invoice.find_by_id(params[:invoice_id]) || @order.invoices.build
+    @invoice ||= Invoice.find_by_id(params[:invoice_id]) || @order.invoices.build
     @invoice.delivery_note_invoice_attributes=(delivery_notes)
     @invoice.build_or_update_invoice_items_from_associated_delivery_notes
   end

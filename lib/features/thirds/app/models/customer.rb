@@ -43,12 +43,12 @@ class Customer < Third
   
   after_save :save_establishments, :save_head_office
   
-  def payment_time_limit
-    customer_grade && customer_grade.payment_time_limit
+  def granted_payment_time
+    customer_grade && customer_grade.granted_payment_time
   end
   
-  def payment_method
-    customer_solvency && customer_solvency.payment_method
+  def granted_payment_method
+    customer_solvency && customer_solvency.granted_payment_method
   end
   
   def brand_names

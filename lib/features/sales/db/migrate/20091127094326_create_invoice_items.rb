@@ -1,7 +1,8 @@
 class CreateInvoiceItems < ActiveRecord::Migration
   def self.up
     create_table :invoice_items do |t|
-      t.references :invoice, :end_product
+      t.references :invoice, :invoiceable
+      t.string  :invoiceable_type
       t.integer :position
       t.float   :quantity
       

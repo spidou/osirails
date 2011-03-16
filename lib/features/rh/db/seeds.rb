@@ -26,10 +26,10 @@ FamilySituation.create! :name => "Divorcé(e)"
 FamilySituation.create! :name => "Pacsé(e)"
 
 # default employee states
-EmployeeState.create! :name => "Titulaire",       :active => 1
-EmployeeState.create! :name => "Stagiaire",       :active => 1
-EmployeeState.create! :name => "Licencié(e)",     :active => 0
-EmployeeState.create! :name => "Démissionnaire",  :active => 0
+EmployeeState.create! :name => "Titulaire",       :active => true
+EmployeeState.create! :name => "Stagiaire",       :active => true
+EmployeeState.create! :name => "Licencié(e)",     :active => false
+EmployeeState.create! :name => "Démissionnaire",  :active => false
 
 # default job contract types
 JobContractType.create! :name => "CDI", :limited => 0

@@ -35,6 +35,12 @@ ProductReference.create! :name => "Reference 1.3.1", :description => "Descriptio
 ProductReference.create! :name => "Reference 1.3.2", :description => "Description de la référence 1.3.2", :product_reference_sub_category_id => sous_famille13.id, :vat => Vat.all.rand.rate
 ProductReference.create! :name => "Reference 1.3.3", :description => "Description de la référence 1.3.3", :product_reference_sub_category_id => sous_famille13.id, :vat => Vat.all.rand.rate
 
+# default service_deliveries
+sd1 = ServiceDelivery.create! :name => "Déplacement zone 1", :description => "", :unit_price => 100, :vat => 8.5
+sd2 = ServiceDelivery.create! :name => "Déplacement zone 2", :description => "", :unit_price => 150, :vat => 8.5
+sd3 = ServiceDelivery.create! :name => "Déplacement zone 3", :description => "", :unit_price => 200, :vat => 8.5
+sd4 = ServiceDelivery.create! :name => "Installation", :description => "", :time_scale => 'hourly', :unit_price => 100, :vat => 8.5, :pro_rata_billable => true
+
 # default orders
 order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :customer_needs => "1 visuel 10000 x 4000", :approaching_id => Approaching.first.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 10.days, :previsional_delivery => DateTime.now + 20.days)
 order1.build_bill_to_address(order1.customer.bill_to_address.attributes)
@@ -58,21 +64,39 @@ order2.end_products.create! :name => "Produit 1.1.2.2", :description => "Descrip
 order2.end_products.create! :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference112.id, :quantity => 2
 order2.end_products.create! :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id, :quantity => 3
 
+# default orders_service_deliveries
+order2.orders_service_deliveries.create! :service_delivery_id => sd1.id, :quantity => 1
+order2.orders_service_deliveries.create! :service_delivery_id => sd4.id, :pro_rata_billing => true, :quantity => 1
+
 # default quote
-quote = order1.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :creator_id => User.first.id)
-quote.quote_contact_id = order1.all_contacts.first.id
+quote = order1.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :commercial_actor_id => Employee.first.id, :quote_contact_id => order1.all_contacts.first.id)
 quote.build_ship_to_address(Address.first.attributes)
 quote.build_bill_to_address(Address.last.attributes)
 order1.end_products.each do |end_product|
-  quote.quote_items.build(:end_product_id  => end_product.id,
-                          :name            => end_product.name,
-                          :description     => end_product.description,
-                          :dimensions      => end_product.dimensions,
-                          :quantity        => end_product.quantity,
-                          :unit_price      => (end_product.quantity * rand * 10000).round,
-                          :prizegiving     => (rand * 10).round,
-                          :vat             => Vat.all.rand.rate)
+  quote.quote_items.build(:quotable_id    => end_product.id,
+                          :quotable_type  => "EndProduct",
+                          :name           => end_product.name,
+                          :description    => end_product.description,
+                          :dimensions     => end_product.dimensions,
+                          :quantity       => end_product.quantity,
+                          :unit_price     => (end_product.quantity * rand * 10000).round,
+                          :prizegiving    => (rand * 10).round,
+                          :vat            => Vat.all.rand.rate,
+                          :position       => quote.quote_items.size+1)
 end
+
+order1.orders_service_deliveries.each do |service|
+  quote.quote_items.build(:quotable_id => service.id,
+                          :quotable_type  => "OrdersServiceDelivery",
+                          :name           => service.name,
+                          :description    => service.description,
+                          :quantity       => service.quantity,
+                          :unit_price     => (service.quantity * rand * 10000).round,
+                          :prizegiving    => (rand * 10).round,
+                          :vat            => Vat.all.rand.rate,
+                          :position       => quote.quote_items.size+1)
+end
+
 quote.save!
 quote.confirm
 quote.send_to_customer(:sended_on => Date.today, :send_quote_method_id => SendQuoteMethod.first.id)
