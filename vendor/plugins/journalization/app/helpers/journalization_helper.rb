@@ -17,7 +17,13 @@
 
 module JournalizationHelper
   def display_journals_list(journals_subject)
-    content_tag :div, render(:partial => "journals/journal", :collection => journals_subject.journals_with_lines), :id => "journals_list"
+    if journals_subject.journals_with_lines.any?
+      html = render(:partial => "journals/journal", :collection => journals_subject.journals_with_lines(:order => "created_at DESC"))
+    else
+      html = "<p>#{get_translation(:no_journal, :default => 'No record was found')}</p>"
+    end
+    
+    content_tag :div, html, :id => :journals_list
   end
   
   def render_collection_changes_for(journal_line)

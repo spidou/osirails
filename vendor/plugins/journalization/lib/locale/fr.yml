@@ -1,5 +1,6 @@
 fr:
   journalization:
+    no_journal: "Aucune information n'a été trouvée"
     author: "Par {{author}}"
     time_distance: "il y a {{time_distance}}"
     current_identifier: "actuellement connu sous {{identifier}}"
