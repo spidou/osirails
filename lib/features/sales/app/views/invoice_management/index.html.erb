@@ -45,7 +45,7 @@
               <td class="order"><%= link_to(invoice.order.title, invoice.order, :title => "Voir ce dossier", :class => "no_style") %></td>
               <td class="invoice_contact"><%= invoice.invoice_contact.fullname %></td>
               <td class="customer"><%= link_to(invoice.order.customer.name, invoice.order.customer, :title => "Voir fiche client", :class => "no_style") %></td>
-              <td class="reference text"><%= invoice.reference %></td>
+              <td class="reference text"><%= invoice.reference_or_id %></td>
               <td class="published_on"><%= l(invoice.published_on, :format => :short) if invoice.published_on and invoice.confirmed_at %></td>
               <td class="invoice_type"><%= invoice.invoice_type.title %></td>
               <td class="sended_on"><%= l(invoice.sended_on, :format => :short) if invoice.sended_on %></td>

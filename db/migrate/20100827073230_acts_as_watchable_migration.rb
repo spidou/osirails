@@ -3,7 +3,7 @@ class ActsAsWatchableMigration < ActiveRecord::Migration
     create_table :watchings do |t|
       t.references  :watchable, :polymorphic => true
       t.references  :watcher
-      t.boolean     :all_changes
+      t.boolean     :all_changes, :default => false
     end
     
     add_index :watchings, [:watchable_id, :watchable_type, :watcher_id], :unique => true, :name => :unique_index_watchings
@@ -12,7 +12,7 @@ class ActsAsWatchableMigration < ActiveRecord::Migration
     
     create_table :watchings_watchable_functions do |t|
       t.references  :watching, :watchable_function
-      t.boolean     :on_modification, :on_schedule
+      t.boolean     :on_modification, :on_schedule, :default => false
       t.string      :time_quantity, :time_unity 
     end
     
@@ -20,7 +20,7 @@ class ActsAsWatchableMigration < ActiveRecord::Migration
     
     create_table :watchable_functions do |t|
       t.string  :watchable_type, :name, :description
-      t.boolean :on_modification, :on_schedule
+      t.boolean :on_modification, :on_schedule, :default => false
     end
     
     add_index :watchable_functions, [:name, :watchable_type], :unique => true

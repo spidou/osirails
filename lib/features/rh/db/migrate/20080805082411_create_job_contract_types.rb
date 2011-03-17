@@ -2,7 +2,7 @@ class CreateJobContractTypes < ActiveRecord::Migration
   def self.up
     create_table :job_contract_types do |t|     
       t.string  :name
-      t.boolean :limited
+      t.boolean :limited, :default => false
       
       t.timestamps
     end

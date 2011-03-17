@@ -53,37 +53,37 @@ LegalForm.create! :name => "Collectivité territoriale",                        
 LegalForm.create! :name => "Organisme gérant un régime de protection sociale à adhésion obligatoire", :third_type_id => public_third_type.id
 LegalForm.create! :name => "Organisme professionnel",                                                 :third_type_id => public_third_type.id
 
-# default payment time limit
-ptl1 = PaymentTimeLimit.create! :name => "60 jours après réception des travaux + facilité de paiement éventuelle"
-ptl2 = PaymentTimeLimit.create! :name => "30 jours après réception des travaux + facilité de paiement éventuelle"
-ptl3 = PaymentTimeLimit.create! :name => "30 jours + sans facilité de paiement éventuelle"
-ptl4 = PaymentTimeLimit.create! :name => "0 jours + facilité de paiement éventuelle"
-ptl5 = PaymentTimeLimit.create! :name => "0 jours + sans facilité de paiement"
-ptl6 = PaymentTimeLimit.create! :name => "Refus Client"
+# default granted payment times
+gpt1 = GrantedPaymentTime.create! :name => "60 jours après réception des travaux + facilité de paiement éventuelle"
+gpt2 = GrantedPaymentTime.create! :name => "30 jours après réception des travaux + facilité de paiement éventuelle"
+gpt3 = GrantedPaymentTime.create! :name => "30 jours + sans facilité de paiement éventuelle"
+gpt4 = GrantedPaymentTime.create! :name => "0 jours + facilité de paiement éventuelle"
+gpt5 = GrantedPaymentTime.create! :name => "0 jours + sans facilité de paiement"
+gpt6 = GrantedPaymentTime.create! :name => "Refus Client"
 
-# default payment method
-pm1 = PaymentMethod.create! :name => "Tout moyen de paiement accordé"
-pm2 = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement/Prélèvement"
-pm3 = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement"
-pm4 = PaymentMethod.create! :name => "CB/Espèces/Chèque"
-pm5 = PaymentMethod.create! :name => "Espèces/Chèque"
-pm6 = PaymentMethod.create! :name => "Refus du Client"
+# default granted payment methods
+gpm1 = GrantedPaymentMethod.create! :name => "Tout moyen de paiement accordé"
+gpm2 = GrantedPaymentMethod.create! :name => "CB/Espèces/Chèque/Virement/Prélèvement"
+gpm3 = GrantedPaymentMethod.create! :name => "CB/Espèces/Chèque/Virement"
+gpm4 = GrantedPaymentMethod.create! :name => "CB/Espèces/Chèque"
+gpm5 = GrantedPaymentMethod.create! :name => "Espèces/Chèque"
+gpm6 = GrantedPaymentMethod.create! :name => "Refus du Client"
 
 # default customer grades
-CustomerGrade.create! :name => "5/5", :payment_time_limit => ptl1
-CustomerGrade.create! :name => "4/5", :payment_time_limit => ptl2
-CustomerGrade.create! :name => "3/5", :payment_time_limit => ptl3
-CustomerGrade.create! :name => "2/5", :payment_time_limit => ptl4
-CustomerGrade.create! :name => "1/5", :payment_time_limit => ptl5
-CustomerGrade.create! :name => "0/5", :payment_time_limit => ptl6
+CustomerGrade.create! :name => "5/5", :granted_payment_time => gpt1
+CustomerGrade.create! :name => "4/5", :granted_payment_time => gpt2
+CustomerGrade.create! :name => "3/5", :granted_payment_time => gpt3
+CustomerGrade.create! :name => "2/5", :granted_payment_time => gpt4
+CustomerGrade.create! :name => "1/5", :granted_payment_time => gpt5
+CustomerGrade.create! :name => "0/5", :granted_payment_time => gpt6
 
 # default customer solvencies
-CustomerSolvency.create! :name => "100%", :payment_method => pm1
-CustomerSolvency.create! :name => "80%",  :payment_method => pm2
-CustomerSolvency.create! :name => "60%",  :payment_method => pm3
-CustomerSolvency.create! :name => "40%",  :payment_method => pm4
-CustomerSolvency.create! :name => "20%",  :payment_method => pm5
-CustomerSolvency.create! :name => "0%",   :payment_method => pm6
+CustomerSolvency.create! :name => "100%", :granted_payment_method => gpm1
+CustomerSolvency.create! :name => "80%",  :granted_payment_method => gpm2
+CustomerSolvency.create! :name => "60%",  :granted_payment_method => gpm3
+CustomerSolvency.create! :name => "40%",  :granted_payment_method => gpm4
+CustomerSolvency.create! :name => "20%",  :granted_payment_method => gpm5
+CustomerSolvency.create! :name => "0%",   :granted_payment_method => gpm6
 
 ## default document types for customers (document types are created automatically when the class of the owner is parsed)
 #### get mime types

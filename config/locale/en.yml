@@ -34,7 +34,10 @@ en:
         unit: '€'
         precision: 2
         format: '%n %u'
-        
+  
+  boolean_true: "Yes"
+  boolean_false: "No"
+  
   activerecord:
     errors:
       template:

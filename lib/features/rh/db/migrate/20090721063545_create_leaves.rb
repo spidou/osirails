@@ -3,7 +3,7 @@ class CreateLeaves < ActiveRecord::Migration
     create_table :leaves do |t|
       t.references :employee, :leave_type, :leave_request
       t.date    :start_date, :end_date
-      t.boolean :start_half, :end_half, :cancelled
+      t.boolean :start_half, :end_half, :cancelled, :default => false
       t.float   :duration
       
       t.timestamps

@@ -21,8 +21,11 @@
   padding: 0.25em 0.7em 0.25em 0.7em;
   margin-top: 0em;
   margin-right: -0.4em;
-  cursor: pointer;
   -moz-box-shadow: 0px -1px 1px rgba(0,0,0,0.3);
+}
+
+.root_nav.standard > ul.tab_nav li:not.disabled {
+  cursor: pointer;
 }
 
 .root_nav.standard > ul.tab_nav li a {
@@ -58,11 +61,10 @@
   background-color: #DDD;
   color: #777;
   font-style: italic;
-  cursor: inherit;
 }
 
 .root_nav.standard > ul.tab_nav li.disabled a {
-  cursor: inherit;
+  cursor: default;
 }
 
 .root_nav.standard > ul.tab_nav li.disabled:hover {

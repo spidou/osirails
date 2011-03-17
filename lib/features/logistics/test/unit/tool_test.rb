@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/../logistics_test'
 
 class ToolTest < ActiveSupport::TestCase
+  
+  should_journalize :identifier_method => :name_and_serial_number
 
   def setup
     @good_tool = tools(:good_tool)

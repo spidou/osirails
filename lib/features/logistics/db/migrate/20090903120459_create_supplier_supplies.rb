@@ -14,4 +14,3 @@ class CreateSupplierSupplies < ActiveRecord::Migration
     drop_table :supplier_supplies
   end
 end
-

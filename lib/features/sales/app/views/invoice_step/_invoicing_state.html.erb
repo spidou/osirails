@@ -1,0 +1,31 @@
+<% require_locals order %>
+
+<div class="invoicing_state">
+  <table class="invoicing_state no_nth">
+    <thead>
+      <tr>
+        <th colspan="2">État de facturation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label">Total devis (TTC)</td>
+        <td class="value">
+          <span class="invoicing_state_quote_total"><%= order.signed_quote.net_to_paid.to_f.round_to(2).to_s(2) %></span>&nbsp;&euro;
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Total facturé<br/><span class="nota">(hormis les factures en brouillon et annulées)</span></td>
+        <td class="value">
+          <span class="invoicing_state_total_billed"><%= order.billed_amount.to_f.round_to(2).to_s(2) %></span>&nbsp;&euro;
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Reste à facturer</td>
+        <td class="value">
+          <span class="invoicing_state_balance"><%= order.unbilled_amount.to_f.round_to(2).to_s(2) %></span>&nbsp;&euro;
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

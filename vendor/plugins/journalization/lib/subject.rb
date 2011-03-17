@@ -80,13 +80,13 @@ module Journalization
             else
               raise ArgumentError, message
             end
-
+            
             self.journalized_attachments.each do |attachment|
               raise NoMethodError, "'#{attachment}' is not recognized as an attachment method for #{self}" unless self.new.respond_to?(attachment.to_s) && self.new.send(attachment.to_s).class == Paperclip::Attachment
               ["#{attachment}_file_name".to_sym, "#{attachment}_file_size".to_sym].each {|attribute| self.journalized_attributes.delete(attribute)}
             end
           end
-
+          
           if params.include?(:subresources)
             message = ":subresources expected an array with symbols of relationships or hash whose keys are the relationships and values are the restrictions (among :create_and_destroy or :update)"
             if params[:subresources].instance_of?(Array) && params[:subresources].any?
@@ -142,8 +142,8 @@ module Journalization
                 Journal.find(:all, merge_conditions(default_options, options))
               end
               
-              def journals_with_lines #OPTIMIZE by using a SQL statement
-                journals.select{ |j| j.journal_lines.any? }
+              def journals_with_lines(options = {}) #OPTIMIZE by using a SQL statement
+                journals(options).select{ |j| j.journal_lines.any? }
               end
               
               def journal_identifiers(options = {})

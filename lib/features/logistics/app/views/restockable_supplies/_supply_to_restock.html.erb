@@ -1,7 +1,7 @@
 <% tr_class = supply_to_restock.stock_quantity < supply_to_restock.threshold ? 'insufficient_stock' : 'warning_stock' %>
 <tr class='<%=tr_class%>'>
-  <td><%= supply_to_restock.reference %></td>
-  <td><%= supply_to_restock.designation %></td>
+  <td class="text"><%= supply_to_restock.reference %></td>
+  <td class="text"><%= supply_to_restock.designation %></td>
   <td><%= supply_to_restock.threshold %></td>
   <td><%= supply_to_restock.stock_quantity || "0" %></td>
   <td><%= self.send("#{supply_to_restock.class.name.underscore}_link", supply_to_restock, :link_text => nil) %></td>

@@ -63,6 +63,8 @@ en:
         factoring_recovered_comment: "Notify the recovering reason"
         factoring_balance_paid_on: "Factore balance received on"
         delivery_note_invoices: "Associated delivery notes"
+      invoice_item:
+        pro_rata_billing: "Pro rata billing"
       order:
         title: "Project name"
         society_activity_sector: "Activity sector"
@@ -102,14 +104,12 @@ en:
         built_quantity: "Built quantity"
         available_to_deliver_quantity: "Available to deliver quantity"
       quote:
-        sended_on: "Quote sended to customer on"
+        status: "Current status"
+        sended_on: "Sent to customer on"
         send_quote_method: "By"
-        signed_on: "Quote signed by customer on"
+        signed_on: "Signed by customer on"
         order_form_type: "Document type"
         order_form: "File (signed document)"
-        created_at: "Creation date"
-        status: "Current status"
-        ship_to_address: "Forwarding address"
       quote_item:
         name: "Designation"
       ship_to_address:
@@ -126,6 +126,12 @@ en:
         survey_intervention_contact: "Contact"
     errors:
       models:
+        service_delivery:
+          attributes:
+            pro_rata_billable:
+              not_rated: "can not be selected with the given kind of service delivery"
+            default_pro_rata_billing:
+              not_pro_rata_billable: "can not be selected without the option \"Pro rata billable\""
         delivery_intervention:
           attributes:
             scheduled_delivery_at:
@@ -203,9 +209,9 @@ en:
               invalid_sum: "Sum of 'building' and 'build' products must be between 0 and {{quantity}}"
         quote:
           attributes:
-            cancelled_on:
+            cancelled_at:
               on_or_after: "must not be BEFORE the quote creation date&#160;({{restriction}})"
-            confirmed_on:
+            confirmed_at:
               on_or_after: "must not be BEFORE the quote creation date&#160;({{restriction}})"
             sended_on:
               on_or_after: "must not be BEFORE the quote confirmation date&#160;({{restriction}})"
@@ -213,7 +219,7 @@ en:
             signed_on:
               on_or_after: "must not be BEFORE the quote send date&#160;({{restriction}})"
               on_or_before: "must not be AFTER today&#160;({{restriction}})"
-
+  
   integrated_search:
     page_names:
       product_reference:
@@ -222,3 +228,12 @@ en:
       subcontractor:
         advanced_subcontractor: "All subcontractors"
         subcontractor_index: "Subcontractors"
+  
+  view:
+    service_delivery:
+      hourly_rated_text: "in hours"
+      daily_rated_text: "in days"
+      time_scales:
+        fixed: "Fixed price"
+        hourly: "Hourly rated"
+        daily: "Daily rated"

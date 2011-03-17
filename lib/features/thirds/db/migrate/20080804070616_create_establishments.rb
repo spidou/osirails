@@ -4,7 +4,7 @@ class CreateEstablishments < ActiveRecord::Migration
       t.references :establishment_type, :customer, :activity_sector_reference
       t.string     :name, :type, :siret_number
       t.boolean    :activated, :default => true
-      t.boolean    :hidden
+      t.boolean    :hidden, :default => false
       t.string     :logo_file_name, :logo_content_type
       t.integer    :logo_file_size
       

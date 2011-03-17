@@ -80,6 +80,15 @@ class Test::Unit::TestCase
     full_message = build_message(message, "array expected to not be empty, but has <0> items.\n")
     assert_block(full_message) { array.any? }
   end
+  
+  def assert_contain_error(record, field, error_message)
+    errors = record.errors.on(field.to_sym)
+    if errors.is_a?(Array)
+      clean_backtrace { assert errors.include?(error_message), "<#{error_message.inspect}> expected to be found into\n#{errors.inspect}" }
+    elsif errors.is_a?(String)
+      clean_backtrace { assert_equal error_message, errors }
+    end
+  end
 end
 
 module ActionController

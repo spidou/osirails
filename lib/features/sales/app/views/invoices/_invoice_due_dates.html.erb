@@ -56,7 +56,9 @@ notification_hidden = invoice.total_of_due_dates_equal_to_net_to_paid? ? 'displa
       <!-- this table line is the model for the javascript updating due_date -->
       <% fields_for 'invoice[due_date_attributes][]', invoice.due_dates.build do |form| %>
         <tr id="due_date_model">
-          <%= render :partial => 'due_date_in_one_line', :object => invoice.due_dates.build, :locals => { :invoice => invoice, :label => "Échéance", :disable_inputs => true }%>
+          <%= render :partial => 'due_date_in_one_line', :object => invoice.due_dates.build, :locals => { :invoice        => invoice,
+                                                                                                          :label          => "Échéance",
+                                                                                                          :disable_inputs => true }%>
         </tr>
       <% end %>
     <% end %>

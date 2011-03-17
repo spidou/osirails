@@ -1,34 +1,51 @@
 <% quote = quote_aggregates %>
 
 <tr class="aggregates">
-  <td colspan="<%= is_form_view? ? 7 : 6 %>" rowspan="7"></td>
-  <td colspan="2" class="aggregate_label">Total brut HT :</td>
-  <td class="aggregate_amount aggregate_without_taxes"><%= quote.total.round_to(2).to_s(2) %></td>
+  <td colspan="6">&nbsp;</td>
+  <td colspan="4">
+    <table class="aggregates no_nth">
+      <tbody>
+        <tr>
+          <td class="aggregate_label">Total brut HT</td>
+          <td class="aggregate_value">
+            <span class="total" real-value="<%= quote.total %>"><%= quote.total.round_to(2).to_s(2) %></span>
+          </td>
+        </tr>
+        <tr>
+          <td class="aggregate_label">Remise (%)</td>
+          <td class="aggregate_value">
+            <span class="prizegiving"><%= form.form_or_view(form.text_field(:prizegiving, :value => quote.prizegiving_before_type_cast, :size => 5, :autocomplete => :off), quote.prizegiving.to_f.round_to(2).to_s(2)) %></span>
+          </td>
+        </tr>
+        <tr>
+          <td class="aggregate_label">Net HT</td>
+          <td class="aggregate_value">
+            <span class="net" real-value="<%= quote.net %>"><%= quote.net.round_to(2).to_s(2) %></span>
+          </td>
+        </tr>
+        <tr>
+          <td class="aggregate_label">Frais de port</td>
+          <td class="aggregate_value">
+            <span class="carriage_costs"><%= form.form_or_view(form.text_field(:carriage_costs, :value => quote.carriage_costs_before_type_cast, :size => 5, :autocomplete => :off), quote.carriage_costs.to_f.round_to(2).to_s(2)) %></span>
+          </td>
+        </tr>
+        <tr>
+          <td class="aggregate_label">Total taxes</td>
+          <td class="aggregate_value">
+            <span class="summon_of_taxes" real-value="<%= quote.summon_of_taxes %>"><%= quote.summon_of_taxes.round_to(2).to_s(2) %></span>
+          </td>
+        </tr>
+        <tr class="highlight">
+          <td class="aggregate_label">Net à payer</td>
+          <td class="aggregate_value">
+            <span class="net_to_paid" real-value="<%= quote.net_to_paid %>"><%= quote.net_to_paid.round_to(2).to_s(2) %></span>&nbsp;&euro;
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </td>
+  
   <% if is_form_view? %>
-    <td rowspan="7"></td>
+    <td>&nbsp;</td>
   <% end %>
-</tr>
-<tr class="aggregates">
-  <td colspan="2"class="aggregate_label">Remise (%) :</td>
-  <td class="aggregate_amount aggregate_prizegiving"><%= form.form_or_view(form.text_field(:prizegiving, :value => quote.prizegiving_before_type_cast, :onkeyup => "update_aggregates()", :size => 5), quote.prizegiving.to_f.round_to(2).to_s(2)) %></td>
-</tr>
-<tr class="aggregates">
-  <td colspan="2"class="aggregate_label">Net HT :</td>
-  <td class="aggregate_amount aggregate_net"><%= quote.net.round_to(2).to_s(2) %></td>
-</tr>
-<tr class="aggregates">
-  <td colspan="2"class="aggregate_label">Frais de port :</td>
-  <td class="aggregate_amount aggregate_carriage_costs"><%= form.form_or_view(form.text_field(:carriage_costs, :value => quote.carriage_costs_before_type_cast, :onkeyup => "update_aggregates()", :size => 5), quote.carriage_costs.to_f.round_to(2).to_s(2)) %></td>
-</tr>
-<tr class="aggregates">
-  <td colspan="2"class="aggregate_label">Escompte :</td>
-  <td class="aggregate_amount aggregate_discount"><%= form.form_or_view(form.text_field(:discount, :value => quote.discount_before_type_cast, :onkeyup => "update_aggregates()", :size => 5, :disabled => true), quote.discount.to_f.round_to(2).to_s(2)) %></td>
-</tr>
-<tr class="aggregates">
-  <td colspan="2"class="aggregate_label">Total taxes :</td>
-  <td class="aggregate_amount aggregate_all_taxes"><%= quote.summon_of_taxes.round_to(2).to_s(2) %></td>
-</tr>
-<tr class="aggregates global">
-  <td colspan="2" class="aggregate_label">NET À PAYER</td>
-  <td class="aggregate_amount aggregate_net_to_paid"><%= quote.net_to_paid.round_to(2).to_s(2) %>&#160;&euro;</td>
 </tr>

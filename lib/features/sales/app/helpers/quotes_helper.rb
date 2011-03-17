@@ -119,11 +119,15 @@ module QuotesHelper
     button_to_function "Insérer une ligne de commentaire" do |page|
       page.insert_html :bottom, :quote_items_body, :partial => 'quote_items/quote_item',
                                                    :object  => quote.quote_items.build
-      last_item = page[:quote_items_body].select('.free_quote_item').last.show.visual_effect :highlight
+      last_item = page[:quote_items_body].select('.free_item').last.show.visual_effect :highlight
       
-      page << "update_up_down_links_and_positions($('quote_items_body'))"
+      page << "quote.update_quote_items()"
       page << "initialize_autoresize_text_areas()"
     end
+  end
+  
+  def display_validity_delay_and_unit_for(quote)
+    "#{quote.validity_delay} #{Quote::VALIDITY_DELAY_UNITS.invert.values_at(quote.validity_delay_unit).first}"
   end
   
   def quote_status_text(quote)

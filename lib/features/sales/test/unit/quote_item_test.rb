@@ -1,19 +1,23 @@
 require File.dirname(__FILE__) + '/../sales_test'
 
 class QuoteItemTest < ActiveSupport::TestCase
-  should_belong_to :quote, :end_product
+  should_belong_to :quote, :quotable
   
   should_validate_presence_of :name
   
-  should_journalize :identifier_method => :name, :attributes => [:name, :description, :end_product_id, :dimensions, :quantity, :unit_price, :vat, :prizegiving]
+  should_journalize :attributes        => [:name, :description, :dimensions, :unit_price, :prizegiving,
+                                           :quantity, :vat, :position, :pro_rata_billing]#,
+                    #:identifier_method =>  Proc.new{ |i| "#{i.designation} (x #{i.quantity})" }
+  
+  #TODO QuoteItemTest need to be reviewed since we have added support of service_delivery on quotes (some methods are not tested)
   
   context 'A "free" quote item' do
     setup do
       @quote_item = QuoteItem.new
     end
     
-    should "NOT have a product_reference" do
-        assert_nil @quote_item.product_reference
+    should "NOT have a reference_object" do
+        assert_nil @quote_item.reference_object
       end
     
     should 'be "free_item"' do
@@ -80,20 +84,20 @@ class QuoteItemTest < ActiveSupport::TestCase
       @quote_item = QuoteItem.new
     end
     
-    context "without end_product" do
+    context "without quotable" do
       setup do
-        flunk "@quote_item should NOT have an end_product" if @quote_item.end_product
+        flunk "@quote_item should NOT have a quotable" if @quote_item.quotable
       end
       
       #TODO
     end
     
-    context "associated to an end_product" do
+    context "associated to a quotable" do
       setup do
-        @quote_item = QuoteItem.new(:end_product_id => products(:first_end_product).id)
-        flunk "@quote_item.end_product should have a product_reference" unless @quote_item.end_product.product_reference
+        @quote_item = QuoteItem.new(:quotable_id => products(:first_end_product).id, :quotable_type => 'EndProduct')
+        flunk "@quote_item.quotable should have a product_reference" unless @quote_item.quotable.product_reference
         
-        @product_reference = @quote_item.end_product.product_reference
+        @product_reference = @quote_item.quotable.product_reference
         
         flunk "@product_reference.name should be equal to <\"First Product Reference\">, but was <#{@product_reference.name.inspect}>" unless @product_reference.name == "First Product Reference"
         flunk "@product_reference.description should be equal to <\"This is my first product reference\">, but was <#{@product_reference.description.inspect}>" unless @product_reference.description == "This is my first product reference"
@@ -106,8 +110,8 @@ class QuoteItemTest < ActiveSupport::TestCase
       
       should_validate_numericality_of :unit_price, :prizegiving, :vat, :quantity
       
-      should "have a product_reference" do
-        assert_equal @product_reference, @quote_item.product_reference
+      should "have a reference_object" do
+        assert_equal @product_reference, @quote_item.reference_object
       end
       
       should 'NOT be "free_item"' do

@@ -1,16 +1,14 @@
 <%
-require_locals fields, keywords
+require_locals keywords
 entry = search_product_reference_auto_complete_entry
 
-text = fields.map{ |field| entry.send(field) }.join(" - ")
+value = "#{entry.reference} - #{entry.designation}"
 description = entry.description ? entry.description.mb_chars[0..60].lines.map(&:strip).to_a.join(". ") + (entry.description.mb_chars.size > 60 ? '...' : '') : ''
 %>
 
-<li>
+<li data-autocomplete-value="<%= h(value) %>" data-autocomplete-reference-id="<%= entry.id %>" data-autocomplete-reference-type="<%= entry.class.name %>" class="<%= entry.class.name.underscore %>">
   <div>
-    <span><%= highlight(text, keywords) %></span><br/>
+    <span><%= highlight(value, keywords) %></span><br/>
     <em><%= highlight(description, keywords) %></em>
   </div>
-  <%= content_tag( 'div', h(text),  :style => 'display:none', :class => "#{entry.class.name.underscore}_#{fields.first}_value" ) %>
-  <%= content_tag( 'div', entry.id, :style => 'display:none', :class => "#{entry.class.name.underscore}_#{fields.first}_id" ) %>
 </li>

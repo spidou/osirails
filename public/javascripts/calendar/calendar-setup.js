@@ -124,7 +124,7 @@ Calendar.setup = function (params) {
 		}
 	}
 	// HACK by Ronnie Heritiana RABENANDRASANA - adds support of calendar select system with textfield using HTML classes
-	if (!(params.flat || params.multiple || params.inputField || params.displayArea || params.button || ($$('.calendar_trigger').any() && $$('.calendar_field').any() && $$('.calendar_displayed_field').any() && $$('.calendar_container').any()) )){
+	if (!(params.flat || params.multiple || params.inputField || params.displayArea || params.button || ($$('.calendar_trigger').any() && $$('[data-calendar-id=calendar_field]').any() && $$('[data-calendar-id=calendar_displayed_field]').any() && $$('.calendar_container').any()) )){
   // end HACK
 		alert("Calendar.setup:\n  Nothing to setup (no fields found).  Please check your code");
 		return false;
@@ -157,7 +157,7 @@ Calendar.setup = function (params) {
 		  var update = (currentCalendar.dateClicked || p.electric);
 		  if (update && currentTextField && !p.disabledIf) {
 			  currentTextField.value = currentCalendar.date.print(p.ifFormat).entityDecode();
-			  displayedTextField = currentTextField.up('.calendar_container').down('.calendar_displayed_field');
+			  displayedTextField = currentTextField.up('.calendar_container').down('[data-calendar-id=calendar_displayed_field]');
 			  displayedTextField.value = currentCalendar.date.print(p.altIfFormat).entityDecode();
 			  if (typeof currentTextField.onchange == "function")
 				  currentTextField.onchange();
@@ -253,7 +253,7 @@ Calendar.setup = function (params) {
     if (currentCalendarIndex == null) currentCalendarIndex = 0;
     var trigger = $$('.calendar_trigger')[currentCalendarIndex];
     trigger["on" + params.eventName] = function() {
-      currentTextField = trigger.up('.calendar_container').down('.calendar_field');
+      currentTextField = trigger.up('.calendar_container').down('[data-calendar-id=calendar_field]');
       var textField = currentTextField;
       var dateFmt = params.ifFormat;
       var mustCreate = false;
@@ -280,13 +280,13 @@ Calendar.setup = function (params) {
       if (mustCreate) cal.create();
       cal.refresh();
       if (!params.position)
-	      cal.showAtElement(textField.up('.calendar_container').down('.calendar_displayed_field'), params.align);
+	      cal.showAtElement(textField.up('.calendar_container').down('[data-calendar-id=calendar_displayed_field]'), params.align);
       else
 	      cal.showAt(params.position[0], params.position[1]);
       return false;
     };
     
-    var displayedTextField = $$('.calendar_trigger')[currentCalendarIndex].up('.calendar_container').down('.calendar_displayed_field');
+    var displayedTextField = $$('.calendar_trigger')[currentCalendarIndex].up('.calendar_container').down('[data-calendar-id=calendar_displayed_field]');
     displayedTextField["on" + params.eventName] = function() {
       var action = "trigger.on" + params.eventName + "()";
       eval(action);

@@ -15,12 +15,13 @@ due_date = due_date_in_one_line
   <td class="due_date_date">
     <% if is_form_view? %>
       <%= form.text_field :date, :size => 9, :class => "due_date_date_input", :disabled => disable_inputs %>
+      <%# form.calendar_date_select :date, { :disabled => disable_inputs }, :class => :due_date_date_input %>
       <% unless disable_inputs %>
         <%= form.hidden_field :id, :class => "due_date_id" %>
         <%= form.hidden_field :should_destroy, :class => :should_destroy %>
       <% end %>
     <% else %>
-      <%= due_date.date.humanize %>
+      <%= l(due_date.date, :format => :long) %>
     <% end %>
   </td>
   <td class="due_date_net_to_paid">

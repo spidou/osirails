@@ -20,13 +20,12 @@
             <th>Commercial</th>
             <th>Nom projet</th>
             <th>Client</th>
-            <th>R&eacute;f&eacute;rence devis</th>
-            <th>Montant TTC</th>
-            <th>Montant factur&eacute; TTC</th>
-            <th>Montant restant &agrave; facturer TTC</th>
-            <th>Montant r&eacute;gl&eacute; TTC</th>
-            <th>Montant restant &agrave; r&eacute;gler TTC</th>
-            <th>Actions</th>
+            <th>R&eacute;f. devis</th>
+            <th>Total TTC</th>
+            <th>Déjà factur&eacute; TTC</th>
+            <th>Restant &agrave; facturer TTC</th>
+            <th>Déjà r&eacute;gl&eacute; TTC</th>
+            <th>Restant &agrave; r&eacute;gler TTC</th>
           </tr>
         </thead>
         <tbody>
@@ -44,7 +43,6 @@
               <td><%= order.unbilled_amount.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
               <td><%= order.paid_amount.to_f.round(2).to_s %>&nbsp;&euro;</td>
               <td><%= order.unpaid_amount.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
-              <td><%= order_link(order, :link_text => "") %></td>
             </tr>
           <% end %>
         </tbody>

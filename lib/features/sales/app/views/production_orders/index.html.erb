@@ -30,14 +30,13 @@
             <th>Qt&eacute; produits livrables</th>
             <th>Qt&eacute; produits livr&eacute;s</th>
             <th>Date prév. de livraison</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <% for order in @orders %>
             <% manufacturing_step = order.production_step.manufacturing_step %>
             <tr>
-              <td><%= link_to(order.reference, order, :title => "Voir ce dossier") %></td>
+              <td><%= link_to(order.reference, order_production_step_path(order), :title => "Voir ce dossier") %></td>
               <td><%= order.order_type.title %></td>
               <td><%= l(order.created_at.to_date, :format => :short) %></td>
               <td><%= link_to(order.commercial.fullname, order.commercial, :title => "Voir fiche employé") %></td>
@@ -53,7 +52,6 @@
               <td><%= order.ready_to_deliver_end_products_and_quantities.collect{ |h| h[:quantity] }.sum %></td>
               <td><%= order.signed_delivery_notes.collect(&:number_of_pieces).sum %></td>
               <td><%= l(order.previsional_delivery, :format => :short) %></td>
-              <td><%= display_manufacturing_step_action_buttons(order) %></td>
             </tr>
           <% end %>
         </tbody>

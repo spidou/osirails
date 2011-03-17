@@ -9,6 +9,10 @@ class AdjustmentTest < ActiveSupport::TestCase
   
   should_validate_numericality_of :amount # I write another tests because validate_numericality cannot take in account than zero is forbidden
   
+  should_journalize :attributes        => [:amount, :comment],
+                    :attachments       => :attachment,
+                    :identifier_method => :amount
+  
   #TODO test validates_persistence_of :due_date_id, :amount, :comment, :attachment_file_name, :attachment_file_size, :attachment_content_type
   
   context "A new adjustment" do

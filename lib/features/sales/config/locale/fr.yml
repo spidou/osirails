@@ -18,6 +18,7 @@ fr:
       product_reference: "Produit référence"
       product_reference_category: "Famille"
       product_reference_sub_category: "Sous-famille"
+      service_delivery: "Prestation"
       quote: "Devis"
       ship_to_address: "Adresse de livraison"
       subcontractor: "Sous-traitant"
@@ -59,12 +60,17 @@ fr:
         created_at: "Créé le"
         creator: "Par"
         delivery_note_type: "Mode de livraison"
-        status: "État actuel"
+        status: "État"
         confirmed_at: "Validé le"
         published_on: "Date d'émission"
         signed_on: "Signé par le client le"
         attachment: "Fichier (document signé)"
         cancelled_at: "Annulée le"
+      due_date:
+        date: "Date"
+        net_to_paid: "Net à payer"
+        payment: "Paiement"
+        adjustment: "Ajustement"
       dunning:
         date: "Effectuée le"
         dunning_sending_method: "Par"
@@ -93,25 +99,37 @@ fr:
         reference: "Référence"
         invoicing_actor: "Suivi facturation"
         created_at: "Créée le"
-        creator: "Par"
-        status: "État actuel"
+        status: "État"
         invoice_type: "Type de facture"
         published_on: "Date d'émission"
+        confirmed_at: "Validé le"
         factor: "Factor"
+        bill_to_address: "Adresse de facturation"
+        invoice_contact: "Contact de facturation"
+        deposit: "Pourcentage d'acompte"
+        deposit_vat: "TVA appliquée sur l'acompte"
+        deposit_amount: "Montant de l'acompte"
+        deposit_comment: "Description"
         sended_on: "Envoyée au client le"
         send_invoice_method: "Par"
         cancelled_at: "Annulée le"
-        cancelled_by: "Par"
         cancelled_comment: "Indiquer la raison de cette annulation"
         abandoned_on: "Abandonnée le"
-        abandoned_by: "Par"
         abandoned_comment: "Indiquer la raison de l'abandon"
         net_to_paid: "Montant total de la facture"
         factoring_paid_on: "Financement du Factor le"
         factoring_recovered_on: "Définancement du Factor le"
         factoring_recovered_comment: "Indiquer la raison du définancement"
         factoring_balance_paid_on: "Solde Factor reçu le"
+        invoice_item: "Ligne de facture"
         delivery_note_invoices: "Bons de livraison associés"
+        due_date: "Échéance"
+      invoice_item:
+        name: "Nom"
+        unit_price: "Prix unitaire"
+        quantity: "Quantité"
+        vat: "TVA"
+        pro_rata_billing: "Facturation au temps passé"
       order:
         title: "Nom du projet"
         customer: "Client"
@@ -146,7 +164,7 @@ fr:
         revoked_at: "BAT annulé le"
         cancelled_at: "BAT annulé le"
         created_at: "Date de création"
-        status: "État actuel"
+        status: "État"
       product:
         reference: "Référence"
         name: "Spécificité"
@@ -165,6 +183,16 @@ fr:
         reference: "Référence"
       product_reference_sub_category:
         product_reference_category: "Famille parente"
+      service_delivery:
+        reference: "Référence"
+        name: "Nom"
+        description: "Description"
+        unit_price: "Prix HT"
+        vat: "TVA"
+        time_scale: "Type"
+        unit_price_with_taxes: "Prix TTC"
+        pro_rata_billable: "Facturable au temps passé"
+        default_pro_rata_billing: "Facturation au temps passé par défaut"
       manufacturing_step:
         manufacturing_started_on: "Début de la fabrication"
         manufacturing_finished_on: "Fin de la fabrication"
@@ -174,32 +202,31 @@ fr:
         built_quantity: "Quantité de produits terminées"
         available_to_deliver_quantity: "Quantité de produits livrables"
       quote:
-        validity_delay: "Période de validité"
-        validity_delay_unit: "Unité de période de validité"
-        cancelled_on: "Devis annulé le"
-        confirmed_on: "Devis émis le"
-        sended_on: "Devis envoyé au client le"
+        status: "État"
+        reference: "Référence"
+        published_on: "Date d'émission"
+        confirmed_at: "Validé le"
+        sended_on: "Envoyé au client le"
         send_quote_method: "Par"
-        signed_on: "Devis signé par le client le"
+        signed_on: "Signé par le client le"
         order_form_type: "Type de document"
         order_form: "Fichier (document signé)"
+        cancelled_at: "Annulé le"
+        order: "Dossier de vente"
+        commercial_actor: "Suivi commercial"
+        bill_to_address: "Adresse de facturation"
+        ship_to_address: "Adresse de livraison"
+        validity_delay: "Période de validité"
+        validity_delay_unit: "Unité de période de validité"
         sales_terms: "Conditions commerciales"
-        created_at: "Date de création"
-        creator: "Créateur"
-        reference: "Référence"
-        status: "Statut"
-        order: "Projet"
-        quote_contact: "Contact"
-        carriage_costs: "Frais de port"
-        prizegiving: "Remise"
         deposit: "Acompte (%)"
-        discount: "Escompte"
+        quote_contact: "Contact"
         quote_items: "Lignes de devis"
         quote_item: "Ligne de devis"
         end_products: "Produits finis"
         end_product: "Produit fini"
-        bill_to_address: "Adresse de facturation"
-        ship_to_address: "Adresse de livraison"
+        prizegiving: "Remise"
+        carriage_costs: "Frais de port"
       quote_item:
         name: "Désignation"
         dimensions: "Côtes"
@@ -208,6 +235,7 @@ fr:
         prizegiving: "Remise"
         vat: "Taux de TVA"
         end_product: "Produit fini"
+        pro_rata_billing: "Facturation au temps passé"
       ship_to_address:
         #establishment: "Établissement associé"
         establishment_name: "Nom de l'enseigne"
@@ -236,6 +264,12 @@ fr:
         survey_intervention_contact: "Contact"
     errors:
       models:
+        service_delivery:
+          attributes:
+            pro_rata_billable:
+              not_rated: "n'est pas compatible avec le type de prestation choisi"
+            default_pro_rata_billing:
+              not_pro_rata_billable: "ne peut pas être choisi sans l'option \"Facturable au temps passé\""
         delivery_intervention:
           attributes:
             scheduled_delivery_at:
@@ -313,9 +347,9 @@ fr:
               invalid_sum: "La somme des produits 'en cours de fabrication' et 'terminés' doit être comprise entre 0 et {{quantity}}"
         quote:
           attributes:
-            cancelled_on:
+            cancelled_at:
               on_or_after: "ne doit pas être AVANT la date de création du devis&#160;({{restriction}})"
-            confirmed_on:
+            confirmed_at:
               on_or_after: "ne doit pas être AVANT la date de création du devis&#160;({{restriction}})"
             sended_on:
               on_or_after: "ne doit pas être AVANT la date de validation du devis&#160;({{restriction}})"
@@ -349,6 +383,14 @@ fr:
         subcontractor_index: "Les sous-traitants"
   
   view:
+    service_delivery:
+      rates:
+        hourly: "en heures"
+        daily: "en jours"
+      time_scales:
+        fixed: "Forfait (prix fixe)"
+        hourly: "Taux horaire"
+        daily: "Taux journalier"
     contextual_menu_sections:
       order_progress: "Avancement du projet"
       order: "Dossier"

@@ -4,7 +4,7 @@ module ApplicationHelper
   private
     # permits to display only steps which are activated for the current order
     def display_menu_entry_with_sales_support(menu, li_options)
-      return if menu.name and menu.name.ends_with?("_step") and !@order.steps.collect{ |s| s.name }.include?(menu.name)
+      return "" if menu.name and menu.name.ends_with?("_step") and !@order.steps.collect(&:name).include?(menu.name)
       display_menu_entry_without_sales_support(menu, li_options)
     end
     

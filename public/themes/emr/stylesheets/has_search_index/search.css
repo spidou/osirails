@@ -359,7 +359,8 @@ div.cancel_link a.reset_query_link:hover {
   padding-left: 23px;
 }
 
-.criterion span.inputs select, input {
+.criterion span.inputs select,
+.criterion span.inputs input {
   vertical-align: middle;
   max-height: 175px; /* limit for the select with multiple: equivalent to 10 rows*/
 }

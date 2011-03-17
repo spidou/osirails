@@ -1,4 +1,23 @@
-class Product < ActiveRecord::Base
+## DATABASE STRUCTURE
+# A string   "type"
+# A integer  "product_reference_sub_category_id"
+# A integer  "end_products_count",                :default => 0
+# A integer  "product_reference_id"
+# A integer  "order_id"
+# A float    "prizegiving"
+# A float    "unit_price"
+# A integer  "quantity"
+# A integer  "position"
+# A string   "reference"
+# A string   "name"
+# A string   "dimensions"
+# A text     "description"
+# A float    "vat"
+# A datetime "cancelled_at"
+# A datetime "created_at"
+# A datetime "updated_at"
+
+class Product < ActiveRecord::Base # @abstract
   named_scope :actives, :conditions => [ "cancelled_at IS NULL" ]
   
   validates_presence_of :name, :unless => :should_destroy?
@@ -17,6 +36,12 @@ class Product < ActiveRecord::Base
   #TODO test that method
   def was_enabled?
     !cancelled_at_was
+  end
+  
+  #TODO test that method
+  def disable
+    self.cancelled_at = Time.now
+    self.save
   end
   
 #  before_destroy :cancel_if_cannot_be_destroyed

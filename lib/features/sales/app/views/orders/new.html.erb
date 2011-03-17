@@ -18,7 +18,9 @@
   <% form_for @order, :url => { :action => :new }, :html => { :method => :get } do |form| -%>
     <div id="order_search_customer">
       <%= hidden_field_tag :customer_id %>
-      <%= custom_text_field_with_auto_complete(:customer, :name, { :value => "Chercher un client dans la base" }, { :update_id => "customer_id" } ) %>
+      <%= custom_text_field_with_auto_complete( :customer, :name,
+                                                { :value => "Chercher un client dans la base" },
+                                                { :after_after_update_element => "$('customer_id').value = input.readAttribute('data-autocomplete-id')" } ) %>
       <%= form.submit 'Valider' %>
     </div>
   <% end -%>

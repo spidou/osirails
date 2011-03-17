@@ -2,7 +2,7 @@ class CreateSupplySizes < ActiveRecord::Migration
   def self.up
     create_table :supply_sizes do |t|
       t.string  :name, :short_name
-      t.boolean :display_short_name, :accept_string
+      t.boolean :display_short_name, :accept_string, :default => false
       t.integer :position
     end
     

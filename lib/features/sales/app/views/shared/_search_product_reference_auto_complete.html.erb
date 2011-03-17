@@ -1,12 +1,13 @@
 <%
-require_locals fields, keywords
-entries = search_product_reference_auto_complete
+require_locals keywords
+products ||= []
+services ||= []
 %>
 
 <%
-if entries.any?
-  items = entries.map do |entry|
-    render :partial => 'shared/search_product_reference_auto_complete_entry', :object => entry, :locals => { :fields => fields.split(" "), :keywords => keywords }
+if products.any? or services.any?
+  items = (products + services).map do |item|
+    render :partial => 'shared/search_product_reference_auto_complete_entry', :object => item, :locals => { :keywords => keywords }
   end
 else
   items = "<li>Aucun résultat</li>"

@@ -178,10 +178,17 @@ hr {
 }
 
 /* IMAGES */
-a[data-icon] {
+a[data-icon], td[data-icon] {
   background-repeat: no-repeat;
   background-position: 1px 50%;
   padding-left: 16px !important;
+  padding-top: 2px !important;
+}
+
+a[data-icon] span { display:none; } /* automatically hide SPAN if it's contained into a A with data-icon */
+
+a[data-icon-size=medium], td[data-icon-size=medium] {
+  padding-left: 28px !important;
 }
 
 a[data-icon=new]    { background-image: url("/themes/emr/images/new.png"); }
@@ -195,6 +202,13 @@ a[data-icon=cancel]   { background-image: url("/themes/emr/images/cancel.png"); 
 
 a[data-icon=watching]   { background-image: url("/themes/emr/images/watching.png"); }   /* for acts_as_watchable plugin */
 a[data-icon=unwatching] { background-image: url("/themes/emr/images/unwatching.png"); }
+
+a[data-icon=move_up]            { background-image: url("/themes/emr/images/move_up.png"); }
+a[data-icon=move_up].disabled   { background-image: url("/themes/emr/images/move_up_disabled.png"); }
+a[data-icon=move_down]          { background-image: url("/themes/emr/images/move_down.png"); }
+a[data-icon=move_down].disabled { background-image: url("/themes/emr/images/move_down_disabled.png"); }
+a[data-icon=delete_line]        { background-image: url("/themes/emr/images/delete_line.png"); }
+
 /* END IMAGES */
 
 /* FIELDSET & LEGEND */
@@ -1134,17 +1148,25 @@ div label.skip_presentation {
   margin: 10px -13px -5px -13px;
 }
 
+/* // this is disabled because 'background' remove the default border style, and we can't display the right border style according to the user theme
+#content_page > div form input[readonly=readonly] {
+  background: #F0EBE2 url('/themes/emr/images/readonly_input.png') no-repeat 2px 50%;
+  text-indent: 20px;
+  border: 1px solid #757575;
+  -moz-border-radius: 3px;
+}*/
+
 .calendar_container {
   position: relative;
   vertical-align: top;
 }
 
-.calendar_displayed_field {
+.calendar_container input[data-calendar-id=calendar_displayed_field] {
 	padding-right: 16px; /* space for calendar_cleaner */
 	margin-right: 25px; /* space for calendar_trigger */
 }
 
-.calendar_cleaner {
+.calendar_container input.calendar_cleaner {
 	position: absolute;
 	background: url("/themes/emr/images/eraser_12x12.png") ;
 	top: 7px;
@@ -1155,7 +1177,7 @@ div label.skip_presentation {
 	cursor: pointer;
 }
 
-.calendar_trigger {
+.calendar_container img.calendar_trigger {
   position: absolute;
   top: 4px;
   right: 6px;
@@ -1606,86 +1628,6 @@ select.catalog_3_columns {
 	margin-right:30px;
 	text-align:center;
 
-}
-/*/////////////////TIMELINE/////////////////*/
-#timeline {
-	margin:10px 0 10px 10px;
-	text-align:center;
-	padding:0;
-	text-indent:0;
-	width:700px;
-	padding-bottom:1px;
-	padding-right:2px;
-	line-height:26px;
-}
-
-#timeline_head,
-.timeline_body,
-#timeline_footer {
-	height:26px;
-	width:inherit;
-	margin-top:-1px;
-	position:relative;
-	top:1px;
-}
-
-.timeline_body.good,
-#timeline_head.good {
-	background:url("/themes/emr/images/timeline_framework_good.png") repeat-x;
-	border-left:1px solid #63975E;
-	border-right:1px solid #63975E;
-}
-
-#timeline_head.good .timeline_notice {
-	background:url("/themes/emr/images/tick_16x16.png") no-repeat 0 6px;
-}
-
-.timeline_body.good .timeline_notice {
-	background:url("/themes/emr/images/tick_16x16.png") no-repeat 0 6px;
-}
-
-.timeline_body.bad .timeline_notice {
-	background:url("/themes/emr/images/warning_14x14.png") no-repeat 0 6px;
-}
-
-#timeline_head .timeline_date {
-	background:url("/themes/emr/images/timeline_head.png") no-repeat 143px 6px;
-}
-
-.timeline_body.bad {
-	background:url("/themes/emr/images/timeline_framework_bad.png") repeat-x;
-	border-left:1px solid #FF7F7F;
-	border-right:1px solid #FF7F7F;
-}
-
-.timeline_date {
-	text-align:right;
-	width:130px;
-	padding-right:40px;
-	float:left;
-	overflow:hidden;
-	height:26px;
-}
-
-.timeline_notice {
-	text-align:left;
-	width:510px;
-	overflow:hidden;
-	float:right;
-	padding-left:18px;
-	height:26px;
-}
-
-.timeline_body .timeline_date {
-	background: url("/themes/emr/images/timeline_line.gif") repeat-y 152px 0;
-}
-
-.timeline_body {
-	background: url("/themes/emr/images/timeline_line.gif") repeat-y 153px 0;
-}
-
-#timeline_footer {
-	background:url("/themes/emr/images/timeline_footer_arrow.png") no-repeat 144px 0;
 }
 
 /*/////////////////HUMAN RESSOURCES/////////////////*/

@@ -90,21 +90,36 @@ class ProductReferencesController < ApplicationController
   def auto_complete_for_product_reference_reference
     #OPTMIZE use one sql request instead of multiple requests (using has_search_index once it will be improved to accept by_values requests)
     keywords = params[:product_reference][:reference].split(" ").map(&:strip)
+    
+    # build query statement for products
     query = []
     conditions = []
-    
     keywords.each do |keyword|
       keyword = "%#{keyword}%"
       query << "(products.reference like ? OR products.name like ? OR products.dimensions like ? OR products.description like ? OR product_reference_categories.reference like ? OR product_reference_categories.name like ? OR product_reference_categories_product_reference_categories.reference like ? OR product_reference_categories_product_reference_categories.name like ?)"
       8.times{ conditions << keyword }
     end
-    
     query = query.join(" AND ")
     conditions.unshift(query)
+    @products = ProductReference.all(:include => [ { :product_reference_sub_category => [ :product_reference_category ] } ], :conditions => conditions)
     
-    @items = ProductReference.all(:include => [ { :product_reference_sub_category => [ :product_reference_category ] } ], :conditions => conditions)
+    if params[:only] && params[:only] == "product_references"
+      @services = []
+    else
+      # build query statement for services
+      query = []
+      conditions = []
+      keywords.each do |keyword|
+        keyword = "%#{keyword}%"
+        query << "(service_deliveries.reference like ? OR service_deliveries.name like ? OR service_deliveries.description like ?)"
+        3.times{ conditions << keyword }
+      end
+      query = query.join(" AND ")
+      conditions.unshift(query)
+      @services = ServiceDelivery.all(:conditions => conditions)
+    end
     
-    render :partial => 'shared/search_product_reference_auto_complete', :object => @items, :locals => { :fields => "reference designation", :keywords => keywords }
+    render :partial => 'shared/search_product_reference_auto_complete', :locals => { :products => @products, :services => @services, :keywords => keywords }
   end
   
   private

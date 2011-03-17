@@ -1,7 +1,7 @@
 <% empty_line_class = delivery_note_item.quantity > 0 ? '' : ' empty_line' %>
 
 <% fields_for "delivery_note[delivery_note_item_attributes][]", delivery_note_item, :index => nil do |form| %>
-  <tr class="delivery_note_item<%= empty_line_class %>">
+  <tr class="delivery_note_item<%= empty_line_class %> product_item">
     <td class="reference"><%= delivery_note_item.reference %></td>
     <td class="designation"><span class="name"><%= delivery_note_item.designation %></span><br/><span class="description"><%= delivery_note_item.description %></span></td>
     <td class="order_quantity"><%= delivery_note_item.order_quantity %></td>

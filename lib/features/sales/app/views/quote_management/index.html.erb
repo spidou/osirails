@@ -44,7 +44,7 @@
               <td class="commercial"><%= link_to(quote.order.commercial.fullname, quote.order.commercial, :title => "Voir fiche employé", :class => "no_style") %></td>
               <td class="quotation_deadline"><%= l(quote.order.quotation_deadline.to_date, :format => :short) if quote.order.quotation_deadline %></td>
               <td class="reference text"><%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(quote.order, quote), :title => "Voir ce devis", :class => "no_style") if quote.reference %></td>
-              <td class="confirmed_on"><%= l(quote.confirmed_on, :format => :short) if quote.confirmed_on %></td>
+              <td class="confirmed_at"><%= l(quote.confirmed_at, :format => :short) if quote.confirmed_at %></td>
               <td class="validity_delay"><%= "#{quote.validity_delay} #{quote.validity_delay_unit}" if quote.validity_delay && quote.validity_delay_unit %></td>
               <td class="validity_date"><%= l(quote.validity_date.to_date, :format => :short) + display_remaining_days_for(quote) if quote.validity_date %></td>
               <td class="sended_on"><%= "#{l(quote.sended_on, :format => :short)} (#{quote.send_quote_method.name})" if quote.sended_on && quote.send_quote_method.name %></td>

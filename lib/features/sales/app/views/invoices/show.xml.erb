@@ -76,7 +76,7 @@
             <% @is_page_first_element = "false" %>
           <% end %>
           <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %>
-          <Reference><%= item.end_product && item.end_product.product_reference ? item.end_product.product_reference.reference : nil %></Reference>
+          <Reference><%= item.reference_object && item.reference_object.reference %></Reference>
           <Name><%= item.name %></Name>
           <Description><%= item.description %></Description>
           <Quantity><%= item.quantity %></Quantity>
@@ -102,9 +102,9 @@
     <TotalInclusiveOfTaxNetPrice><%= @invoice.net_to_paid.to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxNetPrice>
     <SalesTerms><%= @invoice.signed_quote.sales_terms %></SalesTerms>
     <InvoicingState>
-      <QuoteTotal><%= @invoice.net_to_paid.to_f.round_to(2).to_s(2) %></QuoteTotal>
-      <InvoicedTotal></InvoicedTotal>
-      <Balance></Balance>
+      <QuoteTotal><%= @invoice.signed_quote.net_to_paid.to_f.round_to(2).to_s(2) %></QuoteTotal>
+      <TotalBilled><%= @invoice.total_billed_amount.to_f.round_to(2).to_s(2) %></TotalBilled>
+      <Balance><%= @invoice.balance_to_bill_amount < 0 ? 0 : @invoice.balance_to_bill_amount.to_f.round_to(2).to_s(2) %></Balance>
     </InvoicingState>
     <DueDates>
       <% @invoice.due_dates.each do |due_date| %>
@@ -148,8 +148,8 @@
     <SalesTerms>Rappel des conditions commerciales</SalesTerms>
     <InvoicingState>État de facturation</InvoicingState>
     <QuoteTotal>Total devis (TTC) :</QuoteTotal>
-    <InvoicedTotal>Total facturé (TTC) :</InvoicedTotal>
-    <InvoicedTotal2>(y compris cette facture)</InvoicedTotal2>
+    <TotalBilled>Total facturé :</TotalBilled>
+    <TotalBilled2>(y compris cette facture)</TotalBilled2>
     <Balance>Reste à facturer :</Balance>
     <DueDates>Échéances</DueDates>
     <DueDatesDate>Date</DueDatesDate>

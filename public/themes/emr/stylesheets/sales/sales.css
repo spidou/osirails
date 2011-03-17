@@ -34,6 +34,87 @@ a[data-icon=new_product_reference]  { background-image: url("/themes/emr/images/
   text-align: center;
 }
 
+/*/////////////////TIMELINE/////////////////*/
+#timeline {
+	margin:10px 0 10px 10px;
+	text-align:center;
+	padding:0;
+	text-indent:0;
+	width:700px;
+	padding-bottom:1px;
+	padding-right:2px;
+	line-height:26px;
+}
+
+#timeline_head,
+.timeline_body,
+#timeline_footer {
+	height:26px;
+	width:inherit;
+	margin-top:-1px;
+	position:relative;
+	top:1px;
+}
+
+.timeline_body.good,
+#timeline_head.good {
+	background:url("/themes/emr/images/timeline_framework_good.png") repeat-x;
+	border-left:1px solid #63975E;
+	border-right:1px solid #63975E;
+}
+
+#timeline_head.good .timeline_notice {
+	background:url("/themes/emr/images/tick_16x16.png") no-repeat 0 6px;
+}
+
+.timeline_body.good .timeline_notice {
+	background:url("/themes/emr/images/tick_16x16.png") no-repeat 0 6px;
+}
+
+.timeline_body.bad .timeline_notice {
+	background:url("/themes/emr/images/warning_14x14.png") no-repeat 0 6px;
+}
+
+#timeline_head .timeline_date {
+	background:url("/themes/emr/images/timeline_head.png") no-repeat 143px 6px;
+}
+
+.timeline_body.bad {
+	background:url("/themes/emr/images/timeline_framework_bad.png") repeat-x;
+	border-left:1px solid #FF7F7F;
+	border-right:1px solid #FF7F7F;
+}
+
+.timeline_date {
+	text-align:right;
+	width:130px;
+	padding-right:40px;
+	float:left;
+	overflow:hidden;
+	height:25px;
+}
+
+.timeline_notice {
+	text-align:left;
+	width:510px;
+	overflow:hidden;
+	float:right;
+	padding-left:18px;
+	height:25px;
+}
+
+.timeline_body .timeline_date {
+	background: url("/themes/emr/images/timeline_line.gif") repeat-y 152px 0;
+}
+
+.timeline_body {
+	background: url("/themes/emr/images/timeline_line.gif") repeat-y 153px 0;
+}
+
+#timeline_footer {
+	background:url("/themes/emr/images/timeline_footer_arrow.png") no-repeat 144px 0;
+}
+
 /* ORDER HEADER */
 #order_header {
   text-align: left;
@@ -177,38 +258,74 @@ table.sales_table tr td.unit {
   width: 1px; /* 1px to give a minimal width, but it will fill to text */
 }
 
-table.sales_table tr.aggregates {
-  border-top: 1px solid #CCC;
-}
-
-table.sales_table tr.aggregates > td {
-  text-align: left;
-  border-top: none;
-  border-bottom: none;
-}
-
-table.sales_table tr.aggregates > td.aggregate_label {
-  border-right: none;
-}
-
-table.sales_table tr.aggregates > td.aggregate_amount {
-  border-left: none;
-  text-align: right;
-}
-
-table.sales_table tr.aggregates > td.aggregate_amount input {
-  text-align: right;
-}
-
-table.sales_table tr.aggregates.global {
-  font-weight: bold;
-  background-color: #CCC;
-  border-top: 1px solid black;
-}
-
 table.sales_table tr.new_item_line {
   border: 1px solid #CCC;
   text-align: left;
+}
+
+table.sales_table tfoot tr.aggregates > td {
+  padding: 0;
+}
+
+table.sales_table,
+table.sales_table tfoot tr.aggregates,
+table.sales_table tfoot tr.aggregates > td {
+  border: 0px !important;
+}
+
+table.sales_table table.aggregates {
+  margin: -1px 0 0 auto;
+  padding: 0;
+  width: auto;
+  border: 0;
+}
+
+table.sales_table table.aggregates tr > td.aggregate_label {
+  text-align: left;
+  font-weight: bold;
+  border-right: none;
+}
+
+table.sales_table table.aggregates tr > td.aggregate_value {
+  width: 100px;
+  text-align: right;
+  background-color: white;
+  border-left: none;
+}
+
+table.sales_table table.aggregates tr > td.aggregate_value input {
+  text-align: right;
+}
+
+table.sales_table table.aggregates tr.highlight > td {
+  background-color: #CCC;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+table.sales_table tbody tr td.reference {
+  width: 0px;
+}
+
+table.sales_table tbody tr.product_item td.reference {
+  background: url("/themes/emr/images/sales/product_item.png") no-repeat 2px 2px;
+  text-indent: 23px;
+}
+
+table.sales_table tbody tr.service_item td.reference {
+  background: url("/themes/emr/images/sales/service_item.png") no-repeat 2px 2px;
+  text-indent: 23px;
+}
+
+table.sales_table tbody tr td.designation span.rate_text {
+  background-color: #FBE6D0;
+  font-style: italic;
+}
+
+table.sales_table tbody tr td.designation span.pro_rata_billing {
+  background: #FBE6D0 url('/themes/emr/images/sales/pro_rata_billing.png') no-repeat right center;
+  padding-right: 18px;
+  font-style: italic;
 }
 
 /* REMARKS */
@@ -539,4 +656,15 @@ table tr.very_low_priority {
 table tr.very_low_priority a {
   color: inherit;
   text-decoration: underline;
+}
+
+/* AUTOCOMPLETE SEARCH PRODUCTS OR SERVICE DELIVERY (quote, survey, etc) */
+.auto_complete ul li.product_reference {
+  background: url("/themes/emr/images/sales/search_product_reference.png") no-repeat 2px 2px;
+  text-indent: 20px;
+}
+
+.auto_complete ul li.service_delivery {
+  background: url("/themes/emr/images/sales/search_service_delivery.png") no-repeat 2px 2px;
+  text-indent: 20px;
 }

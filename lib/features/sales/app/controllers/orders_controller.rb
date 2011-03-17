@@ -10,18 +10,12 @@ class OrdersController < ApplicationController
     redirect_to :action => :new
   end
   
-  # GET /orders/1
-  # GET /orders/1.svg
+  # GET /orders/:id
+  # GET /orders/:id.svg
   def show
     respond_to do |format|
       format.html {
-        if @order.current_step
-          redirection = send(@order.current_step.original_step.path, @order)
-        else
-          redirection = order_informations_path(@order)
-        end
-        flash.keep
-        redirect_to redirection
+        redirect_to order_informations_path(@order)
       }
       format.svg {
         if params[:for]
@@ -31,6 +25,17 @@ class OrdersController < ApplicationController
         end
       }
     end
+  end
+  
+  # GET /orders/:id/current
+  def current_step
+    if @order.current_step
+      redirection = send(@order.current_step.original_step.path, @order)
+    else
+      redirection = order_informations_path(@order)
+    end
+    flash.keep
+    redirect_to redirection
   end
   
   # GET /orders/new
@@ -62,11 +67,11 @@ class OrdersController < ApplicationController
     end
   end
   
-  # GET /orders/1/edit
+  # GET /orders/:id/edit
   def edit
   end
   
-  # PUT /orders/1
+  # PUT /orders/:id
   def update
     if @order.update_attributes(params[:order])
       flash[:notice] = "Dossier modifié avec succés"

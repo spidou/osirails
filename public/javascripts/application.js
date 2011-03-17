@@ -2,8 +2,65 @@
 String.prototype.ltrim = function() { return this.replace(/^\s+/, ''); };
 String.prototype.rtrim = function() { return this.replace(/\s+$/, ''); };
 String.prototype.trim = function() { return this.ltrim().rtrim(); };
+String.prototype.toBoolean = function() { return "true" == this; };
 
 Array.prototype.sum = function() { return this.inject(0, function(a,b){ return a + b }); };
+
+// Add Enumerable to NamedNodeMap (used when calling $('dom_id').attributes)
+Object.extend(NamedNodeMap.prototype, Enumerable);
+Object.extend(NamedNodeMap.prototype, {
+  _each: function(iterator) {
+    for (var i = 0; i < this.length; i++)
+      iterator(this[i]);
+  },
+  
+  names: function() {
+    return this.collect(function(a){return a.name})
+  },
+  
+  values: function() {
+    return this.collect(function(a){return a.value})
+  }
+});
+
+function log(msg) {
+  try {
+    console.log(msg);
+  } catch(er) {
+    try {
+      window.opera.postError(msg);
+    } catch(er) {
+     //no console avaliable. put 
+     //alert(msg) here or write to a document node or just ignore
+    }
+  }
+}
+
+function warn(msg) {
+  try {
+    console.warn(msg);
+  } catch(er) {
+    try {
+      window.opera.postError(msg);
+    } catch(er) {
+     //no console avaliable. put 
+     //alert(msg) here or write to a document node or just ignore
+    }
+  }
+}
+
+function error(msg) {
+  try {
+    console.error(msg);
+  } catch(er) {
+    try {
+      window.opera.postError(msg);
+    } catch(er) {
+     //no console avaliable. put 
+     //alert(msg) here or write to a document node or just ignore
+    }
+  }
+}
 
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
@@ -294,6 +351,39 @@ function initialize_autoresize_text_areas() {
   });
 }
 
+// Method to automatically restore a value on a readonly field
+function restore_readonly_value(event){
+  target = event.target
+  if (target.tagName == "SELECT")
+    target.selectedIndex = target.readAttribute('data-readonly-value')
+  else if (target.tagName == "INPUT" && target.type == "checkbox")
+    target.checked = target.readAttribute('data-readonly-value').toBoolean()
+}
+var bind_restore_readonly_value = restore_readonly_value.bindAsEventListener(null)
+
+// Add readonly behaviour on some form fields
+function enable_readonly_fields() {
+  $$('select, input[type=checkbox]').each(function(field){
+    Event.observe(field, 'focus', function(event){
+      if (field.readAttribute('readonly') == 'readonly') {
+        if (field.tagName == "SELECT")
+          field.writeAttribute('data-readonly-value', field.selectedIndex)
+        else if (field.tagName == "INPUT" && field.type == "checkbox")
+          field.writeAttribute('data-readonly-value', field.checked.toString());
+        
+        // here we may find a way to store orginal observers (only 'onchange' ones), in order to restore them if in the future the field is not readonly anymore
+        field.stopObserving('change') // yeah we remove 'onchange' observers because a readonly field is not supposed to change!
+        
+        field.observe('change', bind_restore_readonly_value)
+      }
+    });
+    
+    Event.observe(field, 'blur', function(event){
+      event.target.stopObserving('change', bind_restore_readonly_value)
+    });
+  });
+}
+
 // Load the initial attributes of the document forms for
 // the function preventClose, active the autoresize for the
 // targeted textarea with class "autoresize_text_area" and
@@ -303,6 +393,7 @@ Event.observe(window, 'load', function() {
   initialize_autoresize_text_areas();
   initialize_time();
   display_time();
+  enable_readonly_fields();
 });  
 
 // Avoid the prevent close message if the action is called by a form submit
@@ -350,4 +441,99 @@ function roundNumber(number, precision) {
 	  str_result += ".00"
 	}
 	return str_result
+}
+
+var OsirailsBase = Class.create({
+  //initialize: function(){
+  //
+  //},
+  
+  //TODO include method 'roundNumber' here
+})
+
+var TableLine = {
+  
+  init_table_line_observers: function() {
+    this.bind_move_up = this.bind_move_up || this.move_up.bindAsEventListener(this)
+    this.bind_move_down = this.bind_move_down || this.move_down.bindAsEventListener(this)
+    
+    // remove old observers
+    this.move_up_button().stopObserving('click', this.bind_move_up)
+    this.move_down_button().stopObserving('click', this.bind_move_down)
+    
+    // add observers
+    this.move_up_button().observe('click', this.bind_move_up)
+    this.move_down_button().observe('click', this.bind_move_down)
+  },
+  
+  move_up: function() {
+    this.move_tr(true);
+  },
+  
+  move_down: function() {
+    this.move_tr(false);
+  },
+  
+  move_tr: function(to_up) {
+    var element   = this.root;
+    var neighbour = $(this.nearly_visible(to_up, element));
+    
+    if (neighbour == null) return;
+    
+    (to_up ? neighbour.insert({before: element}) : neighbour.insert({after: element}) );
+    this.highlight()
+    
+    this.udpate_and_sort_items()
+    this.update_up_down_links()
+  },
+  
+  // Method the parse next or previous siblings until the first visible, and return it
+  //
+  nearly_visible: function(to_up, element) {
+    do { element = (to_up ? element.previous() : element.next()) }
+    while(element != null && !element.visible())
+    return element;
+  },
+  
+  is_first: function() {
+    return this.position() == 1
+  },
+  
+  is_last: function() {
+    return this.position() == this.self_and_siblings().size()
+  },
+  
+  update_up_down_links: function() {
+    this.enable_up_down_buttons()
+    
+    if (this.is_first())
+      this.disable_up_button()
+    if (this.is_last())
+      this.disable_down_button()
+  },
+  
+  enable_up_down_buttons: function() {
+    this.enable_up_button()
+    this.enable_down_button()
+  },
+  
+  enable_up_button: function() {
+    this.move_up_button().removeClassName('disabled')
+  },
+  
+  enable_down_button: function() {
+    this.move_down_button().removeClassName('disabled')
+  },
+  
+  disable_up_button: function() {
+    this.move_up_button().addClassName('disabled')
+  },
+  
+  disable_down_button: function() {
+    this.move_down_button().addClassName('disabled')
+  },
+  
+  highlight: function() {
+    this.highlight_element(this.root)
+  }
 }

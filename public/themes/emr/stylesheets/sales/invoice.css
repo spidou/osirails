@@ -23,6 +23,26 @@ table tr.totally_paid_invoice td.status {
   font-weight: bold;
 }
 
+/* INVOICING STEP & INVOICING STATE */
+div.invoice_step_notice {
+  display: inline-block;
+  vertical-align: top;
+}
+
+div.invoicing_state {
+  display: inline-block;
+  margin-left: 30px;
+}
+
+table.invoicing_state td.label {
+  text-align: left;
+  font-weight: bold;
+}
+
+table.invoicing_state td.value {
+  text-align: right;
+}
+
 /* INVOICE TYPES CHOOSER */
 div ul#invoice_types {
   margin: 0;
@@ -86,6 +106,15 @@ table#invoice_items span.fieldWithErrors:after {
   content: " *"
 }
 
+table.sales_table table.aggregates.invoicing_state {
+  margin: -1px auto 0 0;
+}
+
+table.sales_table table.aggregates.invoicing_state td.aggregate_label span.nota {
+  font-weight: normal;
+  font-style: italic;
+}
+
 /*table#invoice_items tr.aggregates td {
   text-align: left;
   border-top: none;
@@ -116,6 +145,18 @@ table#invoice_items td.from_quote {
   font-style: italic;
   color: grey;
 }
+
+table#invoice_items tr.free_item.should_destroy,
+table#invoice_items tr.product_item.should_destroy {
+  display: none;
+}
+
+table#invoice_items tr.service_item.should_destroy {
+  background-color: #EAEAEA;
+  font-style: italic;
+  color: #898989;
+}
+
 /*
 table#invoice_items tr.new_invoice_item {
   border: 1px solid #CCC;

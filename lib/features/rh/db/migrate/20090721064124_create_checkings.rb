@@ -5,7 +5,7 @@ class CreateCheckings < ActiveRecord::Migration
       t.date    :date
       t.integer :absence_hours, :absence_minutes, :overtime_hours, :overtime_minutes
       t.text    :absence_comment, :overtime_comment
-      t.boolean :cancelled
+      t.boolean :cancelled, :default => false
       
       t.timestamps
     end

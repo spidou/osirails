@@ -8,33 +8,13 @@
 
 <%
 quote_errors  = { :header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:quote_contact) || quote.errors.on(:quote_contact_id) ? ' errors' : '',
-                  :body   => quote.errors.on(:quote_items) || quote.errors.on(:quote_item_ids) || quote.errors.on(:prizegiving) || quote.errors.on(:carriage_costs) || quote.errors.on(:discount) ? ' errors' : '',
+                  :body   => quote.errors.on(:quote_items) || quote.errors.on(:quote_item_ids) || quote.errors.on(:prizegiving) || quote.errors.on(:carriage_costs) ? ' errors' : '',
                   :footer => quote.errors.on(:sales_terms) || quote.errors.on(:validity_delay) || quote.errors.on(:validity_delay_unit) || quote.errors.on(:deposit) ? ' errors' : '' }
-
-missing_end_products  = quote.order.end_products - quote.end_products
-excess_quote_items    = quote.product_quote_items.select{ |q| q.end_product.nil? }
 %>
 
 <div class="presentation_medium root_nav standard">
   
-  <% unless quote.new_record? or quote.was_signed? or quote.was_cancelled? %>
-    <% unless missing_end_products.empty? %>
-      <div class="notification">
-        <p>Attention, certains produits ne sont pas présents sur ce devis, et seront supprimés si vous l'enregistrez tel quel. Vous devriez <strong>annuler ce devis et en créer un nouveau</strong> pour prendre en compte les nouveaux produits suivants :</p>
-        <ul>
-          <li><strong><%= missing_end_products.collect(&:name).join("</strong></li><li><strong>")%></strong></li>
-        </ul>
-      </div>
-    <% end %>
-    <% unless excess_quote_items.empty? %>
-      <div class="notification">
-        <p>Attention, certains produits présents dans ce devis ont déjà été supprimé (via l'étape de visite commerciale par exemple), et seront "re-créés" si vous enregistrez le devis tel quel. Vous devriez <strong>annuler ce devis et en créer un nouveau</strong> OU <strong>supprimer immédiatement les lignes</strong> de produits suivants :</p>
-        <ul>
-          <li><strong><%= excess_quote_items.collect(&:name).join("</strong></li><li><strong>")%></strong></li>
-        </ul>
-      </div>
-    <% end %>
-  <% end %>
+  <%= render :partial => 'missing_and_excess_quote_items', :locals => { :quote => quote } %>
   
   <% tab_navigator :quote_nav do |t| %>
     <% t.nav_buttons do %>
@@ -42,13 +22,12 @@ excess_quote_items    = quote.product_quote_items.select{ |q| q.end_product.nil?
                                                                       :selected => true %>
       <%= t.tab :body,                    "Corps",                    :class    => quote_errors[:body] %>
       <%= t.tab :footer,                  "Conditions commerciales",  :class    => quote_errors[:footer] %>
-      <%= t.tab :additional_informations, "Informations supplémentaires" %>
       <%= t.tab_for_history(quote) %>
     <% end %>
     
     <% action = quote.new_record? ? :create : :update %>
     <% method = quote.new_record? ? :put : :post %>
-    <% form_for quote, :url => { :controller => 'quotes', :action => action, :order_id => @order.id }, :method => method, :html => { :multipart => true } do |form| %>
+    <% form_for quote, :url => { :controller => 'quotes', :action => action, :order_id => @order.id }, :method => method, :html => { :multipart => true, :id => :quote_form } do |form| %>
       
       <% t.content_for :header do %>
         <%= form.error_messages unless quote_errors[:header].blank? %>
@@ -65,13 +44,13 @@ excess_quote_items    = quote.product_quote_items.select{ |q| q.end_product.nil?
         <%= render :partial => 'quote_footer', :object => quote, :locals => { :form => form } %>
       <% end %>
       
-      <% t.content_for :additional_informations do %>
-        <%= render :partial => 'quote_additional_infos', :object => quote, :locals => { :form => form } %>
-      <% end %>
-      
       <% t.content_for_history(quote) %>
-
+      
       <%= form.form_buttons %>
+    <% end %>
+    
+    <% if is_form_view? %>
+      <%= javascript_tag "var quote = new Quote('quote_form')" %>
     <% end %>
   <% end %>
 </div>

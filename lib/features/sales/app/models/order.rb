@@ -1,3 +1,22 @@
+## DATABASE STRUCTURE
+# A integer  "commercial_id"
+# A integer  "user_id"
+# A integer  "customer_id"
+# A integer  "establishment_id"
+# A integer  "society_activity_sector_id"
+# A integer  "order_type_id"
+# A integer  "approaching_id"
+# A integer  "order_contact_id"
+# A string   "title"
+# A string   "reference"
+# A text     "customer_needs"
+# A datetime "closed_at"
+# A date     "previsional_delivery"
+# A date     "quotation_deadline"
+# A integer  "delivery_time"
+# A datetime "created_at"
+# A datetime "updated_at"
+
 class Order < ActiveRecord::Base
   has_permissions :as_business_object
   has_address     :bill_to_address
@@ -36,10 +55,15 @@ class Order < ActiveRecord::Base
   has_many :invoices, :order => 'invoices.created_at DESC'
   
   has_many :ship_to_addresses
-  has_many :end_products, :conditions => [ "cancelled_at IS NULL" ]
+  has_many :end_products, :conditions => [ 'cancelled_at IS NULL' ]
+  has_many :disabled_end_products, :class_name => 'EndProduct', :conditions => [ 'cancelled_at IS NOT NULL' ]
   has_many :order_logs
   has_many :mockups
   has_many :graphic_documents
+  
+  has_many :orders_service_deliveries, :conditions => [ 'cancelled_at IS NULL' ]
+  has_many :disabled_orders_service_deliveries, :class_name => 'OrdersServiceDelivery', :conditions => [ 'cancelled_at IS NOT NULL' ]
+  has_many :service_deliveries, :through => :orders_service_deliveries
   
   validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id
@@ -106,6 +130,11 @@ class Order < ActiveRecord::Base
     signed_delivery_notes.select{ |dn| !dn.billed_and_confirmed? and dn.number_of_delivered_pieces > 0 }
   end
   
+  # return all orders_service_deliveries which are not used on a confirmed invoice
+  def orders_service_deliveries_without_confirmed_invoice
+    orders_service_deliveries.reject{ |osd| osd.billed_and_confirmed? }
+  end
+  
   def all_is_delivered_or_scheduled?
     return false if delivery_notes.actives.empty? or signed_quote.nil?
     delivery_notes.actives.collect{ |dn| dn.number_of_delivered_pieces }.sum == signed_quote.number_of_pieces
@@ -117,8 +146,11 @@ class Order < ActiveRecord::Base
   end
   
   def all_signed_delivery_notes_are_billed?
-    return false if signed_delivery_notes.empty?
-    unbilled_delivery_notes.empty?
+    signed_delivery_notes.any? and unbilled_delivery_notes.empty?
+  end
+  
+  def all_signed_delivery_notes_have_confirmed_invoice?
+    signed_delivery_notes.any? and delivery_notes_without_confirmed_invoice.empty?
   end
   
   def deposit_invoice
@@ -129,8 +161,8 @@ class Order < ActiveRecord::Base
     invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::STATUS_INVOICE ])
   end
   
-  def balance_invoices
-    invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::BALANCE_INVOICE ])
+  def balance_invoice
+    invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::BALANCE_INVOICE ])
   end
   
   def asset_invoices
@@ -149,7 +181,7 @@ class Order < ActiveRecord::Base
   
   #TODO test this method
   def billed_amount
-    invoices.actives.collect(&:net_to_paid).sum
+    invoices.billed.collect(&:net_to_paid).sum
   end
   
   #TODO test this method
@@ -161,12 +193,7 @@ class Order < ActiveRecord::Base
     return if all_is_delivered_or_scheduled?
     
     dn = delivery_notes.build
-    signed_quote.end_products.each do |end_product|
-      next unless end_product.remaining_quantity_to_deliver > 0
-      dn.delivery_note_items.build(:order_id        => self.id,
-                                   :end_product_id  => end_product.id,
-                                   :quantity        => end_product.remaining_quantity_to_deliver)
-    end
+    dn.build_delivery_note_items_from_remaining_quantity_of_end_products_to_deliver
     
     return dn
   end
@@ -180,18 +207,16 @@ class Order < ActiveRecord::Base
     invoice.deposit_amount  = invoice.calculate_deposit_amount_according_to_quote_and_deposit
     invoice.deposit_vat     = ConfigurationManager.sales_deposit_tax_coefficient.to_f
     
-    invoice.build_or_update_free_item_for_deposit_invoice
+    invoice.build_or_update_free_invoice_item_for_deposit_invoice
     
     return invoice
   end
   
   # +invoice_type_name+ may be +Invoice::STATUS_INVOICE+ or +Invoice::BALANCE_INVOICE+
   def build_invoice_from(delivery_notes, invoice_type_name)
-    return if delivery_notes.empty? or !delivery_notes.select(&:new_record?).empty?
-    
     invoice = invoices.build(:invoice_type_id => InvoiceType.find_by_name(invoice_type_name).id)
     
-    for delivery_note in delivery_notes
+    for delivery_note in delivery_notes.reject(&:new_record?)
       invoice.delivery_note_invoices.build(:delivery_note_id => delivery_note.id)
     end
     

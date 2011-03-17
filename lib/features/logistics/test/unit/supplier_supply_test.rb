@@ -10,6 +10,9 @@ class SupplierSupplyTest < ActiveSupport::TestCase
   
   should_validate_numericality_of :fob_unit_price, :taxes, :lead_time
   
+  should_journalize :attributes        => [:supplier_id, :supplier_reference, :lead_time, :fob_unit_price, :taxes]
+                    #:identifier_method => Proc.new{ |s| "#{s.supplier.name}" }
+  
   #TODO
   # validates_persistence_of :supply_id
   

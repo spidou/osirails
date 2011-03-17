@@ -1,7 +1,7 @@
 hundred_percent:
   name: "100%"
-  payment_method: bank_transfer
+  granted_payment_method: all
   
 zero_percent:
   name: "0%"
-  payment_method: cash
+  granted_payment_method: cash_only

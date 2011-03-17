@@ -1244,17 +1244,17 @@
                           <fo:table-cell xsl:use-attribute-sets="invoicing-state-invoiced-total-label-cell" number-columns-spanned="2">
                             <fo:block-container xsl:use-attribute-sets="invoicing-state-invoiced-total-label-block-container">
                               <fo:block xsl:use-attribute-sets="invoicing-state-invoiced-total-label-block">
-                                <xsl:value-of select="../Labels/InvoicedTotal"/>
+                                <xsl:value-of select="../Labels/TotalBilled"/>
                               </fo:block>
                               <fo:block xsl:use-attribute-sets="invoicing-state-invoiced-total-label2-block">
-                                <xsl:value-of select="../Labels/InvoicedTotal2"/>
+                                <xsl:value-of select="../Labels/TotalBilled2"/>
                               </fo:block>
                             </fo:block-container>
                           </fo:table-cell>
                           <fo:table-cell xsl:use-attribute-sets="invoicing-state-invoiced-total-value-cell" number-columns-spanned="2">
                             <fo:block-container xsl:use-attribute-sets="invoicing-state-invoiced-total-value-block-container">
                               <fo:block>
-                                <xsl:value-of select="InvoicingState/InvoicedTotal"/>
+                                <xsl:value-of select="InvoicingState/TotalBilled"/>
                               </fo:block>
                             </fo:block-container>
                           </fo:table-cell>

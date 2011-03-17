@@ -25,7 +25,7 @@ module SearchController
     @query.search_type ||= 'and'
     @query.page_name     = @page_name
     @query.public_access = true if @query.public_access.nil?
-    @query.quick_search_value ||= nil 
+    @query.quick_search_value ||= nil
     
     # filter Query to suite permissions
     @query.columns      = filter_authorized_columns(@query.columns)

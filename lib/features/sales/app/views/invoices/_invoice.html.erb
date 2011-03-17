@@ -9,7 +9,7 @@
 <% if invoice.invoice_type.nil? %>
   <%= render :partial => 'invoice_type_chooser' %>
 <% else
-  invoice_errors  = { :header             => invoice.errors.on(:bill_to_address) || invoice.errors.on(:invoice_contact) || invoice.errors.on(:invoice_contact_id) || invoice.errors.on(:factor) || invoice.errors.on(:factor_id) || invoice.errors.on(:published_on) ? ' errors' : '',
+  invoice_errors  = { :header             => invoice.errors.on(:bill_to_address) || invoice.errors.on(:invoice_contact) || invoice.errors.on(:invoice_contact_id) || invoice.errors.on(:factor) || invoice.errors.on(:factor_id) || invoice.errors.on(:invoicing_actor) || invoice.errors.on(:invoicing_actor_id) || invoice.errors.on(:published_on) ? ' errors' : '',
                       :body               => invoice.errors.on(:deposit) || invoice.errors.on(:deposit_amount) || invoice.errors.on(:deposit_vat) || invoice.errors.on(:product_items) || invoice.errors.on(:free_items) || invoice.errors.on(:invoice_items) || invoice.errors.on(:invoice_item_ids) || invoice.errors.on(:delivery_note_invoices) ? ' errors' : '',
                       :due_dates_payments => invoice.errors.on(:due_dates) || invoice.errors.on(:due_date_ids) ? ' errors' : '' }
 %>
@@ -22,12 +22,12 @@
         <%= t.tab :body,                "Produits",               :class    => invoice_errors[:body] %>
         <%= t.tab :due_dates_payments,  "Échéances & Règlements", :class    => invoice_errors[:due_dates_payments] %>
         <%= t.tab :dunnings,            "Relances",               :disabled => true %>
-        <%= t.tab :infos,               "Informations supplémentaires" %>
+        <%= t.tab_for_history(invoice) %>
       <% end %>
     
       <% action = invoice.new_record? ? :create : :update %>
       <% method = invoice.new_record? ? :put : :post %>
-      <% form_for invoice, :url => { :controller => 'invoices', :action => action, :order_id => @order.id }, :method => method do |form| %>
+      <% form_for invoice, :url => { :controller => 'invoices', :action => action, :order_id => @order.id }, :method => method, :html => { :id => :invoice_form } do |form| %>
         
         <% t.content_for :header do %>
           <%= form.error_messages unless invoice_errors[:header].blank? %>
@@ -56,11 +56,17 @@
           <%# render :partial => 'invoice_dunnings', :object => invoice, :locals => { :form => form }%>
         <% end %>
         
-        <% t.content_for :infos do %>
-          <%= render :partial => 'invoice_infos', :object => invoice, :locals => { :form => form } %>
-        <% end %>
+        <% t.content_for_history(invoice) %>
         
         <%= form.form_buttons %>
+      <% end %>
+    <% end %>
+    
+    <% if is_form_view? %>
+      <% if invoice.deposit_invoice? %>
+        <%= javascript_tag "var invoice = new DepositInvoice('invoice_form')" %>
+      <% else %>
+        <%= javascript_tag "var invoice = new Invoice('invoice_form')" %>
       <% end %>
     <% end %>
   </div>

@@ -9,6 +9,10 @@ class CommodityTest < ActiveSupport::TestCase
   
   should_belong_to :supply_type
   
+  should_journalize :attributes        => [:reference, :measure, :unit_mass, :packaging, :threshold, :enabled, :disabled_at],
+                    :subresources      => [:supplier_supplies]#,
+                    #:identifier_method => Proc.new{ |s| "#{s.reference} - #{s.designation}" }
+  
   context "A commodity" do
     setup do
       @supply = Commodity.new

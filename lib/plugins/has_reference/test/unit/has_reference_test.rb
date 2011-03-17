@@ -245,6 +245,39 @@ module HasReferenceTest
             end
           end
         end
+        
+        # test #reference_or_id when reference is nil
+        context "with no reference" do
+          setup do
+            @reference_owner.reference = nil
+            
+            flunk "@reference_owner should not have a reference, but \"#{@reference_owner.reference}\"" unless @reference_owner.reference.nil?
+            @reference_owner_id = @reference_owner.id
+          end
+          
+          should "return the object ID when calling #reference_or_id" do
+            assert_equal "##{@reference_owner_id}", @reference_owner.reference_or_id
+          end
+        end
+        
+        # test #reference_or_id when reference is not nil
+        context "with a reference" do
+          setup do
+            @pattern = "ABC.$number(2)"
+            set_pattern(@pattern)
+            @reference_owner.update_reference
+            
+            flunk "@reference_owner should have a reference equal to \"ABC.01\", but was \"#{@reference_owner.reference}\"" unless @reference_owner.reference == "ABC.01"
+          end
+          
+          teardown do
+            unset_pattern
+          end
+          
+          should "return the reference when calling #reference_or_id" do
+            assert_equal "ABC.01", @reference_owner.reference_or_id
+          end
+        end
       end
     end
   end

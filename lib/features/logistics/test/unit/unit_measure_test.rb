@@ -4,6 +4,8 @@ class UnitMeasureTest < ActiveSupport::TestCase
   should_validate_presence_of :name, :symbol
   should_validate_uniqueness_of :name, :symbol
   
+  should_journalize :identifier_method => :symbol_and_name
+  
   context "An unit_measure" do
     setup do
       @unit_measure = UnitMeasure.new(:name => "Milimeter", :symbol => "mm")

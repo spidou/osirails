@@ -21,8 +21,8 @@ fr:
     formats:
       default: "%d/%m/%Y à %Hh%M"
       time: "%Hh%M"
-      short: "%d %b %Y %Hh%M"
-      short_ordinal: "%a %d %b %Y %Hh%M"
+      short: "%d %b %Y à %Hh%M"
+      short_ordinal: "%a %d %b %Y à %Hh%M"
       long: "%d %B %Y à %Hh%M"
       long_ordinal: "%A %d %B %Y à %Hh%M"
       only_second: "%S"
@@ -82,6 +82,9 @@ fr:
         unit: '€'
         precision: 2
         format: '%n %u'
+  
+  boolean_true: "Oui"
+  boolean_false: "Non"
   
   support:
     array:
