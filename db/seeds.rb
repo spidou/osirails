@@ -6,12 +6,12 @@ role_admin = Role.create! :name => "admin", :description => "Ce rôle permet d'a
 user_admin.roles << role_admin
 
 # default number types
-NumberType.create! :name => "Mobile"
-NumberType.create! :name => "Fixe"
-NumberType.create! :name => "Fax"
-NumberType.create! :name => "Mobile Professionnel"
-NumberType.create! :name => "Fixe Professionnel"
-NumberType.create! :name => "Fax Professionnel"
+NumberType.create! :name => "Mobile perso"
+NumberType.create! :name => "Fixe perso"
+NumberType.create! :name => "Fax perso"
+NumberType.create! :name => "Mobile pro"
+NumberType.create! :name => "Fixe pro"
+NumberType.create! :name => "Fax pro"
 
 # default countries
 france          = Country.create! :name => "FRANCE",      :code => "fr"
@@ -102,27 +102,6 @@ City.create! :name => "SAINTE ROSE",              :zip_code => "97439", :country
 City.create! :name => "SAINTE SUZANNE",           :zip_code => "97441", :country_id => reunion.id
 
 City.create! :name => "PARIS", :zip_code => "75000", :region_id => Region.find_by_name("ÎLE-DE-FRANCE").id, :country_id => france.id
-
-# default services
-dirg = Service.create! :name => "Direction Générale"
-Service.create! :name => "Administratif et Financier", :service_parent_id => dirg.id
-Service.create! :name => "Commercial",                 :service_parent_id => dirg.id
-Service.create! :name => "Achats/Ventes",              :service_parent_id => dirg.id
-Service.create! :name => "Informatique",               :service_parent_id => dirg.id
-
-prod = Service.create! :name => "Production",          :service_parent_id => dirg.id
-Service.create! :name => "Électricité",                :service_parent_id => prod.id
-Service.create! :name => "Métallerie",                 :service_parent_id => prod.id
-Service.create! :name => "Peinture",                   :service_parent_id => prod.id
-Service.create! :name => "Plasturgie",                 :service_parent_id => prod.id
-Service.create! :name => "Décor",                      :service_parent_id => prod.id
-Service.create! :name => "Pose",                       :service_parent_id => prod.id
-
-# default society activity sectors
-SocietyActivitySector.create! :name => "Enseigne"
-SocietyActivitySector.create! :name => "Signalétique"
-SocietyActivitySector.create! :name => "Routes"
-SocietyActivitySector.create! :name => "Usinage"
 
 ## default_mime types
 jpg = MimeType.create!(:name => "image/jpeg")

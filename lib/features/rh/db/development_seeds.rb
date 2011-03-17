@@ -1,5 +1,13 @@
 require 'lib/seed_helper'
 
+# default jobs
+Job.create! :name => "Directeur Général",                     :service_id => Service.find_by_name("Direction Générale").id, :responsible => true
+Job.create! :name => "Directeur Administratif et Financier",  :service_id => Service.find_by_name("Administratif et Financier").id, :responsible => true
+Job.create! :name => "Secrétaire",                            :service_id => Service.find_by_name("Administratif et Financier").id
+Job.create! :name => "Directeur Commercial",                  :service_id => Service.find_by_name("Commercial").id, :responsible => true
+Job.create! :name => "Commercial",                            :service_id => Service.find_by_name("Commercial").id
+Job.create! :name => "Chargé d'affaires",                     :service_id => Service.find_by_name("Commercial").id
+
 # default employees
 john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :social_security_number => "1234567891234 45", :service_id => Service.first.id, :civility_id => Civility.first.id, :family_situation_id => FamilySituation.first.id, :qualification => "Inconnu"
 john.numbers.build(:number => "692123456", :indicative_id => Indicative.first.id, :number_type_id => NumberType.first.id)

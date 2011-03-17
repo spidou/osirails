@@ -63,7 +63,7 @@ class Employee < ActiveRecord::Base
     v.validates_attachment_size         :avatar, :less_than => 2.megabytes
   end
   
-  validates_associated :iban, :address, :job_contract#, :contacts
+  validates_associated :user, :iban, :address, :job_contract#, :contacts
   
   validate :validates_responsible_job_limit
   
@@ -75,7 +75,7 @@ class Employee < ActiveRecord::Base
   has_search_index  :only_attributes       => [ :first_name, :last_name, :email, :society_email, :birth_date, :social_security_number ],
                     :additional_attributes => { :fullname => :string }
   
-  before_validation_on_create :build_associated_resources
+  before_validation :build_associated_resources
   before_save :case_management
   after_update :save_iban
   
@@ -337,8 +337,8 @@ class Employee < ActiveRecord::Base
     end 
   end
   
-  def mail
-    "armoog_s@epitech.net"
+  def mail #TODO check where that method is used and if it's usefull
+    intranet_email
   end
   
   private
@@ -354,12 +354,15 @@ class Employee < ActiveRecord::Base
     end
   
     def build_associated_resources
-      raise "ConfigurationManager seems to be not yet initialized in #{self}:#{self.class}" unless ConfigurationManager.respond_to?(:admin_user_pattern)
+      if user.nil?
+        raise "ConfigurationManager seems to be not yet initialized in #{self}:#{self.class}" unless ConfigurationManager.respond_to?(:admin_user_pattern)
+        
+        # create associated user
+        self.build_user(:username => pattern(ConfigurationManager.admin_user_pattern,self), :enabled => false, :password => 'password')
+      end
       
-      # create associated user
-      user = build_user(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"P@ssw0rd")
-      
-      # create empty job contract
-      job_contract = build_job_contract
+      if job_contract.nil?
+        self.build_job_contract # create empty job contract
+      end
     end
 end

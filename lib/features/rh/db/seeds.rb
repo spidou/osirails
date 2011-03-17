@@ -14,9 +14,9 @@ Query.create! do |q|
 end
 
 # default civilities
-Civility.create! :name => "Mr"
+Civility.create! :name => "M."
 Civility.create! :name => "Mme"
-Civility.create! :name => "Mademoiselle"
+Civility.create! :name => "Melle"
 
 # default family situations
 FamilySituation.create! :name => "Célibataire"
@@ -42,36 +42,6 @@ LeaveType.create! :name => "Congé maternité"
 LeaveType.create! :name => "Congé paternité"
 LeaveType.create! :name => "Congés spéciaux"
 LeaveType.create! :name => "Récupération"
-
-# default jobs
-Job.create! :name => "Directeur Général",                     :service_id => Service.find_by_name("Direction Générale").id, :responsible => true
-Job.create! :name => "Directeur Commercial",                  :service_id => Service.find_by_name("Commercial").id, :responsible => true
-Job.create! :name => "Commercial",                            :service_id => Service.find_by_name("Commercial").id
-Job.create! :name => "Chargé d'affaires",                     :service_id => Service.find_by_name("Commercial").id
-Job.create! :name => "Directeur Administratif et Financier",  :service_id => Service.find_by_name("Administratif et Financier").id, :responsible => true
-Job.create! :name => "Secrétaire",                            :service_id => Service.find_by_name("Administratif et Financier").id
-Job.create! :name => "Assistante de Direction",               :service_id => Service.find_by_name("Administratif et Financier").id
-Job.create! :name => "Comptable",                             :service_id => Service.find_by_name("Administratif et Financier").id
-Job.create! :name => "Assistante des Ressources Humaines",    :service_id => Service.find_by_name("Administratif et Financier").id
-Job.create! :name => "Responsable des Achats/Ventes",         :service_id => Service.find_by_name("Achats/Ventes").id, :responsible => true
-Job.create! :name => "Assistante des Achats/Ventes",          :service_id => Service.find_by_name("Achats/Ventes").id
-Job.create! :name => "Ingénieur Informaticien",               :service_id => Service.find_by_name("Informatique").id, :responsible => true
-Job.create! :name => "Responsable de Production",             :service_id => Service.find_by_name("Production").id, :responsible => true
-Job.create! :name => "Responsable Décor",                     :service_id => Service.find_by_name("Décor").id, :responsible => true
-Job.create! :name => "Graphiste Sénior",                      :service_id => Service.find_by_name("Décor").id
-Job.create! :name => "Graphiste",                             :service_id => Service.find_by_name("Décor").id
-Job.create! :name => "Poseur de film",                        :service_id => Service.find_by_name("Décor").id
-Job.create! :name => "Chef d'équipe Plasturgie",              :service_id => Service.find_by_name("Plasturgie").id
-Job.create! :name => "Monteur Câbleur",                       :service_id => Service.find_by_name("Électricité").id
-Job.create! :name => "Plasticien Monteur",                    :service_id => Service.find_by_name("Électricité").id
-Job.create! :name => "Chef d'équipe Métallier",               :service_id => Service.find_by_name("Métallerie").id
-Job.create! :name => "Métallier",                             :service_id => Service.find_by_name("Métallerie").id
-Job.create! :name => "Chaudronnier",                          :service_id => Service.find_by_name("Métallerie").id
-Job.create! :name => "Dessinateur Fraiseur",                  :service_id => Service.find_by_name("Métallerie").id
-Job.create! :name => "Peintre",                               :service_id => Service.find_by_name("Peinture").id
-Job.create! :name => "Chef d'équipe Pose",                    :service_id => Service.find_by_name("Pose").id
-Job.create! :name => "Poseur d'enseignes",                    :service_id => Service.find_by_name("Pose").id
-Job.create! :name => "Poseur",                                :service_id => Service.find_by_name("Pose").id
 
 ## default document types (document types are created automatically when the class of the owner is parsed)
 #### get mime types
