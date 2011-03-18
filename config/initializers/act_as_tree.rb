@@ -31,6 +31,13 @@ module ActiveRecord
           end
         end
         
+        # Returns a list of children, grandchildren, great-grandchildren, and so forth. Inspired by https://github.com/fesplugas/rails-acts_as_tree/blob/master/lib/acts_as_tree.rb
+        #
+        # root.descendants # => [child1, subchild1, child2, child3]
+        def descendants
+          children.map{ |c| [c, c.descendants].flatten }.flatten
+        end
+        
       end
     end
   end

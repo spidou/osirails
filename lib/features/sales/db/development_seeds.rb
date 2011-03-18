@@ -1,5 +1,14 @@
 require 'lib/seed_helper'
 
+# Default order_type
+OrderType.create! :title => "Normal"
+OrderType.create! :title => "SAV"
+
+# add society_activity_sectors to existing order_types
+OrderType.all.each do |ot|
+  ot.society_activity_sectors = SocietyActivitySector.find(:all)
+end
+
 # default subcontractors
 subcontractor = Subcontractor.create! :name => "Sous traitant par défaut", :siret_number => "12345678912345", :activity_sector_reference_id => ActivitySectorReference.first.id, :legal_form_id => LegalForm.first.id
 subcontractor.build_iban(:bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")

@@ -77,7 +77,7 @@ class Employee < ActiveRecord::Base
   
   before_validation :build_associated_resources
   before_save :case_management
-  after_update :save_iban
+  after_save :save_iban
   
   cattr_accessor :pattern_error
   @@pattern_error = false
@@ -350,7 +350,7 @@ class Employee < ActiveRecord::Base
     end
 
     def save_iban
-       self.iban.save(false)
+       iban.save(false) if iban
     end
   
     def build_associated_resources
