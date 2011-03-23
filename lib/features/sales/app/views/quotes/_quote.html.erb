@@ -7,7 +7,7 @@
 <%= generate_quote_contextual_menu_partial %>
 
 <%
-quote_errors  = { :header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:quote_contact) || quote.errors.on(:quote_contact_id) ? ' errors' : '',
+quote_errors  = { :header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:quote_contact) || quote.errors.on(:quote_contact_id) || quote.errors.on(:commercial_actor) || quote.errors.on(:commercial_actor_id) ? ' errors' : '',
                   :body   => quote.errors.on(:quote_items) || quote.errors.on(:quote_item_ids) || quote.errors.on(:prizegiving) || quote.errors.on(:carriage_costs) ? ' errors' : '',
                   :footer => quote.errors.on(:sales_terms) || quote.errors.on(:validity_delay) || quote.errors.on(:validity_delay_unit) || quote.errors.on(:deposit) ? ' errors' : '' }
 %>

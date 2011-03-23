@@ -61,6 +61,7 @@ consumable_index:
   <<: *order
   <<: *pagination
   quick_search:
+    - reference
     - designation
   default_query:
     <<: *columns

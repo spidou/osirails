@@ -6,10 +6,10 @@ class SupplySubCategoriesController < SupplyCategoriesController
   
   # GET /commodity_categories/new
   # GET /consumable_categories/new
-  # GET /commodity_categories/new?parent_id=:parent_id
-  # GET /consumable_categories/new?parent_id=:parent_id
+  # GET /commodity_sub_categories/new?supply_category_id=:supply_category_id
+  # GET /consumable_sub_categories/new?supply_category_id=:supply_category_id
   def new
-    parent_category_id = @supply_parent_category_class.find_by_id(params[:parent_id]).id rescue nil
+    parent_category_id = @supply_parent_category_class.find_by_id(params[:supply_category_id]).id rescue nil
     @supply_category = @supply_category_class.new( :supply_category_id => ( parent_category_id ) )
   end
   
