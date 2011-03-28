@@ -82,6 +82,9 @@ en:
       title: "Search"
     paginate_per_page: "Per page"
     paginate_all: "All"
+    paginate_details:
+      one: "{{page}} result of {{max}}"
+      other: "{{page}} results of {{max}}"
     no_result: "No result found"
     forbidden_options: "You're not allowed to perform that search"
     search_for: "Match"

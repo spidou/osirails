@@ -34,7 +34,7 @@ module IntegratedSearchHelper
       :confirm => I18n.t('view.links.confirm'))
   end
   
-  def reset_query_link(query, absolute_position)
+  def reset_query_link(query)
     page_name  = (params[:query] && params[:query][:page_name]) || params[:p]
     parameters = []
     parameters << "query_id=#{ query.id }" if query.id
@@ -46,7 +46,7 @@ module IntegratedSearchHelper
       :with => "'#{ parameters.join('&') }'"
     }
     
-    content_tag(:div, :class => "cancel_link #{ 'absolute_position' if absolute_position }") do
+    content_tag(:div, :class => "cancel_link empty") do
       link_to_remote("#{ I18n.t('link.reset.name') }",
         remote_options,
         :title => I18n.t('link.reset.title'),
@@ -111,13 +111,26 @@ module IntegratedSearchHelper
     end
   end
   
-  def paginate_per_page(query, with_scroll)
+  def pagination_info(records)
+    total = records.total_entries if records.respond_to?(:total_entries)
+    page  = records.size
+    content_tag(:div, :class => 'pagination details') do
+      I18n.t('view.paginate_details',:count => page, :page => strong(page), :max => strong(total || page))
+    end
+  end
+  
+  def paginate_per_page(records, query, with_scroll)
     per_pages = HasSearchIndex::HTML_PAGES_OPTIONS[query.page_name.to_sym][:per_page] + [ nil ]
+    links     = per_pages.map do |per_page|
+      if query.per_page.to_s == per_page.to_s
+        content_tag(:span, paginate_text(per_page), :class => 'current')
+      else
+        content_tag(:span, paginate_link(per_page, with_scroll))
+      end
+    end
     
     content_tag(:div, :class => 'pagination per_pages') do
-      [content_tag(:span, "#{ I18n.t('view.paginate_per_page') } : ")] + per_pages.map do |per_page|
-        query.per_page.to_s == per_page.to_s ? content_tag(:span, paginate_text(per_page), :class => 'current') : content_tag(:span, paginate_link(per_page, with_scroll))
-      end
+      [ content_tag(:span, "#{ I18n.t('view.paginate_per_page') } : "), links ].flatten
     end
   end
 
@@ -209,7 +222,7 @@ module IntegratedSearchHelper
     else
       bottom_pagination = generate_pagination(records, query)
       top_pagination    = top_pagination?(records) ? generate_pagination(records, query, with_scroll = false) : nil
-      cancel_link       = reset_query_link(query, top_pagination?(records))
+      cancel_link       = reset_query_link(query)
       
       "#{ cancel_link }#{ top_pagination }#{ content_tag(:div, table, :class => 'results_table', :id => 'search_results') }#{ bottom_pagination }"
     end
@@ -224,13 +237,15 @@ module IntegratedSearchHelper
   def generate_pagination(records, query, with_scroll = true)
     options = {
       :renderer               => 'RemoteLinkRenderer',
+      :inner_window           => 1,
+      :outer_window           => 1,
       :method_for_remote_link => :get,
       :remote                 => { :update => @id_for_ajax_update }
     }
     options[:remote].merge!(:complete => "$('#{ @id_for_ajax_update }').scrollTo();") if with_scroll
     
     content_tag :div, :class => :pagination_container do
-      "#{ will_paginate(records, options) if with_paginate?(query) } #{ paginate_per_page(query, with_scroll) }"
+      "#{ will_paginate(records, options) if with_paginate?(query) }#{ pagination_info(records) }#{ paginate_per_page(records, query, with_scroll) }"
     end
   end
   
