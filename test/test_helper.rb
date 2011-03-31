@@ -81,12 +81,11 @@ class Test::Unit::TestCase
     assert_block(full_message) { array.any? }
   end
   
-  def assert_contain_error(record, field, error_message)
+  def assert_contain_error(record, field, error_message, message = nil)
     errors = record.errors.on(field.to_sym)
-    if errors.is_a?(Array)
-      clean_backtrace { assert errors.include?(error_message), "<#{error_message.inspect}> expected to be found into\n#{errors.inspect}" }
-    elsif errors.is_a?(String)
-      clean_backtrace { assert_equal error_message, errors }
+    full_message = build_message(message, "? expected to have the following error on ? <?>, but has:\n?", record.class.name.underscore, field, error_message, errors)
+    assert_block(full_message) do
+      ( errors.is_a?(Array) && errors.include?(error_message) ) || ( errors.is_a?(String) && errors == error_message )
     end
   end
 end

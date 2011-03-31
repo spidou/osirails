@@ -631,7 +631,7 @@ class InvoiceTest < ActiveSupport::TestCase
       end
     end
     
-    context "1 'status' invoice and 1 'complementary' signed delivery_note" do
+    context "1 confirmed 'status' invoice and 1 'complementary' signed delivery_note," do
       setup do
         @status_invoice = @order.invoices.build
         prepare_status_invoice_to_be_saved(@status_invoice)
@@ -672,6 +672,23 @@ class InvoiceTest < ActiveSupport::TestCase
         #should "be saved successully" do
         #  assert @invoice.save!
         #end
+        
+        # test validates_unique_usage_of_delivery_note
+        context "associated to a delivery_note which is already billed" do
+          setup do
+            flunk "@delivery_note should already be billed" unless @delivery_note.invoice(true)
+            flunk "@status_invoice should be associated to @delivery_note" unless @status_invoice.delivery_notes(true).include?(@delivery_note)
+            
+            @invoice.delivery_note_invoices.build(:delivery_note_id => @delivery_note.id)
+            @invoice.valid?
+            
+            flunk "@invoice should have 2 delivery_note_invoices" unless @invoice.delivery_note_invoices.size == 2
+          end
+          
+          should "have invalid delivery_note_invoices" do
+            assert_contain_error @invoice, :delivery_note_invoices, "Un ou plusieurs Bon de Livraison associés ont déjà été utilisé dans une autre facture. Merci de les retirer, ou d'annuler l'autre facture avant d'enregistrer celle-là."
+          end
+        end
       end
       
       context "a 'balance' invoice" do
@@ -698,6 +715,68 @@ class InvoiceTest < ActiveSupport::TestCase
         end
       end
     end
+    
+    context "1 sent 'status' invoice and 1 'complementary' signed delivery_note," do
+      setup do
+        @status_invoice = @order.invoices.build
+        prepare_status_invoice_to_be_saved(@status_invoice)
+        
+        @status_invoice.save!
+        flunk "@order should have 1 status_invoice" unless @order.status_invoices.count == 1
+        
+        confirm_invoice(@status_invoice)
+        send_invoice(@status_invoice)
+        flunk "@status_invoice should be sent" unless @status_invoice.was_sended?
+        
+        @second_delivery_note = create_signed_complementary_delivery_note_for(@order)
+      end
+      
+      context "a 'status' invoice" do
+        setup do
+          @invoice = @order.invoices.build
+          prepare_status_invoice_to_be_saved(@invoice)
+        end
+        
+        should "be able to be created" do
+          assert @invoice.can_create_status_invoice?
+        end
+        
+        # test validates_unique_usage_of_delivery_note
+        context "associated to a delivery_note which is already billed" do
+          setup do
+            flunk "@delivery_note should already be billed" unless @delivery_note.invoice(true)
+            flunk "@status_invoice should be associated to @delivery_note" unless @status_invoice.delivery_notes(true).include?(@delivery_note)
+            
+            @invoice.delivery_note_invoices.build(:delivery_note_id => @delivery_note.id)
+            @invoice.valid?
+            
+            flunk "@invoice should have 2 delivery_note_invoices" unless @invoice.delivery_note_invoices.size == 2
+          end
+          
+          should "have invalid delivery_note_invoices" do
+            assert_contain_error @invoice, :delivery_note_invoices, "Un ou plusieurs Bon de Livraison associés ont déjà été utilisé dans une autre facture. Merci de les retirer, ou d'annuler l'autre facture avant d'enregistrer celle-là."
+          end
+        end
+      end
+    end
+    
+    #TODO run same tests when first invoice is partially_paid, totally_paid, abandoned and cancelled
+    context "1 partially paid 'status' invoice and 1 'complementary' signed delivery_note," do
+      #TODO
+    end
+    
+    context "1 totally paid 'status' invoice and 1 'complementary' signed delivery_note," do
+      #TODO
+    end
+    
+    context "1 abandoned 'status' invoice and 1 'complementary' signed delivery_note," do
+      #TODO
+    end
+    
+    context "1 cancelled 'status' invoice and 1 'complementary' signed delivery_note," do
+      #TODO
+    end
+    
     
     context "1 'complementary' 'non-signed' delivery_note," do
       setup do
@@ -868,7 +947,7 @@ class InvoiceTest < ActiveSupport::TestCase
         @invoice = nil
       end
       
-      should "NOT have valid invoice_items" do
+      should "have invalid invoice_items" do
         assert_contain_error @invoice, :invoice_items, "Une facture de solde doit absolument contenir l'ensemble des éléments (produits, prestations) restant à facturer"
       end
     end

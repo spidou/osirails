@@ -69,62 +69,98 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       end
     end
     
-    context "and all products ready to be delivered, a new and empty delivery_note" do
+    context "and all products ready to be delivered," do
       setup do
         manufacture_and_make_deliverable_all_end_products_for(@order)
         flunk "@order should have any ready_to_deliver_end_products" if @order.ready_to_deliver_end_products_and_quantities.empty?
         
-        @dn = @order.delivery_notes.build # the object must be clear to perform the test, so don't add any attributes on that object
         @end_product = @signed_quote.end_products.first
       end
       
-      should "be able to be added" do
-        assert @dn.can_be_added?
-      end
-    
-      should "have a signed_quote" do
-        assert_equal @signed_quote, @dn.signed_quote, "delivery_note should have a signed_quote"
-      end
-      
-      context "with 0 delivery_note_items" do
+      context "a new and empty delivery_note" do
         setup do
-          flunk "@dn should have 0 delivery_note_items" if @dn.delivery_note_items.any?
-          @dn.valid?
+          @dn = @order.delivery_notes.build # the object must be clear to perform the test, so don't add any attributes on that object
         end
         
-        should "have invalid delivery_note_items" do
-          assert_match /You have to choose at least 1 product for delivery/, @dn.errors.on(:delivery_note_items)
+        should "be able to be added" do
+          assert @dn.can_be_added?
         end
-      end
       
-      context "with 1 invalid delivery_note_item" do
-        setup do
-          flunk "@end_product.quantity should not be greater than or equal to 100" if @end_product.quantity >= 100
-          @dn_item = @dn.delivery_note_items.build(:order_id        => @order.id,
-                                                   :end_product_id  => @end_product.id,
-                                                   :quantity        => 100)
-          flunk "@dn_item should be invalid" if @dn_item.valid?
+        should "have a signed_quote" do
+          assert_equal @signed_quote, @dn.signed_quote, "delivery_note should have a signed_quote"
+        end
+        
+        context "with 0 delivery_note_items" do
+          setup do
+            flunk "@dn should have 0 delivery_note_items" if @dn.delivery_note_items.any?
+            @dn.valid?
+          end
           
-          @dn.valid?
+          should "have invalid delivery_note_items" do
+            assert_match /You have to choose at least 1 product for delivery/, @dn.errors.on(:delivery_note_items)
+          end
         end
         
-        should "have invalid delivery_note_items" do
-          # this is a hack to pass through the double error message
-          flunk "@dn.errors.on(:delivery_note_items) should have 1 uniq error" if @dn.errors.on(:delivery_note_items).uniq.many?
-          assert_match /is invalid/, @dn.errors.on(:delivery_note_items).first
+        context "with 1 invalid delivery_note_item" do
+          setup do
+            flunk "@end_product.quantity should not be greater than or equal to 100" if @end_product.quantity >= 100
+            @dn_item = @dn.delivery_note_items.build(:order_id        => @order.id,
+                                                     :end_product_id  => @end_product.id,
+                                                     :quantity        => 100)
+            flunk "@dn_item should be invalid" if @dn_item.valid?
+            
+            @dn.valid?
+          end
+          
+          should "have invalid delivery_note_items" do
+            assert_contain_error @dn, :delivery_note_items, "is invalid"
+          end
+        end
+        
+        context "with 1 valid delivery_note_item" do
+          setup do
+            @dn_item = @dn.delivery_note_items.build(:order_id        => @order.id,
+                                                     :end_product_id  => @end_product.id,
+                                                     :quantity        => @end_product.quantity)
+            flunk "@dn_item should be valid > #{@dn_item.errors.inspect}" unless @dn_item.valid?
+          end
+          
+          should "have valid delivery_note_items" do
+            assert_nil @dn.errors.on(:delivery_note_items)
+          end
+          
+          context "but with a quantity at 0" do
+            setup do
+              @dn_item.quantity = 0
+              @dn.valid?
+            end
+            
+            should "have invalid delivery_note_items" do
+              assert_contain_error @dn, :delivery_note_items, "You have to choose at least 1 product for delivery"
+            end
+          end
         end
       end
       
-      context "with 1 valid delivery_note_item" do
+      context "a valid and saved delivery_note with 1 item" do
         setup do
+          @dn = prepare_delivery_note_for(@order)
           @dn_item = @dn.delivery_note_items.build(:order_id        => @order.id,
                                                    :end_product_id  => @end_product.id,
                                                    :quantity        => @end_product.quantity)
-          flunk "@dn_item should be valid > #{@dn_item.errors.inspect}" unless @dn_item.valid?
+          @dn.save!
+          flunk "@dn should have 1 delivery_note_item" unless @dn.delivery_note_items.count == 1
         end
         
-        should "have valid delivery_note_items" do
-          assert_nil @dn.errors.on(:delivery_note_items)
+        context "which we change quantity to 0" do
+          setup do
+            @dn_item.quantity = 0
+            @dn.valid?
+          end
+          
+          should "have invalid delivery_note_items" do
+            assert_contain_error @dn, :delivery_note_items, "You have to choose at least 1 product for delivery"
+          end
         end
       end
     end

@@ -49,7 +49,7 @@ namespace :osirails do
             file = File.open(file_path)
             rows = CSV::Reader.parse(file)
             
-            definitions = { :product_reference_sub_category_id  => { :find_by_name_and_product_reference_category_id => [ 2, { :product_reference_category_id => { :find_by_name => 1 } } ] },
+            definitions = { :product_reference_sub_category_id  => { :find_by_name_and_product_reference_category_id => [ 2, { :product_reference_category_id => { :find_by_name_and_product_reference_category_id => [ 1, nil ] } } ] },
                             :name                               => 3 }
             
             importer = Osirails::Importer.new(:klass => :product_reference, :identifiers => :reference, :definitions => definitions, :if_match => ENV["IF_MATCH"])

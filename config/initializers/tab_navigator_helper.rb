@@ -123,7 +123,7 @@ module ActionView
       def nav_buttons(&block)
         raise ArgumentError, "Missing block" unless block_given?
         
-        @template.concat("<ul id=\"#{name}\" class=\"tab_nav\"")
+        @template.concat("<ul id=\"#{name}\" class=\"tab_nav\">")
         yield self
         @template.concat('</ul>')
       end

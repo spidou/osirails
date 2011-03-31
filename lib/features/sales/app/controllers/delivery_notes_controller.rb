@@ -55,7 +55,8 @@ class DeliveryNotesController < ApplicationController
       flash[:notice] = "Le bon de livraison a été ajouté avec succès"
       redirect_to send(@step.original_step.path)
     else
-      render :action => 'new'
+      @delivery_note.build_missing_delivery_note_items_from_ready_to_deliver_end_products
+      render :action => :new
     end
   end
   
@@ -75,7 +76,8 @@ class DeliveryNotesController < ApplicationController
         flash[:notice] = 'Le bon de livraison a été modifié avec succès'
         redirect_to send(@step.original_step.path)
       else
-        render :controller => 'delivery_notes', :action => 'edit'
+        @delivery_note.build_missing_delivery_note_items_from_ready_to_deliver_end_products
+        render :action => :edit
       end
     else
       error_access_page(412)
