@@ -1,0 +1,59 @@
+
+/*employee indentity tab*/
+.numbers_list {
+  margin:0px;
+}
+.numbers_list > div {
+  display:inline-block;
+  vertical-align: top;
+  width:48%;
+  margin:5px;
+}
+
+.job_overview {
+  margin-bottom:10px;
+  padding-bottom:10px;
+  border-bottom:1px gray dashed;
+}
+
+.job_informations {
+  border-right: 2px black solid;
+  padding: 10px;
+  text-align: right;
+  vertical-align: center;
+  min-height:100%;
+  width:400px;
+}
+
+.job_informations > .responsibles {
+  margin-top:30px;
+}
+
+.job_name {
+  font-size: 36px;
+}
+
+.job_details {
+  border-left: 2px black solid;
+  padding-left: 20px;
+  margin-left:-6px;
+}
+
+.job_details > div {
+  vertical-align: center;
+}
+
+.job_details span {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.job_details p {
+  border:2px black solid;
+  -moz-border-radius:5px;
+  width: 400px;
+  min-height: 50px;
+  max-height: 100px; 
+  padding:5px;
+  overflow-y: auto;
+}

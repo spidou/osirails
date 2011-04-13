@@ -1,15 +1,13 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
-  has_address :address
   has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
   
   has_numbers
-  has_contacts
   
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
   
-  named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
+#  named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
   
   has_attached_file :avatar, 
                     :styles       => { :thumb => "100x100#" },
@@ -17,15 +15,13 @@ class Employee < ActiveRecord::Base
                     :url          => "/employees/:id.:extension",
                     :default_url  => ":current_theme_path/images/default_avatar.png"
   
-  belongs_to :family_situation
   belongs_to :civility
   belongs_to :user
   belongs_to :service
   
-  has_one :iban, :as => :has_iban
-  has_one :job_contract
+  has_one :employee_sensitive_data
   
-  has_many :premia, :order => "created_at DESC"
+  has_many :job_contracts, :class_name => 'JobContract'
   has_many :employees_jobs
   has_many :jobs, :through => :employees_jobs
   has_many :checkings
@@ -45,15 +41,10 @@ class Employee < ActiveRecord::Base
                                         :order      => "cancelled_at DESC, start_date DESC"
   
   validates_presence_of :last_name, :first_name
-  validates_presence_of :family_situation_id, :civility_id, :service_id
-  validates_presence_of :family_situation,     :if => :family_situation_id
+  validates_presence_of :civility_id, :service_id
   validates_presence_of :civility,             :if => :civility_id
   validates_presence_of :service,              :if => :service_id
   
-  validates_format_of :social_security_number,  :with         => /^[0-9]{13}\x20[0-9]{2}$/,
-                                                :allow_blank  => false
-  validates_format_of :email,                   :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
-                                                :allow_blank  => true
   validates_format_of :society_email,           :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
                                                 :allow_blank  => true
   
@@ -63,21 +54,21 @@ class Employee < ActiveRecord::Base
     v.validates_attachment_size         :avatar, :less_than => 2.megabytes
   end
   
-  validates_associated :user, :iban, :address, :job_contract#, :contacts
+  validates_associated :user, :employee_sensitive_data
   
   validate :validates_responsible_job_limit
   
-  journalize :attributes        => [ :first_name, :last_name, :birth_date, :civility_id, :social_security_number, :family_situation_id, :service_id, :email, :society_email ],
+  journalize :attributes        => [ :first_name, :last_name, :civility_id, :service_id, :society_email ],
              :attachments       => :avatar,
-             :subresources      => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
+             :subresources      => [ :employee_sensitive_data, :job_contracts, { :jobs => :create_and_destroy } ],
              :identifier_method => :fullname
   
-  has_search_index  :only_attributes       => [ :first_name, :last_name, :email, :society_email, :birth_date, :social_security_number ],
+  has_search_index  :only_attributes       => [ :first_name, :last_name, :society_email],
                     :additional_attributes => { :fullname => :string }
   
   before_validation :build_associated_resources
   before_save :case_management
-  after_save :save_iban
+  after_save :save_employee_sensitive_data
   
   cattr_accessor :pattern_error
   @@pattern_error = false
@@ -198,6 +189,10 @@ class Employee < ActiveRecord::Base
   #
   def last_leave
     leaves.max_by(&:end_date)
+  end
+  
+  def job_contract
+    job_contracts.detect(&:active?)
   end
   
   # Method to generate the intranet email
@@ -328,14 +323,48 @@ class Employee < ActiveRecord::Base
     "#{self.first_name} #{self.last_name}"
   end
 
-  # this method permit to save the iban of the employee when it is passed with the employee form
-  def iban_attributes=(iban_attributes)
-    if iban_attributes[:id].blank?
-      self.iban = self.build_iban(iban_attributes)
+  def employee_sensitive_data=(sensitive_attributes)
+    if sensitive_attributes[:id].blank?
+      self.employee_sensitive_data = self.build_employee_sensitive_data(sensitive_attributes)
     else
-      self.iban.attributes = iban_attributes
+      self.employee_sensitive_data.attributes = sensitive_attributes
     end 
   end
+  
+  # this method permit to save the iban of the employee when it is passed with the employee form
+  # TODO test
+  def iban_attributes=(iban_attributes)
+    self.employee_sensitive_data.build unless self.employee_sensitive_data
+    if iban_attributes[:id].blank?
+      self.employee_sensitive_data.iban = self.employee_sensitive_data.build_iban(iban_attributes)
+    else
+      self.employee_sensitive_data.iban.attributes = iban_attributes
+    end 
+  end
+  
+  # TODO test
+  def family_situation_id=(family_situation_id)
+    self.employee_sensitive_data.build unless self.employee_sensitive_data
+    self.employee_sensitive_data.family_situation_id = family_situation_id
+  end
+  
+  # TODO test
+  def private_number_attributes=(number_attributes)
+    self.employee_sensitive_data.build unless self.employee_sensitive_data
+    self.employee_sensitive_data.number_attributes = number_attributes
+  end
+  
+  # workaround to permit to pass an employee as address owner (employee_sensitive_data is the real owner)
+  def self.one_or_many
+    EmployeeSensitiveData.one_or_many
+  end
+  
+  # TODO test
+  def address_attributes=(address_attributes)
+    self.employee_sensitive_data.build unless self.employee_sensitive_data
+    self.employee_sensitive_data.address_attributes = address_attributes
+  end
+  
   
   def mail #TODO check where that method is used and if it's usefull
     intranet_email
@@ -349,8 +378,8 @@ class Employee < ActiveRecord::Base
       self.last_name = self.last_name.mb_chars.upcase
     end
 
-    def save_iban
-       iban.save(false) if iban
+    def save_employee_sensitive_data
+       employee_sensitive_data.save(false) if employee_sensitive_data
     end
   
     def build_associated_resources
@@ -359,10 +388,6 @@ class Employee < ActiveRecord::Base
         
         # create associated user
         self.build_user(:username => pattern(ConfigurationManager.admin_user_pattern,self), :enabled => false, :password => 'password')
-      end
-      
-      if job_contract.nil?
-        self.build_job_contract # create empty job contract
       end
     end
 end

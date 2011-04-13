@@ -31,21 +31,28 @@ module EmployeesHelper
     month  = day/30                    # 1.month/60/60/24 == 30
     result = ''
     
-    if year > 1
-      month  = (year - year.floor)*12
-      year   = year.floor
-      ytext  = year>1? 'ans' : 'an'
-      result += "#{year} #{ytext} " unless year == 0
-    end
-    result += "et " if result != ''
-    if month > 1
-      month = month.floor
-      result += "#{month} mois " unless month == 0
+    if year >= 1
+      month   = (year - year.floor)*12
+      year    = year.floor
+      ytext   = year>1 ? 'ans' : 'an'
+      result += "#{ year } #{ ytext }"
     end
     
-#    day = day - year*365.25 - month*30
+    if month >= 1
+      result += " et " unless result.blank?
+      day     = (month - month.floor)*30.5
+      month   = month.floor
+      result += "#{ month } mois"
+    end
     
-    result += "moins d'un mois" if result == ''
+#    if day >= 1
+#      result += " et " unless result.blank?
+#      day     = day.ceil
+#      yday    = day>1 ? 'jours' : 'jour'
+#      result += "#{ day } #{ yday }" 
+#    end
+    result += "moins d'un mois" if result.blank?
+    
     result
   end
   
@@ -60,16 +67,16 @@ module EmployeesHelper
       collection=='services'? employee.services.include?(object) : employee.jobs.include?(object)
     end
   end
-  
-  # Method to find the service's responsibles
-  def get_responsibles
-    return "<strong>aucun(s)</strong>" if @employee.service.responsibles.empty?
-    html = ""
-    for responsible in @employee.service.responsibles
-      html += ", " unless @employee.service.responsibles.first == responsible
-      html += (@employee.id == responsible.id)? responsible.fullname : link_to(responsible.fullname, employee_path(responsible))
-    end
-    return html
-  end
+#  
+#  # Method to find the service's responsibles
+#  def get_responsibles
+#    return "<strong>aucun(s)</strong>" if @employee.service.responsibles.empty?
+#    html = ""
+#    for responsible in @employee.service.responsibles
+#      html += ", " unless @employee.service.responsibles.first == responsible
+#      html += (@employee.id == responsible.id)? responsible.fullname : link_to(responsible.fullname, employee_path(responsible))
+#    end
+#    return html
+#  end
   
 end

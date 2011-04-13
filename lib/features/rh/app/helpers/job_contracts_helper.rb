@@ -1,4 +1,4 @@
-module JobContractHelper
+module JobContractsHelper
   def job_contract_type_select(default_job_contract)
     is_gone?(default_job_contract) ? disabled = "disabled='disabled'" : disabled=""
     html= "<select #{disabled} onchange=is_limited(this) id='job_contract_job_contract_type_id' name='job_contract[job_contract_type_id]'>"

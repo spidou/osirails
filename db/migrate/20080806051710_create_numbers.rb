@@ -6,7 +6,7 @@ class CreateNumbers < ActiveRecord::Migration
       
       t.references :indicative, :number_type
       t.string  :number
-      t.boolean :visible, :default => true
+      t.boolean :visible, :default => true # TODO delete that and refactor plugin code !
       
       t.timestamps
     end

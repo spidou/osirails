@@ -2,7 +2,9 @@ module NumbersHelper
 
   def display_numbers(numbers_owner, params_name = nil)
     html = "<div class='numbers'>"    
-    html += render(:partial => 'numbers/number', :collection => numbers_owner.numbers , :locals => { :numbers_owner => numbers_owner, :params_name => params_name}) if numbers_owner.numbers.any?
+    if numbers_owner.numbers.any?
+      html += render(:partial => 'numbers/number', :collection => numbers_owner.numbers , :locals => { :numbers_owner => numbers_owner, :params_name => params_name})
+    end
     html += "<p>#{ add_number_link(numbers_owner) if is_form_view? }</p>"
     html += "</div>"
   end 
@@ -49,7 +51,7 @@ module NumbersHelper
   
   # Methode to get a number without images but with all informations
   def display_full_phone_number(number)
-    return "" unless number and number.id
+    return "-" unless number and number.id
     html = []
     html << image_tag( number_type_path( number.number_type.name ),
                        :alt   => text = number.number_type.name,
@@ -70,9 +72,9 @@ module NumbersHelper
   end
   
   def number_type_path(type)
-    type = "cellphone" if type == "Mobile" or type == "Mobile Professionnel"
-    type = "phone" if type == "Fixe" or type == "Fixe Professionnel"
-    type = "fax" if type == "Fax" or type== "Fax Professionnel"
+    type = "cellphone" if type =~ /Mobile/
+    type = "phone" if type =~ /Fixe/
+    type = "fax" if type =~ /Fax/
     type + "_16x16.png"
   end
 end

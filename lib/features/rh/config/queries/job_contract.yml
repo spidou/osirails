@@ -1,0 +1,52 @@
+conf_filters: &filters
+  filters:
+    - start_date
+    - end_date
+    - job_contract_type.name
+    - departure
+    - active?
+conf_columns: &columns
+  columns:
+    - start_date
+    - end_date
+    - job_contract_type.name
+    - departure
+conf_order: &order
+  order:
+    - start_date
+    - end_date
+    - departure
+conf_pagination: &pagination
+  per_page:
+    - 25
+    - 50
+    - 100
+
+advanced_job_contract:
+  <<: *filters
+  <<: *columns
+  <<: *order
+  <<: *pagination
+  default_query:
+    columns:
+      - start_date
+      - end_date
+      - departure
+    order:
+      - 'start_date:desc'
+    per_page: 25
+    
+job_contract_index:
+  <<: *filters
+  <<: *columns
+  <<: *order
+  <<: *pagination
+  default_query:
+    columns:
+      - job_contract_type.name
+      - start_date
+      - end_date
+      - departure
+    order:
+      - 'start_date:desc'
+    per_page: 25

@@ -1,0 +1,27 @@
+<% job_contract = employee_job_contract %>
+<% if job_contract %>
+  <h3>Informations du contrat de travail</h3>
+
+  <p>
+    <%= label_tag(I18n.t("activerecord.attributes.job_contract.job_contract_type") + ' :') %>
+    <%= strong(job_contract.job_contract_type.name) %>
+  </p>
+  <p>
+    <%= label_tag(I18n.t("activerecord.attributes.job_contract.start_date") + ' :') %>
+    <%= strong(job_contract.start_date.strftime("%A %d %B %Y")) %>
+  </p>
+  <p>
+    <%= label_tag(I18n.t("activerecord.attributes.job_contract.end_date") + ' :') %>
+    <%= strong(job_contract.end_date.strftime("%A %d %B %Y")) if job_contract.end_date%> 
+  </p>
+  <p>
+    <%= label_tag(I18n.t("activerecord.attributes.job_contract.salary") + ' :') %>
+    <%= strong(display_formatted_salary(job_contract.actual_salary)) %>
+    <%= employee_salaries_link(@employee, :image_tag => "") %>
+  </p>
+
+  <h3>Documents du contrat de travail</h3>
+  <%= display_documents_list(job_contract) %>
+<% else %>
+  <%= "Aucun Contrat de travail définis"%>
+<% end %> 

@@ -1,11 +1,7 @@
 john_doe:
   first_name: John
   last_name: Doe
-  birth_date: <%= Date.today - 20.years %>
-  email: john@doe.org
   society_email: john.doe@society.com
-  social_security_number: 1234567891234 41
-  family_situation: single
   civility: mister
   service: direction_general
 
@@ -13,11 +9,7 @@ john_doe:
 james_doe:
   first_name: James
   last_name: Doe
-  birth_date: <%= Date.today - 20.years %>
-  email: james@doe.org
   society_email: james.doe@society.com
-  social_security_number: 1234567591234 42
-  family_situation: single
   civility: mister
   service: parent
   
@@ -25,33 +17,21 @@ james_doe:
 trish_doe:
   first_name: Trish
   last_name: Doe
-  birth_date: <%= Date.today - 20.years %>
-  email: trish@doe.org
   society_email: trish.doe@society.com
-  social_security_number: 2234567591234 43
-  family_situation: single
   civility: miss
   service: administration
   
 janette_doe:
   first_name: Janette
   last_name: Doe
-  birth_date: <%= Date.today - 20.years %>
-  email: janette@doe.org
   society_email: janette.doe@society.com
-  social_security_number: 2234567591234 44
-  family_situation: single
   civility: miss
   service: direction_general
   
 franck_doe:
   first_name: Franck
   last_name: Doe
-  birth_date: <%= Date.today - 20.years %>
-  email: franck@doe.org
   society_email: franck.doe@society.com
-  social_security_number: 1234567591234 45
-  family_situation: single
   civility: mister
   service: administration
 ##################################################################################################################
@@ -60,10 +40,6 @@ franck_doe:
 johnny:
   first_name: Johnny
   last_name: Doe
-  birth_date: <%= Date.today - 20.years %>
-  email: johnny@doe.org
   society_email: johnny.doe@society.com
-  social_security_number: 1234567591234 46
-  family_situation: single
   civility: mister
   service: direction_general

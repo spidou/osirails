@@ -1,25 +1,72 @@
 <% content_for :header do %>
   <%= stylesheet_link_tag_with_theme_support "rh/employee_summary" %>
+  <%= stylesheet_link_tag_with_theme_support "rh/employee" %>
   <%= stylesheet_link_tag_with_theme_support "core/has_resources/has_resources" %>
   <%= javascript_include_tag 'core/has_resources/has_resources' %>
 <% end %>
 
+<%
+employee_errors = {:civil_state  => employee.errors.any? ? ' errors' : '', # TODO be more precise according to attributes concerned
+                    :jobs         => employee.jobs.select {|n| n.errors.any? }.any? ? ' errors' : '',
+                    :iban         => employee.employee_sensitive_data.iban.errors.any? ? ' errors' : '',
+                    :documents    => employee.documents.select {|n| n.errors.any? }.any? ? ' errors' : ''}
+document_count  = employee.documents.reject(&:should_destroy?).count
+is_owner        = employee.user.id == current_user.id
+sensitive_data_authorization   = EmployeeSensitiveData.can_view?(current_user) unless is_form_view?
+sensitive_data_authorization ||= employee.new_record? ? EmployeeSensitiveData.can_add?(current_user) : EmployeeSensitiveData.can_edit?(current_user)
+job_contract_authorization     = JobContract.can_view?(current_user)
+%>
+
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+
 <div class="presentation_medium root_nav standard">
   <% tab_navigator :employee_nav do |t| %>
+  
     <% t.nav_buttons do %>
-      <%= t.tab :informations,  "Informations générales", :class    => employee.errors.any? ? 'errors' : '',
-                                                          :selected => true %>
-      <%= t.tab_for_history(employee) %>
+      <%= t.tab :identity, "Etat civil",     :class => employee_errors[:identity], :selected => true %>
+      <%= t.tab :jobs,     "Fiche de poste", :class => employee_errors[:jobs] %>
+      <% if job_contract_authorization or is_owner %>
+        <%= t.tab :job_contract, "Contrat de travail", :class => employee_errors[:job_contract] %>
+      <% end %>
+      
+      <% if sensitive_data_authorization or is_owner %>
+        <%= t.tab :iban,      "Informations bancaires", :class => employee_errors[:iban] %>
+        <%= t.tab :documents, "Documents (#{document_count})", :class => employee_errors[:documents]%>
+        <%= t.tab_for_history(employee) %>
+      <% end %>
     <% end %>
   
     <% form_for(employee, :html => {:multipart => true}) do |form| %>
       
-      <% t.content_for :informations do %>
-        <%= form.error_messages %>
-        <%= render :partial => 'employee_informations', :object => employee, :locals => { :form => form } %>
+      <% t.content_for :jobs do %>
+        <%= form.error_messages unless employee_errors[:jobs].blank? %>
+        <%= render :partial => 'employee_jobs', :object => employee.jobs, :locals => {:form => form, :employee => employee }%>
       <% end %>
       
-      <% t.content_for_history(employee) %>
+      <% t.content_for :identity do %>
+        <%= form.error_messages unless employee_errors[:civil_state].blank? %>
+        <%= render :partial => 'employee_identity', :object => employee, :locals => {:form => form, :authorization => (sensitive_data_authorization or is_owner)}%>
+      <% end %>
+      
+      <% if job_contract_authorization or is_owner %>
+          <% t.content_for :job_contract do %>
+            <%= render :partial => 'employee_job_contract', :object => employee.job_contract, :locals => {:form => form}%>
+          <% end %>
+      <% end %>
+            
+      <% if sensitive_data_authorization or is_owner %>
+        <% t.content_for :iban do %>
+          <%= render :partial => 'employee_iban', :object => employee, :locals => {:form => form}%>
+        <% end %>
+        
+        <% t.content_for :documents do %>
+          <%= form.error_messages unless employee_errors[:documents].blank? %>
+          <%= display_documents_list(employee) %>
+          <%= display_document_add_button(employee) if is_form_view? %>
+        <% end %>
+        
+        <% t.content_for_history(employee) %>
+      <% end %>
       
       <%= form.form_buttons %>
     <% end %>

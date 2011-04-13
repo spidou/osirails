@@ -1,0 +1,11 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'rh/job_contract' %> 
+<% end %>
+
+<h1>Nouveau contrat de travail</h1>
+
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+
+<div class="presentation_medium">
+  <%= render :partial => 'job_contracts/job_contract', :object => @job_contract%>
+</div>

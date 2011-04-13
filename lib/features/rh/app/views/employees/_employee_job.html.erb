@@ -1,0 +1,34 @@
+<% 
+  require_locals employee
+  job    = employee_job
+  status = job.responsible ? 'Responsable' : 'Membre' 
+%>
+
+<div class="presentation_in_columns job_overview">
+  <div class="job_informations">
+    
+    <p class="job_name"><%= job.name %></p>
+    
+    <p><%= status %> du service <%= strong(job.service.name) %></p>
+    
+    <div class="responsibles">
+      <p>Responsables</p>
+      <% job.responsibles.each do |r|%>
+      <%= content_tag(:p, employee_link(r, :link_text => r.fullname, :html_options => {'data-icon' => nil}))%>
+      <% end %>
+      <%= strong('aucun') if job.responsibles.empty? %>
+    </div>
+  
+  </div>
+  <div class="job_details">
+    <div>
+      <span>Missions</span> <p><%= job.mission %></p>
+    </div>
+    <div>
+      <span>Activités</span> <p><%= job.activity %></p>
+    </div>
+    <div>
+      <span>Objectifs</span> <p><%= job.goal %></p>
+    </div>
+  </div>
+</div>

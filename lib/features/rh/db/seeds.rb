@@ -7,7 +7,7 @@ Query.create! do |q|
   q.criteria      = {}
   q.page_name     = "employee_index"
   q.search_type   = "or"
-  q.columns       = ["civility.name", "last_name", "first_name", "service.name", "job_contract.job_contract_type.name"]
+  q.columns       = ["civility.name", "last_name", "first_name", "service.name"] #, "employee_sensitive_data.job_contracts.job_contract_type.name"]
   q.order         = ["last_name:asc", "first_name:asc"]
   q.public_access = true
   q.per_page      = 50
@@ -25,11 +25,11 @@ FamilySituation.create! :name => "Veuf/Veuve"
 FamilySituation.create! :name => "Divorcé(e)"
 FamilySituation.create! :name => "Pacsé(e)"
 
-# default employee states
-EmployeeState.create! :name => "Titulaire",       :active => true
-EmployeeState.create! :name => "Stagiaire",       :active => true
-EmployeeState.create! :name => "Licencié(e)",     :active => false
-EmployeeState.create! :name => "Démissionnaire",  :active => false
+## default employee states
+#EmployeeState.create! :name => "Titulaire",       :active => true
+#EmployeeState.create! :name => "Stagiaire",       :active => true
+#EmployeeState.create! :name => "Licencié(e)",     :active => false
+#EmployeeState.create! :name => "Démissionnaire",  :active => false
 
 # default job contract types
 JobContractType.create! :name => "CDI", :limited => 0

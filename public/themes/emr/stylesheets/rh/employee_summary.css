@@ -1,5 +1,51 @@
+.employee_summary{
+  height: auto;
+  -moz-border-radius: 7px;
+  text-align:left;
+}
+
+.employee_summary > div{
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.employee_summary > .main_informations{
+  width: 50%;
+  margin-top:-20px;
+}
+
+
+.employee_summary .employee_fullname > a{
+  text-decoration:none;
+  color: #777;
+  font-size: 40px;
+}
+
+.employee_summary .employee_fullname > a:hover{
+  text-decoration:underline;
+}
+
+.employee_summary .employee_service {
+  font-size: 15px;
+}
+
+.employee_summary .employee_seniority {
+  font-size: 15px;
+}
+
+.employee_summary > div.contact_informations {
+  border-left:2px black solid;
+  padding-left: 10px;
+  font-size: 20px;
+}
+
+.employee_summary > .contact_informations label{
+  font-size: 30px;
+  width:auto;
+}
+
 #employee_avatar_container {
-  margin-left: 50px;
+  margin-right: 20px;
   padding: 10px 0 10px 0;
 }
 

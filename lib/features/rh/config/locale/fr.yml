@@ -24,6 +24,7 @@ fr:
         overtime_comment: "Commentaire"
       employee:
         address: "Adresse postale"
+        employee_sensitive_data: "Données privées"
         numbers: "Numéros"
         number: "Numéro"
         civility: "Civilité"
@@ -53,6 +54,9 @@ fr:
         employee_state: "Statut"
         salary: "Salaire brut"
         departure: "Date de départ de l'employé"
+        departure_description: "Motif du départ"
+      salary:
+        gross_amount: "Salaire brut"
       leave:
         start_date: "Du"
         end_date: "Au"
@@ -144,3 +148,6 @@ fr:
     user:
       enabled_users: "Utilisateurs activés"
       disabled_users: "Utilisateurs désactivés"
+    summary:
+      work_in_service: "Travail dans le service {{p}}"
+      in_entreprise_since: "Dans l'entreprise depuis {{p}}"

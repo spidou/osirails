@@ -4,7 +4,7 @@ class PremiaController < ApplicationController
   # GET /employees/:employee_id/premia
   def index
     @employee = Employee.find(params[:employee_id])
-    @premia = @employee.premia
+    @premia = @employee.employee_sensitive_data.premia
   end
   
   # GET /employees/:employee_id/premia/new
@@ -16,7 +16,7 @@ class PremiaController < ApplicationController
   # POST /employees/:employee_id/premia
   def create
     @employee = Employee.find(params[:employee_id])
-    @premia = @employee.premia
+    @premia = @employee.employee_sensitive_data.premia
     @premium = Premium.new(params[:premium])
     if @premium.save 
       @premia << @premium

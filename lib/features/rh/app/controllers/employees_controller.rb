@@ -1,5 +1,5 @@
 class EmployeesController < ApplicationController
-  helper :salaries, :job_contract, :documents, :numbers, :address
+  helper :salaries, :job_contracts, :documents, :numbers, :address
   
   method_permission :list => ["show"]
 
@@ -35,12 +35,15 @@ class EmployeesController < ApplicationController
   
   # POST /employees
   def create
-    # regroupe the two parts of social security number
-    params[:employee][:social_security_number] = params['social_security_number'].values.join " "
-    params.delete('social_security_number')
+    # group the two parts of social security number
+    if params['social_security_number']
+      params[:employee][:social_security_number] = params['social_security_number'].values.join(" ")
+      params.delete('social_security_number')
+    end
+    error_access_page(401) if params[:employee][:employee_sensitive_data] && !EmployeeSensitiveData.can_add?(current_user)
     
     @employee = Employee.new(params[:employee])
-
+  
     if @employee.save
       flash[:notice] = "L'employé(e) a été créé(e) avec succès."
       redirect_to @employee
@@ -51,17 +54,20 @@ class EmployeesController < ApplicationController
   
   # PUT /employees/:id
   def update
-    @employee = Employee.find params[:id]
-    @address  = @employee.address
+    @employee = Employee.find(params[:id])
+    @address  = @employee.employee_sensitive_data.address
 
-    # regroupe the two parts of social security number
-    params[:employee][:social_security_number] = params['social_security_number'].values.join " "
-    params.delete('social_security_number')
+    # group the two parts of social security number
+    if params['social_security_number']
+      params[:employee][:employee_sensitive_data][:social_security_number] = params['social_security_number'].values.join(" ")
+      params.delete('social_security_number')
+    end
+    error_access_page(401) if params[:employee][:employee_sensitive_data] && !EmployeeSensitiveData.can_edit?(current_user)
     
     # destroy all jobs if the params is nil
     params[:employee]['job_ids'] ||= []
-
-    if @employee.update_attributes params[:employee]
+    
+    if @employee.update_attributes(params[:employee])
       flash[:notice] = "L'employé(e) a été modifié(e) avec succès."
       redirect_to @employee
     else

@@ -1,0 +1,46 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "rh/job_contract" %>
+<% end %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_employee_job_contract_link(@employee, :link_text => "Nouveau contrat de travail") %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= employees_link(:link_text => "Voir les employés") %>
+  <%= employee_link(@employee,:link_text => "Voir l'employé") %>
+<% end %>
+
+<h1>Historique des contrat de travail</h1>
+
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+
+<div class='presentation_medium'>
+  <% if @job_contracts.empty? %>
+    <p>Aucun Contrat de Travail r&eacute;f&eacute;renc&eacute;</p>
+  <% else %>
+    <table>
+      <thead>
+        <tr>
+          
+          <th>Type</th>
+          <th>Début</th>
+          <th>Fin</th>
+          <th>Date de départ</th>
+          <th>Actions</th>
+        <tr>
+      </thead>
+      <tbody>
+        <% for job_contract in @job_contracts %>
+          <%= "<tr class='#{"active_job_contract" if job_contract.active? }'>"%>
+            <td><%= job_contract.job_contract_type.name %></td>
+            <td><%= job_contract.start_date.humanize%></td>
+            <td><%= job_contract.end_date ? job_contract.end_date.humanize : '-' %></td> 
+            <td><%= job_contract.departure ? job_contract.departure.humanize : '-' %></td>   
+            <td><%= edit_employee_job_contract_link(@employee, job_contract, {:link_text => nil})%></td> 
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

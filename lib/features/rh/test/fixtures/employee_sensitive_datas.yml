@@ -1,0 +1,45 @@
+john_doe_sensitive_data:
+  birth_date: <%= Date.today - 20.years %>
+  email: john@doe.org
+  social_security_number: 1234567891234 41
+  family_situation: single
+  employee: john_doe
+
+# good_employee
+james_doe_sensitive_data:
+  birth_date: <%= Date.today - 20.years %>
+  email: james@doe.org
+  social_security_number: 1234567591234 42
+  family_situation: single
+  employee: james_doe
+  
+##### this employees are used to test the number of members into the service under responsability for example ###
+trish_doe_sensitive_data:
+  birth_date: <%= Date.today - 20.years %>
+  email: trish@doe.org
+  social_security_number: 2234567591234 43
+  family_situation: single
+  employee: trish_doe
+  
+janette_doe_sensitive_data:
+  birth_date: <%= Date.today - 20.years %>
+  email: janette@doe.org
+  social_security_number: 2234567591234 44
+  family_situation: single
+  employee: janette_doe
+  
+franck_doe_sensitive_data:
+  birth_date: <%= Date.today - 20.years %>
+  email: franck@doe.org
+  social_security_number: 1234567591234 45
+  family_situation: single
+  employee: franck_doe
+##################################################################################################################
+
+# Employee_with_job
+johnny_sensitive_data:
+  birth_date: <%= Date.today - 20.years %>
+  email: johnny@doe.org
+  social_security_number: 1234567591234 46
+  family_situation: single
+  employee: johnny_doe

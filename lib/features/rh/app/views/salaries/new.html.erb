@@ -1,0 +1,13 @@
+<h1>Modifier le salaire</h1>
+<div class="presentation medium">
+
+<% form_for([@employee, @salary]) do |form|%>
+  <%= form.error_messages%>
+  <p>
+    <%= form.label(:gross_amount) %>
+    <%= form.text_field(:gross_amount, :size => 8, :maxlength => 10) %>
+  </p>
+  
+  <%= form.form_buttons %>
+<% end %>
+</div>

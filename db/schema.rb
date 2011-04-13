@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110215095634) do
+ActiveRecord::Schema.define(:version => 20110404105202) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id"
@@ -425,6 +425,16 @@ ActiveRecord::Schema.define(:version => 20110215095634) do
     t.datetime "updated_at"
   end
 
+  create_table "employee_sensitive_datas", :force => true do |t|
+    t.integer  "family_situation_id"
+    t.integer  "employee_id"
+    t.string   "social_security_number"
+    t.string   "email"
+    t.date     "birth_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "employee_states", :force => true do |t|
     t.string   "name"
     t.boolean  "active",     :default => false
@@ -439,11 +449,7 @@ ActiveRecord::Schema.define(:version => 20110215095634) do
     t.integer  "family_situation_id"
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "social_security_number"
-    t.string   "qualification"
-    t.string   "email"
     t.string   "society_email"
-    t.date     "birth_date"
     t.string   "avatar_file_name"
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
@@ -723,11 +729,11 @@ ActiveRecord::Schema.define(:version => 20110215095634) do
 
   create_table "job_contracts", :force => true do |t|
     t.integer  "employee_id"
-    t.integer  "employee_state_id"
     t.integer  "job_contract_type_id"
     t.date     "start_date"
     t.date     "end_date"
     t.date     "departure"
+    t.text     "departure_description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1045,9 +1051,9 @@ ActiveRecord::Schema.define(:version => 20110215095634) do
   end
 
   create_table "premia", :force => true do |t|
-    t.integer  "employee_id"
+    t.integer  "employee_sensitive_data_id"
     t.date     "date"
-    t.decimal  "amount",      :precision => 65, :scale => 20
+    t.decimal  "amount",                     :precision => 65, :scale => 20
     t.text     "remark"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1105,7 +1111,7 @@ ActiveRecord::Schema.define(:version => 20110215095634) do
     t.datetime "updated_at"
   end
 
-  add_index "product_reference_categories", ["name", "type"], :name => "index_product_reference_categories_on_name_and_type", :unique => true
+  add_index "product_reference_categories", ["name", "type", "product_reference_category_id"], :name => "index_product_reference_categories_on_name", :unique => true
   add_index "product_reference_categories", ["reference"], :name => "index_product_reference_categories_on_reference", :unique => true
 
   create_table "production_steps", :force => true do |t|

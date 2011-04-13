@@ -115,7 +115,7 @@ function modify_schedule()
       retour += "<td name=" + day + ">" + document.getElementById(5).value +" H "+  document.getElementById(6).value + "</td>";
       retour += "<td name=" + day + ">" + document.getElementById(7).value +" H "+  document.getElementById(8).value + "</td>";
       document.getElementById("t_"+day).innerHTML = retour ;
-      document.getElementById("schedules[" + period[i] + "]").value = document.getElementById(1).value + " H " +
+      document.getElementById("schedules_" + period[i]).value = document.getElementById(1).value + " H " +
                              document.getElementById(2).value + "|" + document.getElementById(3).value + " H " + 
                              document.getElementById(4).value + "|" + document.getElementById(5).value + " H " +
                              document.getElementById(6).value + "|" + document.getElementById(7).value + " H " +

@@ -1,6 +1,8 @@
 en:
   activerecord:
     attributes:
+      employee:
+        employee_sensitive_data: "Private data"
       checking:
         absence_hours: "Time of absence"
         absence_comment: "Comment"
@@ -96,3 +98,7 @@ en:
   seeds:
     query:
       all_employees: "All employees"
+  view:
+    summary:
+      work_in_service: "Work in {{p}} service"
+      in_entreprise_since: "Hired since {{p}}"

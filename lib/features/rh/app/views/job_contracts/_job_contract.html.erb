@@ -1,0 +1,51 @@
+<% form_for([@employee, job_contract], :html => {:multipart => true}) do |form| %>
+  <%= form.error_messages %>
+  
+  <% unless @employee_departure %>
+    <h2>Informations du contrat de travail</h2>
+    
+    <p>
+      <%= form.label :job_contract_type_id %>
+      <%= form.form_or_view(form.collection_select(:job_contract_type_id, JobContractType.all, :id, :name),:job_contract_type, :name) %>
+    </p>
+    <p>
+      <%= form.label :start_date %>
+      <%= form.form_or_view(form.calendar_date_select(
+        :start_date,
+        :start_year => 1950,
+        :end_year   => (Date.today + 10.year).year),
+        :start_date) %>
+    </p>
+    <p>
+      <%= form.label :end_date %>
+      <%= form.form_or_view(form.calendar_date_select(
+        :end_date,
+        :start_year => 1950,
+        :end_year => (Date.today + 10.year).year),
+        :end_date) %> 
+    </p>
+
+    <h2>Documents du contrat de travail</h2>
+      <%= display_documents_list(job_contract) %>
+      <%= display_document_add_button(job_contract) if is_form_view? %>
+  <% else %>
+    <h2>Départ de l'employé</h2>
+    
+    <%= hidden_field_tag(:employee_departure, true)%>
+    <p>
+      <%= form.label :departure %>
+      <%= form.form_or_view(form.calendar_date_select(
+        :departure,
+        :start_year => 1950,
+        :end_year   => (Date.today + 10.year).year),
+        :departure) %>
+    </p>
+    <p>
+      <%= form.label :departure_description %>
+      <%= form.form_or_view(form.text_area(:departure_description),:departure_description) %>
+    </p>
+  <% end %>
+  
+  <%= form.form_buttons %>
+
+<% end %>

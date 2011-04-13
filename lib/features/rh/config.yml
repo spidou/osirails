@@ -19,9 +19,9 @@ menus:
             title: Salaires
             description: "Historique des salaires de l'employé"
             position: 2
-          job_contract:
-            title: Contrat de travail
-            description: "Gestion du contrat de travail de l'employé"
+          job_contracts:
+            title: Contrats de travail
+            description: "Gestion des contrats de travail de l'employé"
             position: 1
           premia:
             title: Primes

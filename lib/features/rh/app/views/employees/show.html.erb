@@ -1,13 +1,21 @@
 <% add_contextual_menu_item :possible_actions do %>
   <%= new_employee_link(:link_text => "Nouvel employé") %>
   <%= edit_employee_link(@employee, :link_text => "Modifier l'employé" ) %>
-  <%= edit_employee_job_contract_link(@employee, :link_text => "Modifier le contrat de travail" ) %>
+  <% if @employee.job_contract %>
+    <%= edit_employee_job_contract_link(@employee, @employee.job_contract, :link_text => "Modifier le contrat de travail" ) %>
+    <%= link_to("Gérer le départ de l'employé", edit_employee_job_contract_path(@employee, @employee.job_contract, {:employee_departure => true}))%>
+    <%= new_employee_salary_link(@employee, :link_text => "Editer le salaire", :html_options => {'data-icon' => :edit}) %>
+  <% else %>
+    <%= new_employee_job_contract_link(@employee, :link_text => "Nouveau contrat de travail")%>
+  <% end %>
+  
   <%= new_employee_premium_link(@employee, :link_text => "Nouvelle prime") %>
   <%= new_employee_leave_link(@employee, :link_text => "Nouveau congé") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
   <%= employees_link(:link_text => "Voir tous les employés") %>
+  <%= employee_job_contracts_link(@employee, :link_text => "Historique des contrats de travail") %>
   <%= employee_premia_link(@employee, :link_text => "Historique des primes") %>
   <%= employee_salaries_link(@employee, :link_text => "Historique du salaire") %>
   <%= employee_leaves_link(@employee, :link_text => "Historique des congés") %>

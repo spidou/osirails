@@ -1,37 +1,32 @@
 <% content_for :header do %>
   <%= stylesheet_link_tag_with_theme_support "rh/employee_summary.css" %>
 <% end %>
+<%
+employee_link = employee_link(employee, :link_text => employee.fullname, :html_options => {'data-icon' => nil})
+service_link  = service_link(employee.service, :link_text => employee.service.name, :html_options => {'data-icon' => nil})
+seniority     = strong(display_employee_seniority(employee.job_contract.start_date), :title => employee.job_contract.start_date) if employee.job_contract
+no_contract   = strong("Aucun Contrat de travail définis") # TODO I18n
+%>
 
-<div class="presentation_in_columns medium">
-  
-  <div>
-    <p>
-      <label>Identit&eacute; :</label>
-      <strong><%= employee_link(employee, :link_text => "#{employee.civility.name.capitalize} #{employee.fullname}", :image_tag => nil) %></strong>
-    </p>
-    <p>
-      <label>Service :</label>
-      <strong><%= service_link(employee.service, :link_text => employee.service.name, :image_tag => nil) %></strong>
-    </p>
-    <p>
-      <label>Anciennet&eacute; :</label>
-      <strong>"<%= display_employee_seniority(employee.job_contract.start_date) %>"</strong>
-    </p>
-  </div>
-  
-  <div>
-    <p>
-      <label>Email :</label>
-      <%=strong employee.intranet_email %>
-    </p>
-    <p>
-      <label>T&eacute;l&eacute;phone :</label>
-      <%= display_full_phone_number(employee.numbers.visibles.first) %>
-    </p>
-  </div>
-  
+<div class="employee_summary">
+
   <div id="employee_avatar_container">
     <%= image_tag employee.avatar.url, :title => "Photo d'identité", :alt => "Photo d'identité" %>
   </div>
   
+  <div class="main_informations">
+    <p class="employee_fullname"> <%= employee_link %> </p>
+    <p class="employee_service"> <%= I18n.t("view.summary.work_in_service", :p => service_link) %> </p>
+    <p class="employee_seniority"> <%= seniority ? I18n.t("view.summary.in_entreprise_since", :p => seniority) : no_contract %> </p>
+  </div>
+  
+  <div class="contact_informations">
+    <p><strong><%=display_full_phone_number(employee.numbers.at(0)) %></strong></p>
+    <p><strong><%=display_full_phone_number(employee.numbers.at(1)) %></strong></p>
+    <p><%= image_tag("rh/email.png", :alt=> "@", :title => 'email')%>
+    <%=strong employee.intranet_email %></p>
+  </div>
+  
+  
 </div>
+

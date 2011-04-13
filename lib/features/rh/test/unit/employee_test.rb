@@ -1,31 +1,23 @@
 require File.dirname(__FILE__) + '/../rh_test'
 
 class EmployeeTest < ActiveSupport::TestCase
-  should_belong_to :family_situation, :civility, :user, :service
+  should_belong_to :civility, :user, :service
   
-  should_have_one :iban, :job_contract
-  
-  should_have_many :premia, :employees_jobs
+  should_have_many :employees_jobs, :job_contracts, :checkings, :leaves, :leave_requests
   should_have_many :jobs, :through => :employees_jobs
-  should_have_many :checkings, :leaves, :leave_requests
   
   should_have_many :in_progress_leave_requests, :accepted_leave_requests, :refused_leave_requests, :cancelled_leave_requests
   
   should_validate_presence_of :last_name, :first_name
-  should_validate_presence_of :family_situation, :civility, :service, :with_foreign_key => :default
+  should_validate_presence_of :civility, :service, :with_foreign_key => :default
   
-  should_allow_values_for :social_security_number, "1234567890123 45", "0123456789012 34"
-  should_not_allow_values_for :social_security_number, nil, "", "1", "0123456789012 3", "012345678901 34", "123456789012345", :message => "Social security number must contain 15 digits"
-  
-  should_allow_values_for :email, nil, "", "foo@bar.com", "foo.bar@bar.fr", "foo@bar.abcde"
-  should_not_allow_values_for :email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "Email is incorrect"
   
   should_allow_values_for :society_email, nil, "", "foo@bar.com", "foo.bar@bar.fr", "foo@bar.abcde"
   should_not_allow_values_for :society_email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "Society email is incorrect"
   
-  should_journalize :attributes          => [ :first_name, :last_name, :birth_date, :civility_id, :social_security_number, :family_situation_id, :service_id, :email, :society_email ], 
+  should_journalize :attributes          => [ :first_name, :last_name, :civility_id, :service_id, :society_email ], 
                     :attachments         => :avatar, 
-                    :subresources        => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
+                    :subresources        => [ :employee_sensitive_data, { :jobs => :create_and_destroy }, :job_contracts],
                     :identifier_method   => :fullname
   
   context "An new and valid employee" do
@@ -33,45 +25,45 @@ class EmployeeTest < ActiveSupport::TestCase
       @employee = build_valid_employee
     end
     
-    context "without a job_contract" do
-      setup do
-        flunk "@employee should NOT have a job_contract" if @employee.job_contract
-        flunk "@employee should be valid" unless @employee.valid?
-      end
-      
-      should "automatically build an empty job_contract when validating" do
-        assert @employee.job_contract
-        assert @employee.job_contract.new_record?
-      end
-      
-      should "save it's empty job_contract when saving itself" do
-        @employee.save!
-        
-        assert !@employee.job_contract.new_record?
-      end
-    end
+#    context "without a job_contract" do
+#      setup do
+#        flunk "@employee should NOT have a job_contract" if @employee.job_contract
+#        flunk "@employee should be valid" unless @employee.valid?
+#      end
+#      
+#      should "automatically build an empty job_contract when validating" do
+#        assert @employee.job_contract
+#        assert @employee.job_contract.new_record?
+#      end
+#      
+#      should "save it's empty job_contract when saving itself" do
+#        @employee.save!
+#        
+#        assert !@employee.job_contract.new_record?
+#      end
+#    end
     
-    context "with a job_contract" do
-      setup do
-        @start_date = Date.parse("2011/01/01")
-        @employee.build_job_contract(:start_date => @start_date)
-        flunk "@employee should have a job_contract" if @employee.job_contract.nil?
-        flunk "@employee should have a job_contract which starts at 1st January, 2011" unless @employee.job_contract.start_date == @start_date
-        flunk "@employee should be valid" unless @employee.valid?
-      end
-      
-      should "keep existing job_contract instead of overrided it when validating" do
-        assert @employee.job_contract
-        assert @employee.job_contract.start_date == @start_date
-      end
-      
-      should "save it's existing job_contract when saving itself" do
-        @employee.save!
-        
-        assert !@employee.job_contract.new_record?
-        assert @employee.job_contract.start_date == @start_date
-      end
-    end
+#    context "with a job_contract" do
+#      setup do
+#        @start_date = Date.parse("2011/01/01")
+#        @employee.build_job_contract(:start_date => @start_date)
+#        flunk "@employee should have a job_contract" if @employee.job_contract.nil?
+#        flunk "@employee should have a job_contract which starts at 1st January, 2011" unless @employee.job_contract.start_date == @start_date
+#        flunk "@employee should be valid" unless @employee.valid?
+#      end
+#      
+#      should "keep existing job_contract instead of overrided it when validating" do
+#        assert @employee.job_contract
+#        assert @employee.job_contract.start_date == @start_date
+#      end
+#      
+#      should "save it's existing job_contract when saving itself" do
+#        @employee.save!
+#        
+#        assert !@employee.job_contract.new_record?
+#        assert @employee.job_contract.start_date == @start_date
+#      end
+#    end
     
     context "without a user" do
       setup do
@@ -90,15 +82,42 @@ class EmployeeTest < ActiveSupport::TestCase
         assert !@employee.user.new_record?, "@employee.user should be saved, but it's still a new_record => #{@employee.user.inspect}"
       end
     end
+  
+    context "with many job_contracts" do
+      setup do
+        @employee.save
+        @active_job_contract =  @employee.job_contracts.create do |j|
+                                  j.start_date        = Date.today.yesterday
+                                  j.end_date          = Date.today.tomorrow
+                                  j.job_contract_type = job_contract_types(:limited_contract)
+                                end
+        
+        @employee.job_contracts.create do |j|
+          j.start_date        = Date.today.tomorrow
+          j.end_date          = j.start_date + 2.days
+          j.job_contract_type = job_contract_types(:limited_contract)
+        end
+        
+        @employee.job_contracts.create do |j|
+          j.end_date          = Date.today.yesterday
+          j.start_date        = j.end_date - 2.days
+          j.job_contract_type = job_contract_types(:limited_contract)
+        end
+      end
+      
+      should "have active job_contract as expected" do
+        assert_equal @active_job_contract, @employee.job_contract 
+      end
+    end
   end
   
-  context "Thanks to 'has_contacts', a subcontractor" do
-    setup do
-      @contacts_owner = Employee.new
-    end
-    
-    include HasContactsTest
-  end
+#  context "Thanks to 'has_contacts', a subcontractor" do
+#    setup do
+#      @contacts_owner = Employee.new
+#    end
+#    
+#    include HasContactsTest
+#  end
   
   def setup
     @good_employee = employees(:james_doe)    

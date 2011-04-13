@@ -1,0 +1,88 @@
+<%
+  require_locals form, authorization
+employee = employee_identity
+sensitive_data = employee.employee_sensitive_data
+%>
+
+<h3>Fiche d&apos;identit&eacute;</h3>
+<div class="presentation_in_columns">
+  <div>
+    <p>
+      <%= form.label :civility %>
+      <%= form.form_or_view(collection_select(:employee, :civility_id, Civility.find(:all), :id, :name), :civility, :name)%>  
+    </p>
+    <p>
+      <%= form.label :first_name %>
+      <%= form.form_or_view(form.text_field( :first_name), :first_name) %>
+    </p>
+    <p>
+      <%= form.label :last_name %>
+      <%= form.form_or_view(form.text_field( :last_name), :last_name)%>
+    </p>
+  </div>
+    
+  <div>
+  <% if authorization %>
+    <% form.fields_for(:employee_sensitive_data, sensitive_data) do |s|%>
+      
+      <%= s.hidden_field(:id)%>
+      <p>
+        <%= form.label :birth_date %>
+        <% if s.form_view? %>
+          <%= s.calendar_date_select(:birth_date) %>
+        <% else %>
+          <%= strong l(sensitive_data.birth_date, :format => :long) %>
+        <% end %>
+      </p>
+      <p>
+        <%= form.label :family_situation %>
+        <%= s.form_or_view(s.collection_select(:family_situation_id, FamilySituation.find(:all), :id, :name), :family_situation, :name)%>
+      </p>
+      <p>
+        <%= form.label :social_security_number %>
+        <%= s.form_or_view( display_social_security(sensitive_data.social_security_number),:social_security_number) %>
+      </p>
+    <% end %>
+  <% end %> 
+    <p>
+      <% if is_form_view? %>
+        <%= form.label :avatar %>
+        <%= form.file_field(:avatar) %>
+      <% end %>
+    </p>
+  </div>
+</div>
+  
+<% if authorization %>
+
+  <h3>Adresse postale</h3>
+  <%= render :partial => "addresses/address_form", :object => sensitive_data.address || sensitive_data.build_address, :locals => { :address_owner => employee }%>
+
+  <h3>Adresses &eacute;lectroniques</h3>
+  <% form.fields_for(:employee_sensitive_data, sensitive_data) do |s|%>
+    <p>
+      <%= form.label :email %>
+      <%= s.form_or_view(s.text_field( :email ), :email)%>
+    </p>
+  <% end %>
+  
+<% end %>
+<p>
+  <%= label_tag("Entreprise :" ) %>
+  <%= strong(employee.intranet_email) %>
+</p>
+
+<div class="numbers_list">
+  <div>
+    <h3>Num&eacute;ro(s) de t&eacute;l&eacute;phone(s) publiques</h3>
+    <%= display_numbers(employee) %>
+    <%= strong("Aucun(s)") unless employee.numbers.any? %>
+  </div>
+  <% if authorization %>
+    <div>
+      <h3>Num&eacute;ro(s) de t&eacute;l&eacute;phone(s) privés</h3>
+      <%= display_numbers(sensitive_data) %>
+      <%= strong("Aucun(s)") unless sensitive_data.numbers.any? %>
+    </div>
+  <% end %>
+</div>

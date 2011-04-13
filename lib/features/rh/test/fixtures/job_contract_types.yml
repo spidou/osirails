@@ -1,3 +1,11 @@
 rolling_contract:
   name: Rolling contract
   limited: false
+  
+limited_contract:
+  name: Limited contract
+  limited: true
+
+not_limited_contract:
+  name: Not limited contract
+  limited: false

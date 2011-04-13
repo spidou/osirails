@@ -1,0 +1,10 @@
+<% require_locals form, employee  %>
+
+<%if  is_form_view? %>
+  <%= render :partial => 'jobs/jobs' , :locals => { :form => form, :job => Job.new, :jobs => Job.all, :service => employee.service } %>
+<% else%>
+  <% employee_jobs.each do |job| %>
+    <%= render :partial => "employee_job", :object => job, :locals => {:employee => employee} %>
+  <% end %>
+<% end %>
+
