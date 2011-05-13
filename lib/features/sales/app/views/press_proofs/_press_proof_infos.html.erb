@@ -8,9 +8,9 @@ require_locals form, order
 <p> 
   <%= form.label :end_product %>
   <% if is_form_view? and press_proof.new_record? %>
-    <%= form.collection_select( :end_product_id, end_products, :id, :name, {}, { :onChange => "select_product(this);" } ) %>
+    <%= form.collection_select( :end_product_id, end_products, :id, :designation_with_dimensions, {}, { :onChange => "select_product(this);" } ) %>
   <% else %>
-    <%= strong(press_proof.end_product.name) %>
+    <%= strong(press_proof.end_product.designation_with_dimensions) %>
   <% end %>
 </p>
 

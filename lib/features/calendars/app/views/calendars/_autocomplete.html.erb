@@ -1,4 +1,3 @@
-<% # UL use by Text_field_auto_complete %>
 <ul>
   <% for contact in @contacts do -%>
     <li><div class="selected_id" style="display: none;"><%= contact.id  %></div><div class="selected_content"><%= contact.first_name %> <%= contact.last_name %> &lt;<%= contact.email %>&gt;</div></li>

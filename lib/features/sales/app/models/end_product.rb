@@ -58,8 +58,16 @@ class EndProduct < Product
     self[:description] ||= product_reference ? product_reference.description : nil
   end
   
-  def dimensions
-    self[:dimensions] ||= product_reference ? product_reference.dimensions : nil
+  def width
+    self[:width] ||= product_reference ? product_reference.width : nil
+  end
+  
+  def length
+    self[:length] ||= product_reference ? product_reference.length : nil
+  end
+  
+  def height
+    self[:height] ||= product_reference ? product_reference.height : nil
   end
   
   def cancelled?
@@ -85,13 +93,12 @@ class EndProduct < Product
   end
   
   #TODO test this method
-  def ancestors
+  def ancestors # @override
     @ancestors ||= product_reference ? product_reference.ancestors + [ product_reference ] : []
   end
   
-  def designation
-    return unless name
-    name + ( dimensions.blank? ? "" : " (#{dimensions})" )
+  def designation # @override
+    name
   end
   
   #TODO test this method

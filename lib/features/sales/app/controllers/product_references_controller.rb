@@ -1,5 +1,5 @@
 class ProductReferencesController < ApplicationController
-  helper :product_reference_categories, :products_catalog
+  helper :product_reference_categories, :products_catalog, :products
   
   before_filter :find_product_reference, :only => [ :show, :edit, :update, :destroy ]
   
@@ -96,8 +96,8 @@ class ProductReferencesController < ApplicationController
     conditions = []
     keywords.each do |keyword|
       keyword = "%#{keyword}%"
-      query << "(products.reference like ? OR products.name like ? OR products.dimensions like ? OR products.description like ? OR product_reference_categories.reference like ? OR product_reference_categories.name like ? OR product_reference_categories_product_reference_categories.reference like ? OR product_reference_categories_product_reference_categories.name like ?)"
-      8.times{ conditions << keyword }
+      query << "(products.reference like ? OR products.name like ? OR products.width like ? OR products.length like ? OR products.height like ? OR products.description like ? OR product_reference_categories.reference like ? OR product_reference_categories.name like ? OR product_reference_categories_product_reference_categories.reference like ? OR product_reference_categories_product_reference_categories.name like ?)"
+      10.times{ conditions << keyword }
     end
     query = query.join(" AND ")
     conditions.unshift(query)

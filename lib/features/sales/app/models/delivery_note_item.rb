@@ -33,7 +33,7 @@ class DeliveryNoteItem < ActiveRecord::Base
   end
   
   def designation
-    end_product && end_product.designation
+    end_product && end_product.designation_with_dimensions
   end
   
   def description

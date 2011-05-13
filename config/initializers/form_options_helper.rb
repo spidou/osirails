@@ -28,10 +28,66 @@ module ActionView
         options_for_select.join("\n")
       end
       
-      # this method is a copy of the code from Rails v2.3.4
-      #TODO remove that method once we have migrated to Rails 2.3.4
-      def grouped_collection_select(object, method, collection, group_method, group_label_method, option_key_method, option_value_method, options = {}, html_options = {})
-        InstanceTag.new(object, method, self, options.delete(:object)).to_grouped_collection_select_tag(collection, group_method, group_label_method, option_key_method, option_value_method, options, html_options)
+      # this method is inspired from Rails v2.3.4, but we add ability to give params on options
+      # 
+      # *option_options* permits to give params for each option of the select:
+      #
+      # grouped_collection_select(:object, :method, collection, :group, :group_label, :option_key, :option_value, {}, {}, { :class => :custom_option })
+      #   => <select>
+      #       <optgroup>
+      #         <option class="custom_option"></option>
+      #         <option class="custom_option"></option>
+      #       </optgroup>
+      #      </select>
+      #
+      # *option_options* accepts Proc:
+      #
+      # grouped_collection_select(:object, :method, collection, :group, :group_label, :option_key, :option_value, {}, {}, { :class => Proc.new{ |x| x.closed? ? "closed" : "open" } })
+      #   => <select>
+      #       <optgroup>
+      #         <option class="open"></option>
+      #         <option class="close"></option>
+      #         <option class="open"></option>
+      #         <option class="close"></option>
+      #       </optgroup>
+      #      </select>
+      #
+      def grouped_collection_select(object, method, collection, group_method, group_label_method, option_key_method, option_value_method, options = {}, html_options = {}, option_options = {})
+        InstanceTag.new(object, method, self, options.delete(:object)).to_grouped_collection_select_tag(collection, group_method, group_label_method, option_key_method, option_value_method, options, html_options, option_options)
+      end
+      
+      # add ability to give params on options
+      def option_groups_from_collection_for_select(collection, group_method, group_label_method, option_key_method, option_value_method, selected_key = nil, option_options = {}) # @override
+        collection.inject("") do |options_for_select, group|
+          group_label_string = eval("group.#{group_label_method}")
+          options_for_select += "<optgroup label=\"#{html_escape(group_label_string)}\">"
+          options_for_select += options_from_collection_for_select(eval("group.#{group_method}"), option_key_method, option_value_method, selected_key, option_options)
+          options_for_select += '</optgroup>'
+        end
+      end
+      
+      # add ability to give params on options
+      def options_from_collection_for_select(collection, value_method, text_method, selected = nil, html_options = {}) # @override
+        options = collection.map do |element|
+          opts = html_options.clone
+          opts.each{ |k, v| opts[k] = v.call(element) if v.is_a?(Proc) }
+          [element.send(text_method), element.send(value_method), opts]
+        end
+        options_for_select(options, selected)
+      end
+      
+      # add ability to give params on options
+      def options_for_select(container, selected = nil) # @override
+        container = container.to_a if Hash === container
+
+        options_for_select = container.inject([]) do |options, element|
+          text, value = option_text_and_value([element[0], element[1]])
+          html_options = element[2]
+          selected_attribute = ' selected="selected"' if option_value_selected?(value, selected)
+          options << %(<option value="#{html_escape(value.to_s)}"#{selected_attribute}#{tag_options(html_options)}>#{html_escape(text.to_s)}</option>)
+        end
+
+        options_for_select.join("\n")
       end
       
       def collection_select_with_custom_choice(object_name, method_name, choice_method_name, collection, value_method, text_method, options = {}, select_options = {}, text_field_options = {}, link_options = {})
@@ -238,14 +294,13 @@ module ActionView
         )
       end
       
-      # this method is a copy of the code from Rails v2.3.4
-      #TODO remove that method once we have migrated to Rails 2.3.4
-      def to_grouped_collection_select_tag(collection, group_method, group_label_method, option_key_method, option_value_method, options, html_options)
+      # this method is inspired from Rails v2.3.4, but we add ability to give params on options
+      def to_grouped_collection_select_tag(collection, group_method, group_label_method, option_key_method, option_value_method, options, html_options, option_options = {})
         html_options = html_options.stringify_keys
         add_default_name_and_id(html_options)
         value = value(object)
         content_tag(
-          "select", add_options(option_groups_from_collection_for_select(collection, group_method, group_label_method, option_key_method, option_value_method, value), options, value), html_options
+          "select", add_options(option_groups_from_collection_for_select(collection, group_method, group_label_method, option_key_method, option_value_method, value, option_options), options, value), html_options
         )
       end
       
@@ -334,10 +389,9 @@ module ActionView
         @template.collection_select_with_indentation(@object_name, method, collection, value_method, text_method, options.merge(:object => @object), html_options)
       end
       
-      # this method is a copy of the code from Rails v2.3.4
-      #TODO remove that method once we have migrated to Rails 2.3.4
-      def grouped_collection_select(method, collection, group_method, group_label_method, option_key_method, option_value_method, options = {}, html_options = {})
-        @template.grouped_collection_select(@object_name, method, collection, group_method, group_label_method, option_key_method, option_value_method, objectify_options(options), @default_options.merge(html_options))
+      # this method is inspired from Rails v2.3.4, but we add ability to give params on options
+      def grouped_collection_select(method, collection, group_method, group_label_method, option_key_method, option_value_method, options = {}, html_options = {}, option_options = {})
+        @template.grouped_collection_select(@object_name, method, collection, group_method, group_label_method, option_key_method, option_value_method, objectify_options(options), @default_options.merge(html_options), option_options)
       end
       
       def collection_select_with_custom_choice(method_name, choice_method_name, collection, value_method, text_method, options = {}, select_options = {}, text_field_options = {}, link_options = {})

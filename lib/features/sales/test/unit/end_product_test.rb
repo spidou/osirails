@@ -33,20 +33,31 @@ class EndProductTest < ActiveSupport::TestCase
           flunk "@end_product should have no dimensions" unless @end_product.dimensions.blank?
         end
         
-        should "have a good designation" do
+        should "have a well-formed designation" do
           expected_value = "Default End Product" # name
           assert_equal expected_value, @end_product.designation
+        end
+        
+        should "have a well-formed designation_with_dimensions" do
+          expected_value = "Default End Product" # name
+          assert_equal expected_value, @end_product.designation_with_dimensions
         end
       end
       
       context "with dimensions" do
         setup do
-          @end_product.dimensions = "1000 x 2000"
+          @end_product.width = 1000
+          @end_product.length = 2000
         end
         
-        should "have a good designation" do
-          expected_value = "Default End Product (1000 x 2000)" # name (dimensions)
+        should "have a well-formed designation" do
+          expected_value = "Default End Product" # name
           assert_equal expected_value, @end_product.designation
+        end
+        
+        should "have a well-formed designation_with_dimensions" do
+          expected_value = "Default End Product (1000 x 2000 mm)" # name (dimensions)
+          assert_equal expected_value, @end_product.designation_with_dimensions
         end
       end
     end

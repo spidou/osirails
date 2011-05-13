@@ -972,7 +972,8 @@ ActiveRecord::Schema.define(:version => 20110215095634) do
     t.integer  "service_delivery_id"
     t.string   "name"
     t.text     "description"
-    t.decimal  "unit_price",          :precision => 65, :scale => 20
+    t.float    "cost"
+    t.decimal  "margin",              :precision => 65, :scale => 20
     t.decimal  "prizegiving",         :precision => 65, :scale => 20
     t.float    "quantity"
     t.float    "vat"
@@ -1105,7 +1106,7 @@ ActiveRecord::Schema.define(:version => 20110215095634) do
     t.datetime "updated_at"
   end
 
-  add_index "product_reference_categories", ["name", "type"], :name => "index_product_reference_categories_on_name_and_type", :unique => true
+  add_index "product_reference_categories", ["name", "type", "product_reference_category_id"], :name => "index_product_reference_categories_on_name", :unique => true
   add_index "product_reference_categories", ["reference"], :name => "index_product_reference_categories_on_reference", :unique => true
 
   create_table "production_steps", :force => true do |t|
@@ -1129,7 +1130,9 @@ ActiveRecord::Schema.define(:version => 20110215095634) do
     t.integer  "position"
     t.string   "reference"
     t.string   "name"
-    t.string   "dimensions"
+    t.integer  "width"
+    t.integer  "length"
+    t.integer  "height"
     t.text     "description"
     t.float    "vat"
     t.datetime "cancelled_at"
@@ -1159,7 +1162,9 @@ ActiveRecord::Schema.define(:version => 20110215095634) do
     t.string   "quotable_type"
     t.string   "name"
     t.text     "description"
-    t.string   "dimensions"
+    t.integer  "width"
+    t.integer  "length"
+    t.integer  "height"
     t.decimal  "unit_price",       :precision => 65, :scale => 20
     t.decimal  "prizegiving",      :precision => 65, :scale => 20
     t.float    "quantity"
@@ -1280,7 +1285,8 @@ ActiveRecord::Schema.define(:version => 20110215095634) do
     t.string   "reference"
     t.string   "name"
     t.text     "description"
-    t.decimal  "unit_price",               :precision => 65, :scale => 20
+    t.float    "cost"
+    t.decimal  "margin",                   :precision => 65, :scale => 20
     t.float    "vat"
     t.string   "time_scale"
     t.boolean  "pro_rata_billable",                                        :default => false

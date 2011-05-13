@@ -17,19 +17,30 @@ function initialize_listeners() {
     }
   })
   
+  // manage updates of cost
+  _cost().observe('keyup', function(event) {
+    update_unit_price_by_cost()
+  })
+  
+  // manage updates of margin
+  _margin().observe('keyup', function(event) {
+    update_unit_price_by_cost()
+  })
+  
   // manage updates of unit_price
-  _unit_price().observe('keyup', function(event){
+  _unit_price().observe('keyup', function(event) {
     update_unit_price_with_taxes()
+    update_margin()
   })
   
   // manage updates of vat
-  _vat().observe('change', function(event){
+  _vat().observe('change', function(event) {
     update_unit_price_with_taxes()
   })
   
   // manage updates of unit_price_with_taxes
-  _unit_price_with_taxes().observe('keyup', function(event){
-    update_unit_price()
+  _unit_price_with_taxes().observe('keyup', function(event) {
+    update_unit_price_by_taxes()
   })
   
   // This has been disabled because the function enable_readonly_fields (application.js)
@@ -57,6 +68,27 @@ function _default_pro_rata_billing() {
   return $('service_delivery_default_pro_rata_billing')
 }
 
+function _cost() {
+  return $('service_delivery_cost')
+}
+
+function cost() {
+  return parseFloat(_cost().value) || 0.0 
+}
+
+function _margin() {
+  return $('service_delivery_margin')
+}
+
+function margin() {
+  return parseFloat(_margin().value) || 0.0
+}
+
+function update_margin() {
+  var margin = parseFloat(unit_price() / cost())
+  _margin().value = margin
+}
+
 function _vat() {
   return $('service_delivery_vat')
 }
@@ -66,16 +98,25 @@ function vat() {
 }
 
 function _unit_price() {
-  return $('service_delivery_unit_price')
+  return $('unit_price')
 }
 
 function unit_price() {
   return parseFloat(_unit_price().value) || 0.0
 }
 
-function update_unit_price() {
+function update_unit_price_by_taxes() {
   var unit_price = parseFloat(unit_price_with_taxes() / ( 1 + (vat()/100) ))
   _unit_price().value = unit_price
+  
+  update_margin()
+}
+
+function update_unit_price_by_cost() {
+  var unit_price = parseFloat(cost() * margin())
+  _unit_price().value = unit_price
+  
+  update_unit_price_with_taxes()
 }
 
 function _unit_price_with_taxes() {

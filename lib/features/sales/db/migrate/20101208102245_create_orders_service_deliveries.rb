@@ -4,7 +4,8 @@ class CreateOrdersServiceDeliveries < ActiveRecord::Migration
       t.references :order, :service_delivery
       t.string    :name
       t.text      :description
-      t.decimal   :unit_price, :prizegiving, :precision => 65, :scale => 20
+      t.float     :cost
+      t.decimal   :margin, :prizegiving, :precision => 65, :scale => 20
       t.float     :quantity, :vat
       t.integer   :position
       t.boolean   :pro_rata_billing, :default => false

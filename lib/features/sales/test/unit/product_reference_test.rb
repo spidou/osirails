@@ -42,20 +42,31 @@ class ProductReferenceTest < ActiveSupport::TestCase
           flunk "@product_reference should have no dimensions" unless @product_reference.dimensions.blank?
         end
         
-        should "have a good designation" do
+        should "have a well-formed designation" do
           expected_value = "Parent category Child category Default Product Reference" # ancestor_names + self_name
           assert_equal expected_value, @product_reference.designation
+        end
+        
+        should "have a well-formed designation_with_dimensions" do
+          expected_value = "Parent category Child category Default Product Reference" # ancestor_names + self_name
+          assert_equal expected_value, @product_reference.designation_with_dimensions
         end
       end
       
       context "with dimensions" do
         setup do
-          @product_reference.dimensions = "1000 x 2000"
+          @product_reference.width = 1000
+          @product_reference.length = 2000
         end
         
-        should "have a good designation" do
-          expected_value = "Parent category Child category Default Product Reference (1000 x 2000)" # ancestor_names + self_name + dimensions
+        should "have a well-formed designation" do
+          expected_value = "Parent category Child category Default Product Reference" # ancestor_names + self_name
           assert_equal expected_value, @product_reference.designation
+        end
+        
+        should "have a well-formed designation_with_dimensions" do
+          expected_value = "Parent category Child category Default Product Reference (1000 x 2000 mm)" # ancestor_names + self_name + dimensions
+          assert_equal expected_value, @product_reference.designation_with_dimensions
         end
       end
     end
