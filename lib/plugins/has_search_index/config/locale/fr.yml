@@ -82,6 +82,9 @@ fr:
       title: "Rechercher"
     paginate_per_page: "Par page"
     paginate_all: "Tout"
+    paginate_details:
+      one: "{{page}} resultat sur {{max}} au total"
+      other: "{{page}} resultats sur {{max}} au total"
     no_result: "Aucun résultat correspondant à la recherche"
     forbidden_options: "Vous n'êtes pas autorisé à effectuer cette recherche"
     search_for: "Le résultat doit correspondre à"

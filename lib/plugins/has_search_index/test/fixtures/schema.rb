@@ -125,7 +125,7 @@ ActiveRecord::Schema.define do
     t.column "a_string",       :string
     t.column "a_text",         :text
     t.column "a_integer",      :integer
-    t.column "a_decimal",      :decimal, :precision => 4, :scale => 3
+    t.column "a_decimal",      :decimal, :precision => 12, :scale => 3
     t.column "a_float",        :float
     t.column "a_boolean",      :boolean
     t.column "a_datetime",     :datetime

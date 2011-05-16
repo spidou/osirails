@@ -175,7 +175,7 @@ private
     message += " plugin in order to use directly or undirectly the plugin"
     attribute  = attribute.downcase
     attributes = self.search_index[:additional_attributes]
-    data       = pre_format(object.send(attribute))
+    data       = object.send(attribute)
 
     return false if data.nil?
     if !values.is_a?(Hash) and !values.is_a?(Array)
@@ -203,7 +203,7 @@ private
         value     = pre_format(value)
         is_string = ["string", "text"].include?(object.class.search_index_attribute_type(attribute))
         
-        data_match_part &= (is_string ? data.include?(value) : data == value)
+        data_match_part &= (is_string ? pre_format(data).include?(value) : pre_format(data) == value)
       end
       
       data_match_value |= data_match_part
@@ -234,15 +234,23 @@ private
         data_pre_match_values_sbs = (action_is_negative ? nil : true)
         values_sbs.each do |value|
           value    = pre_format(value)
-          is_like  = data.include?(value)
-          is_equal = data.send("==", value)
+          
+          is_like  = pre_format(data).include?(value)
+          is_equal = pre_format(data).send("==", value)
           
           if action_is_negative
             data_pre_match_values_sbs |= (option[:action] == '!=')? !is_equal : !is_like
           elsif ['like', '='].include?(option[:action])
             data_pre_match_values_sbs &= (option[:action] == '=')? is_equal : is_like
           elsif HasSearchIndex::ACTIONS[datatype.to_sym].include?(option[:action])
-            data_pre_match_values_sbs &= data.send(option[:action], value.to_s.downcase)
+            case datatype
+              when 'datetime'
+                data_pre_match_values_sbs &= pre_format(data.strftime("%Y-%m-%d %H:%M")).send(option[:action], pre_format(value))
+              when 'date'
+                data_pre_match_values_sbs &= pre_format(data).send(option[:action], pre_format(value))
+              else
+                data_pre_match_values_sbs &= data.to_f.send(option[:action], value.to_f)
+            end
           else
             raise(ArgumentError, "#{self::ERROR_PREFIX} Unproper operator '#{option[:action]}' for #{ datatype } datatype")
           end
