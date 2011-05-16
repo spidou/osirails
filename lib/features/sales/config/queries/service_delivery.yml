@@ -3,15 +3,24 @@ conf_filters: &filters
     - reference
     - name
     - description
+    - cost
+    - margin
     - unit_price
+    - vat
+    - unit_price_with_taxes
     - time_scale
     - pro_rata_billable
 conf_columns: &columns
   columns:
     - reference
     - name
+    - designation
     - description
+    - cost
+    - margin
     - unit_price
+    - vat
+    - unit_price_with_taxes
     - time_scale
     - pro_rata_billable
 conf_group: &group
@@ -21,7 +30,11 @@ conf_order: &order
   order:
     - reference
     - name
+    - designation
+    - cost
+    - margin
     - unit_price
+    - unit_price_with_taxes
     - time_scale
     - pro_rata_billable
 conf_pagination: &pagination
@@ -42,8 +55,9 @@ advanced_service_delivery:
       - reference
       - designation
       - description
+      - unit_price_with_taxes
     order:
-      - name
+      - designation
     per_page: 50
 
 service_delivery_index:
@@ -54,13 +68,14 @@ service_delivery_index:
   <<: *pagination
   quick_search:
     - reference
-    - name
+    - designation
     - description
   default_query:
     columns:
       - reference
       - designation
       - description
+      - unit_price_with_taxes
     order:
-      - name
+      - designation
     per_page: 50

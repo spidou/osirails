@@ -115,7 +115,7 @@ configurations:
     value: '[first_name].[last_name]'
   password_validity:
     description: durée pendant laquelle le mot de passe est valide
-    value: 30
+    value: 0
   society_identity_configuration_name:
     description: "Nom de l'entreprise"
     value: Enseigne Maintenance Réunion

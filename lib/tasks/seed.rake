@@ -7,8 +7,11 @@ namespace :osirails do
     desc "Load default data for whole project"
     task :load_default_data => [ "osirails:core:db:load_default_data", "osirails:features:db:load_default_data" ]
     
-    desc "Load default data AND development data for whole project"
+    desc "Load development data for whole project"
     task :load_development_data => [ "osirails:core:db:load_development_data", "osirails:features:db:load_development_data" ]
+    
+    desc "Load production data for whole project"
+    task :load_production_data => [ "osirails:core:db:load_production_data", "osirails:features:db:load_production_data" ]
   end
   
   namespace :core do
@@ -30,6 +33,12 @@ namespace :osirails do
         t.verbose = true
       end
       Rake::Task['osirails:core:db:load_development_data'].comment = "Load development data for the project's core"
+      
+      Rake::SeedTask.new(:load_production_data) do |t|
+        t.seed_files = "db/production_seeds.rb"
+        t.verbose = true
+      end
+      Rake::Task['osirails:core:db:load_production_data'].comment = "Load production data for the project's core"
     end
   end
   
@@ -56,6 +65,15 @@ namespace :osirails do
       desc "Load development data for all features"
       task :load_development_data => :environment do
         tasks = FeatureManager.loaded_feature_paths.map{|path| path.split("/").last}.map{|name| "osirails:#{name}:db:load_development_data"}
+        tasks.select{ |task| Rake::Task[task] rescue false }.each do |task| # select tasks which really exist
+          puts "==== Running #{task} ===="
+          Rake::Task[task].invoke
+        end
+      end
+      
+      desc "Load production data for all features"
+      task :load_production_data => :environment do
+        tasks = FeatureManager.loaded_feature_paths.map{|path| path.split("/").last}.map{|name| "osirails:#{name}:db:load_production_data"}
         tasks.select{ |task| Rake::Task[task] rescue false }.each do |task| # select tasks which really exist
           puts "==== Running #{task} ===="
           Rake::Task[task].invoke

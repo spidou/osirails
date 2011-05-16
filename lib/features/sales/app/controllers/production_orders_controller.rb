@@ -1,5 +1,5 @@
 class ProductionOrdersController < ApplicationController
-  helper :orders, :manufacturing_steps
+  helper :orders
   
   # GET /production_orders
   def index

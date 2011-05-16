@@ -13,7 +13,8 @@ class CreateProducts < ActiveRecord::Migration
       t.integer :quantity, :position
       
       # common attributes
-      t.string    :reference, :name, :dimensions
+      t.string    :reference, :name
+      t.integer   :width, :length, :height
       t.text      :description
       t.float     :vat
       t.datetime  :cancelled_at

@@ -186,7 +186,7 @@ class Order < ActiveRecord::Base
   
   #TODO test this method
   def unbilled_amount
-    signed_quote.total_with_taxes - billed_amount
+    signed_quote && ( signed_quote.total_with_taxes - billed_amount )
   end
   
   def build_delivery_note_with_remaining_end_products_to_deliver

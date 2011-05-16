@@ -44,7 +44,7 @@ class DeliveryNote < ActiveRecord::Base
   
   has_many :delivery_note_invoices
   has_many :all_invoices, :through => :delivery_note_invoices, :source => :invoice
-  has_one  :invoice,      :through => :delivery_note_invoices, :conditions => [ "invoices.status IS NULL OR invoices.status != ?", Invoice::STATUS_CANCELLED ] #TODO test that method
+  has_one  :invoice,      :through => :delivery_note_invoices, :conditions => [ "invoices.status IS NULL OR invoices.status != ?", Invoice::STATUS_CANCELLED ] #TODO test this relationship
   
   named_scope :actives, :conditions => [ 'status IS NULL or status != ?', STATUS_CANCELLED ]
   
@@ -112,9 +112,9 @@ class DeliveryNote < ActiveRecord::Base
     invoice.is_a?(Array) ? !invoice.empty? : !invoice.nil?
   end
   
-  # return if the associated invoice is confirmed
+  # return if the associated invoice is confirmed (and above)
   def billed_and_confirmed?
-    billed? ? invoice.was_confirmed? : false
+    billed? ? !invoice.confirmed_at_was.nil? : false
   end
   
   def signed_quote

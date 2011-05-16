@@ -117,8 +117,6 @@ class Invoice < ActiveRecord::Base
     
     x.validates_date :confirmed_at, :on_or_after => :created_at
     x.validates_date :published_on, :on_or_after => Proc.new{ |i| i.signed_quote.signed_on }
-    
-    x.validate :validates_unique_usage_of_delivery_note
   end
   
   # when invoice is CONFIRMED
@@ -334,6 +332,7 @@ class Invoice < ActiveRecord::Base
   validate :validates_free_invoice_items_according_to_invoice_type
   validate :validates_invoice_items_according_to_invoice_type
   validate :validates_delivery_note_invoices_according_to_invoice_type
+  validate :validates_unique_usage_of_delivery_note
   
   validate :validates_uniqueness_of_due_dates_with_factorised_invoice
   validate :validates_due_date_amounts
@@ -418,7 +417,7 @@ class Invoice < ActiveRecord::Base
         delivery_note_invoice.errors.add(:base, "Ce Bon de Livraison a déjà été utilisé dans une autre facture (#{invoice.reference_or_id}). Merci de le retirer de cette facture, ou d'annuler l'autre facture.")
       end
     end
-    errors.add(:delivery_note_invoices, "Un ou plusieurs Bon de Livraison associés ont déjà été utilisé dans une autre facture. Merci de les retirer, ou d'annuler l'autre facture avant d'enregistrer celle-là.") unless delivery_note_invoices.reject{ |d| d.errors.empty? }.empty?
+    errors.add(:delivery_note_invoices, "Un ou plusieurs Bon de Livraison associés ont déjà été utilisé dans une autre facture. Merci de les retirer, ou d'annuler l'autre facture avant d'enregistrer celle-là.") if delivery_note_invoices.reject{ |d| d.errors.empty? }.any?
   end
   
   def validates_presence_of_deposit_attributes

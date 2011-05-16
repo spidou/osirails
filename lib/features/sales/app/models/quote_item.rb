@@ -4,7 +4,9 @@
 # A string   "quotable_type"
 # A string   "name"
 # A text     "description"
-# A string   "dimensions"
+# A integer  "width"
+# A integer  "length"
+# A integer  "height"
 # A decimal  "unit_price",       :precision => 65, :scale => 20
 # A decimal  "prizegiving",      :precision => 65, :scale => 20
 # A float    "quantity"
@@ -16,6 +18,7 @@
 
 class QuoteItem < ActiveRecord::Base
   include ProductBase
+  include ProductDimensions
   
   belongs_to :quote
   belongs_to :quotable, :polymorphic => true
@@ -27,9 +30,9 @@ class QuoteItem < ActiveRecord::Base
   
   validates_associated :quotable
   
-  journalize :attributes        => [:name, :description, :dimensions, :unit_price, :prizegiving,
+  journalize :attributes        => [:name, :description, :width, :length, :height, :unit_price, :prizegiving,
                                     :quantity, :vat, :position, :pro_rata_billing],
-             :identifier_method =>  Proc.new{ |i| "#{i.designation} (x #{i.quantity})" }
+             :identifier_method =>  Proc.new{ |i| "#{i.designation_with_dimensions} (x #{i.quantity})" }
   
   # store a polymorphic referential object (product_reference for product_item, and service_delivery for service_item)
   attr_accessor :reference_object_type, :reference_object_id
@@ -104,7 +107,7 @@ class QuoteItem < ActiveRecord::Base
     return if free_item?
     
     common_attributes       = %w( name description unit_price prizegiving quantity vat position )
-    only_product_attributes = %w( dimensions )
+    only_product_attributes = %w( width length height )
     only_service_attributes = %w( pro_rata_billing )
     replicated_attributes   = []
     
@@ -145,6 +148,18 @@ class QuoteItem < ActiveRecord::Base
     self[:description] ||= reference_object && reference_object.description
   end
   
+  def width
+    self[:width] ||= reference_object && reference_object.width
+  end
+  
+  def length
+    self[:length] ||= reference_object && reference_object.length
+  end
+  
+  def height
+    self[:height] ||= reference_object && reference_object.height
+  end
+  
   def vat
     self[:vat] ||= reference_object && reference_object.vat
   end
@@ -170,7 +185,11 @@ class QuoteItem < ActiveRecord::Base
   end
   
   def designation
-    product_item? ? name + ( dimensions.blank? ? "" : " (#{dimensions})" ) : name
+    name
+  end
+  
+  def designation_with_dimensions
+    product_item? ? designation + ( dimensions.blank? ? "" : " (#{dimensions})" ) : designation
   end
   
   def position # used by Quote#sorted_quote_items

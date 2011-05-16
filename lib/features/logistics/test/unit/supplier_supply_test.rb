@@ -1,9 +1,6 @@
 require File.dirname(__FILE__) + '/../logistics_test'
 
 class SupplierSupplyTest < ActiveSupport::TestCase
-  #TODO
-  # has_permissions :as_business_object
-  
   should_belong_to :supply, :supplier
   
   should_validate_uniqueness_of :supplier_id, :scoped_to => :supply_id

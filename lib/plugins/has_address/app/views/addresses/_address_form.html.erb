@@ -22,11 +22,12 @@ identifier = generate_random_id
   <% fields_for "#{owner_type}[#{address.has_address_key}_attributes]", address do |form| %>
     <% form.force_show_view = force_show_view %>
     
-    <p class="contain_auto_completer">
-      <%= form.label :street_name, nil, options %>
-      <%= form.form_or_view(form.text_area_autoresize(:street_name, options.merge(:class => "street_name")), :street_name) %>
+    <p>
+      <p class="contain_auto_completer">
+        <%= form.label :street_name, nil, options %>
+        <%= form.form_or_view(form.text_area_autoresize(:street_name, options.merge(:class => "street_name")), :street_name) %>
+      </p>
     </p>
-    <br/>
     
     <% if form.form_view? %>
       <p class="contain_auto_completer">
@@ -36,12 +37,10 @@ identifier = generate_random_id
         <%= form.label :city_name, nil, options.merge(:class => :city_label) %>
         <%= custom_text_field_with_auto_complete_for_city_name(address, identifier, form, options) %>
       </p>
-      <br/>
       <p class="contain_auto_completer">
         <%= form.label :region_name, nil, options %>
         <%= custom_text_field_with_auto_complete_for_region_name(address, identifier, form, options) %>
       </p>
-      <br/>
       <p class="contain_auto_completer">
         <%= form.label :country_name, nil, options %>
         <%= custom_text_field_with_auto_complete_for_country_name(address, identifier, form, options) %>

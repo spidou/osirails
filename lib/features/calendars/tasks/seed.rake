@@ -18,6 +18,12 @@ namespace :osirails do
         t.verbose = true
       end
       Rake::Task['osirails:calendars:db:load_development_data'].comment = "Load development data for calendars feature"
+      
+      Rake::SeedTask.new(:load_production_data) do |t|
+        t.seed_files = "#{File.dirname(__FILE__)}/../db/production_seeds.rb"
+        t.verbose = true
+      end
+      Rake::Task['osirails:calendars:db:load_production_data'].comment = "Load production data for calendars feature"
     end
   end
 end

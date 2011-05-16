@@ -53,24 +53,27 @@ class EventsController < ApplicationController
   def create
     @calendar = Calendar.find(params[:calendar_id])
     return false unless @calendar.can_add?(current_user)
+    
     params[:event][:by_day] = [params[:event].delete(:by_month_day_num) + params[:event].delete(:by_month_day_wday)] if params[:event][:by_month_day_num] && params[:event][:by_month_day_wday]
-    @event = Event.create(params[:event])
-    @event.alarms << Alarm.create(params[:alarm])
+    @event = Event.new({ :calendar_id => @calendar.id }.merge(params[:event]))
+    @event.alarms.build(params[:alarm])
     
-    params[:participants][:delete] ||= []
-    params[:participants][:delete].each do |p|
-      Participant.find(p).destroy if @event.participant_ids.include?(p.to_i)
-    end
-    params[:participants][:new] ||= []
-    params[:participants][:new].each do |p|
-      participant_index = params[:participants][:new].index(p)
-      emp_id = params[:participants][:new_id][:participant_index]
-      participant_option = Participant.parse(p)
-      participant_option[:employee_id] = emp_id
-      @event.participants << Participant.create(participant_option)
-    end
+    ## TODO participants management should be reviewed
+    #params[:participants][:delete] ||= []
+    #params[:participants][:delete].each do |p|
+    #  Participant.find(p).destroy if @event.participant_ids.include?(p.to_i)
+    #end
+    #params[:participants][:new] ||= []
+    #params[:participants][:new].each do |p|
+    #  participant_index = params[:participants][:new].index(p)
+    #  emp_id = params[:participants][:new_id][:participant_index]
+    #  participant_option = Participant.parse(p)
+    #  participant_option[:employee_id] = emp_id
+    #  @event.participants << Participant.create(participant_option)
+    #end
     
-    @calendar.events << @event
+    @event.save! # TODO we should display an error message if failed
+    
     respond_to do |format|
       format.js
     end   

@@ -3,6 +3,21 @@ String.prototype.ltrim = function() { return this.replace(/^\s+/, ''); };
 String.prototype.rtrim = function() { return this.replace(/\s+$/, ''); };
 String.prototype.trim = function() { return this.ltrim().rtrim(); };
 String.prototype.toBoolean = function() { return "true" == this; };
+String.prototype.multiply = function(times) {
+  var value = ""
+  for (var i = 0; i < times; i++) value += this
+  return value;
+};
+String.prototype.ljust = function(padSize, padStr) { // eg: "hello".ljust(10, "123")
+  var pad = padStr.multiply(padSize - this.length)   //     => pad = "123123123123123"
+  pad = pad.substr(0, pad.length/padStr.length)      //     => pad = "12312"
+  return this + pad                                  //     => "hello12312"
+};
+String.prototype.rjust = function(padSize, padStr) {
+  var pad = padStr.multiply(padSize - this.length)
+  pad = pad.substr(0, pad.length/padStr.length)
+  return pad + this
+};
 
 Array.prototype.sum = function() { return this.inject(0, function(a,b){ return a + b }); };
 

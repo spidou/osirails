@@ -10,7 +10,7 @@ class ProductReferenceCategory < ActiveRecord::Base
   
   validates_presence_of :reference, :name
   
-  validates_uniqueness_of :name, :scope => :type, :case_sensitive => false
+  validates_uniqueness_of :name, :scope => [ :type, :product_reference_category_id ], :case_sensitive => false
   validates_uniqueness_of :reference, :case_sensitive => false
   
   validates_persistence_of :reference, :unless => :can_update_reference?

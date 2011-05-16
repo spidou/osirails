@@ -60,9 +60,7 @@ product_reference_index:
   <<: *pagination
   quick_search:
     - reference
-    - product_reference_sub_category.product_reference_category.name
-    - product_reference_sub_category.name
-    - name
+    - designation
     - description
   default_query:
     columns:

@@ -224,23 +224,29 @@ table.sales_table td.designation p {
   padding: 0;
 }
 
-table.sales_table td.designation span.name {
+table.sales_table td.designation span.name,
+table.sales_table td.designation input.input_name {
   font-weight: bold;
 }
 
-table.sales_table td.designation span.description {
+table.sales_table td.designation span.description,
+table.sales_table td.designation textarea.input_description {
   font-style: italic;
   font-size: 0.9em;
+}
+
+table.sales_table td.designation input.input_name {
+  width: 300px;
+}
+
+table.sales_table td.designation textarea.input_description {
+  margin-top: 4px;
+  width: 520px;
 }
 
 table.sales_table td.designation img,
 table.sales_table td.unit_price img {
   vertical-align: middle;
-}
-
-table.sales_table td.designation input,
-table.sales_table td.designation textarea {
-  width: 400px;
 }
 
 table.sales_table tr td.unit {
@@ -668,3 +674,72 @@ table tr.very_low_priority a {
   background: url("/themes/emr/images/sales/search_service_delivery.png") no-repeat 2px 2px;
   text-indent: 20px;
 }
+
+/* product dimensions */
+span.product_dimensions > span {
+  //position: relative;
+  //vertical-align: middle;
+  margin-left: -9px;
+}
+
+span.product_dimensions > span:first-child {
+  margin-left: 0;
+}
+
+span.product_dimensions > span span:not([class=fieldWithErrors]) {
+  position: relative;
+  z-index: 2;
+  top: 1px;
+  
+  background-color: #CCC;
+  height: 14px;
+  padding: 4px 3px;
+  margin-left: 3px; /* compensate padding-left value */
+  -moz-border-radius: 2px 0 0 2px;
+  
+}
+
+span.product_dimensions > span input {
+  position: relative;
+  z-index: 1;
+  
+  margin-top: -2px;
+  margin-left: -5px;
+  padding-left: 4px;
+  padding-right: 3px;
+}
+
+
+
+/* pan.product_dimensions > span {
+  position: relative;
+  vertical-align: middle;
+}
+
+span.product_dimensions > span span {
+  background-color: #CCC;
+  position: absolute;
+  left: 2px;
+  top: 1px;
+  //padding: 2px 3px;
+  width: 17px;
+  height: 14px;
+  text-align: right;
+  padding-right: 2px;
+  padding-top: 2px;
+  
+  -moz-border-radius: 2px 0 0 2px;
+}
+
+span.product_dimensions > span input {
+  padding-left: 20px;
+  padding-right: 3px;
+}
+
+span.product_dimensions > span {
+  margin-left: -7px;
+}
+
+span.product_dimensions > span:first-child {
+  margin-left: 0;
+}*/

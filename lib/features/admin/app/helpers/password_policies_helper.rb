@@ -51,7 +51,7 @@ module PasswordPoliciesHelper
     html = ""
     
     if is_form_view?
-      html << "<p id=\"pattern_field\""
+      html << "<p id=\"pattern_field\">"
       html << display_text_field_for_pattern(pattern)
       html << " <span id=\"pattern_help_link\">"
       html << link_to_function( image_tag("help_icon_16x16.png", :alt => "Aide", :title => "Aide"), "Effect.toggle('pattern_help', 'slide')" )

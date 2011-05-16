@@ -17,8 +17,9 @@ class ProductReference < Product
   
   before_validation_on_create :update_reference
   
-  has_search_index  :only_attributes    => [ :reference, :name, :description ],
-                    :only_relationships => [ :product_reference_sub_category ]
+  has_search_index  :only_attributes        => [ :reference, :name, :description ],
+                    :additional_attributes  => { :designation => :string },
+                    :only_relationships     => [ :product_reference_sub_category ]
   
   PRODUCT_REFERENCES_PER_PAGE = 15
   
@@ -39,12 +40,8 @@ class ProductReference < Product
   end
   
   #TODO test this method
-  def ancestors
+  def ancestors # @override
     @ancestors ||= product_reference_sub_category ? [ product_reference_sub_category.product_reference_category, product_reference_sub_category ] : []
-  end
-  
-  def designation
-    @designation ||= (ancestors + [self]).collect(&:name).join(" ") + ( dimensions.blank? ? "" : " (#{dimensions})" )
   end
   
 #  def after_create

@@ -5,7 +5,7 @@ class QuoteItemTest < ActiveSupport::TestCase
   
   should_validate_presence_of :name
   
-  should_journalize :attributes        => [:name, :description, :dimensions, :unit_price, :prizegiving,
+  should_journalize :attributes        => [:name, :description, :width, :length, :height, :unit_price, :prizegiving,
                                            :quantity, :vat, :position, :pro_rata_billing]#,
                     #:identifier_method =>  Proc.new{ |i| "#{i.designation} (x #{i.quantity})" }
   
@@ -63,17 +63,26 @@ class QuoteItemTest < ActiveSupport::TestCase
         @quote_item.name = "My Product 1"
       end
       
-      should "have a valid designation" do
+      should "have a well-formed designation" do
         assert_equal "My Product 1", @quote_item.designation
+      end
+      
+      should "have a well-formed designation_with_dimensions" do
+        assert_equal "My Product 1", @quote_item.designation_with_dimensions
       end
       
       context "and with dimensions" do
         setup do
-          @quote_item.dimensions = "1000x2000"
+          @quote_item.width = 1000
+          @quote_item.length = 2000
         end
         
-        should "have a valid designation" do
-          assert_equal "My Product 1", @quote_item.designation # 'dimensions' is not taken in account because a free_item is not supposed to have 'dimensions'
+        should "have a well-formed designation" do
+          assert_equal "My Product 1", @quote_item.designation
+        end
+        
+        should "have a well-formed designation_with_dimensions" do
+          assert_equal "My Product 1", @quote_item.designation_with_dimensions # 'dimensions' is not taken in account because a free_item is not supposed to have 'dimensions'
         end
       end
     end
@@ -144,22 +153,37 @@ class QuoteItemTest < ActiveSupport::TestCase
         assert_equal 5.5, @quote_item.original_vat
       end
       
-      should "have a valid designation" do
+      should "have a well-formed designation" do
         expected_value = "Parent category Child category First Product Reference"
         assert_equal expected_value, @quote_item.designation
       end
       
+      should "have a well-formed designation_with_dimensions" do
+        expected_value = "Parent category Child category First Product Reference"
+        assert_equal expected_value, @quote_item.designation_with_dimensions
+      end
+      
       context ", and with dimensions" do
         setup do
-          @quote_item.dimensions = "1000x2000"
+          @quote_item.width = 1000
+          @quote_item.length = 2000
         end
         
-        should "have a valid designation" do
-          expected_value = "Parent category Child category First Product Reference (1000x2000)" # <=> name (dimensions)
+        should "have a well-formed designation" do
+          expected_value = "Parent category Child category First Product Reference"
           assert_equal expected_value, @quote_item.designation
+        end
+        
+        should "have a well-formed designation_with_dimensions" do
+          expected_value = "Parent category Child category First Product Reference (1000 x 2000 mm)" # <=> name (dimensions)
+          assert_equal expected_value, @quote_item.designation_with_dimensions
         end
       end
     end
+  end
+  
+  context 'A "service" quote item' do
+    #TODO
   end
   
   context "A valid and saved quote_item" do

@@ -24,12 +24,10 @@ class SurveyStepTest < ActiveSupport::TestCase
         attributes = [{ :product_reference_id => ProductReference.first.id,
                         :name                 => "Name",
                         :description          => "Description",
-                        :dimensions           => "Dimensions",
                         :quantity             => 1 },
                       { :product_reference_id => ProductReference.last.id,
                         :name                 => "Name",
                         :description          => "Description",
-                        :dimensions           => "Dimensions",
                         :quantity             => 1 }]
         @step.end_product_attributes=(attributes)
         
@@ -55,8 +53,7 @@ class SurveyStepTest < ActiveSupport::TestCase
       @order = create_default_order
       @step = @order.commercial_step.survey_step
       
-      @end_product = create_default_end_product(@order, :description => 'Default description',
-                                                        :dimensions  => '1000x3000')
+      @end_product = create_default_end_product(@order, :description => 'Default description')
       flunk "@order should have 1 end_product" unless @step.order.end_products(true).size == 1
     end
     
@@ -65,7 +62,6 @@ class SurveyStepTest < ActiveSupport::TestCase
         @new_attributes = { :id          => @end_product.id,
                             :name        => @end_product.name + " new string",
                             :description => @end_product.description + " new string",
-                            :dimensions  => @end_product.dimensions + " new string",
                             :quantity    => @end_product.quantity + 1 }
         @step.end_product_attributes=( [@new_attributes] )
         

@@ -476,8 +476,8 @@ function hide_event_box () {
 
         case "limit":
         var limit_select_elm = document.getElementById('event_frequence_limit_select');
-        var until_date_elm = document.getElementById('event_until_date').parentNode;
-        var count_elm = document.getElementById('event_count').parentNode;
+        var until_date_elm = document.getElementById('event_until_date_container');
+        var count_elm = document.getElementById('event_count_container');
         switch(select_elm.options[select_elm.selectedIndex].text) {
           case "Jamais":
           until_date_elm.style.display = 'none';

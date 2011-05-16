@@ -15,12 +15,6 @@ Vat.create! :name => "5.5",   :rate => "5.5"
 Vat.create! :name => "2.1",   :rate => "2.1"
 Vat.create! :name => "Exo.",  :rate => "0"
 
-# Default order_type
-normal = OrderType.create! :title => "Normal"
-normal.society_activity_sectors = SocietyActivitySector.find(:all)
-sav = OrderType.create! :title => "SAV"
-sav.society_activity_sectors << SocietyActivitySector.first
-
 # default send quote methods
 SendQuoteMethod.create!(:name => "Courrier")
 SendQuoteMethod.create!(:name => "E-mail")

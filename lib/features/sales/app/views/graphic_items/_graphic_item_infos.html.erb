@@ -7,9 +7,9 @@ graphic_item = graphic_item_infos
   <p>
     <%= form.label :end_product_id %>
     <% if graphic_item.new_record? %>
-      <%= form.collection_select(:end_product_id, @end_products, :id, :designation, { :prompt => "Veuillez choisir un produit" }) %>
+      <%= form.collection_select(:end_product_id, @end_products, :id, :designation_with_dimensions, { :prompt => "Veuillez choisir un produit" }) %>
     <% else %>
-      <%= form.strong(graphic_item.end_product.name) %>
+      <%= form.strong(graphic_item.end_product.designation_with_dimensions) %>
     <% end %>
   </p>
 <% end %>

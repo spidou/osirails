@@ -1,5 +1,14 @@
 require 'lib/seed_helper'
 
+# Default order_type
+OrderType.create! :title => "Normal"
+OrderType.create! :title => "SAV"
+
+# add society_activity_sectors to existing order_types
+OrderType.all.each do |ot|
+  ot.society_activity_sectors = SocietyActivitySector.find(:all)
+end
+
 # default subcontractors
 subcontractor = Subcontractor.create! :name => "Sous traitant par défaut", :siret_number => "12345678912345", :activity_sector_reference_id => ActivitySectorReference.first.id, :legal_form_id => LegalForm.first.id
 subcontractor.build_iban(:bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
@@ -36,10 +45,10 @@ ProductReference.create! :name => "Reference 1.3.2", :description => "Descriptio
 ProductReference.create! :name => "Reference 1.3.3", :description => "Description de la référence 1.3.3", :product_reference_sub_category_id => sous_famille13.id, :vat => Vat.all.rand.rate
 
 # default service_deliveries
-sd1 = ServiceDelivery.create! :name => "Déplacement zone 1", :description => "", :unit_price => 100, :vat => 8.5
-sd2 = ServiceDelivery.create! :name => "Déplacement zone 2", :description => "", :unit_price => 150, :vat => 8.5
-sd3 = ServiceDelivery.create! :name => "Déplacement zone 3", :description => "", :unit_price => 200, :vat => 8.5
-sd4 = ServiceDelivery.create! :name => "Installation", :description => "", :time_scale => 'hourly', :unit_price => 100, :vat => 8.5, :pro_rata_billable => true
+sd1 = ServiceDelivery.create! :name => "Déplacement zone 1", :description => "", :cost => 100, :margin => 1.5, :vat => 8.5
+sd2 = ServiceDelivery.create! :name => "Déplacement zone 2", :description => "", :cost => 150, :margin => 1.5, :vat => 8.5
+sd3 = ServiceDelivery.create! :name => "Déplacement zone 3", :description => "", :cost => 200, :margin => 1.5, :vat => 8.5
+sd4 = ServiceDelivery.create! :name => "Installation", :description => "", :time_scale => 'hourly', :cost => 100, :margin => 2, :vat => 8.5, :pro_rata_billable => true
 
 # default orders
 order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :customer_needs => "1 visuel 10000 x 4000", :approaching_id => Approaching.first.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 10.days, :previsional_delivery => DateTime.now + 20.days)
@@ -77,7 +86,9 @@ order1.end_products.each do |end_product|
                           :quotable_type  => "EndProduct",
                           :name           => end_product.name,
                           :description    => end_product.description,
-                          :dimensions     => end_product.dimensions,
+                          :width          => end_product.width,
+                          :length         => end_product.length,
+                          :height         => end_product.height,
                           :quantity       => end_product.quantity,
                           :unit_price     => (end_product.quantity * rand * 10000).round,
                           :prizegiving    => (rand * 10).round,

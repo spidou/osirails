@@ -1,20 +1,24 @@
 <% require_locals supply %>
 
-<table id="supplier_supplies">
-  <thead>
-    <tr>
-      <th>Fournisseur</th>
-      <th>Référence fournisseur</th>
-      <th>PU HT (&euro;)</th>
-      <th>Taxes (&#37;)</th>
-      <th>PU TTC (&euro;)</th>
-      <th>D&eacute;lai d'approvisionnement</th>
-      <% if supply.errors.on(:supplier_supplies) %>
-        <th>Erreurs</th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody id="supplier_supplies_body">
-    <%= render(:partial => 'supplier_supplies/supplier_supply_in_one_line', :collection => supplier_supplies, :locals => { :supply => supply }) %>
-  </tbody>
-</table>
+<% if is_show_view? and supplier_supplies.empty? %>
+  <p>Aucun fournisseur n'a été trouvé</p>
+<% else %>
+  <table id="supplier_supplies">
+    <thead>
+      <tr>
+        <th>Fournisseur</th>
+        <th>Référence fournisseur</th>
+        <th>PU HT (&euro;)</th>
+        <th>Taxes (&#37;)</th>
+        <th>PU TTC (&euro;)</th>
+        <th>D&eacute;lai d'approvisionnement</th>
+        <% if supply.errors.on(:supplier_supplies) %>
+          <th>Erreurs</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody id="supplier_supplies_body">
+      <%= render :partial => 'supplier_supplies/supplier_supply_in_one_line', :collection => supplier_supplies, :locals => { :supply => supply } %>
+    </tbody>
+  </table>
+<% end %>

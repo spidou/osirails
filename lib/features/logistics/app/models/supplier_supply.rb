@@ -9,8 +9,6 @@
 # A datetime "updated_at"
 
 class SupplierSupply < ActiveRecord::Base
-  has_permissions :as_business_object
-  
   belongs_to :supply
   belongs_to :supplier
   

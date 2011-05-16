@@ -191,6 +191,7 @@ module ActsAsStep
     def terminated!
       if in_progress? or pending? or unstarted?
         update_attribute(:status, TERMINATED)
+        update_attribute(:started_at, DateTime.now) if started_at.nil?
         update_attribute(:finished_at, DateTime.now)
         if next_step = self.next
           next_step.pending!

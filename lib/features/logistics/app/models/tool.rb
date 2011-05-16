@@ -6,10 +6,10 @@ class Tool < ActiveRecord::Base # @abstract
   belongs_to :employee
   belongs_to :supplier
   
-  validates_presence_of :name, :description, :purchase_date
-  validates_presence_of :service_id, :employee_id, :supplier_id
+  validates_presence_of :name, :purchase_date, :serial_number, :service_id
+  
   validates_presence_of :service,  :if => :service_id
-  validates_presence_of :job,      :if => :job_id,            :message => "doit être un poste valide"
+  validates_presence_of :job,      :if => :job_id
   validates_presence_of :employee, :if => :employee_id
   validates_presence_of :supplier, :if => :supplier_id
   

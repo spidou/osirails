@@ -41,9 +41,10 @@ namespace :osirails do
                                                                :siret_number                  => 5,
                                                                :activity_sector_reference_id  => { :find_by_code  => 6 },
                                                                :address_attributes            => { :street_name   => 7,
-                                                                                                   :country_name  => 11,
+                                                                                                   :zip_code      => 8,
                                                                                                    :city_name     => 9,
-                                                                                                   :zip_code      => 8 },
+                                                                                                   :region_name   => 10,
+                                                                                                   :country_name  => 11 },
                                                                :phone_attributes              => { :indicative_id => { :find_by_indicative => 12 },
                                                                                                    :number        => 13 },
                                                                :fax_attributes                => { :indicative_id => { :find_by_indicative => 14 },
@@ -53,9 +54,11 @@ namespace :osirails do
                             :customer_grade_id          => { :find_by_name => 23 },
                             :customer_solvency_id       => { :find_by_name => 24 },
                             :bill_to_address_attributes => { :street_name   => 7,
-                                                             :country_name  => 11,
+                                                             :zip_code      => 8,
                                                              :city_name     => 9,
-                                                             :zip_code      => 8 } }
+                                                             :region_name   => 10,
+                                                             :country_name  => 11 },
+                            :factor_id                   => { :find_by_name => 29 } }
                             #TODO implement company_created_at and collaboration_started_at
             importer = Osirails::Importer.new(:klass => :customer, :identifiers => :name, :definitions => definitions, :if_match => ENV["IF_MATCH"])
             importer.import_data(rows)
@@ -73,17 +76,18 @@ namespace :osirails do
             
             definitions = { :name                         => 0,
                             :legal_form_id                => { :find_or_create_by_name => 1 },
-                            :siret_number                 => 3,
-                            :activity_sector_reference_id => { :find_by_code => 4 },
-                            :address_attributes           => { :street_name   => 5,
-                                                               :country_name  => 9,
-                                                               :city_name     => 7,
-                                                               :zip_code      => 6 },
-                            :phone_attributes             => { :indicative_id => { :find_by_indicative => 10 },
-                                                               :number        => 11 },
-                            :fax_attributes               => { :indicative_id => { :find_by_indicative => 12 },
+                            :siret_number                 => 5,
+                            :activity_sector_reference_id => { :find_by_code => 6 },
+                            :address_attributes           => { :street_name   => 7,
+                                                               :zip_code      => 8,
+                                                               :city_name     => 9,
+                                                               :region_name   => 10,
+                                                               :country_name  => 11 },
+                            :phone_attributes             => { :indicative_id => { :find_by_indicative => 12 },
                                                                :number        => 13 },
-                            :website                      => 14 }
+                            :fax_attributes               => { :indicative_id => { :find_by_indicative => 14 },
+                                                               :number        => 15 },
+                            :website                      => 16 }
                             #TODO implement company_created_at and collaboration_started_at
             importer = Osirails::Importer.new(:klass => :supplier, :identifiers => :name, :definitions => definitions, :if_match => ENV["IF_MATCH"])
             importer.import_data(rows)

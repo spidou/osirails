@@ -28,6 +28,70 @@ class EmployeeTest < ActiveSupport::TestCase
                     :subresources        => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
                     :identifier_method   => :fullname
   
+  context "An new and valid employee" do
+    setup do
+      @employee = build_valid_employee
+    end
+    
+    context "without a job_contract" do
+      setup do
+        flunk "@employee should NOT have a job_contract" if @employee.job_contract
+        flunk "@employee should be valid" unless @employee.valid?
+      end
+      
+      should "automatically build an empty job_contract when validating" do
+        assert @employee.job_contract
+        assert @employee.job_contract.new_record?
+      end
+      
+      should "save it's empty job_contract when saving itself" do
+        @employee.save!
+        
+        assert !@employee.job_contract.new_record?
+      end
+    end
+    
+    context "with a job_contract" do
+      setup do
+        @start_date = Date.parse("2011/01/01")
+        @employee.build_job_contract(:start_date => @start_date)
+        flunk "@employee should have a job_contract" if @employee.job_contract.nil?
+        flunk "@employee should have a job_contract which starts at 1st January, 2011" unless @employee.job_contract.start_date == @start_date
+        flunk "@employee should be valid" unless @employee.valid?
+      end
+      
+      should "keep existing job_contract instead of overrided it when validating" do
+        assert @employee.job_contract
+        assert @employee.job_contract.start_date == @start_date
+      end
+      
+      should "save it's existing job_contract when saving itself" do
+        @employee.save!
+        
+        assert !@employee.job_contract.new_record?
+        assert @employee.job_contract.start_date == @start_date
+      end
+    end
+    
+    context "without a user" do
+      setup do
+        flunk "@employee should NOT have a user" if @employee.user
+        flunk "@employee should be valid" unless @employee.valid?
+      end
+      
+      should "automatically build a user when validating" do
+        assert @employee.user
+        assert @employee.user.new_record?
+      end
+      
+      should "save it's user when saving itself" do
+        @employee.save!
+        
+        assert !@employee.user.new_record?, "@employee.user should be saved, but it's still a new_record => #{@employee.user.inspect}"
+      end
+    end
+  end
+  
   context "Thanks to 'has_contacts', a subcontractor" do
     setup do
       @contacts_owner = Employee.new
