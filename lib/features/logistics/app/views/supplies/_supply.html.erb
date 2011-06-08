@@ -1,3 +1,8 @@
+<%
+require_locals supply_class, supply_sub_category_class, supply_type_class, supplies_supply_sizes
+supply_categories ||= []
+%>
+
 <% content_for :header do %>
   <%= stylesheet_link_tag_with_theme_support 'logistics/supply' %>
 <% end %>
@@ -27,97 +32,25 @@
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= display_supply_list_button(@supply_class) %>
+  <%= display_supply_list_button(supply_class) %>
 <% end %>
-
-<%
-sub_category_select_id   = "#{@supply_class.name.underscore}_supply_sub_category_id"
-sub_category_select_name = "#{@supply_class.name.underscore}[supply_sub_category_id]"
-
-supply_type_select_id   = "#{@supply_class.name.underscore}_supply_type_id"
-supply_type_select_name = "#{@supply_class.name.underscore}[supply_type_id]"
-
-supply_type_input_id   = "#{@supply_class.name.underscore}_supply_type_name"
-supply_type_input_name = "#{@supply_class.name.underscore}[supply_type_name]"
-%>
 
 <div class="presentation_medium">
   <h2>Caractéristiques</h2>
   <% form_for(supply) do |form| %>
     <%= form.error_messages %>
     
-    <fieldset class="presentation_in_columns small">
-      <legend>Référencement</legend>
-      
-      <% unless supply.new_record? %>
-        <p>
-          <%= form.label :reference %>
-          <%= strong supply.reference %>
-        </p>
-      <% end %>
-      
-      <div>
-        <p>
-          <%= form.label :supply_category_id %>
-          <% if is_form_view? and supply.new_record? %>
-            <%= form.collection_select :supply_category_id, @supply_categories, :id, :name, { :include_blank => "Veuillez choisir une famille" } %>
-            <%= observe_field("#{@supply_class.name.underscore}_supply_category_id", :url    => self.send("update_#{@supply_sub_category_class.name.tableize}_path"),
-                                                                                    :update => "#{@supply_class.name.underscore}_supply_sub_category_id",
-                                                                                    :with   => 'id') %>
-          <% else %>
-            <%= strong supply.supply_category.name %>
-          <% end %>
-        </p>
-      </div>
-      
-      <div>
-        <p>
-          <%= form.label :supply_sub_category_id %>
-          <% if is_form_view? and supply.new_record? %>
-            <select id="<%= sub_category_select_id %>" name="<%= sub_category_select_name %>">
-              <%= render :partial => 'supply_categories/supply_sub_categories', :object => supply.supply_category ? supply.supply_category.children : [],
-                                                                                :locals => { :current => supply.supply_sub_category_id } %>
-            </select>
-            <%= observe_field("#{@supply_class.name.underscore}_supply_sub_category_id", :url    => self.send("update_#{@supply_type_class.name.tableize}_path"),
-                                                                                        :update => supply_type_select_id,
-                                                                                        :with   => 'id') %>
-            <%= observe_field("#{@supply_class.name.underscore}_supply_sub_category_id", :url    => self.send("update_#{@supply_class.name.underscore}_supply_sizes_path"),
-                                                                                        :update => :supplies_supply_sizes,
-                                                                                        :with   => 'parent_id') %>
-            <%= observe_field("#{@supply_class.name.underscore}_supply_sub_category_id", :url    => self.send("update_#{@supply_class.name.underscore}_unit_measure_path"),
-                                                                                        :with   => 'id') %>
-          <% else %>
-            <%= strong supply.supply_sub_category.name %>
-          <% end %>
-        </p>
-      </div>
-      
-      <div>
-        <p>
-          <%= form.label :supply_type %>
-          <% if is_form_view? and supply.new_record? %>
-            <span class="supply_type_name_select_container">
-              <select id="<%= supply_type_select_id %>" name="<%= supply_type_select_name %>" class="supply_type_id_input" onchange="if (this.value == '-1') { this.clear().up('.supply_type_name_select_container').hide().up().down('.supply_type_name_input_container').show().down('.supply_type_name_input').focus(); } else { }">
-                <%= render :partial => 'supply_types/supply_types', :object => supply.supply_sub_category ? supply.supply_sub_category.supply_types : [],
-                                                                    :locals => { :current => supply.supply_type_id } %>
-              </select>
-            </span>
-            <span class="supply_type_name_input_container" style="display:none">
-              <input id="<%= supply_type_input_id %>" name="<%= supply_type_input_name %>" class="supply_type_name_input" type="text" size="16" autocomplete="off"/>
-              <%= link_to image_tag("cross_16x16.png", :alt => "Annuler", :title => "Annuler"), '#', :onclick => "var input_container = this.up('.supply_type_name_input_container'); input_container.down('.supply_type_name_input').clear(); input_container.hide().up().down('.supply_type_name_select_container').show().down('select').focus();; return false;" %>
-            </span>
-          <% else %>
-            <%= strong supply.supply_type.name %>
-          <% end %>
-        </p>
-      </div>
-    </fieldset>
+    <%= render :partial => 'supplies/supply_referencing', :object => supply, :locals => { :form => form,
+                                                                                          :supply_class => supply_class,
+                                                                                          :supply_sub_category_class => supply_sub_category_class,
+                                                                                          :supply_type_class => supply_type_class,
+                                                                                          :supply_categories => supply_categories } %>
     
     <fieldset>
       <legend>Spécificités</legend>
       
       <div id="supplies_supply_sizes">
-        <%= render :partial => 'supplies_supply_sizes/supplies_supply_sizes_list', :object => @supplies_supply_sizes,
+        <%= render :partial => 'supplies_supply_sizes/supplies_supply_sizes_list', :object => supplies_supply_sizes,
                                                                                    :locals => { :supply => supply } %>
       </div>
     </fieldset>

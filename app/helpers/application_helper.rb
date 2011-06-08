@@ -24,10 +24,7 @@ module ApplicationHelper
   end
   
   def display_menu
-    menu = current_menu
-    html = ""
-    html << display_menu_entries(menu)
-    html
+    display_menu_entries(current_menu)
   end
   
   #TODO remove that for good!
@@ -490,8 +487,16 @@ module ApplicationHelper
     end
     
     def display_menu_entries(current)
-      real_current_menu = current_menu
       output = ""
+      real_current_menu = current_menu
+      
+      begin # find first parent which is not hidden
+        current = current.parent if current.hidden? and current.parent
+      end while current.hidden? and current.parent
+      
+      begin # find first parent which is not hidden
+        real_current_menu = real_current_menu.parent if real_current_menu.hidden? and real_current_menu.parent
+      end while real_current_menu.hidden? and real_current_menu.parent
       
       if current.parent
         output << display_menu_entries(current.parent)
@@ -500,23 +505,28 @@ module ApplicationHelper
         siblings = Menu.mains.activated.select{|m|m.can_access?(current_user)}
       end
       
-      more_link = real_current_menu == current ? '' : link_to(content_tag(:em, 'More'), '#more', :class => 'nav_more')
+      more_link = (real_current_menu == current || siblings.empty?) ? '' : link_to(content_tag(:em, 'More'), '#more', :class => 'nav_more')
       
       if real_current_menu.parent
         unless current.parent
-          output << content_tag(:h4, link_to('Accueil', '/') + more_link, :title => "Accueil")
+          output << content_tag(:h4, link_to('Accueil', '/', :title => 'Accueil') + more_link)
         else
           h4_options = real_current_menu == current ? { :class => 'nav_current' } : {}
           url = url_for_menu(current.parent)
           output << content_tag(:h4, ( url.nil? ? current.parent.title : link_to(current.parent.title, url, :title => current.parent.description) ) + more_link, h4_options)
         end
       end
-      output << "<ul#{' class="nav_top"' unless real_current_menu == current}>"
-      siblings.each do |menu|
-        li_options = ( menu == current or menu.ancestors.include?(current) ) ? { :class => 'selected' } : {}
-        output << display_menu_entry(menu, li_options)
+      
+      if siblings.any?
+        output << "<ul#{' class="nav_top"' unless real_current_menu == current}>"
+        siblings.each do |menu|
+          li_options = ( menu == current or menu.ancestors.include?(current) ) ? { :class => 'selected' } : {}
+          output << display_menu_entry(menu, li_options)
+        end
+        output << "</ul>"
       end
-      output << "</ul>"
+      
+      output
     end
     
     def display_menu_entry(menu, li_options)

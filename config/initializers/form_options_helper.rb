@@ -318,7 +318,7 @@ module ActionView
                                  :value             => textfield_value }.merge(text_field_options)
         
         button_action        = "this.up('.calendar_container').down('[data-calendar-id=calendar_field]').value = ''; this.up('.calendar_container').down('[data-calendar-id=calendar_displayed_field]').value = ''"
-        button_options       = { :class    => :calendar_cleaner, :title => "Effacer" }
+        button_options       = { :class => :calendar_cleaner, :title => "Effacer" }
         
         hidden_field_value   = I18n.l(options[:default], :format => options[:database_format]) rescue options[:default]
         hidden_field_options = { :name              => object_name + "[#{@method_name}]",

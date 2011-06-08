@@ -1,8 +1,8 @@
 class SupplySubCategory < SupplyCategory
   belongs_to :unit_measure
   
-  has_many :supply_categories_supply_sizes, :include => [ :supply_size ], :order => "supply_sizes.position"
-  has_many :supply_sizes, :through => :supply_categories_supply_sizes
+  has_many :supply_categories_supply_sizes, :include => [ :supply_size ]#, :order => "supply_sizes.position"
+  has_many :supply_sizes, :through => :supply_categories_supply_sizes, :order => "supply_sizes.position"
   
   validates_presence_of :supply_category_id
   validates_presence_of :supply_category, :if => :supply_category_id
@@ -15,6 +15,8 @@ class SupplySubCategory < SupplyCategory
   validate :validates_uniqueness_of_supply_sizes
   
   after_save :save_supply_categories_supply_sizes
+  
+  has_search_index :only_attributes => [ :id, :reference, :name ]
   
   def validates_uniqueness_of_supply_sizes
     my_supply_sizes = supply_categories_supply_sizes.collect(&:supply_size)

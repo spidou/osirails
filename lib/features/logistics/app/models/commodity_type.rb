@@ -5,6 +5,6 @@ class CommodityType < SupplyType
   
   has_reference :symbols => [ :supply_sub_category ], :prefix => :logistics
   
-  has_search_index :only_attributes     => [ :reference, :name ],
+  has_search_index :only_attributes     => [ :id, :reference, :name ],
                    :only_relationships  => [ :supply_sub_category ]
 end

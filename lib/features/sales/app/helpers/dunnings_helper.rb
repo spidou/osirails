@@ -7,7 +7,7 @@ module DunningsHelper
     link_to( image_tag( "relaunch_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             new_order_dunning_path(order, :owner => owner.class.name, :owner_id => owner.id))
+             new_order_dunning_path(order, :owner => owner.class.name.underscore, :owner_id => owner.id))
   end
   
   def display_dunning_cancel_button(dunning)
@@ -17,7 +17,7 @@ module DunningsHelper
     link_to( image_tag( "cancel_16x16.png",
                         :alt => text = "Invalider cette relance",
                         :title => text ),
-             order_dunning_cancel_path(order, :dunning_id => dunning.id, :owner => owner.class.name, :owner_id => owner.id),
+             order_dunning_cancel_path(order, :dunning_id => dunning.id, :owner => owner.class.name.underscore, :owner_id => owner.id),
              :confirm => "Êtes-vous sûr ?" )
   end
   

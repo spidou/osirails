@@ -18,8 +18,8 @@ class Menu < ActiveRecord::Base
   attr_accessor :old_parent_id, :update_parent
   
   # Named scopes
-  named_scope :mains, :order => "position" ,:conditions => {:parent_id => nil}
-  named_scope :activated, :order => "position", :include => [:feature], :conditions => ['(features.activated = true or menus.name IS NULL) and menus.hidden IS NULL']
+  named_scope :mains, :conditions => {:parent_id => nil}, :order => "position"
+  named_scope :activated, :include => [:feature], :conditions => ['(features.activated = true or menus.name IS NULL) and ( menus.hidden IS NULL or menus.hidden = ? )', false], :order => "position"
  
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"

@@ -48,7 +48,7 @@ class DunningsController < ApplicationController
     def detect_dunnings_owner
       if params[:owner] and params[:owner_id]
         begin
-          @owner_class = params[:owner].constantize
+          @owner_class = params[:owner].camelize.constantize
           @owner = @owner_class.send(:find, params[:owner_id].to_i)
         rescue
           error_access_page(400)
