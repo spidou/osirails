@@ -1,34 +1,40 @@
-<% if action == 'update'
-		method = 'put'
-	else
-		method = 'post'
-	end
+<%
+if action == 'update'
+	method = :put
+	url = calendar_event_path(@calendar.id, @event.id)
+else
+	method = :post
+	url = calendar_events_path(@calendar.id)
+end
 %>
-	<% remote_form_for :event, @event, :url => calendar_event_path(@calendar, @event), :method => method do |e| %>
+
+<% remote_form_for @event, :url => url, :method => method do |e| %>
 <h1><%= @event.title %></h1>
 <p>
-<%= e.label :title, 'Titre' %>
-<%= e.text_field :title, :class => 'disable-stylesheet-width' %>
+  <%= e.label :title, 'Titre' %>
+  <%= e.text_field :title, :class => 'disable-stylesheet-width' %>
 </p>
 <p>
-<%= e.label :location, 'Emplacement' %>
-<%= e.text_field :location, :class => 'disable-stylesheet-width' %>
+  <%= e.label :location, 'Emplacement' %>
+  <%= e.text_field :location, :class => 'disable-stylesheet-width' %>
 </p>
 <p>
-<%= e.label :full_day, 'Jour entier' %>
-<%= e.check_box :full_day, :onclick => "full_day_checked(this);" %>
+  <%= e.label :full_day, 'Jour entier' %>
+  <%= e.check_box :full_day, :onclick => "full_day_checked(this);" %>
 </p>
 <p>
-<%= e.label :start_at, 'Du' %>
-<%= e.text_field :start_at, {:class => 'disable-stylesheet-width', :onfocus => "event_box_edit_date(this, " + @event.id.to_s + ");"} %>
+  <%= e.label :start_at, 'Du' %>
+  <%= e.calendar_datetime_select(:start_at) %>
 </p>
 <p>
-<%= e.label :end_at, 'Au' %>
-<%= e.text_field :end_at, {:class => 'disable-stylesheet-width', :onfocus => "event_box_edit_date(this, " + @event.id.to_s + ");"} %>
+  <%= e.label :end_at, 'Au' %>
+  <%= e.calendar_datetime_select(:end_at) %>
 </p>
-<p><%= e.label :description %>
-<%= e.text_field :description, :class => 'disable-stylesheet-width' %>
+<p>
+  <%= e.label :description %>
+  <%= e.text_field :description, :class => 'disable-stylesheet-width' %>
 </p>
+
 <p>
 <label for="event_frequence_choice">R&eacute;p&eacute;ter</label>
 <%= e.hidden_field :frequence %>
@@ -152,15 +158,15 @@
 </div>
 <div id="event_frequence_limit" style="display: none;">
 	<p>
-	<%= label_tag 'event_frequence_limit_select', 'Fin' %>
-	<select id="event_frequence_limit_select" onChange="event_change('limit', this);">
-	<option>Jamais</option>
-	<option>Apr&egrave;s</option>
-	<option>le</option>
-	</select>
+	  <%= label_tag 'event_frequence_limit_select', 'Fin' %>
+	  <select id="event_frequence_limit_select" onChange="event_change('limit', this);">
+	    <option>Jamais</option>
+	    <option>Apr&egrave;s</option>
+	    <option>le</option>
+	  </select>
 	</p>
-	<div style="display: none;"><%= e.text_field :count, :size => 3 %> fois</div>
-	<div style="display: none;"><%= e.text_field :until_date %></div>
+	<div id="event_count_container" style="display: none;"><%= e.text_field :count, :size => 3 %> fois</div>
+	<div id="event_until_date_container" style="display: none;"><%= e.calendar_date_select(:until_date) %></div>
 </div>
 <p>
 <%= label_tag 'event_alarm', 'Alarme' %>
@@ -192,11 +198,11 @@
 <%= image_tag("add_16x16.png", :onclick => "add_participant()", :id => "add_participant_icon", :alt => "Ajouter un participant", :title => "Ajouter un participant")%>
 </p>
 <p class="participants_area">
-<div id="participants_list">
-	<% @event.participants.each do |p| %>
-		<span><%= ", " unless @event.participants.first == p %><%= (p.name || '') + (p.email || '') %> <%= image_tag("cross_12x12.png", :onclick => "delete_participant(this, false)", :alt => "Supprimer", :title => "Supprimer")%><input type="hidden" value="<%= p.id %>" /></span>
-	<% end %>
-</div>
+  <span id="participants_list">
+	  <% @event.participants.each do |p| %>
+		  <span><%= ", " unless @event.participants.first == p %><%= (p.name || '') + (p.email || '') %> <%= image_tag("cross_12x12.png", :onclick => "delete_participant(this, false)", :alt => "Supprimer", :title => "Supprimer") %><input type="hidden" value="<%= p.id %>" /></span>
+	  <% end %>
+  </span>
 </p>
 <p>
 <%= e.label :link, 'URL' %>

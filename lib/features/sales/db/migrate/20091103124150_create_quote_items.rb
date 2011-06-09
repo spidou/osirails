@@ -4,7 +4,7 @@ class CreateQuoteItems < ActiveRecord::Migration
       t.references :quote, :quotable
       t.string  :quotable_type, :name
       t.text    :description
-      t.string  :dimensions
+      t.integer :width, :length, :height
       t.decimal :unit_price, :prizegiving, :precision => 65, :scale => 20
       t.float   :quantity, :vat
       t.integer :position

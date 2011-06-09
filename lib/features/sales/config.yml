@@ -73,10 +73,12 @@ menus:
                   quotes:
                     title: Devis (Pièce)
                     description: "Élaboration d'un devis"
+                    hidden: true
                     children:
                       order_forms:
                         title: Bon de commande
                         description: Bon de commande associé au devis
+                        hidden: true
               press_proof_step:
                 title: BAT
                 description: "Étape de l'établissement du/des BAT"
@@ -85,10 +87,12 @@ menus:
                   press_proofs:
                     title: BAT (Pièce)
                     description: Élaboration des BAT
+                    hidden: true
                     children:
                       dunnings:
                         title: Relances
                         description: Gestion des relances
+                        hidden: true
           production_step:
             title: Production
             description: Phase de la Production
@@ -106,10 +110,12 @@ menus:
                   delivery_notes:
                     title: Bon de livraison
                     description: Élaboration des bons de livraison
+                    hidden: true
                     children:
                       delivery_interventions:
                         title: "Intervention de livraison / installation"
                         description: "Gestion des intervention de livraison / installation"
+                        hidden: true
           invoicing_step:
             title: Facturation
             description: Phase de la Facturation
@@ -123,13 +129,16 @@ menus:
                   invoices:
                     title: Facture (Pièce)
                     description: "Élaboration d'une facture"
+                    hidden: true
                     children:
                       payment_attachments:
                         title: Pièce jointe du règlement
                         description: Pièce jointe du règlement
+                        hidden: true
                       adjustment_attachments:
                         title: "Pièce jointe de l'ajustement"
                         description: "Pièce jointe de l'ajustement"
+                        hidden: true
               payment_step:
                 title: Paiements
                 description: "Étape de l'enregistrement des paiments"

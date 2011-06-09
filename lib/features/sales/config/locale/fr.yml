@@ -169,6 +169,9 @@ fr:
         reference: "Référence"
         name: "Spécificité"
         description: "Description"
+        width: "Largeur"
+        length: "Longueur"
+        heigth: "Hauteur"
         dimensions: "Côtes"
         designation: "Désignation"
         vat: "Taux de TVA"
@@ -187,10 +190,12 @@ fr:
         reference: "Référence"
         name: "Nom"
         description: "Description"
-        unit_price: "Prix HT"
+        cost: "Coût de revient"
+        margin: "Marge"
+        unit_price: "Prix de vente HT"
         vat: "TVA"
+        unit_price_with_taxes: "Prix de vente TTC"
         time_scale: "Type"
-        unit_price_with_taxes: "Prix TTC"
         pro_rata_billable: "Facturable au temps passé"
         default_pro_rata_billing: "Facturation au temps passé par défaut"
       manufacturing_step:
@@ -378,6 +383,9 @@ fr:
       product_reference:
         advanced_product_reference: "Tous les produits références"
         product_reference_index: "Les produits références"
+      service_delivery:
+        advanced_service_delivery: "Tous les prestations"
+        service_delivery_index: "Les prestations"
       subcontractor:
         advanced_subcontractor: "Tous les sous-traitants"
         subcontractor_index: "Les sous-traitants"

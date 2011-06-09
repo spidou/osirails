@@ -10,7 +10,7 @@ class ServiceDelivery < ActiveRecord::Base
   
   validates_inclusion_of :time_scale, :in => TIME_SCALES
   
-  validates_numericality_of :unit_price, :vat
+  validates_numericality_of :cost, :margin, :vat
   
   validates_persistence_of :reference, :time_scale, :pro_rata_billable, :if => :has_been_used?
   
@@ -19,10 +19,11 @@ class ServiceDelivery < ActiveRecord::Base
   
   before_validation_on_create :update_reference
   
-  journalize :attributes        => [ :reference, :name, :description, :time_scale, :pro_rata_billable, :default_pro_rata_billing, :unit_price, :vat ],
+  journalize :attributes        => [ :reference, :name, :description, :time_scale, :pro_rata_billable, :default_pro_rata_billing, :cost, :margin, :vat ],
              :identifier_method => :designation
   
-  has_search_index :only_attributes => [ :reference, :name, :description, :unit_price, :time_scale, :pro_rata_billable ]
+  has_search_index :only_attributes => [ :reference, :name, :description, :cost, :margin, :vat, :time_scale, :pro_rata_billable ],
+                   :additional_attributes => { :designation => :string, :unit_price => :float, :unit_price_with_taxes => :float }
   
   def validates_pro_rata_billable
     if pro_rata_billable?
@@ -68,9 +69,18 @@ class ServiceDelivery < ActiveRecord::Base
     !has_been_used?
   end
   
+  def unit_price
+    return 0.0 if cost.nil? or margin.nil?
+    cost * margin
+  end
+  
   def unit_price_with_taxes
-    return 0.0 unless unit_price
     return unit_price if vat.nil? or vat.zero?
     unit_price * ( 1 + (vat/100) )
+  end
+  
+  def margin_amount
+    return 0.0 if cost.nil?
+    unit_price - cost
   end
 end

@@ -5,6 +5,6 @@ class ConsumableType < SupplyType
   
   has_many :supplies, :class_name => 'Consumable', :foreign_key => :supply_type_id
   
-  has_search_index :only_attributes     => [ :reference, :name ],
+  has_search_index :only_attributes     => [ :id, :reference, :name ],
                    :only_relationships  => [ :supply_sub_category ]
 end

@@ -1,4 +1,9 @@
-<% current ||= 0 %>
+<%
+current ||= 0
+hide_other_option ||= false
+%>
 <option value="">Veuillez choisir un type</option>
 <%= options_from_collection_for_select(supply_types, :id, :name, current) %>
+<% unless hide_other_option %>
 <option value="-1">Autre...</option>
+<% end%>

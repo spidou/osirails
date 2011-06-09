@@ -3,7 +3,8 @@
 # A integer  "service_delivery_id"
 # A string   "name"
 # A text     "description"
-# A decimal  "unit_price",          :precision => 65, :scale => 20
+# A float    "cost"
+# A decimal  "margin",              :precision => 65, :scale => 20
 # A decimal  "prizegiving",         :precision => 65, :scale => 20
 # A float    "quantity"
 # A float    "vat"
@@ -23,10 +24,8 @@ class OrdersServiceDelivery < ActiveRecord::Base
   
   validates_presence_of :name
   
-  validates_numericality_of :unit_price, :vat, :quantity
+  validates_numericality_of :cost, :margin, :vat, :quantity
   validates_numericality_of :prizegiving, :allow_blank => true
-  
-  attr_accessor :dimensions # this is just for support methods applied both to end_product and orders_service_delivery (see QuoteItem#build_or_update_quotable)
   
   #TODO test that method
   def enabled?
@@ -61,12 +60,21 @@ class OrdersServiceDelivery < ActiveRecord::Base
     self[:description] ||= service_delivery && service_delivery.description
   end
   
-  def unit_price
-    self[:unit_price] ||= service_delivery && service_delivery.unit_price
+  def cost
+    self[:cost] ||= service_delivery && service_delivery.cost
+  end
+  
+  def margin
+    self[:margin] ||= service_delivery && service_delivery.margin
   end
   
   def vat
     self[:vat] ||= service_delivery && service_delivery.vat
+  end
+  
+  def unit_price
+    return 0.0 if cost.nil? or margin.nil?
+    cost * margin
   end
   
   # return if the order_service_delivery is present into an active invoice (where status != cancelled)

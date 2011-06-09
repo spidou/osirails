@@ -82,7 +82,15 @@ class InvoiceItem < ActiveRecord::Base
   
   #TODO test this method
   def name
-    free_item? ? super : invoiceable && invoiceable.designation
+    if free_item?
+      super
+    elsif invoiceable
+      if product_item?
+        invoiceable.designation_with_dimensions
+      else
+        invoiceable.designation
+      end
+    end
   end
   
   #TODO test this method

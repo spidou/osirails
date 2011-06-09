@@ -16,7 +16,7 @@ tr_style = invoice_item.should_destroy? ? 'display:none' : ''
   <td class="designation">
     <span class="name">
       <% if form.form_view? %>
-        <%= form.text_field :name, :autocomplete => :off %>
+        <%= form.text_field :name, :size => 60, :autocomplete => :off %>
       <% else %>
         <%= invoice_item.name %>
       <% end %>

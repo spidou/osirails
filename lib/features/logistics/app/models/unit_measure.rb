@@ -5,6 +5,8 @@ class UnitMeasure < ActiveRecord::Base
   
   journalize :identifier_method => :symbol_and_name
   
+  has_search_index :only_attributes => [ :id, :name, :symbol ]
+  
   def symbol_and_name
     @symbol_and_name ||= "#{symbol} (#{name.downcase})"
   end

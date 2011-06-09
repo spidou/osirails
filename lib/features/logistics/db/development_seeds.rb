@@ -77,6 +77,18 @@ acier1 = Commodity.create! :supply_type_id => acier.id, :measure => 1.60, :unit_
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
                               :value            => "1700" } ]
 
+acier2 = Commodity.create! :supply_type_id => acier.id, :measure => 1.60, :unit_mass => 75, :threshold => 5,
+                           :supplies_supply_size_attributes => [
+                            { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
+                              :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                              :value            => "10" },
+                            { :supply_size_id   => SupplySize.find_by_name("Largeur").id,
+                              :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                              :value            => "940" },
+                            { :supply_size_id   => SupplySize.find_by_name("Longueur").id,
+                              :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                              :value            => "1700" } ]
+
 galva1 = Commodity.create! :supply_type_id => galva.id, :measure => 4.50, :unit_mass => 105.98, :threshold => 1,
                            :supplies_supply_size_attributes => [
                             { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
@@ -112,6 +124,12 @@ SupplierSupply.create! :supply_id       => acier1.id,
                        :fob_unit_price  => 11,
                        :taxes           => 2,
                        :lead_time       => 18
+
+SupplierSupply.create! :supply_id       => acier2.id,
+                       :supplier_id     => Supplier.first.id,
+                       :fob_unit_price  => 15,
+                       :taxes           => 2,
+                       :lead_time       => 15
 
 SupplierSupply.create! :supply_id       => galva1.id,
                        :supplier_id     => Supplier.first.id,

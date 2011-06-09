@@ -3,7 +3,7 @@ class SupplySize < ActiveRecord::Base
   
   acts_as_list
   
-  has_many :supply_sizes_unit_measures, :order => 'position'
+  has_many :supply_sizes_unit_measures, :order => 'supply_sizes_unit_measures.position'
   has_many :unit_measures, :through => :supply_sizes_unit_measures, :order => 'supply_sizes_unit_measures.position'
   
   validates_presence_of :name

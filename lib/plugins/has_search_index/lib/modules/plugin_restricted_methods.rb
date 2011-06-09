@@ -50,18 +50,21 @@ module RestrictedMethods
   #      
   #    # Employee has_one :job_contract :
   #
-  #     Employee.search_with("job_contract.start_date" => "2/2/1900")
+  #     Employee.search_with("job_contract.start_date" => "1900-2-2")
   #     => nothing because the date is to old, there's no user that have a job_contract's start_date equal to that one
   #
   #    # another example with 'not' +search_type+ to see that it invert +actions+ into +values+:
   #
-  #     Employee.search_with("job_contract.start_date" =>{:value => "2/2/1900", :action => ">"}, :search_type => 'not')
-  #     => discard all employees with job_contractOrder.search_with("id" => 2) start_date greater than 2/2/1900
+  #     Employee.search_with("job_contract.start_date" =>{:value => "1900-2-2", :action => ">"}, :search_type => 'not')
+  #     => discard all employees with job_contractOrder.search_with("id" => 2) start_date greater than 1900-2-2
   #
   #    # Customer has_many :establishments, and Establishment has_one :address :
   #
   #     Customer.search_with("establishments.address.zip_code" => 97438)
   #     => return all customers that have at least one establishment with zip code equal to '97438'
+  #
+  #    NB : Date     format => "%Y%m%d"
+  #         DateTime format => "%Y%m%d %H:%M"
   #
   def search_with(args={})
     criteria    = args.is_a?(Hash) ? args : get_criteria_for_simple_search(args)

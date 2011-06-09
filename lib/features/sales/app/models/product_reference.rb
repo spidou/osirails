@@ -40,12 +40,8 @@ class ProductReference < Product
   end
   
   #TODO test this method
-  def ancestors
+  def ancestors # @override
     @ancestors ||= product_reference_sub_category ? [ product_reference_sub_category.product_reference_category, product_reference_sub_category ] : []
-  end
-  
-  def designation
-    @designation ||= (ancestors + [self]).collect(&:name).join(" ") + ( dimensions.blank? ? "" : " (#{dimensions})" )
   end
   
 #  def after_create

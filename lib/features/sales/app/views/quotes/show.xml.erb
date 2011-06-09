@@ -77,7 +77,7 @@
           <% end %>
           <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %>
           <Reference><%= item.reference %></Reference>
-          <Name><%= item.designation %> <%= delivery_service_rate_text(item) %></Name>
+          <Name><%= item.designation_with_dimensions %> <%= delivery_service_rate_text(item) %></Name>
           <Description><%= display_description_and_pro_rata_billing_for_xml(item) %></Description>
           <Quantity><%= item.quantity %></Quantity>
           <UnitPrice><%= item.unit_price.to_f.round_to(2).to_s(2) %></UnitPrice>

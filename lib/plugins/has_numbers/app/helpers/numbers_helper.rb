@@ -72,9 +72,10 @@ module NumbersHelper
   end
   
   def number_type_path(type)
-    type = "cellphone" if type =~ /Mobile/
-    type = "phone" if type =~ /Fixe/
-    type = "fax" if type =~ /Fax/
+    #TODO this method is based on variable data, and don't take into account other languages than french.
+    type = "cellphone" if type.match(/mobile/i)
+    type = "phone" if type.match(/fix/i)
+    type = "fax" if type.match(/fax/i)
     type + "_16x16.png"
   end
 end

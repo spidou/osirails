@@ -978,7 +978,8 @@ ActiveRecord::Schema.define(:version => 20110404105202) do
     t.integer  "service_delivery_id"
     t.string   "name"
     t.text     "description"
-    t.decimal  "unit_price",          :precision => 65, :scale => 20
+    t.float    "cost"
+    t.decimal  "margin",              :precision => 65, :scale => 20
     t.decimal  "prizegiving",         :precision => 65, :scale => 20
     t.float    "quantity"
     t.float    "vat"
@@ -1135,7 +1136,9 @@ ActiveRecord::Schema.define(:version => 20110404105202) do
     t.integer  "position"
     t.string   "reference"
     t.string   "name"
-    t.string   "dimensions"
+    t.integer  "width"
+    t.integer  "length"
+    t.integer  "height"
     t.text     "description"
     t.float    "vat"
     t.datetime "cancelled_at"
@@ -1165,7 +1168,9 @@ ActiveRecord::Schema.define(:version => 20110404105202) do
     t.string   "quotable_type"
     t.string   "name"
     t.text     "description"
-    t.string   "dimensions"
+    t.integer  "width"
+    t.integer  "length"
+    t.integer  "height"
     t.decimal  "unit_price",       :precision => 65, :scale => 20
     t.decimal  "prizegiving",      :precision => 65, :scale => 20
     t.float    "quantity"
@@ -1286,7 +1291,8 @@ ActiveRecord::Schema.define(:version => 20110404105202) do
     t.string   "reference"
     t.string   "name"
     t.text     "description"
-    t.decimal  "unit_price",               :precision => 65, :scale => 20
+    t.float    "cost"
+    t.decimal  "margin",                   :precision => 65, :scale => 20
     t.float    "vat"
     t.string   "time_scale"
     t.boolean  "pro_rata_billable",                                        :default => false

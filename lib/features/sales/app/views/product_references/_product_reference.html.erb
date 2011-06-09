@@ -90,6 +90,10 @@
       <legend>Autres caractéristiques</legend>
       <div>
         <p>
+          <%= form.label :dimensions %>
+          <%= display_product_dimensions(form, product_reference) %>
+        </p>
+        <p>
           <%= form.label :description %>
           <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 60), :description) %>
         </p>

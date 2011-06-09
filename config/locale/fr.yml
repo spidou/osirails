@@ -120,6 +120,7 @@ fr:
         odd: "doit être impair"
         even: "doit être pair"
         record_invalid: "La validation a échoué : {{errors}}"
+        not_blank: "ne doit pas être rempli(e)"
   
   view:
     links:

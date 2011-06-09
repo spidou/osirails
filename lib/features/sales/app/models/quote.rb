@@ -263,7 +263,9 @@ class Quote < ActiveRecord::Base
     
     name        = quotable.name
     description = quotable.description
-    dimensions  = quotable.dimensions rescue nil # OrdersServiceDelivery doesn't have dimensions
+    width       = quotable.width rescue nil # OrdersServiceDelivery doesn't have width
+    length      = quotable.length rescue nil # OrdersServiceDelivery doesn't have length
+    height      = quotable.height rescue nil # OrdersServiceDelivery doesn't have height
     quantity    = quotable.quantity rescue nil # ProductReference doesn't have quantity
     unit_price  = quotable.unit_price
     prizegiving = quotable.prizegiving
@@ -283,7 +285,9 @@ class Quote < ActiveRecord::Base
                               :reference_object_id    => reference_object_id,
                               :name                   => name,
                               :description            => description,
-                              :dimensions             => dimensions,
+                              :width                  => width,
+                              :length                 => length,
+                              :height                 => height,
                               :unit_price             => unit_price,
                               :prizegiving            => prizegiving,
                               :quantity               => quantity,
@@ -315,7 +319,7 @@ class Quote < ActiveRecord::Base
   
   def free_quote_item_attributes=(quote_item_attributes)
     quote_item_attributes.each do |attributes|
-      build_or_update_quote_item(attributes) unless attributes[:name].blank? and attributes[:description].blank? and attributes[:dimensions].blank? and attributes[:unit_price].blank? and attributes[:prizegiving].blank? and attributes[:quantity].blank? and attributes[:vat].blank?
+      build_or_update_quote_item(attributes) unless attributes[:name].blank? and attributes[:description].blank? and attributes[:width].blank? and attributes[:length].blank? and attributes[:height].blank? and attributes[:unit_price].blank? and attributes[:prizegiving].blank? and attributes[:quantity].blank? and attributes[:vat].blank?
     end
   end
   

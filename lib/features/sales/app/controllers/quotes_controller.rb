@@ -1,6 +1,6 @@
 class QuotesController < ApplicationController
   include AdjustPdf
-  helper :orders, :quote_items, :sales, :contacts, :numbers, :address
+  helper :orders, :quote_items, :sales, :contacts, :numbers, :address, :products
   # method_permission :edit => ['enable', 'disable']
   
   acts_as_step_controller :step_name => :quote_step, :skip_edit_redirection => true

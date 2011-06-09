@@ -38,14 +38,14 @@ end_product_errors  = { :details    => end_product.errors.empty? ? '' : ' errors
         <p>
           <%= form.label :product_reference_id %>
           <%= form.hidden_field :product_reference_id %>
-          <%= strong("#{end_product.product_reference.reference} - #{end_product.product_reference.designation}") %> <%= product_reference_link(end_product.product_reference, :link_text => "Voir la fiche de cette référence", :html_options => { :popup => true }) %>
+          <%= strong("#{end_product.product_reference.reference} - #{end_product.product_reference.designation_with_dimensions}") %> <%= product_reference_link(end_product.product_reference, :link_text => "Voir la fiche de cette référence", :html_options => { :popup => true }) %>
         </p>
         <p>
           <%= form.label :name %>
           <%= form.text_field :name, :value => end_product.name, :size => 50 %>
           
           <%= form.label :dimensions %>
-          <%= form.text_field :dimensions, :value => end_product.dimensions %>
+          <%= display_product_dimensions(form, end_product) %>
         </p>
         <p>
           <%= form.label :description %>

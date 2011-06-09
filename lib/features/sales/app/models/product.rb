@@ -10,7 +10,9 @@
 # A integer  "position"
 # A string   "reference"
 # A string   "name"
-# A string   "dimensions"
+# A integer  "width"
+# A integer  "length"
+# A integer  "height"
 # A text     "description"
 # A float    "vat"
 # A datetime "cancelled_at"
@@ -18,6 +20,8 @@
 # A datetime "updated_at"
 
 class Product < ActiveRecord::Base # @abstract
+  include ProductDimensions
+  
   named_scope :actives, :conditions => [ "cancelled_at IS NULL" ]
   
   validates_presence_of :name, :unless => :should_destroy?
@@ -28,20 +32,34 @@ class Product < ActiveRecord::Base # @abstract
     should_destroy.to_i == 1
   end
   
-  #TODO test that method
+  #TODO test this method
   def enabled?
     !cancelled_at
   end
   
-  #TODO test that method
+  #TODO test this method
   def was_enabled?
     !cancelled_at_was
   end
   
-  #TODO test that method
+  #TODO test this method
   def disable
     self.cancelled_at = Time.now
     self.save
+  end
+  
+  def ancestors
+    raise "Product doesn't implement 'ancestors'. A subclass may override this method"
+  end
+  
+  #TODO test this method
+  def designation
+    (ancestors + [self]).collect(&:name).join(" ")
+  end
+  
+  #TODO test this method
+  def designation_with_dimensions
+    designation + ( dimensions.blank? ? "" : " (#{dimensions})" )
   end
   
 #  before_destroy :cancel_if_cannot_be_destroyed

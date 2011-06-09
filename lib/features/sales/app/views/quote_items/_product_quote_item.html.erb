@@ -21,8 +21,9 @@ counter ||= 1
         <%= link_to( image_tag("eraser_16x16.png", :alt => "Valeur par défaut", :title => "Valeur par défaut"), "#default",
                      :onclick => "restore_original_value(this.up('.quote_item'), 'name')" ) %>
       </span>
+      <%= display_product_dimensions(form, quote_item) %>
     <% else %>
-      <span class="name"><%= h(quote_item.designation) %></span>
+      <span class="name"><%= h(quote_item.designation_with_dimensions) %></span>
     <% end %>
     
     <% if is_form_view? %>
@@ -40,12 +41,6 @@ counter ||= 1
       <% end %>
     <% end %>
   </td>
-  
-  <% if is_form_view? %>
-    <td class="dimensions">
-      <%= form.text_field :dimensions, :value => quote_item.dimensions, :size => 15, :class => :input_dimensions, :autocomplete => :off, :title => "Entrer les dimensions pour ce produit" %>
-    </td>
-  <% end %>
   
   <td class="unit_price amount">
     <span class="unit_price" real-value="<%= quote_item.unit_price %>" title="<%= quote_item.unit_price %>">

@@ -11,7 +11,7 @@
 <link href="/stylesheets/calendar.css" rel="stylesheet" type="text/css"/>
 <% end %>
 
-<% add_contextual_menu_item :calendar, true do %>
+<% add_contextual_menu_item :calendar, :force_not_list => true do %>
 <div id="mini_calendar"></div>
 <script type="text/javascript">
 Calendar.setup({

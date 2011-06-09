@@ -18,8 +18,8 @@ html, body {
 	padding: 0;
 	width: 100%;
 	height: 100%;
-	font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, Arial, sans-serif;
-	font-size: 92%;
+	font-family: Ubuntu, Verdana, Helvetica, Arial, sans-serif;
+	font-size: 97%;
 	cursor: default;
 	min-width: 1024px;
 }
@@ -156,6 +156,7 @@ table tfoot > tr.nota > td strong {
   font-weight: bold;
 }
 
+/* // this is useless since we color fields with error in red
 table td span.fieldWithErrors {
   display: inline-block;
 }
@@ -164,7 +165,7 @@ table td span.fieldWithErrors:after {
   color: red;
   vertical-align: top;
   content: " *"
-}
+}*/
 
 object {
   margin: 0;
@@ -175,6 +176,104 @@ hr {
   border-color: #DDD;
   margin: 12px 0px 12px 0;
   -moz-box-shadow: 0px 1px 7px rgba(0,0,0,0.4), 0px -1px 7px rgba(0,0,0,0.4);
+}
+
+/* Form fields (blueprintcss)
+-------------------------------------------------------------- */
+input, textarea, select {
+  font-family: Ubuntu, Verdana, Helvetica, Arial, sans-serif;
+  color: #4C4C4C;
+  -moz-border-radius: 3px;
+  -moz-transition: all .2s;
+}
+
+input, textarea {
+  background-color: #f9f9f9;
+  border: 1px solid #bbb;
+}
+
+input[readonly], textarea[readonly] {
+  background-color: #F0EBE2;
+}
+
+input[readonly]:not([data-calendar-id]), textarea[readonly] {
+  background-image: url('/themes/emr/images/readonly_input.png');
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+  padding-left: 15px;
+}
+
+input[disabled], textarea[disabled] {
+  background-color: #F0EBE2;
+  background-image: url('/themes/emr/images/disabled_input.png') !important;
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+  padding-left: 15px;
+  color: gray;
+}
+
+input:not([readonly]):not([disabled]):hover, textarea:not([readonly]):not([disabled]):hover {
+  -moz-box-shadow: 0 0 2px #ef6100;
+}
+
+input:not([readonly]):not([disabled]):focus, textarea:not([readonly]):not([disabled]):focus {
+  -moz-box-shadow: 0 0 2px #ef6100;
+  border-color: #ef6100;
+  background-color: #fff;
+}
+
+input[type=submit], input[type=reset], input[type=button] {
+  padding: 2px 3px;
+  background-color: #ddd8d0;
+  border: 1px solid #969696;
+  -moz-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.5), inset 1px 8px 7px rgba(255,255,255,0.4), 1px 1px 1px rgba(0,0,0,0.1);
+  -moz-border-radius: 5px;
+}
+
+input[type=submit]:not([readonly]):not([disabled]):focus,
+input[type=reset]:not([readonly]):not([disabled]):focus,
+input[type=button]:not([readonly]):not([disabled]):focus { /* override behaviour for all inputs defined behind */
+  border-color: #969696;
+  background-color: #ddd8d0;
+}
+
+input[type=submit]:not([readonly]):not([disabled]):active,
+input[type=reset]:not([readonly]):not([disabled]):active,
+input[type=button]:not([readonly]):not([disabled]):active {
+  background-color: #c7c2bb;
+}
+
+input[type=submit][disabled] { /* we don't want to display a lock when submitting a form (submit button is disabled to prevent multiple sends) */
+  background-image: none !important;
+}
+
+select {
+  padding: 1px;
+  background-color: #f6f1e8;
+  border: 1px solid #969696;
+}
+
+select:not([multiple]) {
+  background-color: #ede8df;
+  -moz-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.5), inset 1px 8px 7px rgba(255,255,255,0.4), 1px 1px 1px rgba(0,0,0,0.1);
+}
+
+select[readonly] {
+  background: #c9c9c9 url('/themes/emr/images/readonly_input.png') no-repeat 2px 1px;
+  padding-left: 15px;
+}
+
+select[disabled] {
+  background: #c9c9c9 url('/themes/emr/images/disabled_input.png') no-repeat 2px 1px;
+  padding-left: 15px;
+}
+
+select:not([readonly]):not([disabled]):not([multiple]):hover {
+  -moz-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.5), inset 1px 30px 7px rgba(255,255,255,0.4), 1px 1px 1px rgba(0,0,0,0.1);
+}
+
+select:not([readonly]):not([disabled]):not([multiple]):active {
+  -moz-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.5), inset 1px 0px 7px rgba(255,255,255,0.4), 1px 1px 1px rgba(0,0,0,0.1);
 }
 
 /* IMAGES */
@@ -227,6 +326,11 @@ fieldset:not(no-style) > legend {
 
 textarea.autoresize_text_area {
   overflow: hidden;
+  resize: none;
+}
+
+abbr {
+  cursor: help;
 }
 
 /*/////////////END OF GENERICS TAGS////////////////////*/
@@ -875,10 +979,20 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 /!\::::::::::::::::GENERAL ERRORS:::::::::::::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .fieldWithErrors input,
-.fieldWithErrors select,
-.fieldWithErrors label,
 .fieldWithErrors textarea {
-  color:#B0383D;
+  background-color: #fbe3e4;
+  color: #8a1f11;
+  border-color: #fbc2c4;
+}
+
+.fieldWithErrors select {
+  background-color: #fbbfc2;
+  color: #8a1f11;
+  border-color: #fb8185;
+}
+
+.fieldWithErrors label {
+  color: #8a1f11;
 }
 
 #errorExplanation {
@@ -1100,12 +1214,7 @@ width: 50px ! important;
 	padding:5px 10px 5px 10px;
 }
 
-.date_days {
-	margin:0px 20px 0px -15px ;
-}
-
 /*LAYOUTS' FORM*/
-
 div.presentation_small label {
 	width:100px;
 }
@@ -1148,14 +1257,6 @@ div label.skip_presentation {
   margin: 10px -13px -5px -13px;
 }
 
-/* // this is disabled because 'background' remove the default border style, and we can't display the right border style according to the user theme
-#content_page > div form input[readonly=readonly] {
-  background: #F0EBE2 url('/themes/emr/images/readonly_input.png') no-repeat 2px 50%;
-  text-indent: 20px;
-  border: 1px solid #757575;
-  -moz-border-radius: 3px;
-}*/
-
 .calendar_container {
   position: relative;
   vertical-align: top;
@@ -1169,7 +1270,7 @@ div label.skip_presentation {
 .calendar_container input.calendar_cleaner {
 	position: absolute;
 	background: url("/themes/emr/images/eraser_12x12.png") ;
-	top: 7px;
+	top: 3px;
 	right: 30px;
 	border: none;
 	width: 12px;
@@ -1179,7 +1280,7 @@ div label.skip_presentation {
 
 .calendar_container img.calendar_trigger {
   position: absolute;
-  top: 4px;
+  top: 1px;
   right: 6px;
   cursor: pointer;
 }

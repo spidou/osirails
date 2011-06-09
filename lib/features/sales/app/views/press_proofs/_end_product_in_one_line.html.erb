@@ -8,7 +8,7 @@ colspan = is_form_view? ? 8 : 7
 <% unless end_product.press_proofs.empty? %>
   <tbody>
     <tr class="group">
-      <td colspan="<%= colspan %>"><%= end_product.designation %></td>
+      <td colspan="<%= colspan %>"><%= end_product.designation_with_dimensions %></td>
     </tr>
     <%= render :partial => 'press_proofs/press_proof_in_one_line', :collection => press_proofs %>
   </tbody>

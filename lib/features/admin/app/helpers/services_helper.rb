@@ -71,8 +71,8 @@ module ServicesHelper
     return "" if ids.size==0
   end
   
-  # method to display textfield where the user puts his shedules
-  def display_shedule_text_field(moment,tabindex)
+  # method to display textfield where the user puts his schedules
+  def display_schedule_text_field(moment,tabindex)
     html = text_field_tag( moment + '_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width",:tabIndex => tabindex.to_s, :id => tabindex.to_s,:onkeyup=>"time(this);") + " H "
     tabindex+=1
     html += text_field_tag( moment + '_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width",:tabindex => tabindex.to_s, :id => tabindex.to_s, :onkeyup=>"time(this);") + " - " 

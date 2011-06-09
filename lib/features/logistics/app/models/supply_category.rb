@@ -14,6 +14,8 @@ class SupplyCategory < ActiveRecord::Base
   before_validation_on_create :update_reference
   
   before_destroy :can_be_destroyed?
+  
+  has_search_index :only_attributes => [ :id, :reference, :name ]
    
   def enabled?
     enabled

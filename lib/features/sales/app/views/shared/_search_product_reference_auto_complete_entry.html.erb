@@ -3,12 +3,16 @@ require_locals keywords
 entry = search_product_reference_auto_complete_entry
 
 value = "#{entry.reference} - #{entry.designation}"
+dimensions = entry.respond_to?(:dimensions) ? entry.dimensions : nil
 description = entry.description ? entry.description.mb_chars[0..60].lines.map(&:strip).to_a.join(". ") + (entry.description.mb_chars.size > 60 ? '...' : '') : ''
 %>
 
 <li data-autocomplete-value="<%= h(value) %>" data-autocomplete-reference-id="<%= entry.id %>" data-autocomplete-reference-type="<%= entry.class.name %>" class="<%= entry.class.name.underscore %>">
   <div>
     <span><%= highlight(value, keywords) %></span><br/>
+  <% unless dimensions.nil? %>
+    <span><%= highlight(dimensions, keywords)%></span><br/>
+  <% end %>
     <em><%= highlight(description, keywords) %></em>
   </div>
 </li>

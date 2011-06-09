@@ -1,8 +1,13 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "admin/service" %>
+  <%= javascript_include_tag 'admin/schedules' if is_form_view? %>
+<% end %>
+
 <% if is_form_view? %>
-  
+
+  <h2>Informations du service :</h2>
   <% form_for(service) do |form| %>
     <%= form.error_messages %>
-    <h2>Informations du service :</h2>
     <p>
       <%= form.label :name%>
       <%= form.form_or_view(form.text_field(:name),:name) %>
@@ -15,7 +20,7 @@
     
     <h2>Horaires du service :</h2>
     
-    <%= render :partial => 'shedules/shedule', :object => @shedules %>
+    <%= render :partial => 'schedules/schedule', :object => @schedules %>
     
     <%= form.form_buttons %>
   <% end %>

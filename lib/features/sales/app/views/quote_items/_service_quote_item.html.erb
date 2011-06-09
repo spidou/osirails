@@ -40,10 +40,6 @@ id = quote_item.new_record? ? generate_random_id : quote_item.id
     <%= display_pro_rata_billing_text(quote_item, form) %>
   </td>
   
-  <% if is_form_view? %>
-    <td class="dimensions">&nbsp;</td>
-  <% end %>
-  
   <td class="unit_price amount">
     <span class="unit_price" real-value="<%= quote_item.unit_price %>" title="<%= quote_item.unit_price %>">
       <% if is_form_view? %>

@@ -53,49 +53,57 @@ menus:
     position: 5
     children:
       commodities_manager:
-        title: "Gestion des matières premières"
+        title: "Matières premières"
         description: "Gestion des matières premières"
         position: 1
         children:
           commodity_categories:
             title: "Familles de matière première"
             description: "Gestion des familles de matière première"
+            hidden: true
             children:
               commodity_sub_categories:
                 title: "Sous-familles de matière première"
                 description: "Gestion des sous-familles de matière première"
+                hidden: true
                 children:
                   commodity_types:
                     title: "Types de matière première"
                     description: "Gestion des types de matière première"
+                    hidden: true
           commodities:
             title: "Matières premières"
             description: "Gestion des matières premières"
+            hidden: true
       consumables_manager:
-        title: "Gestion des consommables"
+        title: "Consommables"
         description: "Gestion des consommables"
         position: 2
         children:
           consumable_categories:
             title: "Familles de consommable"
             description: "Gestion des familles de consommable"
+            hidden: true
             children:
               consumable_sub_categories:
                 title: "Sous-familles de consommable"
                 description: "Gestion des sous-familles de consommable"
+                hidden: true
                 children:
                   consumable_types:
                     title: "Types de consommable"
                     description: "Gestion des types de consommable"
+                    hidden: true
           consumables:
             title: "Consommables"
             description: "Gestion des consommables"
+            hidden: true
       restockable_supplies:
         title: "Articles à réapprovisionner"
         description: "Visualisation des articles proches ou en dessous de leur seuil d'alerte"
         position: 3
       stock_manager:
-        title: "Gestion des entrées/sorties"
+        title: "Entrées/Sorties"
         description: "Gestion les entrées/sorties de stock et les inventaires"
         position: 4
         children:
@@ -111,6 +119,10 @@ menus:
             title: "Inventaires"
             description: "Gestion des inventaires"
             position : 3
+      supplies:
+        title: "Gestion des articles"
+        description: "Gestion des articles et des familles d'articles"
+        hidden: true
 configurations:
   commodity_category_reference_pattern:
     description: Modèle permettant la génération du numéro de référence unique pour une famille de matière première

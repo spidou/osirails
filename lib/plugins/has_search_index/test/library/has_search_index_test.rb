@@ -1317,40 +1317,115 @@ class HasSearchIndexTest < ActiveRecordTestCase
             DataType.has_search_index :additional_attributes => { :a_string => :string, :a_binary => :binary, :a_text => :text, :a_integer => :integer,
                                                                   :a_float => :float, :a_boolean => :boolean, :a_datetime => :datetime,
                                                                   :a_date => :date, :a_decimal => :decimal}
+            @DataTypes = {:string => "good", :binary => "0111 0001", :text => "lorem ipsum azerty toto",
+                          :integer => 1, :float => 1.2, :decimal => 2.345, :boolean => true,
+                          :datetime => DateTime.now, :date => Date.today}
           end
           
-          DataType.create({:a_string => "good", :a_binary => "0111 0001", :a_text => "lorem ipsum azerty toto", :a_integer => 1,
-                           :a_float => 1.2, :a_decimal => 2.345, :a_boolean => true, :a_datetime => DateTime.now, :a_date => Date.today })
-          
-          exp = [ DataType.first ]
-          string  = {'=' => exp, 'like' => exp, '!=' => [], 'not like' => []}
-          integer = {'=' => exp, '>='   => exp, '<=' => exp, '!=' => [], '>' => [], '<' => []}
-          boolean = {'=' => exp, '!='   => []}
-          
-          @types = {:string   => {:value => DataType.first.a_string,   :actions => string },
-                    :binary   => {:value => "\"#{ DataType.first.a_binary }\"",   :actions => string },
-                    :text     => {:value => "\"#{ DataType.first.a_text }\"",     :actions => string },
-                    :integer  => {:value => DataType.first.a_integer,  :actions => integer },
-                    :float    => {:value => DataType.first.a_float,    :actions => integer },
-                    :decimal  => {:value => DataType.first.a_decimal,  :actions => integer },
-                    :datetime => {:value => DataType.first.a_datetime, :actions => integer },
-                    :date     => {:value => DataType.first.a_date,     :actions => integer },
-                    :boolean  => {:value => DataType.first.a_boolean,  :actions => boolean }}
-        
-          @types.each do |type, criterion|
-            context "with criterion's :value is a #{ type.to_s.capitalize }" do
-              criterion[:actions].each do |action, expected|
-                context "and :action is '#{ action }' #{ criterion[:value] } #{ expected.first.inspect }" do
-                  should "return as expected" do
-                    assert_equal expected, DataType.search_with("a_#{ type }" => {:action => action, :value => criterion[:value].to_s})
-                  end
-                end
+          context "with numbers, 100" do
+            setup do
+              @expected = [ DataType.create({:a_integer => 100, :a_float => 100.0, :a_decimal => 100.000}) ]
+            end
+            
+            [:decimal, :float, :integer].each do |type|
+              should "be > 20 for a #{ type.to_s.capitalize }" do
+                assert_equal @expected, DataType.search_with("a_#{ type }" => {:action => ">", :value => "20"})
               end
+              
+              should "be >= 20 for a #{ type.to_s.capitalize }" do
+                assert_equal @expected, DataType.search_with("a_#{ type }" => {:action => ">=", :value => "20"})
+              end
+              
+              should "not be < 20 for a #{ type.to_s.capitalize }" do
+                assert_equal [], DataType.search_with("a_#{ type }" => {:action => "<", :value => "20"})
+              end
+              
+              should "not be <= 20 for a #{ type.to_s.capitalize }" do
+                assert_equal [], DataType.search_with("a_#{ type }" => {:action => "<=", :value => "20"})
+              end
+              
+              should "be != 20 for a #{ type.to_s.capitalize }" do
+                assert_equal @expected, DataType.search_with("a_#{ type }" => {:action => "!=", :value => "20"})
+              end
+              
+              should "not be = 20 for a #{ type.to_s.capitalize }" do
+                assert_equal [], DataType.search_with("a_#{ type }" => {:action => "=", :value => "20"})
+              end
+            end
+          end
+          
+          context "with dates, Today" do
+            setup do
+              @expected = [ DataType.create({:a_date => Date.today, :a_datetime => DateTime.now}) ]
+            end
+            
+            [:date, :datetime].each do |type|
+              should "be < Tomorrow for a #{ type.to_s.capitalize }" do
+                assert_equal @expected, DataType.search_with("a_#{ type }" => {:action => "<", :value => Date.tomorrow.to_s})
+              end
+              
+              should "be <= Tomorrow for a #{ type.to_s.capitalize }" do
+                assert_equal @expected, DataType.search_with("a_#{ type }" => {:action => "<=", :value => Date.tomorrow.to_s})
+              end
+              
+              should "not be > Tomorrow for a #{ type.to_s.capitalize }" do
+                assert_equal [], DataType.search_with("a_#{ type }" => {:action => ">", :value => Date.tomorrow.to_s})
+              end
+              
+              should "not be >= Tomorrow for a #{ type.to_s.capitalize }" do
+                assert_equal [], DataType.search_with("a_#{ type }" => {:action => ">=", :value => Date.tomorrow.to_s})
+              end
+              
+              should "be != Tomorrow for a #{ type.to_s.capitalize }" do
+                assert_equal @expected, DataType.search_with("a_#{ type }" => {:action => "!=", :value => Date.tomorrow.to_s})
+              end
+              
+              should "not be = Tomorrow for a #{ type.to_s.capitalize }" do
+                assert_equal [], DataType.search_with("a_#{ type }" => {:action => "=", :value => Date.tomorrow.to_s})
+              end
+            end
+          end
+          
+          
+          context "with strings, '1001'" do
+            setup do
+              @expected = [ DataType.create({:a_string => "1001", :a_binary => "1001", :a_text => "1001"}) ]
+            end
+            
+            [:string, :binary, :text].each do |type|
+              should "be like '10' for a #{ type.to_s.capitalize }" do
+                assert_equal @expected, DataType.search_with("a_#{ type }" => {:action => "like", :value => '10'})
+              end
+
+              should "be = '1001' for a #{ type.to_s.capitalize }" do
+                assert_equal @expected, DataType.search_with("a_#{ type }" => {:action => "=", :value => '1001'})
+              end
+              
+              should "not be not like '1001' for a #{ type.to_s.capitalize }" do
+                assert_equal [], DataType.search_with("a_#{ type }" => {:action => "not like", :value => '1001'})
+              end
+              
+              should "not be != '1001' for a #{ type.to_s.capitalize }" do
+                assert_equal [], DataType.search_with("a_#{ type }" => {:action => "!=", :value => '1001'})
+              end
+            end
+          end
+          
+          context "with booleans, true" do
+            setup do
+              @expected = [ DataType.create({:a_boolean => true}) ]
+            end
+              
+            should "be = true" do
+              assert_equal @expected, DataType.search_with('a_boolean' => {:action => "=", :value => 'true'})
+            end
+            
+            should "not be != true" do
+              assert_equal [], DataType.search_with('a_boolean' => {:action => "!=", :value => 'true'})
             end
           end
         
         end
-    
       end
       
       ### Order
