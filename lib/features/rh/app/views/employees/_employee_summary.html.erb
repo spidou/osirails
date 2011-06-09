@@ -4,7 +4,7 @@
 <%
 employee_link = employee_link(employee, :link_text => employee.fullname, :html_options => {'data-icon' => nil})
 service_link  = service_link(employee.service, :link_text => employee.service.name, :html_options => {'data-icon' => nil})
-seniority     = strong(display_employee_seniority(employee.job_contract.start_date), :title => employee.job_contract.start_date) if employee.job_contract
+seniority     = strong(display_employee_seniority(employee.job_contract.start_date), :title => l(employee.job_contract.start_date, :format => :long)) if employee.job_contract
 no_contract   = strong("Aucun Contrat de travail définis") # TODO I18n
 %>
 
@@ -23,8 +23,10 @@ no_contract   = strong("Aucun Contrat de travail définis") # TODO I18n
   <div class="contact_informations">
     <p><strong><%=display_full_phone_number(employee.numbers.at(0)) %></strong></p>
     <p><strong><%=display_full_phone_number(employee.numbers.at(1)) %></strong></p>
-    <p><%= image_tag("rh/email.png", :alt=> "@", :title => 'email')%>
-    <%=strong employee.intranet_email %></p>
+    <p>
+      <%= image_tag("rh/email.png", :alt=> "@", :title => 'email')%>
+      <%= mail_to(employee.intranet_email) %>
+    </p>
   </div>
   
   
