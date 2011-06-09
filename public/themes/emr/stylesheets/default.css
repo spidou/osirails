@@ -244,7 +244,7 @@ input[type=button]:not([readonly]):not([disabled]):active {
 }
 
 input[type=submit][disabled] { /* we don't want to display a lock when submitting a form (submit button is disabled to prevent multiple sends) */
-  background-image: none;
+  background-image: none !important;
 }
 
 select {
@@ -1214,12 +1214,7 @@ width: 50px ! important;
 	padding:5px 10px 5px 10px;
 }
 
-.date_days {
-	margin:0px 20px 0px -15px ;
-}
-
 /*LAYOUTS' FORM*/
-
 div.presentation_small label {
 	width:100px;
 }

@@ -1,7 +1,3 @@
-<% content_for :header do %>
-     <%= javascript_include_tag 'shedules' %>
-<% end %>
-
 <% add_contextual_menu_item :possible_actions do %>
   <%= new_service_link_with_parent(@service, "Nouveau service") %>
   <%= service_link(@service)%>

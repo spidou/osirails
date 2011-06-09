@@ -1,0 +1,12 @@
+#schedules_array {
+  width: auto;
+}
+
+#schedules_array th.day {
+  min-width: 70px;
+}
+
+#schedules_array td.morning,
+#schedules_array td.afternoon {
+  min-width: 100px;
+}
