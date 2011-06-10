@@ -2,6 +2,20 @@ require File.dirname(__FILE__) + '/../logistics_test'
 
 class ToolTest < ActiveSupport::TestCase
   
+  should_have_many :tool_events
+  
+  should_belong_to :service, :job, :employee, :supplier
+  
+  should_validate_presence_of :name, :purchase_date, :serial_number
+  should_validate_presence_of :service, :with_foreign_key => :default
+  
+  #validates_presence_of :service,  :if => :service_id
+  #validates_presence_of :job,      :if => :job_id
+  #validates_presence_of :employee, :if => :employee_id
+  #validates_presence_of :supplier, :if => :supplier_id
+  
+  should_validate_numericality_of :purchase_price
+  
   should_journalize :identifier_method => :name_and_serial_number
 
   def setup
@@ -13,81 +27,11 @@ class ToolTest < ActiveSupport::TestCase
     @tool.valid?
   end
   
+  subject{ @tool }
+  
   def teardown
     @good_tool = nil
     @tool      = nil
-  end
-  
-  def test_presence_of_name
-    assert @tool.errors.invalid?(:name), "name should NOT be valid because it's nil"
-    assert !@good_tool.errors.invalid?(:name), "name should be valid"
-  end
-  
-  def test_presence_of_description
-    assert @tool.errors.invalid?(:description), "description should NOT be valid because it's nil"
-    assert !@good_tool.errors.invalid?(:description), "description should be valid"
-  end
-  
-  def test_presence_of_purchase_date
-    assert @tool.errors.invalid?(:purchase_date), "purchase_date should NOT be valid because it's nil"
-    assert !@good_tool.errors.invalid?(:purchase_date), "purchase_date should be valid"
-  end
-  
-  def test_presence_of_employee
-    assert @tool.errors.invalid?(:employee_id), "employee_id should NOT be valid because it's nil"
-    
-    @tool.employee_id = 0
-    @tool.valid?
-    assert !@tool.errors.invalid?(:employee_id), "employee_id should be valid"
-    assert @tool.errors.invalid?(:employee), "employee should NOT be valid because employee_id is wrong"
-    
-    assert !@good_tool.errors.invalid?(:employee_id), "employee_id should be valid"
-    assert !@good_tool.errors.invalid?(:employee), "employee should be valid"
-  end
-  
-  def test_presence_of_service
-    assert @tool.errors.invalid?(:service_id), "service_id should NOT be valid because it's nil"
-    
-    @tool.service_id = 0
-    @tool.valid?
-    assert !@tool.errors.invalid?(:service_id), "service_id should be valid"
-    assert @tool.errors.invalid?(:service), "service should NOT be valid because service_id is wrong"
-    
-    assert !@good_tool.errors.invalid?(:service_id), "service_id should be valid"
-    assert !@good_tool.errors.invalid?(:service), "service should be valid"
-  end
-  
-  def test_presence_of_supplier
-    assert @tool.errors.invalid?(:supplier_id), "supplier_id should NOT be valid because it's nil"
-    
-    @tool.supplier_id = 0
-    @tool.valid?
-    assert !@tool.errors.invalid?(:supplier_id), "supplier_id should be valid"
-    assert @tool.errors.invalid?(:supplier), "supplier should NOT be valid because supplier_id is wrong"
-    
-    assert !@good_tool.errors.invalid?(:supplier_id), "supplier_id should be valid"
-    assert !@good_tool.errors.invalid?(:supplier), "supplier should be valid"
-  end
-  
-  def test_presence_of_job
-    assert !@tool.errors.invalid?(:job_id), "job_id should be valid because nil is allowed"
-    
-    @tool.job_id = 0
-    @tool.valid?
-    assert !@tool.errors.invalid?(:job_id), "job_id should be valid"
-    assert @tool.errors.invalid?(:job), "job should NOT be valid because job_id is wrong"
-    
-    assert !@good_tool.errors.invalid?(:job_id), "job_id should be valid"
-    assert !@good_tool.errors.invalid?(:job), "job should be valid"
-  end
-  
-  def test_numericality_of_purchase_date
-    assert @tool.errors.invalid?(:purchase_date), "purchase_date should NOT be valid because it's nil"
-    
-    @tool.purchase_date = "string"
-    @tool.valid?
-    assert @tool.errors.invalid?(:purchase_date), "purchase_date should NOT be valid because it's not a numerical value"
-    assert !@good_tool.errors.invalid?(:purchase_date), "purchase_date should be valid"
   end
   
   def test_status_with_incident_today

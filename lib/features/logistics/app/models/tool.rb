@@ -7,11 +7,7 @@ class Tool < ActiveRecord::Base # @abstract
   belongs_to :supplier
   
   validates_presence_of :name, :purchase_date, :serial_number, :service_id
-  
   validates_presence_of :service,  :if => :service_id
-  validates_presence_of :job,      :if => :job_id
-  validates_presence_of :employee, :if => :employee_id
-  validates_presence_of :supplier, :if => :supplier_id
   
   validates_numericality_of :purchase_price
   
@@ -41,7 +37,6 @@ class Tool < ActiveRecord::Base # @abstract
   end
   
   private
-  
     def validates_edit
       errors.add_to_base("L'équipement ne peut plus être modifié car il a été mis au rebut") if !new_record? and !can_be_edited?
     end

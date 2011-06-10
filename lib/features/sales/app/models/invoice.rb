@@ -479,7 +479,7 @@ class Invoice < ActiveRecord::Base
     return unless published_on
     
     for due_date in due_dates.reject(&:should_destroy?)
-      due_date.errors.add(:date, "ne doit pas être AVANT la date d'émission de la facture (#{self.published_on.humanize})") if due_date.date and due_date.date < published_on
+      due_date.errors.add(:date, "ne doit pas être AVANT la date d'émission de la facture (#{l(self.published_on, :format => :long)})") if due_date.date and due_date.date < published_on
     end
     
     errors.add(:due_dates) unless due_dates.reject{ |d| d.errors.empty? }.empty?
@@ -492,8 +492,8 @@ class Invoice < ActiveRecord::Base
     for due_date in due_dates
       for payment in due_date.payments
         if payment.paid_on
-          payment.errors.add(:paid_on, "ne doit pas être AVANT la date d'émission de la facture&#160;(#{self.published_on.humanize})") if payment.paid_on < published_on
-          payment.errors.add(:paid_on, "ne doit pas être APRÈS aujourd'hui&#160;(#{Date.today.humanize})") if payment.paid_on.future?
+          payment.errors.add(:paid_on, "ne doit pas être AVANT la date d'émission de la facture&#160;(#{l(self.published_on, :format => :long)})") if payment.paid_on < published_on
+          payment.errors.add(:paid_on, "ne doit pas être APRÈS aujourd'hui&#160;(#{l(Date.today, :format => :long)})") if payment.paid_on.future?
         end
       end
       
