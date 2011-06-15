@@ -11,6 +11,7 @@ module ProductReferencesHelper
     html = []
     html << display_product_reference_show_button(product_reference)
     html << display_product_reference_edit_button(product_reference)
+    html << display_product_reference_duplicate_button(product_reference)
     html << display_product_reference_delete_button(product_reference)
     html.compact
   end
@@ -27,6 +28,13 @@ module ProductReferencesHelper
     link_to_unless_current(message || I18n.t('view.links.edit'),
                            edit_product_reference_path(product_reference),
                            'data-icon' => :edit) {nil}
+  end
+  
+  def display_product_reference_duplicate_button(product_reference, message = nil)
+    return unless ProductReference.can_add?(current_user)
+    link_to_unless_current(message || I18n.t('view.links.duplicate'),
+                           new_product_reference_path(:duplicate_id => product_reference),
+                           'data-icon' => :duplicate) {nil}
   end
   
   def display_product_reference_delete_button(product_reference, message = nil)

@@ -17,7 +17,6 @@
 }
 
 .job_informations {
-  border-right: 2px black solid;
   padding: 10px;
   text-align: right;
   vertical-align: center;
@@ -34,7 +33,7 @@
 }
 
 .job_details {
-  border-left: 2px black solid;
+  border-left: 2px solid #999;
   padding-left: 20px;
   margin-left:-6px;
 }
@@ -49,7 +48,7 @@
 }
 
 .job_details p {
-  border:2px black solid;
+  border:2px solid #AAA;
   -moz-border-radius:5px;
   width: 400px;
   min-height: 50px;

@@ -40,8 +40,13 @@ class ProductReferencesController < ApplicationController
   
   # GET /product_references/new
   # GET /product_references/new?category_id=:product_reference_sub_category_id
+  # GET /product_references/new?duplicate_id=:duplicate_id
   def new
-    @product_reference = ProductReference.new(:product_reference_sub_category_id => params[:product_reference_sub_category_id])
+    if params[:duplicate_id]
+      @product_reference = ProductReference.find(params[:duplicate_id]).duplicate
+    else
+      @product_reference = ProductReference.new(:product_reference_sub_category_id => params[:product_reference_sub_category_id])
+    end
     @product_reference_categories = ProductReferenceCategory.roots.actives
   end
   

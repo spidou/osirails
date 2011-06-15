@@ -15,7 +15,7 @@
 .root_nav.standard > ul.tab_nav li {
   position: relative;
   display: inline-block;
-  background-color: #fffcd6;
+  background-color: white;
   border: 1px solid #989898;
   -moz-border-radius: 10px 10px 0 0;
   padding: 0.25em 0.7em 0.25em 0.7em;
@@ -43,11 +43,11 @@
 }
 
 .root_nav.standard > ul.tab_nav li:hover {
-  background-color: white;
+  background-color: #ffefd0;
 }
 
 .root_nav.standard > ul.tab_nav li.selected {
-  background-color: white;
+  background-color: #ffe2ab;
   padding-top: 0.55em;
   padding-bottom: 0.336em;
   border-bottom: none;
@@ -101,4 +101,12 @@
 
 .root_nav.standard div.content_nav.selected {
   display: block;
+}
+
+.root_nav.standard div.tab_nav_header {
+  background-color: #ffe2ab;
+  border: none;
+  -moz-box-shadow: 0 2px 2px rgba(0,0,0,0.3);
+  padding: 5px 10px;
+  margin: -5px -13px 0 -13px;
 }

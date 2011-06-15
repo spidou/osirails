@@ -18,7 +18,7 @@
 .employee_summary .employee_fullname > a{
   text-decoration:none;
   color: #777;
-  font-size: 40px;
+  font-size: 30px;
 }
 
 .employee_summary .employee_fullname > a:hover{
@@ -26,22 +26,17 @@
 }
 
 .employee_summary .employee_service {
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .employee_summary .employee_seniority {
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .employee_summary > div.contact_informations {
-  border-left:2px black solid;
+  border-left:2px solid #888;
   padding-left: 10px;
-  font-size: 20px;
-}
-
-.employee_summary > .contact_informations label{
-  font-size: 30px;
-  width:auto;
+  font-size: 15px;
 }
 
 #employee_avatar_container {

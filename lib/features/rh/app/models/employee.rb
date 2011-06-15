@@ -7,8 +7,6 @@ class Employee < ActiveRecord::Base
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
   
-#  named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
-  
   has_attached_file :avatar, 
                     :styles       => { :thumb => "100x100#" },
                     :path         => ":rails_root/assets/rh/employees/:id/avatar/:style.:extension",
@@ -21,7 +19,8 @@ class Employee < ActiveRecord::Base
   
   has_one :employee_sensitive_data
   
-  has_many :job_contracts, :class_name => 'JobContract'
+  has_many :job_contracts
+  has_one  :job_contract, :class_name => 'JobContract', :conditions => ["start_date <= ? AND ( (end_date IS NULL AND departure IS NULL) OR (end_date IS NULL AND departure > ?) OR (end_date IS NOT NULL AND departure > ?) OR (departure IS NULL AND end_date > ?) )", Date.today, Date.today, Date.today, Date.today] # conditions have been copied from JobContract#actives
   has_many :employees_jobs
   has_many :jobs, :through => :employees_jobs
   has_many :checkings
@@ -40,6 +39,8 @@ class Employee < ActiveRecord::Base
                                         :conditions => ["status = ?", LeaveRequest::STATUS_CANCELLED],
                                         :order      => "cancelled_at DESC, start_date DESC"
   
+  named_scope :actives, :include => [:job_contracts], :conditions => ["job_contracts.start_date <= ? AND ( (job_contracts.end_date IS NULL AND job_contracts.departure IS NULL) OR (job_contracts.end_date IS NULL AND job_contracts.departure > ?) OR (job_contracts.end_date IS NOT NULL AND job_contracts.departure > ?) OR (job_contracts.departure IS NULL AND job_contracts.end_date > ?) )", Date.today, Date.today, Date.today, Date.today] # conditions have been copied from JobContract#actives
+  
   validates_presence_of :last_name, :first_name
   validates_presence_of :civility_id, :service_id
   validates_presence_of :civility,             :if => :civility_id
@@ -54,7 +55,7 @@ class Employee < ActiveRecord::Base
     v.validates_attachment_size         :avatar, :less_than => 2.megabytes
   end
   
-  validates_associated :user, :employee_sensitive_data
+  validates_associated :user, :employee_sensitive_data, :job_contracts
   
   validate :validates_responsible_job_limit
   
@@ -64,7 +65,8 @@ class Employee < ActiveRecord::Base
              :identifier_method => :fullname
   
   has_search_index  :only_attributes       => [ :first_name, :last_name, :society_email],
-                    :additional_attributes => { :fullname => :string }
+                    :additional_attributes => { :fullname => :string },
+                    :only_relationships    => [ :civility, :employee_sensitive_data, :job_contract, :job_contracts, :jobs, :service, :user ]
   
   before_validation :build_associated_resources
   before_save :case_management
@@ -189,10 +191,6 @@ class Employee < ActiveRecord::Base
   #
   def last_leave
     leaves.max_by(&:end_date)
-  end
-  
-  def job_contract
-    job_contracts.detect(&:active?)
   end
   
   # Method to generate the intranet email

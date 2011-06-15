@@ -8,13 +8,14 @@ class JobContract < ActiveRecord::Base
   has_many :salaries, :order => "created_at DESC"
   has_one :actual_salary, :class_name => "Salary", :order => "created_at DESC"
   
+  named_scope :actives, :conditions => ["start_date <= ? AND ( (end_date IS NULL AND departure IS NULL) OR (end_date IS NULL AND departure > ?) OR (end_date IS NOT NULL AND departure > ?) OR (departure IS NULL AND end_date > ?) )", Date.today, Date.today, Date.today, Date.today]
+  
   #TODO active these validations once the process to create job_contract and employee_state is well determined
 #  validates_presence_of :employee_state_id, :job_contract_type_id
 #  validates_presence_of :employee_state,    :if => :employee_state_id
 #  validates_presence_of :job_contract_type, :if => :job_contract_type_id
   
-  validates_presence_of :start_date
-  validates_presence_of :job_contract_type_id, :employee_id
+  validates_presence_of :start_date,  :job_contract_type_id
   validates_presence_of :job_contract_type, :if => :job_contract_type_id
   validates_presence_of :employee, :if => :employee_id
   

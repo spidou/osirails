@@ -124,11 +124,12 @@ fr:
   
   view:
     links:
-      show: "Voir"
-      edit: "Modifier"
-      delete: "Supprimer"
-      index: "Lister"
       confirm: "Êtes-vous sûr ?"
+      delete: "Supprimer"
+      duplicate: "Dupliquer"
+      edit: "Modifier"
+      index: "Lister"
+      show: "Voir"
     contextual_menu_sections:
       possible_actions: "Actions Possibles"
       useful_links: "Liens Utiles"

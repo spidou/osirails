@@ -5,8 +5,8 @@
 
 <% if Iban.can_view?(current_user) or employee.user.id == current_user.id %>
   <% iban = is_form_view? ? ( sensitive.iban || sensitive.build_iban ) : sensitive.iban %>
-  <h3>Relev&eacute; d'identit&eacute; bancaire (RIB)</h3>
   <% if iban %>
+    <h3>Relev&eacute; d'identit&eacute; bancaire (RIB)</h3>
     <%= render(:partial => 'shared/iban', :object => iban , :locals => { :iban_owner => employee }) %>
   <% else %>
     <p>Aucun RIB enregistré<p>

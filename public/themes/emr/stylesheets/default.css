@@ -296,6 +296,8 @@ a[data-icon=edit]   { background-image: url("/themes/emr/images/edit.png"); }
 a[data-icon=delete] { background-image: url("/themes/emr/images/delete.png"); }
 a[data-icon=index]  { background-image: url("/themes/emr/images/index.png"); }
 
+a[data-icon=duplicate]  { background-image: url("/themes/emr/images/duplicate.png"); }
+
 a[data-icon=confirm]  { background-image: url("/themes/emr/images/confirm.png"); }
 a[data-icon=cancel]   { background-image: url("/themes/emr/images/cancel.png"); }
 

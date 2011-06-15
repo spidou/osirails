@@ -1,8 +1,6 @@
 class EmployeesController < ApplicationController
   helper :salaries, :job_contracts, :documents, :numbers, :address
   
-  method_permission :list => ["show"]
-
   # GET /employees
   def index
     @hide_selector_column = true

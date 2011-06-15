@@ -52,8 +52,9 @@ en:
   
   view:
     links:
-      show: "Show"
-      edit: "Edit"
-      delete: "Delete"
-      index: "List"
       confirm: "Are you sure?"
+      delete: "Delete"
+      duplicate: "Duplicate"
+      edit: "Edit"
+      index: "List"
+      show: "Show"

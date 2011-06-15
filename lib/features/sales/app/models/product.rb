@@ -62,6 +62,10 @@ class Product < ActiveRecord::Base # @abstract
     designation + ( dimensions.blank? ? "" : " (#{dimensions})" )
   end
   
+  def duplicate
+    self.class.new(self.attributes)
+  end
+  
 #  before_destroy :cancel_if_cannot_be_destroyed
 #  
 #  def cancel

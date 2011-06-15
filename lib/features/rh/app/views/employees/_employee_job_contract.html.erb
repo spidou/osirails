@@ -8,11 +8,11 @@
   </p>
   <p>
     <%= label_tag(I18n.t("activerecord.attributes.job_contract.start_date") + ' :') %>
-    <%= strong(job_contract.start_date.strftime("%A %d %B %Y")) %>
+    <%= strong(l(job_contract.start_date, :format => :long_ordinal)) %>
   </p>
   <p>
     <%= label_tag(I18n.t("activerecord.attributes.job_contract.end_date") + ' :') %>
-    <%= strong(job_contract.end_date.strftime("%A %d %B %Y")) if job_contract.end_date%> 
+    <%= strong(l(job_contract.end_date, :format => :long_ordinal)) if job_contract.end_date %> 
   </p>
   <p>
     <%= label_tag(I18n.t("activerecord.attributes.job_contract.salary") + ' :') %>
@@ -23,5 +23,5 @@
   <h3>Documents du contrat de travail</h3>
   <%= display_documents_list(job_contract) %>
 <% else %>
-  <%= "Aucun Contrat de travail définis"%>
+  <%= "Aucun contrat de travail n'a été défini"%>
 <% end %> 
