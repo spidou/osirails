@@ -375,10 +375,15 @@ fr:
         name: "Famille"
       product_reference_sub_category:
         name: "Sous-Famille"
+      subcontractor:
+        fax:
+          formatted_with_indicative: "Fax"
+        phone:
+          formatted_with_indicative: "Téléphone"
     filters:
       subcontractor:
-        phone_number: "N° Téléphone"
-        fax_number: "N° Fax"
+        phone_number: "Téléphone"
+        fax_number: "Fax"
     page_names:
       product_reference:
         advanced_product_reference: "Tous les produits références"

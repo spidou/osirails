@@ -11,9 +11,11 @@ class Consumable < Supply
              :identifier_method => Proc.new{ |s| "#{s.reference} - #{s.designation}" }
   
   has_search_index  :only_attributes        => [ :reference, :measure, :unit_mass ],
-                    :additional_attributes  => { :humanized_supply_sizes  => :string,
-                                                 :designation             => :string,
-                                                 :average_unit_price      => :float,
-                                                 :average_measure_price   => :float },
-                    :only_relationships     => [ :supply_type ]
+                    :additional_attributes  => { :humanized_supply_sizes            => :string,
+                                                 :designation                       => :string,
+                                                 :average_unit_price                => :float,
+                                                 :average_measure_price             => :float,
+                                                 :stock_quantity                    => :integer,
+                                                 :stock_quantity_at_last_inventory  => :integer },
+                    :only_relationships     => [ :supply_type, :suppliers ]
 end

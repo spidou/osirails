@@ -8,6 +8,8 @@ conf_filters: &filters
     - humanized_supply_sizes
     - measure
     - unit_mass
+    - stock_quantity
+    - stock_quantity_at_last_inventory
     - average_unit_price
     - average_measure_price
 conf_columns: &columns
@@ -16,8 +18,11 @@ conf_columns: &columns
     - designation
     - measure
     - unit_mass
+    - stock_quantity
+    - stock_quantity_at_last_inventory
     - average_unit_price
     - average_measure_price
+    - suppliers
 conf_group: &group
   group:
     - supply_type.supply_sub_category.supply_category.name
@@ -30,6 +35,8 @@ conf_order: &order
     - supply_type.name
     - reference
     - designation
+    - stock_quantity
+    - stock_quantity_at_last_inventory
     - average_unit_price
     - average_measure_price
 conf_pagination: &pagination
@@ -46,7 +53,13 @@ advanced_commodity:
   <<: *order
   <<: *pagination
   default_query:
-    <<: *columns
+    columns:
+      - reference
+      - designation
+      - measure
+      - stock_quantity
+      - average_unit_price
+      - average_measure_price
     group:
       - supply_type.supply_sub_category.supply_category.name
       - supply_type.supply_sub_category.name
@@ -64,7 +77,13 @@ commodity_index:
     - reference
     - designation
   default_query:
-    <<: *columns
+    columns:
+      - reference
+      - designation
+      - measure
+      - stock_quantity
+      - average_unit_price
+      - average_measure_price
     group:
       - supply_type.supply_sub_category.supply_category.name
       - supply_type.supply_sub_category.name

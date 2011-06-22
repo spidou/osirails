@@ -70,6 +70,10 @@ table a:hover {
 	text-decoration: underline;
 }
 
+table tr, table td {
+  -moz-transition: all 0.3s;
+}
+
 table > tr > th,
 table thead > tr > th,
 table tbody > tr > th,
@@ -1536,11 +1540,11 @@ div.auto_complete_container div.auto_complete_indicator {
   right: 5px;
   width: 16px;
   height: 16px;
-  background: url('/themes/emr/images/not_loading.png') no-repeat;
+  background: url('/themes/emr/images/not_loading_12x12.png') no-repeat;
 }
 
 div.auto_complete_container div.auto_complete_indicator.loading {
-  background: url('/themes/emr/images/loading_16x16.gif') no-repeat;
+  background: url('/themes/emr/images/loading_12x12.gif') no-repeat;
 }
 
 p.contain_auto_completer {

@@ -44,7 +44,7 @@ fr:
         activity_sector_reference: "Secteur d'activité"
         full_address: "Adresse du siège social"
         address: "Adresse"
-        phone: "Tél"
+        phone: "Téléphone"
         fax: "Fax"
         activated: "Actif ?"
       establishment:
@@ -54,43 +54,58 @@ fr:
         activity_sector_reference: "Secteur d'activité"
         full_address: "Adresse de l'établissement"
         address: "Adresse"
-        phone: "Tél"
+        phone: "Téléphone"
         fax: "Fax"
         activated: "Actif ?"
+      establishment_type:
+        name: "Type d'établissement"
       factor:
         name: "Nom"
         fullname: "Nom complet"
   integrated_search:
     attributes:
+      activity_sector_reference:
+        code: "Code NAF"
+        get_activity_sector_name: "Secteur d'activité"
       customer:
         bill_to_address:
           formatted: "Adresse de facturation"
+        head_office:
+          fax:
+            formatted_with_indicative: "Fax"
+          phone:
+            formatted_with_indicative: "Téléphone"
+        fax:
+          formatted_with_indicative: "Fax"
         phone:
-          number: "N° Téléphone"
+          formatted_with_indicative: "Téléphone"
       customer_grade:
         name: "Note relationnelle"
       customer_solvency:
         name: "Degré de solvabilité"
-      activity_sector_reference:
-        code: "Code NAF"
-        get_activity_sector_name: "Secteur d'activité"
-      legal_form:
-        name: "Forme juridique"
       factor:
         name_and_fullname: "Société d'affacturage"
+      legal_form:
+        name: "Forme juridique"
+      supplier:
+        fax:
+          formatted_with_indicative: "Fax"
+        phone:
+          formatted_with_indicative: "Téléphone"
     filters:
       customer:
         head_office: "Siège social"
         head_office_name: "Nom du siège social"
         head_office_siret_number: "SIRET du siège social"
+        head_office_activity_sector_reference: "Secteur d'activité (Code NAF)"
         head_office_activity_sector_reference_code: "Code NAF"
-        head_office_activity_sector_reference_name: "Nom du secteur d'activité"
+        head_office_activity_sector_reference_name: "Secteur d'activité"
         head_office_phone: "Téléphone"
         head_office_fax: "Fax"
         bill_to_address: "Adresse de facturation"
       supplier:
-        phone_number: "N° Téléphone"
-        fax_number: "N° Fax"
+        phone_number: "Téléphone"
+        fax_number: "Fax"
     page_names:
       customer:
         advanced_customer: "Tous les clients"

@@ -379,7 +379,11 @@ class Supply < ActiveRecord::Base # @abstract
   end
   
   def stock_quantity_smaller_than_threshold?
-    stock_quantity <= threshold
+    stock_quantity < threshold
+  end
+  
+  def stock_quantity_at_last_inventory_smaller_than_threshold?
+    stock_quantity_at_last_inventory < threshold
   end
   
   private

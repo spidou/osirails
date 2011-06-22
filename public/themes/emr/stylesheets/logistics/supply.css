@@ -59,3 +59,13 @@ p.supplies_supply_size strong {
 #supplies tr td img.unfold_button {
   cursor: pointer;
 }
+
+/* SUPPLIES INDEX */
+table tr td span.zero {
+  background-color: #ffacac;
+}
+
+table tr td span.under_threshold {
+  //background-color: #ffacac;
+  color: red;
+}

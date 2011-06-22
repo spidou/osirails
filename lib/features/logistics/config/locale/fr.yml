@@ -64,9 +64,11 @@ fr:
         higher_measure_price: "PG TTC cher"
         threshold: "Seuil d'alerte"
         stock_quantity: "Quantité"
+        stock_quantity_at_last_inventory: "Quantité au dernier inventaire"
         stock_measure: "Grandeur totale"
         stock_value: "Valeur totale"
         stock_mass: "Poids total"
+        suppliers: "Fournisseurs"
         average_unit_value: "Valeur unitaire moyenne"
       commodity:
         <<: *supply

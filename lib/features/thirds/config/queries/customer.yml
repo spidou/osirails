@@ -5,14 +5,15 @@ conf_columns: &columns
     - name
     - legal_form.name
     - website
+    - head_office.address.zip_code_and_city_name
     - head_office.name
     - head_office.siret_number
     - head_office.full_address
     - head_office.establishment_type.name
     - head_office.activity_sector_reference.code
     - head_office.activity_sector_reference.get_activity_sector_name
-    - head_office.phone.formatted
-    - head_office.fax.formatted
+    - head_office.phone.formatted_with_indicative
+    - head_office.fax.formatted_with_indicative
     - bill_to_address.formatted
     - factor.name_and_fullname
     - customer_grade.name
@@ -28,6 +29,7 @@ conf_order: &order
   order:
     - name
     - legal_form.name
+    - head_office.address.zip_code_and_city_name
     - customer_grade.name
     - factor.name
     - customer_solvency.name
@@ -50,8 +52,8 @@ advanced_customer:
     - head_office.activity_sector_reference.id
     - head_office.activity_sector_reference.code
     - head_office.activity_sector_reference.get_activity_sector_name
-    - head_office_phone: head_office.phone.number
-    - head_office_fax: head_office.fax.number
+    - head_office_phone: head_office.phone.formatted_with_indicative
+    - head_office_fax: head_office.fax.formatted_with_indicative
     - bill_to_address: bill_to_address.formatted
     - factor.id
     - customer_grade.id
@@ -63,8 +65,9 @@ advanced_customer:
   default_query:
     columns:
       - name
-      - legal_form.name
+      - head_office.address.zip_code_and_city_name
       - brand_names
+      - legal_form.name
       - head_office.activity_sector_reference.get_activity_sector_name
       - customer_grade.name
     order:
@@ -79,8 +82,8 @@ customer_index:
     - head_office_name: head_office.name
     - head_office_siret_number: head_office.siret_number
     - head_office_activity_sector_reference: head_office.activity_sector_reference.id
-    - head_office_phone: head_office.phone.number
-    - head_office_fax: head_office.fax.number
+    - head_office_phone: head_office.phone.formatted_with_indicative
+    - head_office_fax: head_office.fax.formatted_with_indicative
     - factor.id
     - customer_grade.id
     - customer_solvency.id
@@ -98,8 +101,9 @@ customer_index:
   default_query:
     columns:
       - name
-      - legal_form.name
+      - head_office.address.zip_code_and_city_name
       - brand_names
+      - legal_form.name
       - head_office.activity_sector_reference.get_activity_sector_name
       - customer_grade.name
     order:

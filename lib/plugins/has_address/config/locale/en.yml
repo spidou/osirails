@@ -3,5 +3,9 @@ en:
     attributes:
       address:
         city_name: "City"
-        region_name: "Region"
         country_name: "Country"
+        formatted: "Full Address"
+        region_name: "State / Province"
+        street_name: "Street Address"
+        zip_code: "Zip Code"
+        zip_code_and_city_name: "Zip / City"

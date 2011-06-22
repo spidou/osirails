@@ -207,7 +207,8 @@ p.order_deadline.critical {
 
 /* SALES TABLES */
 table.sales_table td,
-table.sales_table span {
+table.sales_table span,
+table.sales_table em {
   vertical-align: top;
 }
 

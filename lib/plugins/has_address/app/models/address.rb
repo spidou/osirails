@@ -8,9 +8,13 @@ class Address < ActiveRecord::Base
              :identifier_method => :formatted
   
   has_search_index :only_attributes       => [ :street_name, :zip_code, :city_name, :region_name, :country_name ],
-                   :additional_attributes => { :formatted => :string }
+                   :additional_attributes => { :formatted => :string, :zip_code_and_city_name => :string }
   
   def formatted
     @formatted ||= [street_name, zip_code, city_name, region_name, country_name].compact.join(" ")
+  end
+  
+  def zip_code_and_city_name
+    @zip_code_and_city_name ||= [zip_code, city_name].compact.join(" ")
   end
 end

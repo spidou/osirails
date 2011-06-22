@@ -14,10 +14,10 @@ class Number < ActiveRecord::Base
   
   VISIBLE_STATES = { "Privé" => false, "Public" => true }
   
-  journalize :attributes => :number, :identifier_method => :formatted
+  journalize :attributes => :number, :identifier_method => :formatted_with_indicative
   
   has_search_index  :only_attributes        => [ :number ],
-                    :additional_attributes  => { :formatted => :string },
+                    :additional_attributes  => { :formatted_with_indicative => :string },
                     :only_relationships     => [ :number_type, :indicative ]
   
   def formatted

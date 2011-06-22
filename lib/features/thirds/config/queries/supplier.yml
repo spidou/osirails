@@ -5,9 +5,10 @@ conf_columns: &columns
     - name
     - legal_form.name
     - siret_number
+    - address.zip_code_and_city_name
     - address.formatted
-    - phone.number
-    - fax.number
+    - phone.formatted_with_indicative
+    - fax.formatted_with_indicative
     - website
     - activity_sector_reference.code
     - activity_sector_reference.get_activity_sector_name
@@ -18,6 +19,7 @@ conf_order: &order
   order:
     - name
     - legal_form.name
+    - address.zip_code_and_city_name
 conf_pagination: &pagination
   per_page:
     - 50
@@ -30,8 +32,8 @@ advanced_supplier:
     - legal_form.name
     - siret_number
     - address: address.formatted
-    - phone_number: phone.number
-    - fax_number: fax.number
+    - phone_number: phone.formatted_with_indicative
+    - fax_number: fax.formatted_with_indicative
     - website
     - activity_sector_reference.id
     - activity_sector_reference.code
@@ -43,6 +45,7 @@ advanced_supplier:
   default_query:
     columns:
       - name
+      - address.zip_code_and_city_name
       - legal_form.name
       - activity_sector_reference.get_activity_sector_name
     order:
@@ -55,8 +58,8 @@ supplier_index:
     - legal_form.id
     - siret_number
     - address: address.formatted
-    - phone_number: phone.number
-    - fax_number: fax.number
+    - phone_number: phone.formatted_with_indicative
+    - fax_number: fax.formatted_with_indicative
     - website
     - activity_sector_reference.id
   <<: *columns
@@ -72,6 +75,7 @@ supplier_index:
   default_query:
     columns:
       - name
+      - address.zip_code_and_city_name
       - legal_form.name
       - activity_sector_reference.get_activity_sector_name
     order:

@@ -4,8 +4,10 @@ fr:
       address: "Adresse"
     attributes:
       address:
+        city_name: "Ville"
+        country_name: "Pays"
+        formatted: "Adresse complète"
+        region_name: "Région"
         street_name: "Nom de rue"
         zip_code: "Code postal"
-        city_name: "Ville"
-        region_name: "Région"
-        country_name: "Pays"
+        zip_code_and_city_name: "CP / Ville"

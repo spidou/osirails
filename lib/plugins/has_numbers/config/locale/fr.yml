@@ -4,5 +4,6 @@ fr:
       number: "Numéro"
     attributes:
       number:
+        formatted_with_indicative: "Numéro"
         indicative: "Indicatif"
         number: "Numéro"

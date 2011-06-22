@@ -320,7 +320,7 @@ function nav_more_links_handler() {
       Event.observe(window, 'mouseup', function(window_event) {
         if (menu.getStyle('display') != 'none') {
           Effect.toggle(menu, 'appear', {delay: 0.1, duration:0.3})
-          Event.stop(window_event)
+          Event.stop(window_event) //FIXME doesn't seem to work
         }
       });
     });

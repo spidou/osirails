@@ -57,7 +57,7 @@ module ActionView
       end
       
       # add ability to give params on options
-      def option_groups_from_collection_for_select(collection, group_method, group_label_method, option_key_method, option_value_method, selected_key = nil, option_options = {}) # @override
+      def option_groups_from_collection_for_select(collection, group_method, group_label_method, option_key_method, option_value_method, selected_key = nil, option_options = {}) # @override from Rails 2.2.1
         collection.inject("") do |options_for_select, group|
           group_label_string = eval("group.#{group_label_method}")
           options_for_select += "<optgroup label=\"#{html_escape(group_label_string)}\">"
@@ -67,7 +67,7 @@ module ActionView
       end
       
       # add ability to give params on options
-      def options_from_collection_for_select(collection, value_method, text_method, selected = nil, html_options = {}) # @override
+      def options_from_collection_for_select(collection, value_method, text_method, selected = nil, html_options = {}) # @override from Rails 2.2.1
         options = collection.map do |element|
           opts = html_options.clone
           opts.each{ |k, v| opts[k] = v.call(element) if v.is_a?(Proc) }
@@ -77,7 +77,7 @@ module ActionView
       end
       
       # add ability to give params on options
-      def options_for_select(container, selected = nil) # @override
+      def options_for_select(container, selected = nil) # @override from Rails 2.2.1
         container = container.to_a if Hash === container
 
         options_for_select = container.inject([]) do |options, element|
@@ -88,6 +88,11 @@ module ActionView
         end
 
         options_for_select.join("\n")
+      end
+      
+      # add ability to give params on options
+      def collection_select(object, method, collection, value_method, text_method, options = {}, html_options = {}, option_options = {}) # @override from Rails 2.2.1
+        InstanceTag.new(object, method, self, options.delete(:object)).to_collection_select_tag(collection, value_method, text_method, options, html_options, option_options)
       end
       
       def collection_select_with_custom_choice(object_name, method_name, choice_method_name, collection, value_method, text_method, options = {}, select_options = {}, text_field_options = {}, link_options = {})
@@ -210,11 +215,12 @@ module ActionView
         end
         
         method_identifier = tag_options[:id].to_s.gsub("#{object}_", "")
+        container_options = { :class => :auto_complete_container }.merge(tag_options[:container_options] || {})
         
-        html =  "<div class=\"auto_complete_container\">"
-        html << text_field_with_auto_complete(object, method_identifier, tag_options, completion_options)
-        html << content_tag(:div, nil, :id => indicator, :class => "auto_complete_indicator")
-        html << "</div>"
+        content_tag :div, container_options do
+          text_field_with_auto_complete(object, method_identifier, tag_options, completion_options) +
+          content_tag(:div, nil, :id => indicator, :class => "auto_complete_indicator")
+        end
       end
       
       # Use this method in your view to generate a return for the AJAX autocomplete requests.
@@ -285,7 +291,17 @@ module ActionView
     class InstanceTag #:nodoc:
       include Helpers::AssetTagHelper, Helpers::JavaScriptHelper # used by to_calendar_select_tag
       
-      def to_collection_select_tag_with_indentation(collection, value_method, text_method, options, html_options)
+      # this method is inspired from Rails v2.3.4, but we add ability to give params on options
+      def to_collection_select_tag(collection, value_method, text_method, options, html_options, option_options = {}) # @override from Rails 2.2.1
+        html_options = html_options.stringify_keys
+        add_default_name_and_id(html_options)
+        value = value(object)
+        content_tag(
+          "select", add_options(options_from_collection_for_select(collection, value_method, text_method, value, option_options), options, value), html_options
+        )
+      end
+      
+      def to_collection_select_tag_with_indentation(collection, value_method, text_method, options, html_options) # inspired from #to_collection_select_tag from Rails 2.2.1
         html_options = html_options.stringify_keys
         add_default_name_and_id(html_options)
         value = value(object)
@@ -396,6 +412,10 @@ module ActionView
       
       def collection_select_with_custom_choice(method_name, choice_method_name, collection, value_method, text_method, options = {}, select_options = {}, text_field_options = {}, link_options = {})
         @template.collection_select_with_custom_choice(@object_name, method_name, choice_method_name, collection, value_method, text_method, options.merge(:object => @object), select_options, text_field_options, link_options)
+      end
+      
+      def collection_select(method, collection, value_method, text_method, options = {}, html_options = {}, option_options = {})
+        @template.collection_select(@object_name, method, collection, value_method, text_method, objectify_options(options), @default_options.merge(html_options), option_options)
       end
       
       # Returns either the edit_tag or the view_tag.
