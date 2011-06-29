@@ -198,6 +198,8 @@ class Employee < ActiveRecord::Base
     self.user.username + "@" + ConfigurationManager.admin_society_identity_configuration_domain
   end
   
+  alias_method :email, :intranet_email
+  
   # method that generate the username with attribute of the created employee 
   # it take two args which are:
   # obj => class instance (the new employee object, that need to generate a user)
@@ -361,11 +363,6 @@ class Employee < ActiveRecord::Base
   def address_attributes=(address_attributes)
     self.employee_sensitive_data.build unless self.employee_sensitive_data
     self.employee_sensitive_data.address_attributes = address_attributes
-  end
-  
-  
-  def mail #TODO check where that method is used and if it's usefull
-    intranet_email
   end
   
   private

@@ -59,16 +59,24 @@
     <% if is_edit_view? %>
       <p>
         <%= form.label :created_at %>
-        <%= form.strong order.created_at.humanize  %>
+        <%= strong l(order.created_at, :format => :long)  %>
       </p>
     <% end %>
     <p>
       <%= form.label :quotation_deadline %>
-      <%= form.form_or_view(form.calendar_date_select(:quotation_deadline), :quotation_deadline, :humanize) %>
+      <% if form.form_view? %>
+        <%= form.calendar_date_select :quotation_deadline %>
+      <% else %>
+        <%= strong l(order.quotation_deadline, :format => :long) %>
+      <% end %>
     </p>
     <p>
       <%= form.label :previsional_delivery %>
-      <%= form.form_or_view(form.calendar_date_select(:previsional_delivery), :previsional_delivery, :humanize) %>
+      <% if form.form_view? %>
+        <%= form.calendar_date_select :previsional_delivery %>
+      <% else %>
+        <%= strong l(order.previsional_delivery, :format => :long) %>
+      <% end %>
     </p>
     <p style="display:none">
       <%= form.hidden_field :customer_id, :value  => order.customer_id if is_form_view? %>

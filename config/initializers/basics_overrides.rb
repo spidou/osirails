@@ -25,7 +25,6 @@ class Time
 end
 
 class Array
-
   # methods that return true if the array have only nil values
   def all_values_nil?
     var = true
@@ -34,7 +33,7 @@ class Array
     end
     return var
   end
-
+  
   def fusion(arg)
     array = Array.new + arg
     return nil unless array.class == Array
@@ -66,6 +65,21 @@ class Array
   #
   def include_any?(array)
     (self & array).size >= 1
+  end
+  
+  # return the average of the array values
+  # 
+  # [1,2,3].avg # => 2
+  # [1,2].avg   # => 1.5
+  # ["a","b"]   # => ERROR
+  # [1,2,"3"]   # => ERROR
+  def avg
+    if self.any?
+      @avg = self.sum / self.size.to_f
+      @avg.to_i == @avg ? @avg.to_i : @avg
+    else
+      0
+    end
   end
 end
 

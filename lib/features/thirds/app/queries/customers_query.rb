@@ -17,5 +17,9 @@ module CustomersQuery
   def query_td_for_head_office_activity_sector_reference_get_activity_sector_name_in_customer(content)
     content_tag(:td, content, :class => :text)
   end
+  
+  def query_td_for_head_office_address_zip_code_and_city_name_in_customer(content)
+    content_tag(:td, content, :class => :text)
+  end
 
 end

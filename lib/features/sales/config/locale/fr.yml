@@ -174,6 +174,7 @@ fr:
         heigth: "Hauteur"
         dimensions: "Côtes"
         designation: "Désignation"
+        designation_with_dimensions: "Désignation"
         vat: "Taux de TVA"
       product_reference:
         reference: "Référence"
@@ -368,6 +369,7 @@ fr:
       product_reference:
         reference: "Réf."
         designation: "Désignation"
+        designation_with_dimensions: "Désignation"
         description: "Description"
         name: "Nom"
         end_products_count: "Nb produits finis"

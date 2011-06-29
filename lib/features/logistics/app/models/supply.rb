@@ -150,9 +150,9 @@ class Supply < ActiveRecord::Base # @abstract
     return @humanized_supply_sizes
   end
   
-  def designation
+  def designation(force_reload = false)
     return unless supply_category and supply_sub_category and supply_type
-    "#{supply_category.name} #{supply_sub_category.name} #{supply_type.name} #{humanized_supply_sizes}".strip
+    "#{supply_category.name} #{supply_sub_category.name} #{supply_type.name} #{humanized_supply_sizes(force_reload)}".strip
   end
   
   def threshold

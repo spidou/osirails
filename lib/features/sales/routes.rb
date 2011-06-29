@@ -348,5 +348,8 @@ ActionController::Routing::Routes.add_routes do |map|
   map.sales_admin 'sales_admin', :controller => 'sales_admin'
   ##
   
-  map.sales 'sales', :controller => 'commercial_orders' # default route for sales
+  map.sales_monitoring 'sales_monitoring', :controller => 'sales'
+  map.sales_management 'sales_management', :controller => 'sales'
+  
+  map.sales 'sales', :controller => 'sales' # default route for sales
 end

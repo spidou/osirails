@@ -9,6 +9,8 @@ class PressProof < ActiveRecord::Base
   STATUS_REVOKED   = 'revoked'
   
   named_scope :actives, :conditions => ["status NOT IN (?)", [STATUS_CANCELLED, STATUS_REVOKED]]
+  named_scope :pending, :conditions => [ 'status IN (?)', [STATUS_CONFIRMED, STATUS_SENDED] ]
+  named_scope :signed,  :conditions => [ 'status = ?', STATUS_SIGNED ]
     
   has_attached_file :signed_press_proof, 
                     :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
@@ -91,6 +93,9 @@ class PressProof < ActiveRecord::Base
   after_save :save_press_proof_items
   before_create :can_be_created?
   before_destroy :can_be_destroyed?
+  
+  active_counter :counters  => { :pending_press_proofs => :integer },
+                 :callbacks => { :pending_press_proofs => :after_save }
   
   attr_protected :status, :cancelled_on, :confirmed_on
     
@@ -297,6 +302,10 @@ class PressProof < ActiveRecord::Base
     end
     
     return result.collect(&:current_version)
+  end
+  
+  def pending_press_proofs_counter # @override (active_counter)
+    PressProof.pending.count
   end
   
   private

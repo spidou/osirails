@@ -8,6 +8,10 @@ module ProductReferencesQuery
     content_tag(:td, link_to(content, @query_object), :class => 'designation text')
   end
   
+  def query_td_for_designation_with_dimensions_in_product_reference(content)
+    content_tag(:td, link_to(content, @query_object), :class => 'designation_with_dimensions text')
+  end
+  
   def query_td_for_description_in_product_reference(content)
     content_tag(:td, content, :class => 'description text')
   end

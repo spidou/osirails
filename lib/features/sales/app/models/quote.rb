@@ -171,6 +171,14 @@ class Quote < ActiveRecord::Base
   after_save    :remove_order_end_products
   after_update  :update_quote_step_status
   
+  active_counter :model => 'Order', :callbacks => { :in_progress_total  => :after_save,
+                                                    :commercial_total   => :after_save }
+  
+  active_counter :counters  => { :pending_quotes  => :integer,
+                                 :pending_total   => :float },
+                 :callbacks => { :pending_quotes  => :after_save,
+                                 :pending_total   => :after_save }
+  
   attr_protected :status, :confirmed_at, :cancelled_at
   
   attr_accessor :order_end_products_to_remove
@@ -526,6 +534,14 @@ class Quote < ActiveRecord::Base
     return LOW_PRIORITY    if now <= half_date
     return MEDIUM_PRIORITY if now > half_date and now < expiration_date
     return HIGH_PRIORITY   if now >= expiration_date
+  end
+  
+  def pending_quotes_counter # @override (active_counter)
+    Quote.pending.count
+  end
+  
+  def pending_total_counter # @override (active_counter)
+    Quote.pending.collect(&:total_with_taxes).compact.sum
   end
   
   private

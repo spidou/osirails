@@ -18,7 +18,7 @@ class ProductReference < Product
   before_validation_on_create :update_reference
   
   has_search_index  :only_attributes        => [ :reference, :name, :description ],
-                    :additional_attributes  => { :designation => :string },
+                    :additional_attributes  => { :designation => :string, :designation_with_dimensions => :string },
                     :only_relationships     => [ :product_reference_sub_category ]
   
   PRODUCT_REFERENCES_PER_PAGE = 15

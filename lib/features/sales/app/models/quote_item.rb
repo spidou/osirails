@@ -86,15 +86,15 @@ class QuoteItem < ActiveRecord::Base
   end
   
   def free_item?
-    quotable.nil? and reference_object_id.blank?
+    quotable.nil? && reference_object_id.blank?
   end
   
   def product_item?
-    !free_item? and is_product?
+    !free_item? && is_product?
   end
   
   def service_item?
-    !free_item? and is_service?
+    !free_item? && is_service?
   end
   
   #TODO test this method
@@ -106,8 +106,8 @@ class QuoteItem < ActiveRecord::Base
   def build_or_update_quotable
     return if free_item?
     
-    common_attributes       = %w( name description unit_price prizegiving quantity vat position )
-    only_product_attributes = %w( width length height )
+    common_attributes       = %w( name description prizegiving quantity position )
+    only_product_attributes = %w( width length height unit_price vat )
     only_service_attributes = %w( pro_rata_billing )
     replicated_attributes   = []
     
@@ -141,27 +141,27 @@ class QuoteItem < ActiveRecord::Base
   end
   
   def name
-    self[:name] ||= reference_object && reference_object.designation
+    self[:name] ||= reference_object ? reference_object.designation : nil
   end
   
   def description
-    self[:description] ||= reference_object && reference_object.description
+    self[:description] ||= reference_object ? reference_object.description : nil
   end
   
   def width
-    self[:width] ||= reference_object && reference_object.width
+    self[:width] ||= ( product_item? && reference_object ) ? reference_object.width : nil
   end
   
   def length
-    self[:length] ||= reference_object && reference_object.length
+    self[:length] ||= ( product_item? && reference_object ) ? reference_object.length : nil
   end
   
   def height
-    self[:height] ||= reference_object && reference_object.height
+    self[:height] ||= ( product_item? && reference_object ) ? reference_object.height : nil
   end
   
   def vat
-    self[:vat] ||= reference_object && reference_object.vat
+    self[:vat] ||= reference_object ? reference_object.vat : nil
   end
   
   def unit_price

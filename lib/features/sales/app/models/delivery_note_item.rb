@@ -48,6 +48,14 @@ class DeliveryNoteItem < ActiveRecord::Base
     self[:quantity] ||= 0
   end
   
+  def total_with_taxes
+    if end_product and end_product.unit_price_with_prizegiving and end_product.vat
+      total = end_product.unit_price_with_prizegiving * quantity
+      taxes = total * end_product.vat / 100.0
+      total + taxes
+    end
+  end
+  
   # return discard's quantity of the delivered_delivery_intervention of the associated delivery_note
   def discard_quantity
     return 0 unless delivery_note and delivery_note.delivered_delivery_intervention

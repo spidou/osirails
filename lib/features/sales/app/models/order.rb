@@ -75,7 +75,7 @@ class Order < ActiveRecord::Base
   validates_presence_of :order_type_id,           :if => :society_activity_sector
   validates_presence_of :order_type,              :if => :order_type_id
   
-  validates_associated :customer, :ship_to_addresses, :end_products, :quotes #TODO quotes is really necessary ?
+  validates_associated :customer, :ship_to_addresses, :end_products
   
   validate :validates_length_of_ship_to_addresses
   validate :validates_order_type_validity
@@ -90,6 +90,16 @@ class Order < ActiveRecord::Base
   
   after_save    :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
   after_create  :create_steps
+  
+  active_counter :counters  => { :in_progress_orders  => :integer, :in_progress_total => :float,
+                                 :commercial_orders   => :integer, :commercial_total  => :float,
+                                 :production_orders   => :integer, :production_total  => :float,
+                                 :delivery_orders     => :integer, :delivery_total    => :float,
+                                 :invoicing_orders    => :integer, :invoicing_total   => :float },
+                 :callbacks => { :in_progress_orders  => :after_save,
+                                 :in_progress_total   => :after_save,
+                                 :commercial_orders   => :after_save,
+                                 :commercial_total    => :after_save }
   
   # level constants
   CRITICAL  = 'critical'
@@ -167,6 +177,10 @@ class Order < ActiveRecord::Base
   
   def asset_invoices
     invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
+  end
+  
+  def signed_amount
+    signed_quote && signed_quote.total_with_taxes
   end
   
   #TODO test this method
@@ -412,6 +426,47 @@ class Order < ActiveRecord::Base
   
   def create_missing_steps
     create_steps
+  end
+  
+  def in_progress_orders_counter # @override (active_counter)
+    (CommercialStep.orders + ProductionStep.orders + InvoicingStep.orders).count
+  end
+    
+  def commercial_orders_counter # @override (active_counter)
+    CommercialStep.orders.count
+  end
+  
+  def production_orders_counter # @override (active_counter)
+    ProductionStep.orders.count
+  end
+  
+  def delivery_orders_counter # @override (active_counter)
+    DeliveryStep.orders.count
+  end
+  
+  def invoicing_orders_counter # @override (active_counter)
+    InvoicingStep.orders.count
+  end
+  
+  def in_progress_total_counter # @override (active_counter)
+    (CommercialStep.orders + ProductionStep.orders + InvoicingStep.orders).collect{ |order| order.signed_amount }.compact.sum
+  end
+  
+  def commercial_total_counter # @override (active_counter)
+    #TODO get also orders with unsigned orders (instead of getting only signed ones)
+    CommercialStep.orders.collect{ |order| order.signed_amount }.compact.sum
+  end
+  
+  def production_total_counter # @override (active_counter)
+    ProductionStep.orders.collect{ |order| order.signed_amount }.compact.sum
+  end
+  
+  def delivery_total_counter # @override (active_counter)
+    DeliveryStep.orders.collect{ |order| order.signed_amount }.compact.sum
+  end
+  
+  def invoicing_total_counter # @override (active_counter)
+    InvoicingStep.orders.collect{ |order| order.signed_amount }.compact.sum
   end
   
   private

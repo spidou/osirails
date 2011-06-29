@@ -6,7 +6,7 @@ conf_columns: &columns
     - product_reference_sub_category.product_reference_category.name
     - product_reference_sub_category.name
     - name
-    - designation
+    - designation_with_dimensions
     - description
     - end_products_count
 conf_group: &group
@@ -40,7 +40,7 @@ advanced_product_reference:
   default_query:
     columns:
       - reference
-      - designation
+      - designation_with_dimensions
       - description
     group:
       - product_reference_sub_category.product_reference_category.name
@@ -60,12 +60,12 @@ product_reference_index:
   <<: *pagination
   quick_search:
     - reference
-    - designation
+    - designation_with_dimensions
     - description
   default_query:
     columns:
       - reference
-      - designation
+      - designation_with_dimensions
       - description
     group:
       - product_reference_sub_category.product_reference_category.name

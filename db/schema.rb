@@ -9,7 +9,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110404105202) do
+ActiveRecord::Schema.define(:version => 20110629050715) do
+
+  create_table "active_counters", :force => true do |t|
+    t.string "key"
+    t.string "cast_type"
+    t.float  "value",     :default => 0.0
+  end
+
+  add_index "active_counters", ["key"], :name => "index_active_counters_on_key", :unique => true
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id"

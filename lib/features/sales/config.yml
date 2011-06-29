@@ -9,166 +9,174 @@ menus:
     title: Ventes
     position: 6
     children:
-      in_progress_orders:
-        title: Dossiers en cours
-        description: Afficher la liste complète des dossiers actuellement en cours
+      sales_monitoring:
+        title: Suivi
         position: 1
-        separator: after
-      commercial_orders:
-        title: Dossiers en Étude Commerciale
-        description: "Afficher la liste des dossiers actuellement en phase d'étude commerciale"
-        position: 2
-      production_orders:
-        title: Dossiers en Prodution
-        description: Afficher la liste des dossiers actuellement en phase de Production
-        position: 3
-      invoicing_orders:
-        title: Dossiers en Facturation
-        description: Afficher la liste des dossiers actuellement en phase de facturation
-        position: 5
-        separator: after
-      closed_orders:
-        title: Dossiers cloturés
-        description: Afficher la liste des dossiers déjà cloturés
-        position: 6
-      archived_orders:
-        title: Dossiers archivés
-        description: Afficher la liste des dossiers déjà archivés
-        position: 7
-      quote_management:
-        title: Gestion des devis
-        description: Gestion des devis
-        position: 8
-      invoice_management:
-        title: Gestion des factures
-        description: Gestion de factures
-        position: 9
-      orders:
-        title: Dossier
-        description: Dossier de vente
-        hidden: true
         children:
-          informations:
-            title: Informations de commande
-            description: Informations générales sur le dossier
+          in_progress_orders:
+            title: Dossiers en cours
+            description: Afficher la liste complète des dossiers actuellement en cours
             position: 1
-          commercial_step:
-            title: Étude commerciale
-            description: "Phase de l'Étude Commerciale"
+            separator: after
+          commercial_orders:
+            title: Dossiers en Étude Commerciale
+            description: "Afficher la liste des dossiers actuellement en phase d'étude commerciale"
             position: 2
-            children:
-              survey_step:
-                title: Survey
-                description: Étape de Survey
-                position: 1
-                children:
-                  subcontractor_requests:
-                    title: Demande de sous-traitance
-                    description: "Demande de prestatation auprès d'un sous-traitant"
-              quote_step:
-                title: Devis
-                description: "Étape de l'établissement du devis"
-                position: 2
-                children:
-                  quotes:
-                    title: Devis (Pièce)
-                    description: "Élaboration d'un devis"
-                    hidden: true
-                    children:
-                      order_forms:
-                        title: Bon de commande
-                        description: Bon de commande associé au devis
-                        hidden: true
-              press_proof_step:
-                title: BAT
-                description: "Étape de l'établissement du/des BAT"
-                position: 3
-                children:
-                  press_proofs:
-                    title: BAT (Pièce)
-                    description: Élaboration des BAT
-                    hidden: true
-                    children:
-                      dunnings:
-                        title: Relances
-                        description: Gestion des relances
-                        hidden: true
-          production_step:
-            title: Production
-            description: Phase de la Production
+          production_orders:
+            title: Dossiers en Prodution
+            description: Afficher la liste des dossiers actuellement en phase de Production
             position: 3
-            children:
-              manufacturing_step:
-                title: Fabrication
-                description: Étape de la fabrication
-                position: 1
-              delivery_step:
-                title: Livraison
-                description: Étape de la livraison
-                position: 2
-                children:
-                  delivery_notes:
-                    title: Bon de livraison
-                    description: Élaboration des bons de livraison
-                    hidden: true
-                    children:
-                      delivery_interventions:
-                        title: "Intervention de livraison / installation"
-                        description: "Gestion des intervention de livraison / installation"
-                        hidden: true
-          invoicing_step:
-            title: Facturation
-            description: Phase de la Facturation
-            position: 4
-            children:
-              invoice_step:
-                title: Factures
-                description: "Étape de l'élaboration des factures"
-                position: 1
-                children:
-                  invoices:
-                    title: Facture (Pièce)
-                    description: "Élaboration d'une facture"
-                    hidden: true
-                    children:
-                      payment_attachments:
-                        title: Pièce jointe du règlement
-                        description: Pièce jointe du règlement
-                        hidden: true
-                      adjustment_attachments:
-                        title: "Pièce jointe de l'ajustement"
-                        description: "Pièce jointe de l'ajustement"
-                        hidden: true
-              payment_step:
-                title: Paiements
-                description: "Étape de l'enregistrement des paiments"
-                position: 2
-          graphic_items:
-            title: Ressources graphiques
-            description: "Étape d'ajout des ressources graphiques"
-            position: 4
-            children:
-              mockups:
-                title: Maquettes
-                description: Gestion des maquettes
-                position: 1
-              graphic_documents:
-                title: Documents graphiques
-                description: Gestion des documents graphiques  
-                position: 2
-              graphic_item_versions:
-                title: Versions de ressources graphiques
-                description: Gestion des versions de ressources graphiques
-                hidden: true   
-                position: 3
-              graphic_item_spool_items:
-                title: Mes travaux en attente
-                description: Fichiers mis en file d'attente de production de l'utilisateur courant
-                position: 4
-          logs:
-            title: Historique
-            description: Historique des actions effectuées sur le dossier
+          invoicing_orders:
+            title: Dossiers en Facturation
+            description: Afficher la liste des dossiers actuellement en phase de facturation
             position: 5
+            separator: after
+          closed_orders:
+            title: Dossiers cloturés
+            description: Afficher la liste des dossiers déjà cloturés
+            position: 6
+          archived_orders:
+            title: Dossiers archivés
+            description: Afficher la liste des dossiers déjà archivés
+            position: 7
+      sales_management:
+        title: Gestion
+        position: 2
+        children:
+          quote_management:
+            title: Gestion des devis
+            description: Gestion des devis
+            position: 8
+          invoice_management:
+            title: Gestion des factures
+            description: Gestion de factures
+            position: 9
+          orders:
+            title: Dossier
+            description: Dossier de vente
+            hidden: true
+            children:
+              informations:
+                title: Informations de commande
+                description: Informations générales sur le dossier
+                position: 1
+              commercial_step:
+                title: Étude commerciale
+                description: "Phase de l'Étude Commerciale"
+                position: 2
+                children:
+                  survey_step:
+                    title: Survey
+                    description: Étape de Survey
+                    position: 1
+                    children:
+                      subcontractor_requests:
+                        title: Demande de sous-traitance
+                        description: "Demande de prestatation auprès d'un sous-traitant"
+                  quote_step:
+                    title: Devis
+                    description: "Étape de l'établissement du devis"
+                    position: 2
+                    children:
+                      quotes:
+                        title: Devis (Pièce)
+                        description: "Élaboration d'un devis"
+                        hidden: true
+                        children:
+                          order_forms:
+                            title: Bon de commande
+                            description: Bon de commande associé au devis
+                            hidden: true
+                  press_proof_step:
+                    title: BAT
+                    description: "Étape de l'établissement du/des BAT"
+                    position: 3
+                    children:
+                      press_proofs:
+                        title: BAT (Pièce)
+                        description: Élaboration des BAT
+                        hidden: true
+                        children:
+                          dunnings:
+                            title: Relances
+                            description: Gestion des relances
+                            hidden: true
+              production_step:
+                title: Production
+                description: Phase de la Production
+                position: 3
+                children:
+                  manufacturing_step:
+                    title: Fabrication
+                    description: Étape de la fabrication
+                    position: 1
+                  delivery_step:
+                    title: Livraison
+                    description: Étape de la livraison
+                    position: 2
+                    children:
+                      delivery_notes:
+                        title: Bon de livraison
+                        description: Élaboration des bons de livraison
+                        hidden: true
+                        children:
+                          delivery_interventions:
+                            title: "Intervention de livraison / installation"
+                            description: "Gestion des intervention de livraison / installation"
+                            hidden: true
+              invoicing_step:
+                title: Facturation
+                description: Phase de la Facturation
+                position: 4
+                children:
+                  invoice_step:
+                    title: Factures
+                    description: "Étape de l'élaboration des factures"
+                    position: 1
+                    children:
+                      invoices:
+                        title: Facture (Pièce)
+                        description: "Élaboration d'une facture"
+                        hidden: true
+                        children:
+                          payment_attachments:
+                            title: Pièce jointe du règlement
+                            description: Pièce jointe du règlement
+                            hidden: true
+                          adjustment_attachments:
+                            title: "Pièce jointe de l'ajustement"
+                            description: "Pièce jointe de l'ajustement"
+                            hidden: true
+                  payment_step:
+                    title: Paiements
+                    description: "Étape de l'enregistrement des paiments"
+                    position: 2
+              graphic_items:
+                title: Ressources graphiques
+                description: "Étape d'ajout des ressources graphiques"
+                position: 4
+                children:
+                  mockups:
+                    title: Maquettes
+                    description: Gestion des maquettes
+                    position: 1
+                  graphic_documents:
+                    title: Documents graphiques
+                    description: Gestion des documents graphiques  
+                    position: 2
+                  graphic_item_versions:
+                    title: Versions de ressources graphiques
+                    description: Gestion des versions de ressources graphiques
+                    hidden: true   
+                    position: 3
+                  graphic_item_spool_items:
+                    title: Mes travaux en attente
+                    description: Fichiers mis en file d'attente de production de l'utilisateur courant
+                    position: 4
+              logs:
+                title: Historique
+                description: Historique des actions effectuées sur le dossier
+                position: 5
   goods:
     title: Produits
     description: Gestion des produits

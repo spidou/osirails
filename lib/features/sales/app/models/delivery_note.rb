@@ -40,13 +40,13 @@ class DeliveryNote < ActiveRecord::Base
   has_one  :pending_delivery_intervention,    :class_name => "DeliveryIntervention", :conditions => [ 'delivered IS NULL AND cancelled_at IS NULL and postponed IS NULL' ], :order => "created_at DESC"
   has_one  :delivered_delivery_intervention,  :class_name => "DeliveryIntervention", :conditions => [ 'delivered = ?', true ], :order => "created_at DESC"
   
-  named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
-  
   has_many :delivery_note_invoices
   has_many :all_invoices, :through => :delivery_note_invoices, :source => :invoice
   has_one  :invoice,      :through => :delivery_note_invoices, :conditions => [ "invoices.status IS NULL OR invoices.status != ?", Invoice::STATUS_CANCELLED ] #TODO test this relationship
   
   named_scope :actives, :conditions => [ 'status IS NULL or status != ?', STATUS_CANCELLED ]
+  named_scope :pending, :conditions => [ 'status = ?', STATUS_CONFIRMED ]
+  named_scope :signed,  :conditions => [ 'status = ?', STATUS_SIGNED ]
   
   validates_presence_of :ship_to_address
   validates_presence_of :order_id, :creator_id, :delivery_note_type_id
@@ -82,6 +82,11 @@ class DeliveryNote < ActiveRecord::Base
   before_destroy :can_be_destroyed?
   
   after_save :save_delivery_note_items
+  
+  active_counter :counters  => { :pending_delivery_notes  => :integer,
+                                 :pending_total           => :float },
+                 :callbacks => { :pending_delivery_notes  => :after_save,
+                                 :pending_total           => :after_save }
   
   attr_protected :status, :reference, :confirmed_at, :cancelled_at
   
@@ -293,6 +298,10 @@ class DeliveryNote < ActiveRecord::Base
     !discards.length.zero?
   end
   
+  def total_with_taxes
+    delivery_note_items.collect(&:total_with_taxes).compact.sum
+  end
+  
   def number_of_pieces
     delivery_note_items.collect(&:quantity).compact.sum
   end
@@ -315,5 +324,13 @@ class DeliveryNote < ActiveRecord::Base
   
   def siblings
     self_and_siblings - [ self ]
+  end
+  
+  def pending_delivery_notes_counter # @override (active_counter)
+    DeliveryNote.pending.count
+  end
+  
+  def pending_total_counter # @override (active_counter)
+    DeliveryNote.pending.collect(&:total_with_taxes).compact.sum
   end
 end

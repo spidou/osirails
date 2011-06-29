@@ -27,6 +27,9 @@ class ManufacturingStep < ActiveRecord::Base
   after_save :save_manufacturing_progresses
   after_save :update_status
   
+  active_counter :model => 'Order', :callbacks => { :production_orders  => :after_save,
+                                                    :production_total   => :after_save }
+  
   #TODO test this method
   def validates_manufacturing_dates
    errors.add(:manufacturing_started_on, errors.generate_message(:manufacturing_started_on, :blank)) if !manufacturing_started_on and ( global_progression > 0  or manufacturing_finished_on )

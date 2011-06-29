@@ -1,0 +1,126 @@
+= active_counter
+  
+  ActiveCounter provides you a simple way to define counters, to update
+  them and retrieve them.
+  
+  You can define multiple counters on a model, even if counters are not
+  mapped with a relationship (like has_many with counter_cache).
+  You can use ActiveCounter to count instances (like counter_cache)
+  or to cache totals, subtotals, or whatever you want (integer or float).
+  
+  Mathieu Fontaine (http://github.com/spidou)
+  
+== Installation
+
+  ruby script/plugin install git://github.com/spidou/active_counter.git
+
+== Usage
+
+=== Prepare database
+
+Generate and apply the migration:
+
+  ruby script/generate active_counter_migration
+  rake db:migrate
+
+=== Define counters
+
+Let's suppose posts have many comments. But comments can have
+many statuses, so we have many 'has_many'.
+
+  class Post < ActiveRecord::Base
+    has_many :comments
+    has_many :validated_comments, :class_name => 'Comment', :conditions => [...]
+    has_many :rejected_comments,  :class_name => 'Comment', :conditions => [...]
+    has_many :pending_comments,   :class_name => 'Comment', :conditions => [...]
+    
+    active_counter :counters  => { :validated_comments  => :integer
+                                   :rejected_comments   => :integer
+                                   :pending_comments    => :integer }
+  end
+
+
+We can manually update counters by running:
+
+Post.first.update_validated_comments_counter
+Post.first.update_rejected_comments_counter
+Post.first.update_pending_comments_counter
+
+
+Also, we can now use these methods:
+
+Post.validated_comments_counter # => 0
+Post.rejected_comments_counter  # => 0
+Post.pending_comments_counter   # => 0
+
+
+For now, counters return 0 because we haven't defined the calculation method for
+the counters. So we have to do something like that:
+
+  class Post < ActiveRecord::Base
+    def validated_comments_counter
+      validated_comments.count
+    end
+    
+    def rejected_comments_counter
+      rejected_comments.count
+    end
+    
+    def pending_comments_counter
+      pending_comments.count
+    end
+  end
+
+
+Now, after updating counters (as described above), we can see
+counters have been updated if we run these methods:
+
+Post.validated_comments_counter # => 10
+Post.rejected_comments_counter  # => 6
+Post.pending_comments_counter   # => 2
+
+
+
+=== Define callbacks
+
+In the same context as above
+
+  class Post < ActiveRecord::Base
+    has_many :comments
+    has_many :validated_comments, :class_name => 'Comment', :conditions => [...]
+    has_many :rejected_comments,  :class_name => 'Comment', :conditions => [...]
+    has_many :pending_comments,   :class_name => 'Comment', :conditions => [...]
+    
+    active_counter :counters  => { :validated_comments  => :integer
+                                   :rejected_comments   => :integer
+                                   :pending_comments    => :integer },
+                   :callbacks => { :validated_comments  => :after_save,
+                                   :rejected_comments   => [ :after_save, :after_destroy ],
+                                   :pending_comments    => :after_create }
+  end
+
+=== Define callbacks from other model
+
+  class Comment < ActiveRecord::Base
+    active_counter :model => 'Post', :callbacks => { :validated_comments  => :after_save,
+                                                     :rejected_comments   => :after_save,
+                                                     :pending_comments    => :after_save }
+  end
+
+When these callbacks will be triggered on Comment, the matching
+methods will be run on Post, without defining 'calculation method'
+on Comment.
+
+So, we also have possibility to by-pass these convention by
+overriding a method like that:
+
+  class Comment < ActiveRecord::Base
+    def post_validated_comments_counter
+      # return count
+    end
+  end
+
+We can notice that it is similar than to define an own 'calculation method',
+but prefixed by 'post_', according to the target model name.
+
+That's all, for now.

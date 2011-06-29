@@ -79,6 +79,9 @@ class Invoice < ActiveRecord::Base
   named_scope :unpaid,  :conditions => [ 'status IN (?)', [STATUS_CONFIRMED, STATUS_SENDED, STATUS_DUE_DATE_PAID, STATUS_FACTORING_PAID, STATUS_FACTORING_RECOVERED] ], :order => "invoices.created_at DESC" # we don't consider draft invoices as unpaid invoices. to get drafts, use 'pending'.
   named_scope :paid,    :conditions => [ 'status IN (?)', [STATUS_TOTALLY_PAID, STATUS_FACTORING_BALANCE_PAID] ], :order => "invoices.created_at DESC"
   
+  named_scope :awaiting_sending, :conditions => [ 'status = ?', STATUS_CONFIRMED ]
+  named_scope :awaiting_payment, :conditions => [ 'status IN (?)', [STATUS_SENDED, STATUS_DUE_DATE_PAID, STATUS_FACTORING_PAID, STATUS_FACTORING_RECOVERED] ]
+  
   attr_accessor :the_due_date_to_pay # only one due_date can be paid at time, and it's stored in this accessor
   
   validates_associated :invoice_items, :delivery_note_invoices, :delivery_notes, :dunnings, :due_dates
@@ -365,6 +368,15 @@ class Invoice < ActiveRecord::Base
   
   has_search_index :only_attributes    => [ :reference, :status, :published_on, :sended_on, :abandoned_on, :factoring_recovered_on, :factoring_balance_paid_on ],
                    :only_relationships => [ :factor, :invoice_type ]#,:order] #TODO add :order to relationships list when bug #60 will be resolved.
+  
+  active_counter :counters  => { :awaiting_sending_invoices => :integer,
+                                 :awaiting_sending_total    => :float,
+                                 :awaiting_payment_invoices => :integer,
+                                 :awaiting_payment_total    => :float },
+                 :callbacks => { :awaiting_sending_invoices => :after_save,
+                                 :awaiting_sending_total    => :after_save,
+                                 :awaiting_payment_invoices => :after_save,
+                                 :awaiting_payment_total    => :after_save }
   
   def validates_presence_of_signed_quote
     errors.add(:signed_quote, "La facture doit être associée à un devis signé, mais celui-ci n'est pas présent.") unless signed_quote
@@ -1218,7 +1230,23 @@ class Invoice < ActiveRecord::Base
   def message_for_validates_date_factoring_balance_paid_on_on_or_after_on_while_factoring_recovered
     message_for_validates_date("factoring_balance_paid_on", "on_or_after", "while_factoring_recovered", self.factoring_recovered_on)
   end
-    
+  
+  def awaiting_sending_invoices_counter # @override (active_counter)
+    Invoice.awaiting_sending.count
+  end
+  
+  def awaiting_sending_total_counter # @override (active_counter)
+    Invoice.awaiting_sending.collect(&:total_with_taxes).compact.sum
+  end
+  
+  def awaiting_payment_invoices_counter # @override (active_counter)
+    Invoice.awaiting_payment.count
+  end
+  
+  def awaiting_payment_total_counter # @override (active_counter)
+    Invoice.awaiting_payment.collect(&:total_with_taxes).compact.sum
+  end
+  
   private
     def message_for_validates_date(attribute, error_type, context, restriction)
       I18n.t("activerecord.errors.models.invoice.attributes.#{attribute}.#{error_type}.#{context}", :restriction => restriction)

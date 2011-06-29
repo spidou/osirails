@@ -1,0 +1,180 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+<% end %>
+
+<h1>Ventes</h1> 
+
+<div>
+  <table class="no_nth sales_home">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th class="monitoring">Suivi</th>
+        <th class="management">Gestion</th>
+      </tr>
+    </thead>
+    
+    <tbody>
+      <tr class="global">
+        <!-- <th><%= "GLOBAL".split("").join("<br/>") %></th> -->
+        <th>GLOBAL</th>
+        <td class="monitoring">
+          <ul>
+            <li>
+              <div class="counter"><span><%= Order.in_progress_orders_counter %></span></div> <%= link_to "Dossiers en cours", in_progress_orders_path %>
+              <div class="infos">
+                <div class="amount"><span><%= Order.in_progress_total_counter %>&nbsp;&euro;</span></div>
+              </div>
+            </li>
+          </ul>
+        </td>
+        <td class="management">
+          <ul>
+            <li><%= link_to "Nouveau dossier", new_order_path, 'data-icon' => :new_order %></li>
+            <li class="disabled"><%= link_to "Chercher un dossier", "#", 'data-icon' => :find_order %></li>
+          </ul>
+        </td>
+      </tr>
+      <tr class="commercial">
+        <!-- <th><%= "COMMERCIAL".split("").join("<br/>") %></th> -->
+        <th>COMMERCIAL</th>
+        <td class="monitoring">
+          <ul>
+            <li>
+              <div class="counter"><span><%= Order.commercial_orders_counter %></span></div> <%= link_to "Dossiers en étude commerciale", commercial_orders_path %>
+              <div class="infos">
+                <div class="amount"><span><%= Order.commercial_total_counter %>&nbsp;&euro;</span></div>
+              </div>
+            </li>
+          </ul>
+        </td>
+        <td class="management">
+          <ul>
+            <li class="disabled"><%= link_to "Nouveau chiffrage rapide", "#", 'data-icon' => :new %></li>
+            <li>
+              <%= link_to "Gestion des devis", quote_management_path, 'data-icon' => :management %>
+              <div class="infos">
+                <div class="document_counter" title="Devis en attente de signature"><span><%= Quote.pending_quotes_counter %></span></div>
+                <div class="amount"><span><%= Quote.pending_total_counter %>&nbsp;&euro;</span></div>
+              </div>
+            </li>
+            <li class="disabled"><%= link_to "Planning des surveys", "#", 'data-icon' => :planning %></li>
+            <li class="disabled">
+              <%= link_to "Gestion des BATs", "#", 'data-icon' => :management %>
+              <div class="infos">
+                <div class="document_counter" title="BATs en attente de signature"><span><%= PressProof.pending_press_proofs_counter %></span></div>
+              </div>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr class="production">
+        <!-- <th><%= "PRODUCTION".split("").join("<br/>") %></th> -->
+        <th>PRODUCTION</th>
+        <td class="monitoring">
+          <ul>
+            <li class="disabled">
+              <div class="counter"><span>0</span></div> <%= link_to "Dossiers en SAS de production", "#" %>
+              <div class="infos">
+                <div class="amount"><span>0 €</span></div>
+              </div>
+            </li>
+            <li>
+              <div class="counter"><span><%= Order.production_orders_counter %></span></div> <%= link_to "Dossiers en production", production_orders_path %>
+              <div class="infos">
+                <div class="amount"><span><%= Order.production_total_counter %>&nbsp;&euro;</span></div>
+              </div>
+            </li>
+            <li>
+              <ul>
+                <li class="disabled"><%= link_to "État de charge des dossiers", "#" %></li>
+                <li class="disabled"><%= link_to "Coût des dossiers en production", "#" %></li>
+              </ul>
+            </li>
+          </ul>
+        </td>
+        <td class="management">
+          <ul>
+            <li class="disabled"><%= link_to "Planning de production", "#", 'data-icon' => :planning %></li>
+          </ul>
+        </td>
+      </tr>
+      <tr class="delivery">
+        <!-- <th><%= "LIVRAISON".split("").join("<br/>") %></th> -->
+        <th>LIVRAISON</th>
+        <td class="monitoring">
+          <ul>
+            <li class="disabled">
+              <div class="counter"><span>0</span></div> <%= link_to "Dossiers en SAS de livraison", "#" %>
+              <div class="infos">
+                <div class="amount"><span>0 €</span></div>
+              </div>
+            </li>
+            <li class="disabled">
+              <div class="counter"><span><%= Order.delivery_orders_counter %></span></div> <%= link_to "Dossiers en livraison", "#" %>
+              <div class="infos">
+                <div class="amount"><span><%= Order.delivery_total_counter %>&nbsp;&euro;</span></div>
+              </div>
+            </li>
+          </ul>
+        </td>
+        <td class="management">
+          <ul>
+            <li class="disabled">
+              <%= link_to "Gestion des BLs", "#", 'data-icon' => :management %>
+              <div class="infos">
+                <div class="document_counter" title="BLs en attente de livraison"><span><%= DeliveryNote.pending_delivery_notes_counter %></span></div>
+                <div class="amount"><span><%= DeliveryNote.pending_total_counter %>&nbsp;&euro;</span></div>
+              </div>
+            </li>
+            <li class="disabled"><%= link_to "Planning des livraisons", "#", 'data-icon' => :planning %></li>
+          </ul>
+        </td>
+      </tr>
+      <tr class="finance">
+        <!-- <th><%= "FINANCES".split("").join("<br/>") %></th> -->
+        <th>FINANCES</th>
+        <td class="monitoring">
+          <ul>
+            <li class="disabled">
+              <div class="counter"><span>0</span></div> <%= link_to "Dossiers en SAS de facturation", "#" %>
+              <div class="infos">
+                <div class="amount"><span>0 €</span></div>
+              </div>
+            </li>
+            <li>
+              <div class="counter"><span><%= Order.invoicing_orders_counter %></span></div> <%= link_to "Dossiers en facturation", invoicing_orders_path %>
+              <div class="infos">
+                <div class="amount"><span><%= Order.invoicing_total_counter %>&nbsp;&euro;</span></div>
+              </div>
+            </li>
+            <li class="disabled">
+              <div class="counter"><span>0</span></div> <%= link_to "Dossiers en attente de paiement", "#" %>
+              <div class="infos">
+                <div class="amount"><span>0 €</span></div>
+              </div>
+            </li>
+          </ul>
+        </td>
+        <td class="management">
+          <ul>
+            <li>
+              <%= link_to "Gestion des factures", invoice_management_path, 'data-icon' => :management %>
+              <div class="infos">
+                <div class="document_counter" title="Factures en attente d'envoi"><span><%= Invoice.awaiting_sending_invoices_counter %></span></div>
+                <div class="amount"><span><%= Invoice.awaiting_sending_total_counter %>&nbsp;&euro;</span></div>
+              </div>
+            </li>
+            <li class="disabled">
+              <%= link_to "Gestion des paiements", "#", 'data-icon' => :management %>
+              <div class="infos">
+                <div class="document_counter" title="Factures en attente de paiement"><span><%= Invoice.awaiting_payment_invoices_counter %></span></div>
+                <div class="amount"><span><%= Invoice.awaiting_payment_total_counter %>&nbsp;&euro;</span></div>
+              </div>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

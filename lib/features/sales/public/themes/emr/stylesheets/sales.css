@@ -8,6 +8,12 @@ a[data-icon=transform]  { background-image: url("/themes/emr/images/sales/transf
 a[data-icon=disable]  { background-image: url("/themes/emr/images/sales/disable.png"); }
 a[data-icon=enable]   { background-image: url("/themes/emr/images/sales/enable.png"); }
 
+/* ## orders */
+a[data-icon=new_order]  { background-image: url("/themes/emr/images/sales/new_order.png"); }
+a[data-icon=find_order] { background-image: url("/themes/emr/images/sales/find_order.png"); }
+a[data-icon=planning]   { background-image: url("/themes/emr/images/sales/planning.png"); }
+a[data-icon=management] { background-image: url("/themes/emr/images/sales/management.png"); }
+
 /* ## delivery_notes */
 a[data-icon=schedule] { background-image: url("/themes/emr/images/sales/schedule.png"); }
 a[data-icon=realize]  { background-image: url("/themes/emr/images/sales/realize.png"); }
@@ -25,6 +31,159 @@ a[data-icon=new_category]           { background-image: url("/themes/emr/images/
 a[data-icon=new_sub_category]       { background-image: url("/themes/emr/images/sales/new_sub_category.png"); }
 a[data-icon=new_product_reference]  { background-image: url("/themes/emr/images/sales/new_product_reference.png"); }
 /* END IMAGES */
+
+/* SALES HOME */
+table.sales_home {
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.sales_home tbody tr th {
+  width: 0;
+}
+
+table.sales_home tbody tr td {
+  text-align: left;
+  vertical-align: top;
+}
+
+table.sales_home th, table.sales_home td {
+  border: 1px solid #888;
+}
+
+table.sales_home tbody .monitoring,
+table.sales_home tbody .management {
+  min-width: 300px;
+}
+
+table.sales_home tbody td ul {
+  padding: 0;
+  margin: 0;
+}
+
+table.sales_home tbody a {
+  font-size: 110%;
+}
+
+table.sales_home tbody td ul li {
+  position: relative;
+  list-style: none;
+  margin: 6px 0;
+  min-height: 20px;
+}
+
+table.sales_home tbody td > ul > li > ul > li {
+  padding-left: 25px;
+}
+
+table.sales_home tbody td > ul > li > ul > li:before {
+  content: "➤ ";
+}
+
+table.sales_home tbody td ul li div.counter {
+  background: url('/themes/emr/images/sales/folder.png') no-repeat;
+  display: inline-block;
+  width: 34px;
+  height: 26px;
+}
+
+table.sales_home tbody td ul li div.counter span {
+  display: block;
+  padding-top: 10px;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+}
+
+table.sales_home tbody td ul li div.document_counter {
+  background: url('/themes/emr/images/sales/document.png') no-repeat;
+  display: inline-block;
+  width: 26px;
+  height: 24px;
+}
+
+table.sales_home tbody td ul li div.document_counter span {
+  display: block;
+  padding-top: 6px;
+  text-align: center;
+  font-weight: bold;
+}
+
+table.sales_home tbody td ul li div.infos {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+table.sales_home tbody td.monitoring ul li div.infos {
+  margin-top: 5px;
+}
+
+table.sales_home tbody td.management ul li div.infos {
+  margin-top: -6px;
+}
+
+table.sales_home tbody td ul li div.infos div.amount {
+  display: inline-block;
+  padding: 2px 5px;
+  border: 1px solid #AAA;
+  margin-left: 5px;
+  background-color: white;
+  -moz-border-radius: 2px;
+}
+
+table.sales_home tbody td ul li:hover div.infos div.amount {
+  -moz-box-shadow: 0 0 2px rgba(255, 165, 0, 1), inset 0 0 3px rgba(255, 165, 0, 1); /* orange */
+}
+
+table.sales_home tbody td ul li.disabled,
+table.sales_home tbody td ul li.disabled .amount span {
+  text-decoration: line-through;
+  color: #888;
+}
+
+table.sales_home tbody tr.global td {
+  background-color: white;
+}
+
+table.sales_home tbody tr.global th {
+  background-color: #f2f2f2;
+}
+
+table.sales_home tbody tr.commercial td {
+  background-color: #c6ffc6;
+}
+
+table.sales_home tbody tr.commercial th {
+  background-color: #bcf2bc;
+}
+
+table.sales_home tbody tr.production td {
+  background-color: #fffd7c;
+}
+
+table.sales_home tbody tr.production th {
+  background-color: #f2f076;
+}
+
+table.sales_home tbody tr.delivery td {
+  background-color: #b2b2ff;
+}
+
+table.sales_home tbody tr.delivery th {
+  background-color: #a9a9f2;
+}
+
+table.sales_home tbody tr.finance td {
+  background-color: #ffc0cb;
+}
+
+table.sales_home tbody tr.finance th {
+  background-color: #f2b6c1;
+}
+
+/* END SALES HOME */
 
 #order_search_customer {
   margin: 7px 10px 7px 10px;

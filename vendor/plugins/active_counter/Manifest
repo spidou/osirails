@@ -1,0 +1,9 @@
+LICENSE
+README
+Rakefile
+generators/active_counter_migration/active_counter_migration_generator.rb
+generators/active_counter_migration/templates/migration.rb
+init.rb
+lib/active_counter.rb
+lib/counter.rb
+Manifest
