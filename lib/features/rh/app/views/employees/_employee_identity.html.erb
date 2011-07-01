@@ -1,7 +1,8 @@
 <%
   require_locals form, authorization
 employee = employee_identity
-sensitive_data = employee.employee_sensitive_data
+sensitive_data = employee.employee_sensitive_data || employee.build_employee_sensitive_data
+address = sensitive_data.address || sensitive_data.build_address
 %>
 
 <h3>Fiche d&apos;identit&eacute;</h3>
@@ -40,7 +41,9 @@ sensitive_data = employee.employee_sensitive_data
       </p>
       <p>
         <%= form.label :social_security_number %>
-        <%= s.form_or_view( display_social_security(sensitive_data.social_security_number),:social_security_number) %>
+        <%= '<span class="fieldWithErrors">' if sensitive_data.errors.on(:social_security_number) %>
+          <%= s.form_or_view( display_social_security(sensitive_data.social_security_number),:social_security_number) %>
+        <%= '</span>' if sensitive_data.errors.on(:social_security_number) %>
       </p>
     <% end %>
   <% end %> 
@@ -56,7 +59,11 @@ sensitive_data = employee.employee_sensitive_data
 <% if authorization %>
 
   <h3>Adresse postale</h3>
-  <%= render :partial => "addresses/address_form", :object => sensitive_data.address || sensitive_data.build_address, :locals => { :address_owner => employee }%>
+  <% if form.show_view? and address.new_record? %>
+    <p>L'adresse postale n'a pas été saisie</p>
+  <% else %>
+    <%= render :partial => "addresses/address_form", :object => address, :locals => { :address_owner => employee } %>
+  <% end %>
 
   <h3>Adresses &eacute;lectroniques</h3>
   <% form.fields_for(:employee_sensitive_data, sensitive_data) do |s|%>

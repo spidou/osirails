@@ -7,17 +7,17 @@
 
 <%
 employee_errors = {:civil_state  => employee.errors.any? ? ' errors' : '', # TODO be more precise according to attributes concerned
-                    :jobs         => employee.jobs.select {|n| n.errors.any? }.any? ? ' errors' : '',
-                    :iban         => (employee.employee_sensitive_data.iban && employee.employee_sensitive_data.iban.errors.any?) ? ' errors' : '',
-                    :documents    => employee.documents.select {|n| n.errors.any? }.any? ? ' errors' : ''}
+                   :jobs         => employee.jobs.select {|n| n.errors.any? }.any? ? ' errors' : '',
+                   :iban         => (employee.employee_sensitive_data && employee.employee_sensitive_data.iban && employee.employee_sensitive_data.iban.errors.any?) ? ' errors' : '',
+                   :documents    => employee.documents.select {|n| n.errors.any? }.any? ? ' errors' : ''}
 document_count  = employee.documents.reject(&:should_destroy?).count
-is_owner        = employee.user.id == current_user.id
+is_owner        = !employee.new_record? && employee.user.id == current_user.id
 sensitive_data_authorization   = EmployeeSensitiveData.can_view?(current_user) unless is_form_view?
 sensitive_data_authorization ||= employee.new_record? ? EmployeeSensitiveData.can_add?(current_user) : EmployeeSensitiveData.can_edit?(current_user)
 job_contract_authorization     = JobContract.can_view?(current_user)
 %>
 
-<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee } unless employee.new_record? %>
 
 <div class="presentation_medium root_nav standard">
   <% tab_navigator :employee_nav do |t| %>

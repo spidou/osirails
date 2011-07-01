@@ -10,18 +10,20 @@ class EmployeeSensitiveData < ActiveRecord::Base
   
   has_many :premia, :order => "created_at DESC"
   
-  journalize :attributes        => [:birth_date, :social_security_number, :family_situation_id, :email],
-             :subresources      => [:address, :numbers, :iban]
-  
   validates_associated :iban, :address
   
   validates_presence_of :family_situation_id
   validates_presence_of :family_situation,     :if => :family_situation_id
   
+  validates_date :birth_date, :before => Date.today
+  
   validates_format_of :social_security_number,  :with         => /^[0-9]{13}\x20[0-9]{2}$/,
                                                 :allow_blank  => false
   validates_format_of :email,                   :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
                                                 :allow_blank  => true
+  
+  journalize :attributes        => [:birth_date, :social_security_number, :family_situation_id, :email],
+             :subresources      => [:address, :numbers, :iban]
   
   has_search_index :only_attributes => [ :email, :birth_date, :social_security_number]
   
@@ -32,4 +34,3 @@ class EmployeeSensitiveData < ActiveRecord::Base
       iban.save(false) if iban
     end
 end
-

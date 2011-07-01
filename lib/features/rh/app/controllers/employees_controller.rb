@@ -33,12 +33,9 @@ class EmployeesController < ApplicationController
   
   # POST /employees
   def create
-    # group the two parts of social security number
-    if params['social_security_number']
-      params[:employee][:social_security_number] = params['social_security_number'].values.join(" ")
-      params.delete('social_security_number')
-    end
     error_access_page(401) if params[:employee][:employee_sensitive_data] && !EmployeeSensitiveData.can_add?(current_user)
+    
+    group_social_security_number
     
     @employee = Employee.new(params[:employee])
   
@@ -52,19 +49,14 @@ class EmployeesController < ApplicationController
   
   # PUT /employees/:id
   def update
-    @employee = Employee.find(params[:id])
-    @address  = @employee.employee_sensitive_data.address
-
-    # group the two parts of social security number
-    if params['social_security_number']
-      params[:employee][:employee_sensitive_data][:social_security_number] = params['social_security_number'].values.join(" ")
-      params.delete('social_security_number')
-    end
     error_access_page(401) if params[:employee][:employee_sensitive_data] && !EmployeeSensitiveData.can_edit?(current_user)
+    
+    group_social_security_number
     
     # destroy all jobs if the params is nil
     params[:employee]['job_ids'] ||= []
     
+    @employee = Employee.find(params[:id])
     if @employee.update_attributes(params[:employee])
       flash[:notice] = "L'employé(e) a été modifié(e) avec succès."
       redirect_to @employee
@@ -81,4 +73,12 @@ class EmployeesController < ApplicationController
     end
     redirect_to employees_path
   end
+  
+  private
+    def group_social_security_number
+      if params['social_security_number']
+        params[:employee][:employee_sensitive_data][:social_security_number] = params['social_security_number'].values.join(" ")
+        params.delete('social_security_number')
+      end
+    end
 end

@@ -195,7 +195,8 @@ class Employee < ActiveRecord::Base
   
   # Method to generate the intranet email
   def intranet_email
-    self.user.username + "@" + ConfigurationManager.admin_society_identity_configuration_domain
+    return unless user and user.username
+    user.username + "@" + ConfigurationManager.admin_society_identity_configuration_domain
   end
   
   alias_method :email, :intranet_email
@@ -324,19 +325,19 @@ class Employee < ActiveRecord::Base
   end
 
   def employee_sensitive_data=(sensitive_attributes)
-    if sensitive_attributes[:id].blank?
-      self.employee_sensitive_data = self.build_employee_sensitive_data(sensitive_attributes)
+    if employee_sensitive_data.nil?
+      self.build_employee_sensitive_data(sensitive_attributes)
     else
       self.employee_sensitive_data.attributes = sensitive_attributes
-    end 
+    end
   end
   
   # this method permit to save the iban of the employee when it is passed with the employee form
   # TODO test
   def iban_attributes=(iban_attributes)
-    self.employee_sensitive_data.build unless self.employee_sensitive_data
+    self.employee_sensitive_data = {} if employee_sensitive_data.nil?
     if iban_attributes[:id].blank?
-      self.employee_sensitive_data.iban = self.employee_sensitive_data.build_iban(iban_attributes)
+      self.employee_sensitive_data.build_iban(iban_attributes)
     else
       self.employee_sensitive_data.iban.attributes = iban_attributes
     end 
@@ -344,13 +345,13 @@ class Employee < ActiveRecord::Base
   
   # TODO test
   def family_situation_id=(family_situation_id)
-    self.employee_sensitive_data.build unless self.employee_sensitive_data
+    self.employee_sensitive_data = {} if employee_sensitive_data.nil?
     self.employee_sensitive_data.family_situation_id = family_situation_id
   end
   
   # TODO test
   def private_number_attributes=(number_attributes)
-    self.employee_sensitive_data.build unless self.employee_sensitive_data
+    self.employee_sensitive_data = {} if employee_sensitive_data.nil?
     self.employee_sensitive_data.number_attributes = number_attributes
   end
   
@@ -361,7 +362,7 @@ class Employee < ActiveRecord::Base
   
   # TODO test
   def address_attributes=(address_attributes)
-    self.employee_sensitive_data.build unless self.employee_sensitive_data
+    self.employee_sensitive_data = {} if employee_sensitive_data.nil?
     self.employee_sensitive_data.address_attributes = address_attributes
   end
   
@@ -374,7 +375,7 @@ class Employee < ActiveRecord::Base
     end
 
     def save_employee_sensitive_data
-       employee_sensitive_data.save(false) if employee_sensitive_data
+      employee_sensitive_data.save(false) if employee_sensitive_data
     end
   
     def build_associated_resources
