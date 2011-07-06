@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110629050715) do
+ActiveRecord::Schema.define(:version => 20110704131028) do
 
   create_table "active_counters", :force => true do |t|
     t.string "key"
@@ -228,6 +228,15 @@ ActiveRecord::Schema.define(:version => 20110629050715) do
     t.string  "name"
   end
 
+  create_table "delivering_steps", :force => true do |t|
+    t.integer  "order_id"
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "delivery_interventions", :force => true do |t|
     t.integer  "delivery_note_id"
     t.integer  "scheduled_internal_actor_id"
@@ -358,7 +367,7 @@ ActiveRecord::Schema.define(:version => 20110629050715) do
   add_index "delivery_notes", ["reference"], :name => "index_delivery_notes_on_reference", :unique => true
 
   create_table "delivery_steps", :force => true do |t|
-    t.integer  "production_step_id"
+    t.integer  "delivering_step_id"
     t.string   "status"
     t.datetime "started_at"
     t.datetime "finished_at"

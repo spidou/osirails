@@ -73,8 +73,8 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
       <% for delivery_note in delivery_notes %>
         <div class="object">
           <label>
-            <%= link_to(delivery_note.reference, order_production_step_delivery_step_delivery_note_path(order, delivery_note)) %>
-            <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_production_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf)) %>
+            <%= link_to(delivery_note.reference, order_delivering_step_delivery_step_delivery_note_path(order, delivery_note)) %>
+            <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_delivering_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf)) %>
           </label>
         </div>
       <% end %>

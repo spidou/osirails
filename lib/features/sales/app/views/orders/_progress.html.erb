@@ -1,0 +1,39 @@
+<% require_locals order
+
+steps = order.first_level_steps
+%>
+
+<p>Dossier créé le <%= strong l(order.created_at.to_date, :format => :long) %><% " | Dossier fermé le " + strong(l(order.closed_at.to_date)) if order.closed_at %></p>
+
+<table class="order_progress no_nth">
+  <thead>
+    <tr>
+      <% steps.each do |step| %>
+        <% step_name = step.class.name.underscore.gsub('_step', '') %>
+        <%= content_tag :th, t("view.steps.#{step_name}"), :class => step_name %>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <% steps.each do |step| %>
+        <% step_name = step.class.name.underscore.gsub('_step', '') %>
+        <td class="<%= step_name %>">
+          <ul>
+            <% step.children_steps.each do |child_step| %>
+              <% child_step_name = child_step.class.name.underscore.gsub('_step', '') %>
+              <li class="<%= child_step.status %>">
+                <%= link_to t("view.steps.#{child_step_name}"), send("order_#{step.class.name.underscore}_#{child_step.class.name.underscore}_path", order) %>
+                <div class="dates">
+                  <span class="period">État actuel</span> : <span class="date"><%= t("view.order.statuses.#{child_step.status}") %></span><br/>
+                  <% if child_step.started_at %><span class="period">Début</span> : <span class="date"><%= l(child_step.started_at.to_date, :format => :long) %></span><br/><% end %>
+                  <% if child_step.finished_at %><span class="period">Fin</span> : <span class="date"><%= l(child_step.finished_at.to_date, :format => :long) %></span><% end %>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </td>
+      <% end %>
+    </tr>
+  </tbody>
+</table>

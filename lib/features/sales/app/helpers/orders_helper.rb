@@ -146,7 +146,7 @@ module OrdersHelper
   def display_delivery_step_button(order, message = nil)
     return unless DeliveryStep.can_view?(current_user)
     link_to_unless_current(message || "Voir les BL du dossier",
-                           order_production_step_delivery_step_path(order),
+                           order_delivering_step_delivery_step_path(order),
                            'data-icon' => :index) {nil}
   end
   

@@ -110,10 +110,15 @@ menus:
                     title: Fabrication
                     description: Étape de la fabrication
                     position: 1
+              delivering_step:
+                title: Livraison
+                description: Phase de la Livraison
+                position: 4
+                children:
                   delivery_step:
                     title: Livraison
                     description: Étape de la livraison
-                    position: 2
+                    position: 1
                     children:
                       delivery_notes:
                         title: Bon de livraison
@@ -127,7 +132,7 @@ menus:
               invoicing_step:
                 title: Facturation
                 description: Phase de la Facturation
-                position: 4
+                position: 5
                 children:
                   invoice_step:
                     title: Factures
@@ -154,7 +159,7 @@ menus:
               graphic_items:
                 title: Ressources graphiques
                 description: "Étape d'ajout des ressources graphiques"
-                position: 4
+                position: 6
                 children:
                   mockups:
                     title: Maquettes
@@ -176,7 +181,7 @@ menus:
               logs:
                 title: Historique
                 description: Historique des actions effectuées sur le dossier
-                position: 5
+                position: 7
   goods:
     title: Produits
     description: Gestion des produits

@@ -35,8 +35,6 @@ a[data-icon=new_product_reference]  { background-image: url("/themes/emr/images/
 /* SALES HOME */
 table.sales_home {
   width: auto;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 table.sales_home tbody tr th {
@@ -54,16 +52,12 @@ table.sales_home th, table.sales_home td {
 
 table.sales_home tbody .monitoring,
 table.sales_home tbody .management {
-  min-width: 300px;
+  min-width: 400px;
 }
 
 table.sales_home tbody td ul {
   padding: 0;
   margin: 0;
-}
-
-table.sales_home tbody a {
-  font-size: 110%;
 }
 
 table.sales_home tbody td ul li {
@@ -167,19 +161,19 @@ table.sales_home tbody tr.production th {
   background-color: #f2f076;
 }
 
-table.sales_home tbody tr.delivery td {
+table.sales_home tbody tr.delivering td {
   background-color: #b2b2ff;
 }
 
-table.sales_home tbody tr.delivery th {
+table.sales_home tbody tr.delivering th {
   background-color: #a9a9f2;
 }
 
-table.sales_home tbody tr.finance td {
+table.sales_home tbody tr.invoicing td {
   background-color: #ffc0cb;
 }
 
-table.sales_home tbody tr.finance th {
+table.sales_home tbody tr.invoicing th {
   background-color: #f2b6c1;
 }
 
@@ -193,86 +187,6 @@ table.sales_home tbody tr.finance th {
   text-align: center;
 }
 
-/*/////////////////TIMELINE/////////////////*/
-#timeline {
-	margin:10px 0 10px 10px;
-	text-align:center;
-	padding:0;
-	text-indent:0;
-	width:700px;
-	padding-bottom:1px;
-	padding-right:2px;
-	line-height:26px;
-}
-
-#timeline_head,
-.timeline_body,
-#timeline_footer {
-	height:26px;
-	width:inherit;
-	margin-top:-1px;
-	position:relative;
-	top:1px;
-}
-
-.timeline_body.good,
-#timeline_head.good {
-	background:url("/themes/emr/images/timeline_framework_good.png") repeat-x;
-	border-left:1px solid #63975E;
-	border-right:1px solid #63975E;
-}
-
-#timeline_head.good .timeline_notice {
-	background:url("/themes/emr/images/tick_16x16.png") no-repeat 0 6px;
-}
-
-.timeline_body.good .timeline_notice {
-	background:url("/themes/emr/images/tick_16x16.png") no-repeat 0 6px;
-}
-
-.timeline_body.bad .timeline_notice {
-	background:url("/themes/emr/images/warning_14x14.png") no-repeat 0 6px;
-}
-
-#timeline_head .timeline_date {
-	background:url("/themes/emr/images/timeline_head.png") no-repeat 143px 6px;
-}
-
-.timeline_body.bad {
-	background:url("/themes/emr/images/timeline_framework_bad.png") repeat-x;
-	border-left:1px solid #FF7F7F;
-	border-right:1px solid #FF7F7F;
-}
-
-.timeline_date {
-	text-align:right;
-	width:130px;
-	padding-right:40px;
-	float:left;
-	overflow:hidden;
-	height:25px;
-}
-
-.timeline_notice {
-	text-align:left;
-	width:510px;
-	overflow:hidden;
-	float:right;
-	padding-left:18px;
-	height:25px;
-}
-
-.timeline_body .timeline_date {
-	background: url("/themes/emr/images/timeline_line.gif") repeat-y 152px 0;
-}
-
-.timeline_body {
-	background: url("/themes/emr/images/timeline_line.gif") repeat-y 153px 0;
-}
-
-#timeline_footer {
-	background:url("/themes/emr/images/timeline_footer_arrow.png") no-repeat 144px 0;
-}
 
 /* ORDER HEADER */
 #order_header {

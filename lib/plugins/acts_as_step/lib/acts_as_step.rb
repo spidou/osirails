@@ -26,7 +26,7 @@ module ActsAsStep
         
         class_eval do
           def order
-            parent_step.order
+            parent_step && parent_step.order
           end
         end
       elsif (step_children = step.children) # so it's a parent step
@@ -78,7 +78,7 @@ module ActsAsStep
       # retrieve all orders which are currently in progress or pending in this step
       class_eval do
         def self.orders
-          currently_pending_or_in_progress.collect(&:order).sort_by(&:previsional_delivery)
+          currently_pending_or_in_progress.collect(&:order).compact.sort_by(&:previsional_delivery)
         end
       end
     end

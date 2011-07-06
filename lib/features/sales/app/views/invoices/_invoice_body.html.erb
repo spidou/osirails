@@ -62,8 +62,8 @@ end
           <div class="object">
             <%= check_box_tag("invoice[delivery_note_invoice_attributes][]", delivery_note.id, invoice.delivery_note_invoices.reject(&:should_destroy?).collect(&:delivery_note).include?(delivery_note), :onchange => "update_invoice_items(this, '#{url_prefix_for_ajax_request}')") if is_form_view? %>
             <label>
-              <%= link_to(delivery_note.reference, order_production_step_delivery_step_delivery_note_path(order, delivery_note)) %>
-              <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_production_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf)) %>
+              <%= link_to(delivery_note.reference, order_delivering_step_delivery_step_delivery_note_path(order, delivery_note)) %>
+              <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_delivering_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf)) %>
             </label>
             <% if invoice.delivery_note_invoices.select{ |dni| dni.errors.any? }.collect(&:delivery_note).include?(delivery_note) %>
               <span class="fieldWithErrors"><label> * BL déjà utilisé</label></span>

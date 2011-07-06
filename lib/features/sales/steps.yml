@@ -19,9 +19,13 @@ steps:
       manufacturing:
         title: Fabrication
         position: 1
+  delivering:
+    title: Livraison
+    position: 3
+    children:
       delivery:
-        title: Livraison
-        position: 2
+        title: Livraison/Installation
+        position: 1
   invoicing:
     title: Facturation
     position: 3

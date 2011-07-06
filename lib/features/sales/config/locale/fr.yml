@@ -398,14 +398,6 @@ fr:
         subcontractor_index: "Les sous-traitants"
   
   view:
-    service_delivery:
-      rates:
-        hourly: "en heures"
-        daily: "en jours"
-      time_scales:
-        fixed: "Forfait (prix fixe)"
-        hourly: "Taux horaire"
-        daily: "Taux journalier"
     contextual_menu_sections:
       order_progress: "Avancement du projet"
       order: "Dossier"
@@ -426,3 +418,30 @@ fr:
       press_proof: "BAT"
       delivery_note: "Bon de livraison"
       invoice: "Facture"
+    order:
+      statuses:
+        unstarted: "Non commencé"
+        pending: "En attente"
+        in_progress: "En cours"
+        terminated: "Terminé"
+    service_delivery:
+      rates:
+        hourly: "en heures"
+        daily: "en jours"
+      time_scales:
+        fixed: "Forfait (prix fixe)"
+        hourly: "Taux horaire"
+        daily: "Taux journalier"
+    steps:
+      commercial: "Commercial"
+      delivering: "Livraison"
+      delivery: "Livraison"
+      estimate: "Chiffrage"
+      invoice: "Factures"
+      invoicing: "Facturation"
+      manufacturing: "Fabrication"
+      payment: "Paiements"
+      press_proof: "BAT"
+      production: "Production"
+      quote: "Devis"
+      survey: "Survey"

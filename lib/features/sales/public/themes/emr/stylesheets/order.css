@@ -1,0 +1,121 @@
+table.order_progress {
+  width: auto;
+}
+
+table.order_progress thead th.commercial {
+  background-color: #bcf2bc;
+}
+
+table.order_progress thead th.production {
+  background-color: #f2f076;
+}
+
+table.order_progress thead th.delivering {
+  background-color: #a9a9f2;
+}
+
+table.order_progress thead th.invoicing {
+  background-color: #f2b6c1;
+}
+
+table.order_progress tbody td {
+}
+
+table.order_progress tbody td ul {
+  position: relative;
+  padding: 0;
+  margin-top: 15px 0;
+  list-style: none;
+}
+
+table.order_progress tbody td ul li {
+  margin: 6px 0;
+  -moz-border-radius: 5px;
+}
+
+table.order_progress tbody td ul li a {
+  display: block;
+  color: inherit;
+  padding: 5px 4px;
+  width: 250px;
+}
+
+table.order_progress tbody td ul li a:hover {
+  text-decoration: none;
+}
+
+table.order_progress tbody td ul li div.dates {
+  position: absolute;
+  display: none;
+  right: 0;
+  padding: 3px 7px;
+  margin-top: 2px;
+  text-align: left;
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -moz-border-radius: 4px;
+}
+
+table.order_progress tbody td ul li:hover div.dates {
+  display: block;
+}
+
+table.order_progress tbody td ul li div.dates:hover {
+  display: none;
+}
+
+table.order_progress tbody td ul li div.dates span.period {
+  text-decoration: underline;
+}
+
+table.order_progress tbody td ul li:hover {
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+}
+
+table.order_progress tbody td ul li:hover a {
+  font-weight: bold;
+}
+
+table.order_progress tbody td ul li.unstarted,
+table.order_progress tbody td ul li.unstarted div.dates,
+table.order_progress tbody td ul li.pending,
+table.order_progress tbody td ul li.pending div.dates {
+  background-color: #ececec;
+  border: 1px solid #BBB;
+}
+
+table.order_progress tbody td ul li.in_progress,
+table.order_progress tbody td ul li.in_progress div.dates {
+  background-color: #fffd6b;
+  border: 1px solid #cccb88;
+}
+
+table.order_progress tbody td ul li.terminated,
+table.order_progress tbody td ul li.terminated div.dates {
+  background-color: #80ff80;
+  border: 1px solid #80cc80;
+}
+
+div.order_document {
+  display: inline-block;
+  width: 230px;
+  margin: 5px 2px;
+  padding: 3px;
+  background-color: #EFEFEF;
+}
+
+div.order_document:hover {
+  background-color: #EEE;
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+
+div.order_document > a {
+  float: left;
+}
+
+div.order_document > div {
+  display: inline;
+}
+
+div.order_document > div p.date {
+  font-style: italic;
+}

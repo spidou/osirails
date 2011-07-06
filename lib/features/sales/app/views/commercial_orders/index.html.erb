@@ -30,7 +30,7 @@
         <tbody>
           <% for order in @orders %>
             <tr class="<%= order.critical_status %>">
-              <td><%= link_to(order.reference, order_commercial_step_path(order), :title => "Voir ce dossier") %></td>
+              <td><%= link_to(order.reference, order_path(order), :title => "Voir ce dossier") %></td>
               <td><%= order.order_type.title %></td>
               <td><%= l(order.created_at.to_date, :format => :short) %></td>
               <td><%= link_to(order.commercial.fullname, order.commercial, :title => "Voir fiche employé") %></td>

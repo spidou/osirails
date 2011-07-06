@@ -1,0 +1,57 @@
+<h3>Devis signé</h3>
+<% if quote = order.signed_quote %>
+  <div class="order_document">
+    <%= link_to(image_tag('mime_type_extensions/pdf_40x40.png', :title => "Télécharger", :alt => "Télécharger"), order_commercial_step_quote_step_quote_order_form_path(order, quote)) %>
+    <div>
+      <p class="link"><%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(order, quote)) %></p>
+      <p class="date">Signé le <%= l(quote.signed_on, :format => :long) %></p>
+    </div>
+  </div>
+<% else %>
+  <p>Le devis n'a pas encore été signé</p>
+<% end %>
+
+<h3>BATs signés</h3>
+<% if (press_proofs = order.press_proofs.signed) && press_proofs.any? %>
+  <% press_proofs.each do |press_proof| %>
+    <div class="order_document">
+      <%= link_to(image_tag('mime_type_extensions/pdf_40x40.png', :title => "Télécharger", :alt => "Télécharger"), order_commercial_step_press_proof_step_press_proof_signed_press_proof_path(order, press_proof)) %>
+      <div>
+        <p class="link"><%= link_to(press_proof.reference, order_commercial_step_press_proof_step_press_proof_path(order, press_proof)) %></p>
+        <p class="date">Signé le <%= l(press_proof.signed_on, :format => :long) %></p>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <p>Aucun BAT n'a encore été signé</p>
+<% end %>
+
+<h3>BLs signés</h3>
+<% if (delivery_notes = order.delivery_notes.signed) && delivery_notes.any? %>
+  <% delivery_notes.each do |delivery_note| %>
+    <div class="order_document">
+      <%= link_to(image_tag('mime_type_extensions/pdf_40x40.png', :title => "Télécharger", :alt => "Télécharger"), order_delivering_step_delivery_step_delivery_note_attachment_path(order, delivery_note)) %>
+      <div>
+        <p class="link"><%= link_to(delivery_note.reference, order_delivering_step_delivery_step_delivery_note_path(order, delivery_note)) %></p>
+        <p class="date">Signé le <%= l(delivery_note.signed_on, :format => :long) %></p>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <p>Aucun BL n'a encore été signé</p>
+<% end %>
+
+<h3>Factures payées en totalité</h3>
+<% if (invoices = order.invoices.paid) && invoices.any? %>
+  <% invoices.each do |invoice| %>
+    <div class="order_document">
+      <%= link_to(image_tag('mime_type_extensions/pdf_40x40.png', :title => "Télécharger", :alt => "Télécharger"), order_invoicing_step_invoice_step_invoice_path(order, invoice, :format => :pdf)) %>
+      <div>
+        <p class="link"><%= link_to(invoice.reference, order_invoicing_step_invoice_step_invoice_path(order, invoice)) %> (<%= invoice.invoice_type.title %>)</p>
+        <p class="date">Payée le <%= l(invoice.paid_on, :format => :long) %></p>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <p>Aucune facture n'a encore été payé</p>
+<% end %>

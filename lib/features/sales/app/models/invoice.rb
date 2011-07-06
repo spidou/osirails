@@ -1123,6 +1123,10 @@ class Invoice < ActiveRecord::Base
     due_dates.last.payments.reject(&:new_record?).last.paid_on if was_totally_paid?
   end
   
+  def paid_on
+    factorised? ? factoring_balance_paid_on : totally_paid_on
+  end
+  
   def can_be_added?
     invoice_step_open? and invoice_type and send("can_create_#{invoice_type.name}?")
   end

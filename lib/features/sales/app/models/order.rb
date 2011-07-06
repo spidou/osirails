@@ -31,9 +31,10 @@ class Order < ActiveRecord::Base
   belongs_to :approaching
   
   # steps
-  has_one :commercial_step, :dependent => :nullify
-  has_one :production_step, :dependent => :nullify
-  has_one :invoicing_step,  :dependent => :nullify
+  has_one :commercial_step, :dependent => :destroy
+  has_one :production_step, :dependent => :destroy
+  has_one :delivering_step, :dependent => :destroy
+  has_one :invoicing_step,  :dependent => :destroy
   
   # quotes
   has_many :quotes, :order => 'created_at DESC'
@@ -49,7 +50,7 @@ class Order < ActiveRecord::Base
   # delivery notes
   has_many :delivery_notes, :order => 'created_at DESC'
   has_many :uncomplete_delivery_notes,  :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ], :order => "created_at DESC"
-  has_many :signed_delivery_notes,      :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ], :order => "created_at DESC"
+  has_many :signed_delivery_notes,      :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ], :order => "created_at DESC" #OPTIMIZE shouldn't we use named_scope on DeliveryNote instead ? (order.delivery_notes.signed)
   
   # invoices
   has_many :invoices, :order => 'invoices.created_at DESC'
@@ -259,7 +260,7 @@ class Order < ActiveRecord::Base
   # @order.first_level_steps # => [ #<CommercialStep>, #<InvoicingStep> ]
   # 
   def first_level_steps
-    steps.select{ |step| !step.parent }.map{ |step| send(step.name) }
+    steps.reject(&:parent).sort_by(&:position).collect{ |step| send(step.name) }
   end
   
   # Returns all steps

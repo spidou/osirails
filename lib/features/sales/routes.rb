@@ -95,8 +95,13 @@ ActionController::Routing::Routes.add_routes do |map|
     
     order.with_options :name_prefix => 'order_production_step_' do |production|
       production.resource :manufacturing_step, :as => 'manufacturing', :controller => 'manufacturing_step'
-      
-      production.resource :delivery_step, :as => 'delivery', :controller => 'delivery_step' do |delivery_step|
+    end
+    
+    # delivering step
+    order.delivering_step 'delivering', :controller => 'delivering_step'
+    
+    order.with_options :name_prefix => 'order_delivering_step_' do |delivering|
+      delivering.resource :delivery_step, :as => 'delivery', :controller => 'delivery_step' do |delivery_step|
         delivery_step.resources :delivery_notes do |delivery_note|
           delivery_note.confirm       'confirm',        :controller => 'delivery_notes',
                                                         :action     => 'confirm',
