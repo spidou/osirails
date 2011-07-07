@@ -7,35 +7,42 @@
 
 <%= order_header %>
 
+<%
+documents_count = [@order.signed_quote, @order.press_proofs.signed, @order.delivery_notes.signed, @order.invoices.paid].flatten.compact.size
+%>
+
 <div class="presentation_medium root_nav standard">
   
   <% tab_navigator :order_nav do |t| %>
     <% t.nav_buttons do %>
       <%= t.tab :progress,          "Avancement", :selected => true %>
-      <%= t.tab :documents,         "Documents (X)" %>
-      <%= t.tab :monitoring,        "Suivi (X messages)" %>
-      <%= t.tab :customer_contacts, "Contacts client (X)" %>
-      <%= t.tab :internal_actors,   "Acteurs internes (X)" %>
+      <%= t.tab :monitoring,        "Suivi (X messages)", :disabled => true %>
+      <%= t.tab :documents,         "Documents (#{documents_count})" %>
+      <%= t.tab :customer_contacts, "Contacts client (X)", :disabled => true %>
+      <%= t.tab :internal_actors,   "Acteurs internes (X)", :disabled => true %>
     <% end %>
   
     <% t.content_for :progress do %>
       <%= render :partial => 'orders/progress', :locals => { :order => @order } %>
     <% end %>
     
+    <% t.content_for :monitoring do %>
+      <%# render :partial => 'orders/monitoring', :locals => { :order => @order } %>
+      <p>Coming soon</p>
+    <% end %>
+    
     <% t.content_for :documents do %>
       <%= render :partial => 'orders/documents', :locals => { :order => @order } %>
     <% end %>
     
-    <% t.content_for :monitoring do %>
-      <%# render :partial => 'orders/monitoring', :locals => { :order => @order } %>
-    <% end %>
-    
     <% t.content_for :customer_contacts do %>
       <%# render :partial => 'orders/customer_contacts', :locals => { :order => @order } %>
+      <p>Coming soon</p>
     <% end %>
     
     <% t.content_for :internal_actors do %>
       <%# render :partial => 'orders/internal_actors', :locals => { :order => @order } %>
+      <p>Coming soon</p>
     <% end %>
   <% end %>
 </div>

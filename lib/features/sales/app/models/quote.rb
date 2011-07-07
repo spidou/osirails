@@ -53,7 +53,7 @@ class Quote < ActiveRecord::Base
   belongs_to :send_quote_method
   belongs_to :order_form_type
   
-  has_many :quote_items, :dependent => :delete_all, :order => 'position' # not :destroy to avoid after_destroy is called in quote_item.rb
+  has_many :quote_items, :order => 'position', :dependent => :delete_all # not :destroy to avoid after_destroy is called in quote_item.rb
   
   has_attached_file :order_form,
                     :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',

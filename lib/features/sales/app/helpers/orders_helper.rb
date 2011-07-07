@@ -95,20 +95,21 @@ module OrdersHelper
     
     days = (Date.today - order.previsional_delivery).abs
     date = l(order.previsional_delivery)
+    message = "Date prév. de livr.<br/>#{date} "
     
     case status
     when Order::CRITICAL, Order::LATE
-      message = "J+#{days} après livraison<br/>le #{date}"
+      message << "J+#{days}"
     when Order::TODAY
-      message = "Jour J<br/>Livraison prévue Aujourd'hui"
+      message << "Jour J"
     when Order::SOON, Order::FAR
-      message = "J-#{days} avant livraison<br/>le #{date}"
+      message << "J-#{days}"
     else
       return
     end
     
     edit_order = edit_order_link(order, :link_text => '', :html_options => { :title => "Modifier la date prévisionnelle de livraison" })
-    content_tag( :p, message + ( edit_order || "" ), :class => "order_deadline #{status}" )
+    content_tag(:p, "#{message}#{edit_order ? "&nbsp;#{edit_order}" : ""}", :class => "order_deadline #{status}")
   end
   
   def display_intervention_cities_for(order)

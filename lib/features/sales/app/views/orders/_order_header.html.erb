@@ -4,60 +4,61 @@
   <%= javascript_include_tag 'sales/order' %>
 <% end -%>
 
-<% add_contextual_menu_item :order_progress do %>
+<%# add_contextual_menu_item :order_progress do %>
   <!-- <div id="order_progress"><object data="<%# formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object></div> -->
-  <%= remaining_time_before_delivery(@order) %>
-<% end %>
+  <%# remaining_time_before_delivery(@order) %>
+<%# end %>
 
-<div id="order_header">
+<div class="order_header">
   <div class="first_column">
     <p>
-      <%= simple_label :order, :title %>
-      <strong><%= @order.title %></strong>
+      <span class="reference" title="<%= t('activerecord.attributes.order.reference') %>">Dossier n° <%= link_to(@order.reference, @order) %></span> :
+      <span class="title" title="<%= t('activerecord.attributes.order.title') %>"><%= @order.title %>
     </p>
-    
-    <p>
-      <%= simple_label :order, :customer %>
-      <strong><%= link_to( "#{@order.customer.name}", @order.customer) %></strong>
-    </p>
-    
-    <div class="order_header_extra">
-      <% for ship_to_address in @order.ship_to_addresses %>
-        <p>
-          <%= simple_label :order, :ship_to_address %>
-          <strong><%= ship_to_address.name_and_short_address %></strong>
+    <p><span class="customer_name" title="<%= t('activerecord.attributes.order.customer') %>"><%= link_to(@order.customer.name, @order.customer, :popup => true) %></span></p>
+    <div class="ship_to_addresses" title="<%= t('activerecord.attributes.order.ship_to_addresses') %>">
+      <% @order.ship_to_addresses.each do |ship_to_address| %>
+        <p class="ship_to_address">
+          <span class="establishment"><%= ship_to_address.establishment.establishment_type_and_name %></span> : <span class="address" title="<%= ship_to_address.address.formatted %>"><%= ship_to_address.address.zip_code_and_city_name %></span>
         </p>
       <% end %>
-      
-      <p>
-        <%= simple_label :order, :previsional_delivery %>
-        <strong><%= l(@order.previsional_delivery, :format => :long) %></strong>
-      </p>
-    </div>
-  </div>
-  <div class="second_column">
-    <p>
-      <%= simple_label :order, :order_type %>
-      <strong><%= @order.order_type.title %></strong>
-    </p>
-
-    <p>
-      <%= simple_label :order, :commercial %>
-      <strong><%= @order.commercial.fullname %></strong>
-    </p>
-    
-    <div class="order_header_extra">
-      <p>
-        <%= simple_label :order, :contact %>
-        <strong><%= @order.all_contacts.first.fullname + " " + link_to("(Voir plus)", order_informations_path(:anchor => 'contacts_section')) unless @order.all_contacts.empty? %></strong>
-      </p>
     </div>
   </div>
   
-  <p>
-    <%= link_to 'Modifier', edit_order_path(@order) if Order.can_edit?(current_user) %>
-    <span id="order_header_more">
-      <%= link_to "Plus d'informations", '#order_more_infos' %>
-    </span>
-  </p>
+  <div class="second_column">
+    <p>
+      Créé le <span class="created_at" title="<%= t('activerecord.attributes.order.created_at') %>"><%= l(@order.created_at.to_date, :format => :long) %></span>
+      par <span class="commercial" title="<%= t('activerecord.attributes.order.commercial') %>"><%= link_to(@order.commercial.fullname, @order.commercial) %></span>
+      <span class="order_type" title="<%= t('activerecord.attributes.order.order_type') %>"><%= @order.order_type.title %></span>
+    </p>
+    <pre class="customer_needs" title="<%= t('activerecord.attributes.order.customer_needs') %>"><%= @order.customer_needs %></pre>
+  </div>
+  
+  <div class="third_column">
+    <% if signed_quote = @order.signed_quote %>
+      <p>
+        <span class="order_form"><%= link_to(image_tag('mime_type_extensions/pdf_16x16.png', :alt => "Télécharger", :title => "Télécharger"), order_commercial_step_quote_step_quote_order_form_path(@order, signed_quote)) %></span>&nbsp;
+        <span class="signed_quote">Devis signé</span>
+      </p>
+      <p><span class="quote_reference"><%= link_to(signed_quote.reference, order_commercial_step_quote_step_quote_path(@order, signed_quote), :title => "Voir la fiche du devis") %></span></p>
+      <p><span class="net_to_paid"><%= signed_quote.net_to_paid.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></p>
+    <% else %>
+      <p><span class="unsigned_quote">Devis</span><p>
+      <% if quote = (@order.draft_quote || @order.pending_quote) %>
+        <p><%= quote.net_to_paid.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</p>
+      <% else %>
+        <p>0.00&nbsp;&euro;</p>
+      <% end %>
+      <%= link_to("Voir les devis", order_commercial_step_quote_step_path(@order)) %>
+    <% end %>
+  </div>
+  
+  <div class="fourth_column">
+    <!--<div id="order_progress"><object data="<%# formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object></div>-->
+    <p><%= remaining_time_before_delivery(@order)%></p>
+  </div>
+  
+  <div class="order_links">
+    <%= link_to("Modifier dossier", edit_order_path(@order)) %> | <%= link_to("Avancement", order_informations_path(@order, :order_nav => :progress)) %> | <%= link_to("Suivi", order_informations_path(@order, :order_nav => :monitoring)) %> | <%= link_to("Documents", order_informations_path(@order, :order_nav => :documents)) %> | <%= link_to("Contacts clients", order_informations_path(@order, :order_nav => :customer_contacts)) %> | <%= link_to("Acteurs internes", order_informations_path(@order, :order_nav => :internal_actors)) %>
+  </div>
 </div>

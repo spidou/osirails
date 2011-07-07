@@ -63,12 +63,12 @@ class Invoice < ActiveRecord::Base
   belongs_to :send_invoice_method
   belongs_to :invoicing_actor, :class_name => 'Employee'
   
-  has_many :invoice_items, :dependent  => :destroy, :order => 'position, id'
+  has_many :invoice_items, :order => 'position, id', :dependent => :destroy
   
   has_many :delivery_note_invoices, :dependent  => :destroy
   has_many :delivery_notes,         :through    => :delivery_note_invoices
   
-  has_many :due_dates, :order => "date ASC",  :dependent => :destroy
+  has_many :due_dates, :order => "date ASC", :dependent => :destroy
   
   has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
   

@@ -31,10 +31,10 @@ class Order < ActiveRecord::Base
   belongs_to :approaching
   
   # steps
-  has_one :commercial_step, :dependent => :destroy
-  has_one :production_step, :dependent => :destroy
-  has_one :delivering_step, :dependent => :destroy
-  has_one :invoicing_step,  :dependent => :destroy
+  has_one :commercial_step
+  has_one :production_step
+  has_one :delivering_step
+  has_one :invoicing_step
   
   # quotes
   has_many :quotes, :order => 'created_at DESC'
@@ -56,15 +56,16 @@ class Order < ActiveRecord::Base
   has_many :invoices, :order => 'invoices.created_at DESC'
   
   has_many :ship_to_addresses
-  has_many :end_products, :conditions => [ 'cancelled_at IS NULL' ]
-  has_many :disabled_end_products, :class_name => 'EndProduct', :conditions => [ 'cancelled_at IS NOT NULL' ]
   has_many :order_logs
   has_many :mockups
   has_many :graphic_documents
   
-  has_many :orders_service_deliveries, :conditions => [ 'cancelled_at IS NULL' ]
-  has_many :disabled_orders_service_deliveries, :class_name => 'OrdersServiceDelivery', :conditions => [ 'cancelled_at IS NOT NULL' ]
+  has_many :end_products,               :conditions => [ 'cancelled_at IS NULL' ]
+  has_many :orders_service_deliveries,  :conditions => [ 'cancelled_at IS NULL' ]
   has_many :service_deliveries, :through => :orders_service_deliveries
+  
+  has_many :disabled_end_products,              :class_name => 'EndProduct',            :conditions => [ 'cancelled_at IS NOT NULL' ]
+  has_many :disabled_orders_service_deliveries, :class_name => 'OrdersServiceDelivery', :conditions => [ 'cancelled_at IS NOT NULL' ]
   
   validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id

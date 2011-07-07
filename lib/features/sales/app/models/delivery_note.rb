@@ -36,7 +36,7 @@ class DeliveryNote < ActiveRecord::Base
   has_many :delivery_note_items, :dependent => :destroy
   has_many :end_products,        :through   => :delivery_note_items
   
-  has_many :delivery_interventions, :order => "created_at DESC"
+  has_many :delivery_interventions, :order => "created_at DESC", :dependent => :destroy
   has_one  :pending_delivery_intervention,    :class_name => "DeliveryIntervention", :conditions => [ 'delivered IS NULL AND cancelled_at IS NULL and postponed IS NULL' ], :order => "created_at DESC"
   has_one  :delivered_delivery_intervention,  :class_name => "DeliveryIntervention", :conditions => [ 'delivered = ?', true ], :order => "created_at DESC"
   

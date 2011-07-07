@@ -189,36 +189,130 @@ table.sales_home tbody tr.invoicing th {
 
 
 /* ORDER HEADER */
-#order_header {
+div.order_header {
   text-align: left;
-  text-indent: 0;
-  margin-top: 5px !important;
-  margin-bottom: 5px !important;
 }
 
-#order_header p {
-  text-align: left;
-  text-indent: 0;
-  padding: 0 0 0 8px;
-  margin-bottom: 0;
+div.order_header a:not(:hover) {
+  color: inherit;
 }
 
-#order_header .first_column {
+div.order_header > div:not([class=order_links]) {
+  position: relative;
   display: inline-block;
   vertical-align: top;
+  min-height: 72px;
 }
 
-#order_header .first_column label {
-  width: 200px;
+div.order_header > div:not(:first-child):not([class=order_links]) {
+  margin-left: 40px;
+  padding-left: 40px;
+  border-left: 1px dotted #eee;
 }
 
-#order_header .second_column {
-  display: inline-block;
-  vertical-align: top;
+div.order_header:hover > div:not(:first-child):not([class=order_links]) {
+  border-left: 1px dotted #ccc;
 }
 
-#order_header .second_column label {
-  width: 200px;
+div.order_header > div > p {
+  padding: 2px 0 4px 0;
+}
+
+div.order_header > div.first_column {
+  min-width: 300px;
+  max-width: 400px;
+  margin-bottom: 6px; /* push down div.order_links */
+}
+
+div.order_header > div.second_column {
+  width: 350px;
+}
+
+div.order_header > div.second_column pre.customer_needs {
+  position: absolute;
+  max-width: 350px;
+  max-height: 40px;
+  overflow: hidden;
+  padding: 3px;
+  border: 1px solid transparent;
+  margin-top: -2px;
+  margin-left: -3px;
+  -moz-transition: all 0.5s;
+}
+
+div.order_header > div.second_column pre.customer_needs:hover {
+  position: absolute;
+  max-width: 500px;
+  max-height: 200px;
+  height: auto;
+  overflow: auto;
+  padding: 3px;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+  -moz-border-radius: 5px;
+  z-index: 2;
+}
+
+div.order_header > div.third_column > p {
+  padding: 0;
+  text-align: center;
+}
+
+div.order_header span.reference {
+  font-weight: bold;
+  font-size: 110%;
+}
+
+div.order_header span.title {
+  font-weight: bold;
+  font-size: 120%;
+  margin-left: 10px;
+}
+
+div.order_header span.customer_name {
+  font-weight: bold;
+  font-size: 120%;
+}
+
+div.order_header div.ship_to_addresses {
+  font-style: italic;
+}
+
+div.order_header div.ship_to_addresses .address {
+  font-weight: bold;
+}
+
+div.order_header span.created_at {
+  font-style: italic;
+}
+
+div.order_header span.order_type {
+  background-color: #fffea4;
+  border: 1px solid #ccc;
+  -moz-border-radius: 5px;
+  padding: 2px 4px;
+  margin-left: 10px;
+}
+
+div.order_header span.signed_quote,
+div.order_header span.net_to_paid {
+  color: #00ae00;
+  font-weight: bold;
+}
+
+div.order_header > div.order_links {
+  margin: 0;
+  border-top: 1px solid #ccc;
+  padding-top: 4px;
+  -moz-transition: height 0.2s, opacity 0.1s;
+  height: 0;
+  opacity: 0;
+}
+
+div.order_header:hover > div.order_links {
+  -moz-transition: height 0.3s, opacity 0.3s 0.1s;
+  height: 14px;
+  opacity: 1;
 }
 
 /* CHECKLISTS */
@@ -243,9 +337,22 @@ table.sales_home tbody tr.invoicing th {
 }
 
 p.order_deadline {
+  position: relative;
   text-align: center !important;
   margin: 0;
   padding: 0;
+}
+
+p.order_deadline > a {
+  display: none;
+}
+
+p.order_deadline:hover > a {
+  display: block;
+  position: absolute;
+  bottom: 4px;
+  right: -16px;
+  height: 12px;
 }
 
 p.order_deadline.far {

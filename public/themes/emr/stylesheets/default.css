@@ -46,6 +46,10 @@ a>img {
 	border:none;
 }
 
+pre {
+  font-family: Ubuntu, Verdana, Helvetica, Arial, sans-serif;
+}
+
 /* TABLE */
 caption {
 	font-weight:bold;
