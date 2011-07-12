@@ -1,0 +1,277 @@
+conf_pagination: &pagination
+  per_page:
+    - 25
+    - 50
+    - 100
+conf_quick_search: &quick_search
+  quick_search:
+    - reference
+    - title
+    - customer.name
+    - brand_names
+    - commercial.fullname
+
+in_progress_order_index:
+  filters:
+    - reference
+    - order_type.id
+    - title
+    - customer_name: customer.name
+    - brand_names
+    - commercial_name: commercial.fullname
+    - amount
+  columns:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - brand_names
+    - commercial.fullname
+    - amount
+    - commercial_step.survey_step.status
+    - commercial_step.quote_step.status
+    - commercial_step.press_proof_step.status
+    - production_step.manufacturing_step.status
+    - delivering_step.delivery_step.status
+    - invoicing_step.invoice_step.status
+    - invoicing_step.payment_step.status
+    - deposit_invoice_status
+    - previsional_delivery
+  group:
+    - customer.name
+    - commercial.fullname
+    - order_type.title
+  order:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - commercial.fullname
+    - amount
+    - commercial_step.survey_step.status
+    - commercial_step.quote_step.status
+    - commercial_step.press_proof_step.status
+    - production_step.manufacturing_step.status
+    - delivering_step.delivery_step.status
+    - invoicing_step.invoice_step.status
+    - invoicing_step.payment_step.status
+    - deposit_invoice_status
+    - previsional_delivery
+  <<: *pagination
+  <<: *quick_search
+  default_query:
+    criteria:
+#      commercial_step.status: 
+#        action: '='
+#        value: 'pending'
+    search_type: and
+    columns:
+      - reference
+      - title
+      - customer.name
+      - brand_names
+      - commercial.fullname
+      - amount
+      - commercial_step.survey_step.status
+      - commercial_step.quote_step.status
+      - commercial_step.press_proof_step.status
+      - production_step.manufacturing_step.status
+      - delivering_step.delivery_step.status
+      - invoicing_step.invoice_step.status
+      - invoicing_step.payment_step.status
+      - previsional_delivery
+    order:
+      - "previsional_delivery"
+    per_page: 25
+
+commercial_order_index:
+  filters:
+    - reference
+    - order_type.id
+    - title
+    - customer_name: customer.name
+    - brand_names
+    - commercial_name: commercial.fullname
+    - amount
+    #- commercial_step_status: commercial_step.status
+  columns:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - brand_names
+    - commercial.fullname
+    - amount
+    - commercial_step.survey_step.status
+    - commercial_step.quote_step.status
+    - commercial_step.press_proof_step.status
+    - deposit_invoice_status
+    - previsional_delivery
+  group:
+    - customer.name
+    - commercial.fullname
+    - order_type.title
+  order:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - commercial.fullname
+    - amount
+    - commercial_step.survey_step.status
+    - commercial_step.quote_step.status
+    - commercial_step.press_proof_step.status
+    - deposit_invoice_status
+    - previsional_delivery
+  <<: *pagination
+  <<: *quick_search
+  default_query:
+    criteria:
+#      commercial_step.status: 
+#        action: '='
+#        value: 'pending'
+    search_type: and
+    columns:
+      - reference
+      - title
+      - customer.name
+      - brand_names
+      - commercial.fullname
+      - amount
+      - commercial_step.survey_step.status
+      - commercial_step.quote_step.status
+      - commercial_step.press_proof_step.status
+      - deposit_invoice_status
+      - previsional_delivery
+    order:
+      - "previsional_delivery"
+    per_page: 25
+
+production_order_index:
+  filters:
+    - reference
+    - order_type.id
+    - title
+    - customer_name: customer.name
+    - brand_names
+    - commercial_name: commercial.fullname
+    - amount
+  columns:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - brand_names
+    - commercial.fullname
+    - amount
+    - signed_quote.status
+    - deposit_invoice_status
+    - production_step.manufacturing_step.manufacturing_started_on
+    - production_step.manufacturing_step.global_progression
+    - production_step.manufacturing_step.number_of_built_pieces
+    - ready_to_deliver_pieces
+    - delivered_pieces
+    - previsional_delivery
+  group:
+    - customer.name
+    - commercial.fullname
+    - order_type.title
+  order:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - commercial.fullname
+    - amount
+    - signed_quote.status
+    - deposit_invoice_status
+    - production_step.manufacturing_step.manufacturing_started_on
+    - production_step.manufacturing_step.global_progression
+    - previsional_delivery
+  <<: *pagination
+  <<: *quick_search
+  default_query:
+    criteria:
+#      commercial_step.status: 
+#        action: '='
+#        value: 'pending'
+    search_type: and
+    columns:
+      - reference
+      - title
+      - customer.name
+      - brand_names
+      - commercial.fullname
+      - amount
+      - signed_quote.status
+      - deposit_invoice_status
+      - production_step.manufacturing_step.manufacturing_started_on
+      - production_step.manufacturing_step.global_progression
+      - production_step.manufacturing_step.number_of_built_pieces
+      - ready_to_deliver_pieces
+      - delivered_pieces
+      - previsional_delivery
+    order:
+      - "previsional_delivery"
+    per_page: 25
+
+invoicing_order_index:
+  filters:
+    - reference
+    - order_type.id
+    - title
+    - customer_name: customer.name
+    - brand_names
+    - commercial_name: commercial.fullname
+    - amount
+  columns:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - brand_names
+    - commercial.fullname
+    - amount
+    - signed_quote.status
+    - billed_amount
+    - unbilled_amount
+    - paid_amount
+    - unpaid_amount
+  group:
+    - customer.name
+    - commercial.fullname
+    - order_type.title
+  order:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - commercial.fullname
+    - amount
+    - signed_quote.status
+    - billed_amount
+    - unbilled_amount
+    - paid_amount
+    - unpaid_amount
+  <<: *pagination
+  <<: *quick_search
+  default_query:
+    criteria:
+#      commercial_step.status: 
+#        action: '='
+#        value: 'pending'
+    search_type: and
+    columns:
+      - reference
+      - title
+      - customer.name
+      - brand_names
+      - commercial.fullname
+      - amount
+      - signed_quote.status
+      - billed_amount
+      - unbilled_amount
+      - paid_amount
+      - unpaid_amount
+    order:
+    per_page: 25

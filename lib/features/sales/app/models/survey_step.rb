@@ -12,6 +12,8 @@ class SurveyStep < ActiveRecord::Base
   
   after_save :save_end_products, :save_survey_interventions, :save_subcontractor_requests
   
+  has_search_index :only_attributes => [ :status, :started_at, :finished_at ]
+  
   def end_product_attributes=(end_product_attributes)
     end_product_attributes.each do |attributes|
       if attributes[:id].blank?

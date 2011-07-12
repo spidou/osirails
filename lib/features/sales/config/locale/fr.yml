@@ -145,6 +145,8 @@ fr:
         created_at: "Date de création"
         previsional_delivery: "Date prévisionnelle de livraison"
         quotation_deadline: "Date butoir d'envoi du devis"
+      order_type:
+        title: "Type de dossier"
       payment:
         paid_on: "Règlement reçu le"
         amount: "Montant"
@@ -370,6 +372,45 @@ fr:
   
   integrated_search:
     attributes:
+      order:
+        amount: "Montant"
+        billed_amount: "Déjà facturé"
+        brand_names: "Enseigne(s)"
+        commercial:
+          fullname: "Commercial"
+        commercial_name: "Commercial"
+        commercial_step:
+          press_proof_step:
+            status: "BAT"
+          quote_step:
+            status: "Devis"
+          survey_step:
+            status: "Survey"
+        customer:
+          name: "Client"
+        delivered_pieces: "Qté produits livrés"
+        delivering_step:
+          delivery_step:
+            status: "Livraison"
+        deposit_invoice_status: "Acompte"
+        invoicing_step:
+          invoice_step:
+            status: "Facturation"
+          payment_step:
+            status: "Paiement"
+        paid_amount: "Déjà réglé"
+        previsional_delivery: "Date prév. livr."
+        production_step:
+          manufacturing_step:
+            global_progression: "Avancement production"
+            manufacturing_started_on: "Mise en production le"
+            number_of_built_pieces: "Qté produits terminés / total devis"
+            status: "Fabrication"
+        ready_to_deliver_pieces: "Qté produits livrables"
+        signed_quote:
+          status: "Devis"
+        unbilled_amount: "Restant à facturer"
+        unpaid_amount: "Restant à régler"
       product_reference:
         reference: "Réf."
         designation: "Désignation"
@@ -391,6 +432,11 @@ fr:
         phone_number: "Téléphone"
         fax_number: "Fax"
     page_names:
+      order:
+        commercial_order_index: "Les dossiers en Étude Commerciale"
+        in_progress_order_index: "Les dossiers en cours"
+        invoicing_order_index: "Les dossiers en Facturation"
+        production_order_index: "Les dossiers en Production"
       product_reference:
         advanced_product_reference: "Tous les produits références"
         product_reference_index: "Les produits références"
@@ -428,6 +474,12 @@ fr:
         pending: "En attente"
         in_progress: "En cours"
         terminated: "Terminé"
+    quote:
+      statuses:
+        confirmed: "Validé"
+        cancelled: "Annulé"
+        sended: "Envoyé"
+        signed: "Signé"
     service_delivery:
       rates:
         hourly: "en heures"
@@ -436,6 +488,10 @@ fr:
         fixed: "Forfait (prix fixe)"
         hourly: "Taux horaire"
         daily: "Taux journalier"
+    signed_quote:
+      statuses:
+        signed: "Signé"
+        unsigned: "Non signé"
     steps:
       commercial: "Commercial"
       delivering: "Livraison"

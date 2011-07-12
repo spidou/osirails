@@ -90,23 +90,23 @@ module OrdersHelper
     render(:partial => 'orders/customer_overview', :locals => { :order => @order }) if @order.new_record?
   end
   
-  def remaining_time_before_delivery(order)
-    status = order.critical_status
-    
+  def remaining_days_before_delivery(order)
     days = (Date.today - order.previsional_delivery).abs
-    date = l(order.previsional_delivery)
-    message = "Date prév. de livr.<br/>#{date} "
     
-    case status
+    case order.critical_status
     when Order::CRITICAL, Order::LATE
-      message << "J+#{days}"
+      "J&nbsp;+&nbsp;#{days}"
     when Order::TODAY
-      message << "Jour J"
+      "Jour&nbsp;J"
     when Order::SOON, Order::FAR
-      message << "J-#{days}"
-    else
-      return
+      "J&nbsp;-&nbsp;#{days}"
     end
+  end
+  
+  def display_previsional_delivery_and_remaining_days(order)
+    status = order.critical_status
+    date = l(order.previsional_delivery)
+    message = "Date prév. de livr.<br/>#{date} #{remaining_days_before_delivery(order)}"
     
     edit_order = edit_order_link(order, :link_text => '', :html_options => { :title => "Modifier la date prévisionnelle de livraison" })
     content_tag(:p, "#{message}#{edit_order ? "&nbsp;#{edit_order}" : ""}", :class => "order_deadline #{status}")

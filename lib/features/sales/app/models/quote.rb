@@ -171,6 +171,9 @@ class Quote < ActiveRecord::Base
   after_save    :remove_order_end_products
   after_update  :update_quote_step_status
   
+  has_search_index :only_attributes     => [ :reference, :status ],
+                   :only_relationships  => [ :commercial_actor ]
+  
   active_counter :model => 'Order', :callbacks => { :in_progress_total  => :after_save,
                                                     :commercial_total   => :after_save }
   

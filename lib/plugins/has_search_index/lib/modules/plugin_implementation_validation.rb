@@ -37,7 +37,7 @@ module ImplementationValidation
         raise ArgumentError, message unless options[:except_relationships].empty?
         
         options[:only_relationships].each do |relationship_name|
-          message = "#{error_prefix} Undefined relationship '#{relationship_name}', maybe you misspelled it"
+          message = "#{error_prefix} Undefined relationship '#{relationship_name}', maybe you misspelled it (be careful! symbol and string are differents)"
           raise ArgumentError, message if self.reflect_on_association(relationship_name).nil?
         end
         options[:relationships] = options[:only_relationships]

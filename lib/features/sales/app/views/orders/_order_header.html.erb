@@ -1,12 +1,11 @@
 <% content_for :header do -%>
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
   <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
-  <%= javascript_include_tag 'sales/order' %>
 <% end -%>
 
 <%# add_contextual_menu_item :order_progress do %>
   <!-- <div id="order_progress"><object data="<%# formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object></div> -->
-  <%# remaining_time_before_delivery(@order) %>
+  <%# display_previsional_delivery_and_remaining_days(@order) %>
 <%# end %>
 
 <div class="order_header">
@@ -55,7 +54,7 @@
   
   <div class="fourth_column">
     <!--<div id="order_progress"><object data="<%# formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object></div>-->
-    <p><%= remaining_time_before_delivery(@order)%></p>
+    <p><%= display_previsional_delivery_and_remaining_days(@order)%></p>
   </div>
   
   <div class="order_links">

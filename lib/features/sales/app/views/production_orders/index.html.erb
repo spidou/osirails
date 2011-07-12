@@ -4,58 +4,8 @@
 
 <%= generate_shared_contextual_menu_partial %>
 
-<h1>Les dossiers en Production</h1>
+<h1><%= title_for_search %></h1>
 
 <div>
-  <% if @orders.empty? %>
-    <p>Aucun dossier actuellement en Production</p>
-  <% else %>
-    <div class="autoscroll">
-      <table>
-        <thead>
-          <tr>
-            <th>N° Dossier</th>
-            <th>Type dossier</th>
-            <th>Date de création</th>
-            <th>Commercial</th>
-            <th>Nom projet</th>
-            <th>Client</th>
-            <th>Ville(s) d'intervention</th>
-            <th>Devis sign&eacute; le</th>
-            <th>R&eacute;f. devis</th>
-            <th>Montant TTC</th>
-            <th>Mise en production le</th>
-            <th>Avancement de la production</th>
-            <th>Qt&eacute; produits termin&eacute;es / total devis</th>
-            <th>Qt&eacute; produits livrables</th>
-            <th>Qt&eacute; produits livr&eacute;s</th>
-            <th>Date prév. de livraison</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% for order in @orders %>
-            <% manufacturing_step = order.production_step.manufacturing_step %>
-            <tr>
-              <td><%= link_to(order.reference, order_production_step_path(order), :title => "Voir ce dossier") %></td>
-              <td><%= order.order_type.title %></td>
-              <td><%= l(order.created_at.to_date, :format => :short) %></td>
-              <td><%= link_to(order.commercial.fullname, order.commercial, :title => "Voir fiche employé") %></td>
-              <td><%= link_to(order.title, order, :title => "Voir ce dossier") %></td>
-              <td><%= link_to("#{order.customer.name}", order.customer, :title => "Voir fiche client") %></td>
-              <td><%= display_intervention_cities_for(order) %></td>
-              <td><%= l(order.signed_quote.signed_on, :format => :short) if order.signed_quote %></td>
-              <td><%= link_to(order.signed_quote.reference, order_commercial_step_quote_step_quote_path(order, order.signed_quote), :title => "Voir le devis") if order.signed_quote %></td>
-              <td><%= order.signed_quote.total_with_taxes.round_to(2).to_s + " &euro;" if order.signed_quote %></td>
-              <td><%= l(manufacturing_step.manufacturing_started_on, :format => :short) if manufacturing_step.manufacturing_started_on %></td>
-              <td><%= manufacturing_step.global_progression.round_to(2).to_f.to_s + " %"%></td>
-              <td><%= manufacturing_step.number_of_built_pieces.to_i.to_s + " / " + order.signed_quote.number_of_pieces.to_i.to_s if order.signed_quote %></td>
-              <td><%= order.ready_to_deliver_end_products_and_quantities.collect{ |h| h[:quantity] }.sum %></td>
-              <td><%= order.signed_delivery_notes.collect(&:number_of_pieces).sum %></td>
-              <td><%= l(order.previsional_delivery, :format => :short) %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% end %>
+  <%= table_for_search %>
 </div>

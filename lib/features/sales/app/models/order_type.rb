@@ -14,6 +14,8 @@ class OrderType < ActiveRecord::Base
 
   validates_presence_of :title
   
+  has_search_index :only_attributes => [ :id, :title ]
+  
   def activated?
     activated
   end

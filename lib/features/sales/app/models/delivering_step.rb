@@ -4,4 +4,7 @@ class DeliveringStep < ActiveRecord::Base
   
   active_counter :model => 'Order', :callbacks => { :delivery_orders  => :after_save,
                                                     :delivery_total   => :after_save }
+  
+  has_search_index :only_attributes     => [ :status, :started_at, :finished_at ],
+                   :only_relationships  => [ :order, :delivery_step ]
 end

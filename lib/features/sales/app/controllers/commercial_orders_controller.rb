@@ -2,6 +2,6 @@ class CommercialOrdersController < ApplicationController
   helper :orders
 
   def index
-    @orders = CommercialStep.orders
+    build_query_for(:commercial_order_index)
   end
 end

@@ -2,6 +2,6 @@ class InvoicingOrdersController < ApplicationController
   helper :orders
 
   def index
-    @orders = InvoicingStep.orders
+    build_query_for(:invoicing_order_index)
   end
 end

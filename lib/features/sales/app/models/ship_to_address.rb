@@ -13,6 +13,9 @@ class ShipToAddress < ActiveRecord::Base
   attr_accessor :should_destroy
   #attr_accessor :parallel_creation
   
+  has_search_index :only_attributes    => [ :establishment_name ],
+                   :only_relationships => [ :establishment ]
+  
   def should_create?
     should_create.to_i == 1
   end

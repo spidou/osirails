@@ -3,4 +3,7 @@ class InvoicingStep < ActiveRecord::Base
   
   active_counter :model => 'Order', :callbacks => { :invoicing_orders  => :after_save,
                                                     :invoicing_total   => :after_save }
+  
+  has_search_index :only_attributes     => [ :status, :started_at, :finished_at ],
+                   :only_relationships  => [ :order, :invoice_step, :payment_step ]
 end

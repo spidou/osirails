@@ -3,6 +3,6 @@ class ProductionOrdersController < ApplicationController
   
   # GET /production_orders
   def index
-    @orders = ProductionStep.orders
+    build_query_for(:production_order_index)
   end
 end

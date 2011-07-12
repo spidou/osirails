@@ -30,6 +30,9 @@ class ManufacturingStep < ActiveRecord::Base
   active_counter :model => 'Order', :callbacks => { :production_orders  => :after_save,
                                                     :production_total   => :after_save }
   
+  has_search_index :only_attributes       => [ :status, :started_at, :finished_at, :manufacturing_started_on, :manufacturing_finished_on ],
+                   :additional_attributes => { :global_progression => :integer, :number_of_built_pieces => :integer }
+  
   #TODO test this method
   def validates_manufacturing_dates
    errors.add(:manufacturing_started_on, errors.generate_message(:manufacturing_started_on, :blank)) if !manufacturing_started_on and ( global_progression > 0  or manufacturing_finished_on )
@@ -60,7 +63,7 @@ class ManufacturingStep < ActiveRecord::Base
   
   #TODO test this method
   def global_progression
-    number_of_pieces > 0 ? manufacturing_progresses.collect(&:progression).sum / number_of_products : 0.0
+    number_of_pieces > 0 ? manufacturing_progresses.collect(&:progression).sum / number_of_products : 0
   end
   
   #TODO test this method

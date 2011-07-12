@@ -38,8 +38,9 @@ class Customer < Third
              :subresources      => [ :head_office, :establishments, :bill_to_address ],
              :identifier_method => :name
   
-  has_search_index :only_attributes    => [:name, :siret_number, :website],
-                   :only_relationships => [:legal_form, :establishments, :head_office, :customer_grade, :customer_solvency, :bill_to_address, :factor]
+  has_search_index :only_attributes       => [:name, :siret_number, :website],
+                   :additional_attributes => { :brand_names => :string },
+                   :only_relationships    => [:legal_form, :establishments, :head_office, :customer_grade, :customer_solvency, :bill_to_address, :factor]
   
   after_save :save_establishments, :save_head_office
   

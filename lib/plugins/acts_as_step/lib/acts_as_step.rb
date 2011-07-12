@@ -36,7 +36,7 @@ module ActsAsStep
         
         step_children.each do |child|
           step_model = step.name.camelize.constantize
-          has_one child.name, :foreign_key => "#{step_model.table_name.singularize}_id", :dependent => :destroy
+          has_one child.name.to_sym, :foreign_key => "#{step_model.table_name.singularize}_id", :dependent => :destroy
         end
         
         class_eval do

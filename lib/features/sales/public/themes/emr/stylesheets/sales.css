@@ -32,6 +32,7 @@ a[data-icon=new_sub_category]       { background-image: url("/themes/emr/images/
 a[data-icon=new_product_reference]  { background-image: url("/themes/emr/images/sales/new_product_reference.png"); }
 /* END IMAGES */
 
+
 /* SALES HOME */
 table.sales_home {
   width: auto;
@@ -176,7 +177,6 @@ table.sales_home tbody tr.invoicing td {
 table.sales_home tbody tr.invoicing th {
   background-color: #f2b6c1;
 }
-
 /* END SALES HOME */
 
 #order_search_customer {
@@ -185,6 +185,89 @@ table.sales_home tbody tr.invoicing th {
 
 #order_progress {
   text-align: center;
+}
+
+
+/* ORDER INDEX */
+div#search_results table tr td a.step_status {
+  padding: 2px 3px;
+  -moz-border-radius: 5px;
+  color: inherit;
+}
+
+div#search_results table tr td a.step_status:hover {
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  text-decoration: none;
+}
+
+div#search_results table tr td a.step_status.unstarted,
+div#search_results table tr td a.step_status.pending {
+  background-color: #ececec;
+  border: 1px solid #BBB;
+}
+
+div#search_results table tr td a.step_status.in_progress {
+  background-color: #fffd6b;
+  border: 1px solid #cccb88;
+}
+
+div#search_results table tr td a.step_status.terminated {
+  background-color: #80ff80;
+  border: 1px solid #80cc80;
+}
+
+
+div#search_results table tr td a.deposit {
+  padding: 2px 3px;
+  -moz-border-radius: 5px;
+  color: inherit;
+}
+
+div#search_results table tr td a.deposit:hover {
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  text-decoration: none;
+}
+
+div#search_results table tr td a.deposit.not_required {
+  background-color: #ececec;
+  border: 1px solid #BBB;
+}
+
+div#search_results table tr td a.deposit.unpaid {
+  background-color: #ff8080;
+  border: 1px solid #cc8080;
+}
+
+div#search_results table tr td a.deposit.paid {
+  background-color: #80ff80;
+  border: 1px solid #80cc80;
+}
+
+div#search_results table tr td a.quote_status {
+  padding: 2px 3px;
+  -moz-border-radius: 5px;
+  color: inherit;
+}
+
+div#search_results table tr td a.quote_status:hover {
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  text-decoration: none;
+}
+
+div#search_results table tr td a.quote_status.signed {
+  background-color: #80ff80;
+  border: 1px solid #80cc80;
+}
+
+div#search_results table tr td a.quote_status.unsigned {
+  background-color: #ff8080;
+  border: 1px solid #cc8080;
+}
+
+div#search_results table tr.context-menu-selection td a.step_status,
+div#search_results table tr.context-menu-selection td a.deposit,
+div#search_results table tr.context-menu-selection td a.quote_status {
+  color: #343434 !important;
 }
 
 

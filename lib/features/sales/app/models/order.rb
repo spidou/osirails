@@ -85,8 +85,17 @@ class Order < ActiveRecord::Base
   
   journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"}
   
-  has_search_index :only_attributes    => [ :title, :reference, :customer_needs ],
-                   :only_relationships => [ :customer ]
+  has_search_index :only_attributes       => [ :reference, :title, :customer_needs, :previsional_delivery ],
+                   :additional_attributes => { :brand_names => :string,
+                                               :deposit_invoice_status => :string,
+                                               :amount => :float,
+                                               :ready_to_deliver_pieces => :integer,
+                                               :delivered_pieces => :integer,
+                                               :billed_amount => :float,
+                                               :unbilled_amount => :float,
+                                               :paid_amount => :float,
+                                               :unpaid_amount => :float },
+                   :only_relationships    => [ :customer, :commercial, :order_type, :ship_to_addresses, :commercial_step, :production_step, :delivering_step, :invoicing_step, :signed_quote ]
   
   before_validation_on_create :update_reference
   
@@ -117,6 +126,10 @@ class Order < ActiveRecord::Base
     else
       []
     end
+  end
+  
+  def ready_to_deliver_pieces
+    ready_to_deliver_end_products_and_quantities.collect{ |h| h[:quantity] }.sum
   end
   
   # return all delivery_notes with an active invoice
@@ -165,6 +178,10 @@ class Order < ActiveRecord::Base
     signed_delivery_notes.any? and delivery_notes_without_confirmed_invoice.empty?
   end
   
+  def delivered_pieces
+    signed_delivery_notes.collect(&:number_of_pieces).sum 
+  end
+  
   def deposit_invoice
     invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::DEPOSITE_INVOICE ])
   end
@@ -192,7 +209,7 @@ class Order < ActiveRecord::Base
   
   #TODO test this method
   def unpaid_amount
-    signed_quote.total_with_taxes - paid_amount
+    signed_quote && ( signed_quote.total_with_taxes - paid_amount )
   end
   
   #TODO test this method
@@ -428,6 +445,22 @@ class Order < ActiveRecord::Base
   
   def create_missing_steps
     create_steps
+  end
+  
+  def brand_names
+    ship_to_addresses.collect(&:establishment_name).join(', ') #TODO really used?
+  end
+  
+  def amount # return amount of quote (signed or not)
+    ( quote = (signed_quote || pending_quote || draft_quote) ) && quote.total_with_taxes
+  end
+  
+  def deposit_invoice_status
+    deposit_invoice && deposit_invoice.status
+  end
+  
+  def deposit_required?
+    signed_quote && signed_quote.deposit > 0
   end
   
   def in_progress_orders_counter # @override (active_counter)
