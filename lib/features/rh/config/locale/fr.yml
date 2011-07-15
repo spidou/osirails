@@ -16,12 +16,18 @@ fr:
       salary: "Salaire"
     attributes:
       checking:
-        employee: "Employé"
+        employee_id: "Employé"
         date: "Date"
-        absence_hours: "Absence"
-        absence_comment: "Commentaire"
-        overtime_hours: "Heures supplémentaires"
-        overtime_comment: "Commentaire"
+        absence_period: "Absence"
+        absence_comment: "Commentaire de l'absence"
+        morning_start: "Heures d'arrivée de la matinée"
+        morning_end: "Heures de départ de la matinée"
+        afternoon_start: "Heures d'arrivée de l'aprés-midi"
+        afternoon_end: "Heures de départ de l'aprés-midi"
+        morning_start_comment: "Commentaire d'arrivée de la matinée"
+        morning_end_comment: "Commentaire de départ de la matinée"
+        afternoon_start_comment: "Commentaire d'arrivée de l'aprés-midi"
+        afternoon_end_comment: "Commentaire de départ de l'aprés-midi"
       employee:
         address: "Adresse postale"
         employee_sensitive_data: "Données privées"
@@ -104,6 +110,24 @@ fr:
               invalid: "L'adresse e-mail est incorrecte"
             society_email:
               invalid: "L'adresse e-mail entreprise est incorrecte"
+        checking:
+          attributes:
+            morning_start:
+              leave_morning: "ne peut être saisie car l'employé est en congé la matinée"
+              absence_morning: "ne peut être saisie car l'employé est en absent la matinée"
+            morning_end:
+              leave_morning: "ne peut être saisie car l'employé est en congé la matinée"
+              absence_morning: "ne peut être saisie car l'employé est en absent la matinée"
+            afternoon_start:
+              leave_afternoon: "ne peut être saisie car l'employé est en congé l'après-midi"
+              absence_afternoon: "ne peut être saisie car l'employé est en absent l'après-midi"
+            afternoon_end:
+              leave_afternoon: "ne peut être saisie car l'employé est en congé l'après-midi"
+              absence_afternoon: "ne peut être saisie car l'employé est en absent l'après-midi"
+            base:
+              leave_whole_day: "Vous ne pouvez par faire de pointage car l'employé est en congé toute la journée"
+              absence_whole_day:  "Vous ne pouvez saisir la présence de l'employé car il est absent toute la journée"
+              complete_checking:   "Vous devez saisir au moins un des champs du formulaire"
   integrated_search:
     attributes:
       employee:

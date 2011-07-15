@@ -92,19 +92,28 @@ ActiveRecord::Schema.define(:version => 20110801094607) do
     t.datetime "updated_at"
   end
 
-  create_table "checkings", :force => true do |t|
-    t.integer  "user_id"
+  create_table "checking_delegations", :force => true do |t|
+    t.integer  "delegate_id"
     t.integer  "employee_id"
-    t.date     "date"
-    t.integer  "absence_hours"
-    t.integer  "absence_minutes"
-    t.integer  "overtime_hours"
-    t.integer  "overtime_minutes"
-    t.text     "absence_comment"
-    t.text     "overtime_comment"
-    t.boolean  "cancelled",        :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "checkings", :force => true do |t|
+    t.integer  "employee_id"
+    t.date     "date"
+    t.text     "absence_comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "absence_period"
+    t.datetime "morning_start"
+    t.datetime "morning_end"
+    t.datetime "afternoon_start"
+    t.datetime "afternoon_end"
+    t.text     "morning_start_comment"
+    t.text     "morning_end_comment"
+    t.text     "afternoon_start_comment"
+    t.text     "afternoon_end_comment"
   end
 
   create_table "checklist_options", :force => true do |t|

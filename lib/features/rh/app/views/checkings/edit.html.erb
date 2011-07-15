@@ -1,11 +1,6 @@
-<% add_contextual_menu_item :possible_actions do %>
-  <%= new_checking_link(:link_text => "Nouveau pointage") unless @subordinates.empty?%>
-<% end %>
-
 <% add_contextual_menu_item :useful_links do %>
-  <%= display_checkings_link(true) %>
   <%= employees_link(:link_text => "Voir tous les employés") %>
 <% end %>
 
 <h1>Modifier le Pointage</h1>
-<%= render :partial => "checking", :locals => {:action => "update"} %>
+<%= render :partial => "checking" %>

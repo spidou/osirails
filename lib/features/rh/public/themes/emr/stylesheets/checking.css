@@ -1,0 +1,218 @@
+table tr:hover  {
+  background-color: #E6E2AF
+}
+
+table tr th.civility{
+  width:15px
+}
+
+table tr th.fullname{
+  width:160px
+}
+
+table tr th.cumul_hours{
+  width:130px
+}
+
+table tr th.balance_hours{
+  width:130px
+}
+
+table tr th.time_slot{
+  width:180px
+}
+
+table tr td.absent{ 
+  font-weight: bold;
+  color: #C9080B;
+  background-color: #F5F7A3
+} 
+
+table tr td.leave{
+  border-width: 2px;
+  font-weight: bold;
+  color: #BD14E3;
+  background-color: #B5E6BF;
+}
+
+table tr td.overtime{
+  font-weight: bold;
+  color: #2400F0
+} 
+
+table tr td.delay{
+  font-weight: bolder;
+  color: #F70008
+}  
+
+table tr td.no_hours{
+  background-color: #F77872  
+}
+
+table tr td.total_hours{
+  font-weight: bold;
+} 
+
+table tr td div.infos{
+  width:18px; height:18px;
+	display:inline;
+  position:absolute;
+  margin:0px 5px;
+  background: url("/themes/emr/images/rh/info.png" ) no-repeat 1px 1px;
+  font-size:0px;
+  overflow:hidden;
+}
+
+
+table tr td div.infos:hover{
+  width:250px;
+  height:auto;
+  display:inline;  position:absolute;
+  border: solid 2px white;
+	-moz-border-radius:7px 7px 7px 7px;
+  margin:-2px 3px ;
+  background-color:#CCC6AD;
+  text-align:left;
+  word-wrap:break-word; 
+  font-size: 0.9em;
+  color: black;
+	z-index:2; 
+}
+
+
+table tr td div.infos p{
+  margin-left:11%;
+}
+
+table tr td div.infos:hover p span_comment{
+  font: lighter;
+  font-size: small;   
+}
+
+
+div.date_paginate{
+  height:40px;
+  margin-top:10px;
+  text-align:center;
+/*   background-color: #F4FF3A*/
+}
+
+div.date_paginate span.precendent{
+  float:left;
+}
+
+div.date_paginate span.calendar{
+  margin:60px;
+  background-color: white;
+  border:none;  
+}
+
+div.date_paginate div.calendar_container span.next{
+  float:right;
+}
+
+div.form_title_hours{
+  top:10px;
+  left:100px;  
+  height:35px;
+  width:1340px;  
+  position:relative;
+/*  background-color:#E70739;*/
+}
+
+div.form_title_hours span{
+  text-align:center;
+  vertical-align:middle;
+}
+
+div.form_title_hours span.morning_title{
+  float:left;
+}
+
+div.form_title_hours span.afternoon_title{
+  margin-left:200px;
+  float:right;
+}
+
+div.form_title_hours span h3{
+  text-indent: 0px !important;
+  width:550px;  
+}
+
+div.form_presence_hours{
+  left:95px;  
+  height:80px;
+  position:relative;
+  width:1350px;  
+/*  background-color:#4BB5C1;*/
+}
+
+div.form_presence_hours div {
+  height:75px;
+  width:550px;  
+/*  background-color:#AEEE00;*/
+}
+
+div.form_presence_hours div.morning_hours{
+  float:left;
+  width:555px;  
+}
+
+div.form_presence_hours div.afternoon_hours{
+  float:right;
+}
+
+div.form_presence_hours div p{
+  width:550px;
+  padding-top:5px;
+}
+
+div.form_presence_hours div label{
+  width:50px;
+}
+
+select{
+  margin-left:10px;
+}
+
+div div span.select_hour{
+  float:left;
+}
+
+div div span.comment{
+  float:right;
+}
+
+div.form_absence{
+  margin-left:45px;  
+  padding-top:5px;  
+  height:35px;
+  width:630px;  
+/*  background-color:#E70739;    */
+}
+
+div.form_absence label{
+  width:100px;
+}
+
+div.warning_message{
+  text-align:center;
+  height:30px;
+/*  background-color:#E70739;    */
+}
+
+div.message_box span{
+  color: #880000;
+}
+
+.alarm{
+color:#FF483D;
+  font-size: 1.1em;
+  display: inline-block;
+  padding: 1px;
+  margin: 5px;
+  vertical-align: top;
+}
+
+  
+}

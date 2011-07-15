@@ -1,56 +1,48 @@
-<% add_contextual_menu_item :possible_actions do %>
-  <%= new_checking_link(:link_text => "Nouveau pointage", :options => { :employee_id => @employee.id }) if @employee and !@subordinates.empty? %>
-<% end %>
+ <%=stylesheet_link_tag_with_theme_support "rh/checking"%>
 
-<% add_contextual_menu_item :useful_links do %>
-  <%= display_checkings_link(@employee.id) if @employee %>
-<% end %>
+<h1>Pointages</h1>
+<div class="presentation-medium">  
+  <%# J'appel à la méthode qui va afficher un message d'information si l'utilisateur va pointer a la place d'un autre employé''%>
+  <%=display_as_checking_warning(@as_employee)%>   
 
-<h1>Les pointages</h1>
-<div class="presentation-medium">
+  <div class="date_paginate">
+        <span class="precedent"><%=link_to "Précédent", :action => "index", :date => @date.yesterday,:as_employee_id => @as_employee_id %></span>
+        <span class="calendar"><%= calendar_date_field_tag("checkings",:date, :default => @date, :on_select => calendar_location(@as_employee_id) )%></span>
+        <span class="next"><%=link_to "Suivant", :action => "index", :date => @date.next ,:as_employee_id => @as_employee_id%></span>
+  </div>
 
-<% if @subordinates.empty? %>
-  <p>Vous n&apos;&ecirc;tes responsable d&apos;aucun employ&eacute;</p>
-<% else %>
-  
-  <h2>Semaine <%= @date.monday.cweek %> (du <%= l(@date.monday, :format => :long_ordinal) %> au <%= l(@date.next_week.yesterday, :format => :long_ordinal) %>)</h2>
-  
-  <p>
-    <%= previous_week(@employee.id, @date, @view_cancelled) %>
-    <select onchange="<%= javascript_location_url(@employee.id, @date, @view_cancelled)%>" >
-      <%= employee_options(@subordinates, @employee.id)%>
-    </select>
-    <%= next_week(@employee.id, @date, @view_cancelled) %>
-  </p>
-  
-  <% if @checkings.empty? %>
-    <p>Aucun pointage pour cette p&eacute;riode et pour <%= @employee.fullname %></p>
-  <% else %>
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Absence</th>
-          <th>Heures suppl&eacute;mentaires</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for checking in @checkings %>
-          <%="<tr #{"class='disabled'" if checking.cancelled} >" %>
-            <td><%= l(checking.date, :format => :long_ordinal) %></td>
-            <%= generate_absence_and_overtime_td(checking) %>
-            <td>
-              <%= edit_checking_link(checking, :link_text => "") if checking.can_be_edited? %>
-              <%= cancel_checking_link(checking, "") %>
-              <%= override_checking_link(checking, "") %>
-              <%= delete_checking_link(checking, :link_text => "") %>
-            </td>
-          </tr>
-        <% end %>
+  <table class="no_nth">
+    <thead>
+      <tr>
+        <th class="civility" rowspan="3">Civilité</th>
+        <th class="fullname" rowspan="3">Nom Complet</th>
+        <th colspan="2">Matinée</th>
+        <th colspan="2">Aprés Midi</th>
+        <th class="cumul_hours" rowspan="3">Cumul</th>
+        <th class="balance_hours" rowspan="3">+ / -</th>
+      <tr>
+      </tr>
+        <th class="time_slot">Arrivé</th>
+        <th class="time_slot">Départ</th>
+        <th class="time_slot">Arrivé</th>
+        <th class="time_slot">Départ</th>
+      </tr>
+    </thead>
+        <tr class="group">                    <td colspan="8"> </td></tr>
+    <tbody>
+
+<%# 
+  Pour chaque employé d'un service pour une date si l'employé possède un pointage je récupère ces information 
+  pour l'afficher ou bien je simule un pointage avec les horaires de services effectuer par défault
+%>
+<% 
+  @subordinates.each do |employee| 
+    checking = employee.checkings.first(:conditions => ['date = ? ' , @date]) || employee.checkings.build(:date => @date)
+%>
+  <%# Pour afficher la ligne correspondant a cet employé je fait appel au partial qui va effectuer ce traitement %>
+  <%= render :partial => "checkings/checking_in_one_line" , :object => checking , :locals => {:employee => employee}%>
+<%end%>
       </tbody>
     </table>  
-  <% end %>
-  
-<% end %>
+
 </div>

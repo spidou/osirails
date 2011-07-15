@@ -63,3 +63,6 @@ class Leave < ActiveRecord::Base
       check_unique_dates(conflicting_leaves(future_leaves)) if employee
     end
 end
+
+
+

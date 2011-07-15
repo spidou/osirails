@@ -350,8 +350,9 @@ module ActionView
                                  ifFormat    : '#{options[:database_format]}',
                                  altIfFormat : '#{options[:displayed_format]}',
                                  disabledIf  : #{options[:disabled]},
-                                 showOthers  : true }"
-        
+                                 showOthers  : true ,
+                                 onSelect    : #{options[:on_select]} }"
+
         text_field     = text_field_tag("#{@object_name}_displayed_#{@method_name}_for_calendar", nil, text_field_options)
         button         = button_to_function "", button_action, button_options
         hidden_field   = InstanceTag.new(@object_name, @method_name, self, options.delete(:object)).to_input_field_tag("hidden", hidden_field_options)
