@@ -18,7 +18,7 @@ in_progress_order_index:
     - title
     - customer_name: customer.name
     - brand_names
-    - commercial_name: commercial.fullname
+    - commercial.id
     - amount
   columns:
     - reference
@@ -60,11 +60,6 @@ in_progress_order_index:
   <<: *pagination
   <<: *quick_search
   default_query:
-    criteria:
-#      commercial_step.status: 
-#        action: '='
-#        value: 'pending'
-    search_type: and
     columns:
       - reference
       - title
@@ -93,7 +88,7 @@ commercial_order_index:
     - brand_names
     - commercial_name: commercial.fullname
     - amount
-    #- commercial_step_status: commercial_step.status
+    - commercial_step_status: commercial_step.status
   columns:
     - reference
     - order_type.title
@@ -127,9 +122,9 @@ commercial_order_index:
   <<: *quick_search
   default_query:
     criteria:
-#      commercial_step.status: 
-#        action: '='
-#        value: 'pending'
+      commercial_step.status:
+        action: '='
+        value: 'pending'
     search_type: and
     columns:
       - reference
@@ -156,6 +151,7 @@ production_order_index:
     - brand_names
     - commercial_name: commercial.fullname
     - amount
+    - production_step_status: production_step.status
   columns:
     - reference
     - order_type.title
@@ -192,9 +188,9 @@ production_order_index:
   <<: *quick_search
   default_query:
     criteria:
-#      commercial_step.status: 
-#        action: '='
-#        value: 'pending'
+      production_step.status: 
+        action: '='
+        value: 'pending'
     search_type: and
     columns:
       - reference
@@ -224,6 +220,7 @@ invoicing_order_index:
     - brand_names
     - commercial_name: commercial.fullname
     - amount
+    - invoicing_step_status: invoicing_step.status
   columns:
     - reference
     - order_type.title
@@ -257,9 +254,9 @@ invoicing_order_index:
   <<: *quick_search
   default_query:
     criteria:
-#      commercial_step.status: 
-#        action: '='
-#        value: 'pending'
+      invoicing_step.status: 
+        action: '='
+        value: 'pending'
     search_type: and
     columns:
       - reference

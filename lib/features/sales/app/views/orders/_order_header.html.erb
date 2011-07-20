@@ -34,22 +34,7 @@
   </div>
   
   <div class="third_column">
-    <% if signed_quote = @order.signed_quote %>
-      <p>
-        <span class="order_form"><%= link_to(image_tag('mime_type_extensions/pdf_16x16.png', :alt => "Télécharger", :title => "Télécharger"), order_commercial_step_quote_step_quote_order_form_path(@order, signed_quote)) %></span>&nbsp;
-        <span class="signed_quote">Devis signé</span>
-      </p>
-      <p><span class="quote_reference"><%= link_to(signed_quote.reference, order_commercial_step_quote_step_quote_path(@order, signed_quote), :title => "Voir la fiche du devis") %></span></p>
-      <p><span class="net_to_paid"><%= signed_quote.net_to_paid.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></p>
-    <% else %>
-      <p><span class="unsigned_quote">Devis</span><p>
-      <% if quote = (@order.draft_quote || @order.pending_quote) %>
-        <p><%= quote.net_to_paid.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</p>
-      <% else %>
-        <p>0.00&nbsp;&euro;</p>
-      <% end %>
-      <%= link_to("Voir les devis", order_commercial_step_quote_step_path(@order)) %>
-    <% end %>
+    <%= render :partial => 'orders/order_header_quote_informations', :locals => { :order => @order } %>
   </div>
   
   <div class="fourth_column">

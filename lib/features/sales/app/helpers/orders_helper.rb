@@ -105,7 +105,7 @@ module OrdersHelper
   
   def display_previsional_delivery_and_remaining_days(order)
     status = order.critical_status
-    date = l(order.previsional_delivery)
+    date = l(order.previsional_delivery, :format => :short)
     message = "Date prév. de livr.<br/>#{date} #{remaining_days_before_delivery(order)}"
     
     edit_order = edit_order_link(order, :link_text => '', :html_options => { :title => "Modifier la date prévisionnelle de livraison" })

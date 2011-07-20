@@ -378,7 +378,6 @@ fr:
         brand_names: "Enseigne(s)"
         commercial:
           fullname: "Commercial"
-        commercial_name: "Commercial"
         commercial_step:
           press_proof_step:
             status: "BAT"
@@ -386,8 +385,10 @@ fr:
             status: "Devis"
           survey_step:
             status: "Survey"
+        commercial_step_status: "État de l'étude commerciale"
         customer:
           name: "Client"
+        customer_name: "Client"
         delivered_pieces: "Qté produits livrés"
         delivering_step:
           delivery_step:
@@ -398,6 +399,7 @@ fr:
             status: "Facturation"
           payment_step:
             status: "Paiement"
+        invoicing_step_status: "État de la facturation"
         paid_amount: "Déjà réglé"
         previsional_delivery: "Date prév. livr."
         production_step:
@@ -406,6 +408,7 @@ fr:
             manufacturing_started_on: "Mise en production le"
             number_of_built_pieces: "Qté produits terminés / total devis"
             status: "Fabrication"
+        production_step_status: "État de la production"
         ready_to_deliver_pieces: "Qté produits livrables"
         signed_quote:
           status: "Devis"

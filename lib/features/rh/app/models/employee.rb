@@ -64,9 +64,10 @@ class Employee < ActiveRecord::Base
              :subresources      => [ :employee_sensitive_data, :job_contracts, { :jobs => :create_and_destroy } ],
              :identifier_method => :fullname
   
-  has_search_index  :only_attributes       => [ :first_name, :last_name, :society_email],
+  has_search_index  :only_attributes       => [ :id, :first_name, :last_name, :society_email],
                     :additional_attributes => { :fullname => :string },
-                    :only_relationships    => [ :civility, :employee_sensitive_data, :job_contract, :job_contracts, :jobs, :service, :user ]
+                    :only_relationships    => [ :civility, :employee_sensitive_data, :job_contract, :job_contracts, :jobs, :service, :user ],
+                    :identifier            => :fullname
   
   before_validation :build_associated_resources
   before_save :case_management

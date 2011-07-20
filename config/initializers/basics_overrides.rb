@@ -117,7 +117,7 @@ class String
     raise TypeError, "Both parameters must be #{self.class}. #{first}:#{first.class}, #{second}:#{second.class}" unless first.class.equal?(self.class) and second.class.equal?(self.class)
     self.downcase >= first.downcase and self.downcase <= second.downcase
   end
-
+  
   # return if the string is between the first and the second argument (taking case into account)
   #
   def between_exact(first, second)
@@ -138,8 +138,25 @@ class String
     end
   end
   
+  # return if the string is a numeric value
+  # 
+  # "foo".numeric?  # false
+  # "100".numeric?  # true
+  # "4.8".numeric?  # true
+  # "7bar".numeric? # false
   def numeric?
     return true if Float(self) rescue false
+  end
+  
+  # return shortened string according to the fixed +limit+
+  # followed by the +substitute_text+
+  # 
+  # "Hello World!".shorten(8)         # "Hello Wo"
+  # "Hello World!".shorten(5, "...")  # "Hello..."
+  def shorten(limit, substitute_text = "")
+    raise TypeError, "wrong argument type #{limit.class.name} (expected Fixnum)" unless limit.is_a?(Fixnum)
+    chars = self.mb_chars
+    chars.length > limit ? (chars[0...limit] + substitute_text.to_s).to_s : self
   end
 end
 

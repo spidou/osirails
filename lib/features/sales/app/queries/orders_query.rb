@@ -4,7 +4,7 @@ module OrdersQuery
   end
   
   def query_td_content_for_title_in_order
-    link_to(@query_object.title, @query_object)
+    link_to(@query_object.title.shorten(25, "[...]"), @query_object, :title => @query_object.title)
   end
   
   def query_td_for_title_in_order(content)
@@ -12,7 +12,7 @@ module OrdersQuery
   end
   
   def query_td_content_for_customer_name_in_order
-    link_to(@query_object.customer.name, @query_object.customer)
+    link_to(@query_object.customer.name.shorten(30, "[...]"), @query_object.customer, :title => @query_object.customer.name)
   end
   
   def query_td_for_customer_name_in_order(content)
