@@ -77,8 +77,8 @@ private
       query.per_page = (params[:per_page] == 'all' ? nil : params[:per_page].to_i)
     end
     
-    query.criteria = {}
     if params[:criteria]
+      query.criteria = {}
       params[:criteria].each do |attribute, options|
         options[:value].each_with_index do |value, index|
           (query.criteria[attribute] ||= []) << {:action => options[:action].at(index), :value => value}
