@@ -26,19 +26,27 @@ menus:
             title: Dossiers en Prodution
             description: Afficher la liste des dossiers actuellement en phase de Production
             position: 3
+          delivering_orders:
+            title: Dossiers en Livraison
+            description: Afficher la liste des dossiers actuellement en phase de Livraison
+            position: 4
+          pre_invoicing_orders:
+            title: Dossier en SAS de Facturation
+            description: Afficher la liste des dossier actuellement en SAS de facturation
+            position: 5
           invoicing_orders:
             title: Dossiers en Facturation
             description: Afficher la liste des dossiers actuellement en phase de facturation
-            position: 5
+            position: 6
             separator: after
           closed_orders:
             title: Dossiers cloturés
             description: Afficher la liste des dossiers déjà cloturés
-            position: 6
+            position: 7
           archived_orders:
             title: Dossiers archivés
             description: Afficher la liste des dossiers déjà archivés
-            position: 7
+            position: 8
       sales_management:
         title: Gestion
         position: 2

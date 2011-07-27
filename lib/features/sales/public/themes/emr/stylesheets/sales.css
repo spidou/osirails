@@ -271,6 +271,34 @@ div#search_results table tr.context-menu-selection td a.quote_status {
 }
 
 
+div#search_results table tr td span.order_status {
+  padding: 2px 3px;
+  -moz-border-radius: 5px;
+  color: inherit;
+}
+
+div#search_results table tr td span.order_status:hover {
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  text-decoration: none;
+}
+
+div#search_results table tr td span.order_status.pending {
+  background-color: #fffd6b;
+  border: 1px solid #cccb88;
+}
+
+div#search_results table tr td span.order_status.standby,
+div#search_results table tr td span.order_status.discarded {
+  background-color: #ececec;
+  border: 1px solid #BBB;
+}
+
+div#search_results table tr td span.order_status.completed {
+  background-color: #80ff80;
+  border: 1px solid #80cc80;
+}
+
+
 /* ORDER HEADER */
 div.order_header {
   text-align: left;
@@ -302,13 +330,13 @@ div.order_header > div > p {
 }
 
 div.order_header > div.first_column {
-  min-width: 300px;
-  max-width: 400px;
+  min-width: 450px;
+  max-width: 600px;
   margin-bottom: 6px; /* push down div.order_links */
 }
 
 div.order_header > div.second_column {
-  width: 350px;
+  width: 300px;
 }
 
 div.order_header > div.second_column pre.customer_needs {
@@ -334,6 +362,32 @@ div.order_header > div.second_column pre.customer_needs:hover {
   background-color: #fafafa;
   -moz-border-radius: 5px;
   z-index: 2;
+}
+
+div.order_header > div.second_column span.status {
+  -moz-border-radius: 5px;
+  padding: 2px 4px;
+  margin-left: 7px;
+}
+
+div.order_header > div.second_column span.status.pending {
+  background-color: #fffd6b;
+  border: 1px solid #cccb88;
+}
+
+div.order_header > div.second_column span.status.standby {
+  background-color: #ececec;
+  border: 1px solid #BBB;
+}
+
+div.order_header > div.second_column span.status.discarded {
+  background-color: #ececec;
+  border: 1px solid #BBB;
+}
+
+div.order_header > div.second_column span.status.completed {
+  background-color: #80ff80;
+  border: 1px solid #80cc80;
 }
 
 div.order_header > div.third_column > p {
@@ -370,17 +424,20 @@ div.order_header span.created_at {
 }
 
 div.order_header span.order_type {
-  background-color: #fffea4;
   border: 1px solid #ccc;
   -moz-border-radius: 5px;
   padding: 2px 4px;
-  margin-left: 10px;
+  font-weight: bold;
 }
 
 div.order_header span.signed_quote,
 div.order_header span.net_to_paid {
   color: #00ae00;
   font-weight: bold;
+}
+
+div.order_header span.unsigned_quote {
+  color: red;
 }
 
 div.order_header > div.order_links {

@@ -82,6 +82,12 @@ class DeliveryNote < ActiveRecord::Base
   before_destroy :can_be_destroyed?
   
   after_save :save_delivery_note_items
+  after_update :update_delivery_step_status
+  
+  active_counter :model => 'Order', :callbacks => { :delivering_orders    => :after_save,
+                                                    :delivering_total     => :after_save,
+                                                    :pre_invoicing_orders => :after_save,
+                                                    :pre_invoicing_total  => :after_save }
   
   active_counter :counters  => { :pending_delivery_notes  => :integer,
                                  :pending_total           => :float },
@@ -326,11 +332,20 @@ class DeliveryNote < ActiveRecord::Base
     self_and_siblings - [ self ]
   end
   
-  def pending_delivery_notes_counter # @override (active_counter)
-    DeliveryNote.pending.count
+  class << self
+    def pending_delivery_notes_counter # @override (active_counter)
+      DeliveryNote.pending.count
+    end
+    
+    def pending_total_counter # @override (active_counter)
+      DeliveryNote.pending.collect(&:total_with_taxes).compact.sum
+    end
   end
   
-  def pending_total_counter # @override (active_counter)
-    DeliveryNote.pending.collect(&:total_with_taxes).compact.sum
-  end
+  private
+    def update_delivery_step_status
+      if signed? and order.all_is_delivered?
+        order.delivering_step.delivery_step.terminated!
+      end
+    end
 end

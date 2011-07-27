@@ -1,17 +1,11 @@
 module OrdersHelper
   
   def order_header
-    html = generate_order_order_partial
-    html += generate_contextual_menu_partial
-    html
+    generate_order_order_partial
   end
   
   def generate_order_order_partial
     render :partial => 'orders/order_header'
-  end
-  
-  def generate_contextual_menu_partial
-    render :partial => 'orders/contextual_menu'
   end
   
   def generate_shared_contextual_menu_partial

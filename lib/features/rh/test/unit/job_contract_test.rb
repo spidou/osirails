@@ -10,7 +10,7 @@ class JobContractTest < ActiveSupport::TestCase
                     :subresources => [:salaries]
   
   should_validate_presence_of :start_date
-  should_validate_presence_of :employee, :job_contract_type, :with_foreign_key => :default
+  should_validate_presence_of :job_contract_type, :with_foreign_key => :default
                     
   context "A Job_contract" do
     setup do

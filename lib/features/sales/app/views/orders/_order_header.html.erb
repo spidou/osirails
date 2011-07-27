@@ -11,8 +11,7 @@
 <div class="order_header">
   <div class="first_column">
     <p>
-      <span class="reference" title="<%= t('activerecord.attributes.order.reference') %>">Dossier n° <%= link_to(@order.reference, @order) %></span> :
-      <span class="title" title="<%= t('activerecord.attributes.order.title') %>"><%= @order.title %>
+      Dossier&nbsp;<span class="order_type" title="<%= t('activerecord.attributes.order.order_type') %>"><%= @order.order_type.title %></span>&nbsp;n°&nbsp;<span class="reference" title="<%= t('activerecord.attributes.order.reference') %>"><%= link_to(@order.reference, @order) %></span>&nbsp;:&nbsp;<span class="title" title="<%= t('activerecord.attributes.order.title') %>"><%= @order.title %>
     </p>
     <p><span class="customer_name" title="<%= t('activerecord.attributes.order.customer') %>"><%= link_to(@order.customer.name, @order.customer, :popup => true) %></span></p>
     <div class="ship_to_addresses" title="<%= t('activerecord.attributes.order.ship_to_addresses') %>">
@@ -28,7 +27,9 @@
     <p>
       Créé le <span class="created_at" title="<%= t('activerecord.attributes.order.created_at') %>"><%= l(@order.created_at.to_date, :format => :long) %></span>
       par <span class="commercial" title="<%= t('activerecord.attributes.order.commercial') %>"><%= link_to(@order.commercial.fullname, @order.commercial) %></span>
-      <span class="order_type" title="<%= t('activerecord.attributes.order.order_type') %>"><%= @order.order_type.title %></span>
+      <span class="status <%= @order.status %>" title="<%= @order.pending? ? '' : "depuis le #{l(@order.status_since.to_date, :format => :long)}" %>">
+        <%= t("view.order.statuses.#{@order.status}", :default => @order.status) %>
+      </span>
     </p>
     <pre class="customer_needs" title="<%= t('activerecord.attributes.order.customer_needs') %>"><%= @order.customer_needs %></pre>
   </div>
@@ -43,6 +44,9 @@
   </div>
   
   <div class="order_links">
-    <%= link_to("Modifier dossier", edit_order_path(@order)) %> | <%= link_to("Avancement", order_informations_path(@order, :order_nav => :progress)) %> | <%= link_to("Suivi", order_informations_path(@order, :order_nav => :monitoring)) %> | <%= link_to("Documents", order_informations_path(@order, :order_nav => :documents)) %> | <%= link_to("Contacts clients", order_informations_path(@order, :order_nav => :customer_contacts)) %> | <%= link_to("Acteurs internes", order_informations_path(@order, :order_nav => :internal_actors)) %>
+    <% unless @order.completed? %>
+      <%= link_to("Modifier dossier", edit_order_path(@order)) %> | 
+    <% end %>
+    <%= link_to("Avancement", order_informations_path(@order, :order_nav => :progress)) %> | <%= link_to("Suivi", order_informations_path(@order, :order_nav => :monitoring)) %> | <%= link_to("Documents", order_informations_path(@order, :order_nav => :documents)) %> | <%= link_to("Contacts clients", order_informations_path(@order, :order_nav => :customer_contacts)) %> | <%= link_to("Acteurs internes", order_informations_path(@order, :order_nav => :internal_actors)) %>
   </div>
 </div>

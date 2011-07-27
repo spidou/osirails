@@ -28,7 +28,7 @@ steps:
         position: 1
   invoicing:
     title: Facturation
-    position: 3
+    position: 4
     children:
       invoice:
         title: Factures

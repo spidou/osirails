@@ -159,7 +159,7 @@ module ActsAsStep
       respond_to?(:parent_step) ? parent_step.children_steps : order.first_level_steps
     end
     
-    def next
+    def next_step
       collection = self_and_siblings_steps
       index = collection.index(self) + 1
       index >= collection.size ? nil : collection[index]
@@ -182,7 +182,7 @@ module ActsAsStep
     def in_progress!
       if pending? or unstarted?
         update_attribute(:status, IN_PROGRESS)
-        update_attribute(:started_at, DateTime.now)
+        update_attribute(:started_at, Time.zone.now)
       else
         false
       end
@@ -191,11 +191,11 @@ module ActsAsStep
     def terminated!
       if in_progress? or pending? or unstarted?
         update_attribute(:status, TERMINATED)
-        update_attribute(:started_at, DateTime.now) if started_at.nil?
-        update_attribute(:finished_at, DateTime.now)
-        if next_step = self.next
-          next_step.pending!
-        end
+        update_attribute(:started_at, Time.zone.now) if started_at.nil?
+        update_attribute(:finished_at, Time.zone.now)
+        
+        next_step && next_step.pending! #TODO use a callback to do that!
+        true
       else
         false
       end

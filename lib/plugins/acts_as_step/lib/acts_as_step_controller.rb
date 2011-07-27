@@ -28,6 +28,14 @@ module ActsAsStepController
                 @order = Order.find(params[:order_id])
               elsif params[:id]     # if order_id doesn't exist but id, so we want to display '/orders/:id' or '/orders/:id/edit' or anything like that
                 @order = Order.find(params[:id])
+              #elsif referer = request.env["HTTP_REFERER"] # http://localhost:3000/:controller/:id/:action
+              #  referer = URI.parse(referer).path         # /:controller/:id/:action
+              #  begin
+              #    route_hash = ActionController::Routing::Routes.recognize_path(referer, :method => :get)
+              #    @order = Order.find(route_hash[:order_id])
+              #  rescue ActionController::RoutingError, ActionController::MethodNotAllowed => e
+              #    @order = Order.new
+              #  end
               else                  # so I guess we want to display '/orders/new'
                 @order = Order.new
               end
@@ -62,6 +70,7 @@ module ActsAsStepController
       
       def real_step_controller_methods options
         before_filter :lookup_step_environment
+        before_filter :check_step_and_order_status, :only => [ :edit, :update ]
         before_filter :should_display_edit,     :only => [ :index, :show ]    unless options[:skip_edit_redirection]
         after_filter  :update_step_status,      :only => [ :create, :update ]
         
@@ -87,8 +96,12 @@ module ActsAsStepController
               end
             end
             
+            def check_step_and_order_status
+              error_access_page(412) if @step.terminated? or @order.completed?
+            end
+            
             def should_display_edit
-              unless @step.terminated?
+              unless @step.terminated? or @order.completed?
                 if (params[:action] == "index" or params[:action] == "show") and @step.class.can_edit?(current_user)
                   flash.keep
                   redirect_to params.merge(:action => "edit")

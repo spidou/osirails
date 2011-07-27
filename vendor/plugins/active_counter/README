@@ -42,9 +42,9 @@ many statuses, so we have many 'has_many'.
 
 We can manually update counters by running:
 
-Post.first.update_validated_comments_counter
-Post.first.update_rejected_comments_counter
-Post.first.update_pending_comments_counter
+Post.update_validated_comments_counter
+Post.update_rejected_comments_counter
+Post.update_pending_comments_counter
 
 
 Also, we can now use these methods:

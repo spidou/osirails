@@ -2,28 +2,33 @@
 # A integer  "commercial_id"
 # A integer  "user_id"
 # A integer  "customer_id"
-# A integer  "establishment_id"
-# A integer  "society_activity_sector_id"
 # A integer  "order_type_id"
 # A integer  "approaching_id"
 # A integer  "order_contact_id"
 # A string   "title"
 # A string   "reference"
 # A text     "customer_needs"
-# A datetime "closed_at"
 # A date     "previsional_delivery"
 # A date     "quotation_deadline"
 # A integer  "delivery_time"
 # A datetime "created_at"
 # A datetime "updated_at"
+# A string   "status"
+# A date     "standby_on"
+# A date     "discarded_on"
+# A date     "completed_on"
 
 class Order < ActiveRecord::Base
+  STATUS_PENDING    = 'pending'
+  STATUS_STANDBY    = 'standby'
+  STATUS_DISCARDED  = 'discarded'
+  STATUS_COMPLETED  = 'completed'
+  
   has_permissions :as_business_object
   has_address     :bill_to_address
   has_contact     :order_contact, :accept_from => :customer_contacts, :required => true
   has_reference   :prefix => :sales
   
-  belongs_to :society_activity_sector
   belongs_to :order_type
   belongs_to :customer
   belongs_to :commercial, :class_name => 'Employee'
@@ -67,46 +72,69 @@ class Order < ActiveRecord::Base
   has_many :disabled_end_products,              :class_name => 'EndProduct',            :conditions => [ 'cancelled_at IS NOT NULL' ]
   has_many :disabled_orders_service_deliveries, :class_name => 'OrdersServiceDelivery', :conditions => [ 'cancelled_at IS NOT NULL' ]
   
+  named_scope :pending,   :conditions => [ "orders.status = ?", STATUS_PENDING ]
+  named_scope :standby,   :conditions => [ "orders.status = ?", STATUS_STANDBY ]
+  named_scope :discarded, :conditions => [ "orders.status = ?", STATUS_DISCARDED ]
+  named_scope :completed, :conditions => [ "orders.status = ?", STATUS_COMPLETED ]
+  named_scope :closed,    :conditions => [ "orders.status <> ?", STATUS_PENDING ]
+  
+  named_scope :in_commercial_step, :include => :commercial_step, :conditions => [ "commercial_steps.status IN (?)", ['pending', 'in_progress'] ]
+  named_scope :in_production_step, :include => :production_step, :conditions => [ "production_steps.status IN (?)", ['pending', 'in_progress'] ]
+  named_scope :in_delivering_step, :include => :delivering_step, :conditions => [ "delivering_steps.status IN (?)", ['pending', 'in_progress'] ]
+  #named_scope :in_pre_invoicing_step, :include => :invoicing_step, :conditions => [ "invoicing_steps.status IN (?) AND billable_amount > 0", ['pending', 'in_progress'] ]
+  named_scope :in_invoicing_step, :include => :invoicing_step, :conditions => [ "invoicing_steps.status IN (?)", ['pending', 'in_progress'] ]
+  
   validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
-  validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id
-  validates_presence_of :customer,                :if => :customer_id
-  validates_presence_of :society_activity_sector, :if => :society_activity_sector_id
-  validates_presence_of :commercial,              :if => :commercial_id
-  validates_presence_of :creator,                 :if => :user_id
-  validates_presence_of :approaching,             :if => :approaching_id
-  validates_presence_of :order_type_id,           :if => :society_activity_sector
-  validates_presence_of :order_type,              :if => :order_type_id
+  validates_presence_of :customer_id, :commercial_id, :user_id, :approaching_id, :order_type_id
+  validates_presence_of :customer,    :if => :customer_id
+  validates_presence_of :commercial,  :if => :commercial_id
+  validates_presence_of :creator,     :if => :user_id
+  validates_presence_of :approaching, :if => :approaching_id
+  validates_presence_of :order_type,  :if => :order_type_id
+  
+  validates_presence_of :standby_on,   :if => :standby?
+  validates_presence_of :discarded_on, :if => :discarded?
+  validates_presence_of :completed_on, :if => :completed?
+  
+  validates_inclusion_of :status, :in => [ STATUS_PENDING, STATUS_STANDBY, STATUS_DISCARDED, STATUS_COMPLETED ]
   
   validates_associated :customer, :ship_to_addresses, :end_products
   
   validate :validates_length_of_ship_to_addresses
-  validate :validates_order_type_validity
   #TODO validates_date :previsional_delivery (check if the date is correct, if it's after order creation date), etc. )
   
-  journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"}
+  journalize :attributes        => [ :status, :user_id, :commercial_id, :customer_id, :order_type_id, :approaching_id,
+                                     :order_contact_id, :title, :reference, :customer_needs, :previsional_delivery, :quotation_deadline],
+             :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"}
   
-  has_search_index :only_attributes       => [ :reference, :title, :customer_needs, :previsional_delivery ],
+  has_search_index :only_attributes       => [ :status, :reference, :title, :customer_needs, :previsional_delivery, :quotation_deadline,
+                                               :created_at, :standby_on, :discarded_on, :completed_on ],
                    :additional_attributes => { :brand_names => :string,
                                                :deposit_invoice_status => :string,
                                                :amount => :float,
                                                :ready_to_deliver_pieces => :integer,
                                                :delivered_pieces => :integer,
+                                               :billable_amount => :float,
                                                :billed_amount => :float,
                                                :unbilled_amount => :float,
                                                :paid_amount => :float,
-                                               :unpaid_amount => :float },
-                   :only_relationships    => [ :customer, :commercial, :order_type, :ship_to_addresses, :commercial_step, :production_step, :delivering_step, :invoicing_step, :signed_quote ]
+                                               :unpaid_amount => :float,
+                                               :status_since => :date },
+                   :only_relationships    => [ :customer, :commercial, :order_type, :ship_to_addresses, :approaching,
+                                               :commercial_step, :production_step, :delivering_step, :invoicing_step, :signed_quote ]
   
   before_validation_on_create :update_reference
+  before_validation_on_update :update_status_dates
   
   after_save    :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
   after_create  :create_steps
   
-  active_counter :counters  => { :in_progress_orders  => :integer, :in_progress_total => :float,
-                                 :commercial_orders   => :integer, :commercial_total  => :float,
-                                 :production_orders   => :integer, :production_total  => :float,
-                                 :delivery_orders     => :integer, :delivery_total    => :float,
-                                 :invoicing_orders    => :integer, :invoicing_total   => :float },
+  active_counter :counters  => { :in_progress_orders    => :integer, :in_progress_total   => :float,
+                                 :commercial_orders     => :integer, :commercial_total    => :float,
+                                 :production_orders     => :integer, :production_total    => :float,
+                                 :delivering_orders     => :integer, :delivering_total    => :float,
+                                 :pre_invoicing_orders  => :integer, :pre_invoicing_total => :float,
+                                 :invoicing_orders      => :integer, :invoicing_total     => :float },
                  :callbacks => { :in_progress_orders  => :after_save,
                                  :in_progress_total   => :after_save,
                                  :commercial_orders   => :after_save,
@@ -118,6 +146,43 @@ class Order < ActiveRecord::Base
   TODAY     = 'today'
   SOON      = 'soon'
   FAR       = 'far'
+  
+  def status
+    self[:status] ||= STATUS_PENDING
+  end
+  
+  def pending?
+    status == STATUS_PENDING
+  end
+  
+  def standby?
+    status == STATUS_STANDBY
+  end
+  
+  def discarded?
+    status == STATUS_DISCARDED
+  end
+  
+  def completed?
+    status == STATUS_COMPLETED
+  end
+  
+  def complete!
+    self.status = STATUS_COMPLETED
+    self.save
+  end
+  
+  def status_since #TODO use journalization to get dates
+    if pending?
+      created_at
+    elsif standby?
+      standby_on
+    elsif discarded?
+      discarded_on
+    elsif completed?
+      completed_on
+    end
+  end
   
   #TODO test this method
   def ready_to_deliver_end_products_and_quantities
@@ -161,12 +226,12 @@ class Order < ActiveRecord::Base
   end
   
   def all_is_delivered_or_scheduled?
-    return false if delivery_notes.actives.empty? or signed_quote.nil?
+    return false if signed_quote.nil? or delivery_notes.actives.empty?
     delivery_notes.actives.collect{ |dn| dn.number_of_delivered_pieces }.sum == signed_quote.number_of_pieces
   end
   
   def all_is_delivered?
-    return false if signed_delivery_notes.empty? or signed_quote.nil?
+    return false if signed_quote.nil? or signed_delivery_notes.empty?
     signed_delivery_notes.collect{ |dn| dn.number_of_delivered_pieces }.sum == signed_quote.number_of_pieces
   end
   
@@ -182,20 +247,24 @@ class Order < ActiveRecord::Base
     signed_delivery_notes.collect(&:number_of_pieces).sum 
   end
   
-  def deposit_invoice
-    invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::DEPOSITE_INVOICE ])
+  def deposit_invoice(force_reload = false)
+    @deposit_invoice = nil if force_reload
+    @deposit_invoice ||= invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::DEPOSITE_INVOICE ])
   end
   
-  def status_invoices
-    invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::STATUS_INVOICE ])
+  def status_invoices(force_reload = false)
+    @status_invoices = nil if force_reload
+    @status_invoices ||= invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::STATUS_INVOICE ])
   end
   
-  def balance_invoice
-    invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::BALANCE_INVOICE ])
+  def balance_invoice(force_reload = false)
+    @balance_invoice = nil if force_reload
+    @balance_invoice ||= invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::BALANCE_INVOICE ])
   end
   
-  def asset_invoices
-    invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
+  def asset_invoices(force_reload = false)
+    @asset_invoices = nil if force_reload
+    @asset_invoices ||= invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
   end
   
   def signed_amount
@@ -203,23 +272,51 @@ class Order < ActiveRecord::Base
   end
   
   #TODO test this method
-  def paid_amount
-    invoices.paid.collect(&:already_paid_amount).sum
+  def billable_amount(force_reload = false)
+    @billable_amount = nil if force_reload
+    if @billable_amount.nil?
+      @billable_amount = 0
+      @billable_amount += delivery_notes_without_confirmed_invoice.collect(&:total_with_taxes).sum
+      if deposit_required? and ( deposit_invoice.nil? or deposit_invoice.confirmed_at_was.nil? )
+        @billable_amount += signed_amount * signed_quote.deposit / 100
+      elsif deposit_invoice and deposit_invoice.confirmed_at_was
+        @billable_amount -= deposit_invoice.total_with_taxes
+      end
+      #@billable_amount = signed_amount if @billable_amount > signed_amount
+    end
+    @billable_amount
   end
   
   #TODO test this method
-  def unpaid_amount
-    signed_quote && ( signed_quote.total_with_taxes - paid_amount )
+  def billed_amount(force_reload = false)
+    @billed_amount = nil if force_reload
+    @billed_amount ||= invoices(force_reload).billed.collect(&:net_to_paid).sum
   end
   
   #TODO test this method
-  def billed_amount
-    invoices.billed.collect(&:net_to_paid).sum
+  def unbilled_amount(force_reload = false)
+    if force_reload
+      @unbilled_amount = nil
+      @billed_amount = nil
+    end
+    @unbilled_amount ||= ( signed_quote(force_reload) && ( signed_quote.total_with_taxes - billed_amount ) )
   end
   
   #TODO test this method
-  def unbilled_amount
-    signed_quote && ( signed_quote.total_with_taxes - billed_amount )
+  def paid_amount(force_reload = false)
+    @paid_amount = nil if force_reload
+    @paid_amount ||= invoices(force_reload).paid.collect(&:already_paid_amount).sum
+  end
+  
+  #TODO test this method
+  def unpaid_amount(force_reload = false)
+    if force_reload
+      @unpaid_amount = nil
+      @billed_amount = nil
+      @paid_amount = nil
+    end
+    #@unpaid_amount ||= ( billed_amount.to_f.round_to(2) - paid_amount.to_f.round_to(2) ) # without 'round_to', the 2 values can be different with very very small variation (eg: 7.27595761418343e-12)
+    @unpaid_amount ||= ( billed_amount - paid_amount )
   end
   
   def build_delivery_note_with_remaining_end_products_to_deliver
@@ -343,14 +440,6 @@ class Order < ActiveRecord::Base
     missing_elements
   end
   
-  def terminated?
-    return false unless closed_at?
-    children_steps.each do |child|
-      return false unless child.terminated?
-    end
-    true
-  end
-  
   def critical_status
     return unless previsional_delivery
     delay = (Date.today - previsional_delivery.to_date).to_i
@@ -463,45 +552,55 @@ class Order < ActiveRecord::Base
     signed_quote && signed_quote.deposit > 0
   end
   
-  def in_progress_orders_counter # @override (active_counter)
-    (CommercialStep.orders + ProductionStep.orders + InvoicingStep.orders).count
-  end
+  class << self
+    def in_progress_orders_counter # @override (active_counter)
+      Order.pending.count
+    end
     
-  def commercial_orders_counter # @override (active_counter)
-    CommercialStep.orders.count
-  end
-  
-  def production_orders_counter # @override (active_counter)
-    ProductionStep.orders.count
-  end
-  
-  def delivery_orders_counter # @override (active_counter)
-    DeliveryStep.orders.count
-  end
-  
-  def invoicing_orders_counter # @override (active_counter)
-    InvoicingStep.orders.count
-  end
-  
-  def in_progress_total_counter # @override (active_counter)
-    (CommercialStep.orders + ProductionStep.orders + InvoicingStep.orders).collect{ |order| order.signed_amount }.compact.sum
-  end
-  
-  def commercial_total_counter # @override (active_counter)
-    #TODO get also orders with unsigned orders (instead of getting only signed ones)
-    CommercialStep.orders.collect{ |order| order.signed_amount }.compact.sum
-  end
-  
-  def production_total_counter # @override (active_counter)
-    ProductionStep.orders.collect{ |order| order.signed_amount }.compact.sum
-  end
-  
-  def delivery_total_counter # @override (active_counter)
-    DeliveryStep.orders.collect{ |order| order.signed_amount }.compact.sum
-  end
-  
-  def invoicing_total_counter # @override (active_counter)
-    InvoicingStep.orders.collect{ |order| order.signed_amount }.compact.sum
+    def commercial_orders_counter # @override (active_counter)
+      Order.pending.in_commercial_step.count
+    end
+    
+    def production_orders_counter # @override (active_counter)
+      Order.pending.in_production_step.count
+    end
+    
+    def delivering_orders_counter # @override (active_counter)
+      Order.pending.in_delivering_step.count
+    end
+    
+    def pre_invoicing_orders_counter # @override (active_counter)
+      Order.search_with('status' => {:value => 'pending', :action => '='}, 'invoicing_step.status' => {:value => 'pending,in_progress', :action => '='}, 'billable_amount' => {:value => '0', :action => '>'}).count
+    end
+    
+    def invoicing_orders_counter # @override (active_counter)
+      Order.search_with('status' => {:value => 'pending', :action => '='}, 'invoicing_step.status' => {:value => 'pending,in_progress', :action => '='}, 'billed_amount' => {:value => '0', :action => '>'}, 'unpaid_amount' => {:value => '0', :action => '>'}).count
+    end
+    
+    def in_progress_total_counter # @override (active_counter)
+      Order.pending.collect(&:signed_amount).compact.sum
+    end
+    
+    def commercial_total_counter # @override (active_counter)
+      #TODO get also orders with unsigned orders (instead of getting only signed ones)
+      Order.pending.in_commercial_step.collect(&:signed_amount).compact.sum
+    end
+    
+    def production_total_counter # @override (active_counter)
+      Order.pending.in_production_step.collect(&:signed_amount).compact.sum
+    end
+    
+    def delivering_total_counter # @override (active_counter)
+      Order.pending.in_delivering_step.collect(&:signed_amount).compact.sum
+    end
+    
+    def pre_invoicing_total_counter # @override (active_counter)
+      Order.search_with('status' => {:value => 'pending', :action => '='}, 'invoicing_step.status' => {:value => 'pending,in_progress', :action => '='}, 'billable_amount' => {:value => '0', :action => '>'}).collect(&:billable_amount).compact.sum
+    end
+    
+    def invoicing_total_counter # @override (active_counter)
+      Order.search_with('status' => {:value => 'pending', :action => '='}, 'invoicing_step.status' => {:value => 'pending,in_progress', :action => '='}, 'billed_amount' => {:value => '0', :action => '>'}, 'unpaid_amount' => {:value => '0', :action => '>'}).collect(&:unpaid_amount).compact.sum
+    end
   end
   
   private
@@ -510,12 +609,6 @@ class Order < ActiveRecord::Base
 #    end
     
     # Create all orders_steps after create order
-    def validates_order_type_validity
-      if order_type and society_activity_sector
-        errors.add(:order_type_id, I18n.t('activerecord.errors.messages.inclusion')) unless society_activity_sector.order_types.include?(order_type)
-      end
-    end
-    
     def create_steps
       steps.each do |step|
         if step.parent.nil?
@@ -541,6 +634,18 @@ class Order < ActiveRecord::Base
     
     def activate_first_step
       first_level_steps.first.pending!
+    end
+    
+    def update_status_dates
+      if changes["status"]
+        if standby?
+          self.standby_on = Time.zone.now
+        elsif discarded?
+          self.discarded_on = Time.zone.now
+        elsif completed?
+          self.completed_on = Time.zone.now
+        end
+      end
     end
     
     # that method permits to bound the new contact with the customer of the order.

@@ -1,59 +1,11 @@
-<%
-#TODO this view may be used for delivery_orders
-%>
-
 <% content_for :header do %>
   <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
 <% end %>
 
 <%= generate_shared_contextual_menu_partial %>
 
-<h1>Les dossiers en SAS de Facturation</h1>
+<h1><%= title_for_search %></h1>
 
 <div>
-  <% if @orders.empty? %>
-    <p>Aucun dossier actuellement en SAS de Facturation</p>
-  <% else %>
-    <div class="autoscroll">
-      <table class="order_list" id="orders">
-        <thead>
-          <tr>
-            <th>N° Dossier</th>
-            <th>Type dossier</th>
-            <th>Date de Cr&eacute;ation</th>
-            <th>Nom projet</th>
-            <th>Commercial</th>
-            <th>Raison sociale</th>
-            <th>Ville(s) d'intervention</th>
-            <th>R&eacute;f. devis</th>
-            <th>Montant TTC</th>
-            <th>Nombre d'interventions</th>
-            <th>Quantit&eacute; produit livr&eacute;s / total devis</th>
-            <th>Date prév. de livraison</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% for order in @orders %>
-            <tr class="<%= order.critical_status %>">
-              <td><%= link_to(order.reference, order_invoicing_step_path(order), :title => "Voir ce dossier") %></td>
-              <td><%= order.order_type.title %></td>
-              <td><%= l(order.created_at, :format => :short) %></td>
-              <td><%= link_to(order.title, order, :title => "Voir ce dossier") %></td>
-              <td><%= link_to(order.commercial.fullname, order.commercial, :title => "Voir fiche employé") %></td>
-              <td><%= link_to("#{order.customer.name}", order.customer, :title => "Voir fiche client") %></td>
-              <td><%= display_intervention_cities_for(order) %></td>
-              <td><%= link_to(order.signed_quote.reference, order_commercial_step_quote_step_quote_path(order, order.signed_quote), :title => "Voir ce devis") %></td>
-              <td><%= order.signed_quote.total_with_taxes.to_f.round_to(2).to_s(2) + " &euro;" %></td>
-              <td><%= order.delivery_notes.collect{|n| n.delivery_interventions.collect(&:delivered?).count}.sum %></td>
-              <td><%= order.delivery_notes.collect(&:number_of_delivered_pieces).sum.to_i.to_s + " / " + order.signed_quote.number_of_pieces.to_i.to_s %></td>
-              
-              <td><%= l(order.previsional_delivery, :format => :short) %></td>
-              <td><%= order_link(order, :link_text => "") %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% end %>
+  <%= table_for_search %>
 </div>

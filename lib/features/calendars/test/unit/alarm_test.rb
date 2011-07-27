@@ -1,77 +1,20 @@
 require File.dirname(__FILE__) + '/../calendars_test'
 
 class AlarmTest < ActiveSupport::TestCase
+  should_belong_to :event
+
+  should_validate_presence_of :description, :email_to
+  should_validate_numericality_of :do_alarm_before, :duration
+  
+  should_allow_values_for :email_to, "foo@bar.com"
+  should_not_allow_values_for :email_to, "", "something", "foo@", "@bar.com", "foo@bar.", "foo@bar.c", "foo@bar.abcdef"
+  
   def setup
     @alarm = Alarm.new
     @alarm.valid?
   end
   
-  def teardown
-    @alarm = nil
-  end
-  
-  def test_presence_of_event
-    assert @alarm.errors.invalid?(:event), "event should NOT be valid because it's nil"
-    
-    @alarm.event = events(:two_hours_ago)
-    @alarm.valid?
-    assert !@alarm.errors.invalid?(:event), "event should be valid"
-  end
-
-  def test_belongs_to_event
-    assert_equal alarms(:normal_alarm).event, events(:two_hours_ago),
-      "This Alarm should belongs to this Event"
-  end
-  
-  def test_presence_of_description
-    assert @alarm.errors.invalid?(:description), "description should NOT be valid because it's nil"
-    
-    @alarm.description = 'a comment'
-    @alarm.valid?
-    assert !@alarm.errors.invalid?(:description), "description should be valid"
-  end
-  
-  def test_presence_of_email_to
-    assert @alarm.errors.invalid?(:email_to), "email_to should NOT be valid because it's nil"
-    
-    @alarm.email_to = 'good.email@home.com'
-    @alarm.valid?
-    assert !@alarm.errors.invalid?(:email_to), "email_to should be valid"
-  end
-  
-  def test_numericality_of_do_alarm_before
-    assert @alarm.errors.invalid?(:do_alarm_before), "do_alarm_before should NOT be valid because it's nil"
-    
-    @alarm.do_alarm_before = "string"
-    @alarm.valid?
-    assert @alarm.errors.invalid?(:do_alarm_before), "do_alarm_before should NOT be valid because it's not a numerical value"
-    
-    @alarm.do_alarm_before = 12
-    @alarm.valid?
-    assert !@alarm.errors.invalid?(:do_alarm_before), "do_alarm_before should be valid"
-  end
-  
-  def test_numericality_of_duration
-    assert !@alarm.errors.invalid?(:duration), "duration should be valid because nil is allowed"
-    
-    @alarm.duration = "string"
-    @alarm.valid?
-    assert @alarm.errors.invalid?(:duration), "duration should NOT be valid because it's not a numerical value"
-    
-    @alarm.duration = 12
-    @alarm.valid?
-    assert !@alarm.errors.invalid?(:duration), "duration should be valid"
-  end
-  
-  def test_format_of_email_to # /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
-    @alarm.email_to = 'bad@email@home..com'
-    @alarm.valid?
-    assert @alarm.errors.invalid?(:email_to), "email_to should not be valid because it don't match the regexp"
-    
-    @alarm.email_to = 'good.email@home.com'
-    @alarm.valid?
-    assert !@alarm.errors.invalid?(:email_to), "email_to should be valid"
-  end
+  subject{ @alarm }
   
   def test_humanize_delay
     alarm = alarms(:normal_alarm)

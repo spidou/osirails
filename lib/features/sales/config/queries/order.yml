@@ -20,6 +20,7 @@ in_progress_order_index:
     - brand_names
     - commercial.id
     - amount
+    - status
   columns:
     - reference
     - order_type.title
@@ -60,6 +61,11 @@ in_progress_order_index:
   <<: *pagination
   <<: *quick_search
   default_query:
+    criteria:
+      status:
+        action: '='
+        value: 'pending'
+    search_type: and
     columns:
       - reference
       - title
@@ -89,6 +95,7 @@ commercial_order_index:
     - commercial_name: commercial.fullname
     - amount
     - commercial_step_status: commercial_step.status
+    - status
   columns:
     - reference
     - order_type.title
@@ -122,9 +129,12 @@ commercial_order_index:
   <<: *quick_search
   default_query:
     criteria:
-      commercial_step.status:
+      status:
         action: '='
         value: 'pending'
+      commercial_step.status:
+        action: '='
+        value: 'pending,in_progress'
     search_type: and
     columns:
       - reference
@@ -152,6 +162,7 @@ production_order_index:
     - commercial_name: commercial.fullname
     - amount
     - production_step_status: production_step.status
+    - status
   columns:
     - reference
     - order_type.title
@@ -188,9 +199,12 @@ production_order_index:
   <<: *quick_search
   default_query:
     criteria:
-      production_step.status: 
+      status:
         action: '='
         value: 'pending'
+      production_step.status: 
+        action: '='
+        value: 'pending,in_progress'
     search_type: and
     columns:
       - reference
@@ -211,6 +225,142 @@ production_order_index:
       - "previsional_delivery"
     per_page: 25
 
+delivering_order_index:
+  filters:
+    - reference
+    - order_type.id
+    - title
+    - customer_name: customer.name
+    - brand_names
+    - commercial_name: commercial.fullname
+    - amount
+    - delivering_step_status: delivering_step.status
+    - status
+  columns:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - brand_names
+    - commercial.fullname
+    - amount
+    - production_step.manufacturing_step.status
+    - production_step.manufacturing_step.number_of_built_pieces
+    - production_step.manufacturing_step.number_of_available_to_deliver_pieces
+    - delivered_pieces
+    - previsional_delivery
+  group:
+    - customer.name
+    - commercial.fullname
+    - order_type.title
+  order:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - commercial.fullname
+    - amount
+    - production_step.manufacturing_step.status
+    - previsional_delivery
+  <<: *pagination
+  <<: *quick_search
+  default_query:
+    criteria:
+      status:
+        action: '='
+        value: 'pending'
+      delivering_step.status: 
+        action: '='
+        value: 'pending,in_progress'
+    search_type: and
+    columns:
+      - reference
+      - title
+      - customer.name
+      - brand_names
+      - commercial.fullname
+      - amount
+      - production_step.manufacturing_step.status
+      - production_step.manufacturing_step.number_of_built_pieces
+      - production_step.manufacturing_step.number_of_available_to_deliver_pieces
+      - delivered_pieces
+      - previsional_delivery
+    order:
+    per_page: 25
+
+pre_invoicing_order_index:
+  filters:
+    - reference
+    - order_type.id
+    - title
+    - customer_name: customer.name
+    - brand_names
+    - commercial_name: commercial.fullname
+    - amount
+    - billable_amount
+    - invoicing_step_status: invoicing_step.status
+    - status
+  columns:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - brand_names
+    - commercial.fullname
+    - amount
+    - deposit_invoice_status
+    - production_step.manufacturing_step.status
+    - delivering_step.delivery_step.status
+    - billable_amount
+    - billed_amount
+    - unbilled_amount
+  group:
+    - customer.name
+    - commercial.fullname
+    - order_type.title
+  order:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - commercial.fullname
+    - amount
+    - deposit_invoice_status
+    - production_step.manufacturing_step.status
+    - delivering_step.delivery_step.status
+    - billable_amount
+    - billed_amount
+    - unbilled_amount
+  <<: *pagination
+  <<: *quick_search
+  default_query:
+    criteria:
+      status:
+        action: '='
+        value: 'pending'
+      invoicing_step.status: 
+        action: '='
+        value: 'pending,in_progress'
+      billable_amount:
+        action: '>'
+        value: 0
+    search_type: and
+    columns:
+      - reference
+      - title
+      - customer.name
+      - brand_names
+      - commercial.fullname
+      - amount
+      - deposit_invoice_status
+      - production_step.manufacturing_step.status
+      - delivering_step.delivery_step.status
+      - billable_amount
+      - billed_amount
+      - unbilled_amount
+    order:
+    per_page: 25
+
 invoicing_order_index:
   filters:
     - reference
@@ -220,7 +370,10 @@ invoicing_order_index:
     - brand_names
     - commercial_name: commercial.fullname
     - amount
+    - billed_amount
+    - unpaid_amount
     - invoicing_step_status: invoicing_step.status
+    - status
   columns:
     - reference
     - order_type.title
@@ -230,6 +383,10 @@ invoicing_order_index:
     - commercial.fullname
     - amount
     - signed_quote.status
+    - deposit_invoice_status
+    - production_step.manufacturing_step.status
+    - delivering_step.delivery_step.status
+    - billable_amount
     - billed_amount
     - unbilled_amount
     - paid_amount
@@ -246,6 +403,10 @@ invoicing_order_index:
     - commercial.fullname
     - amount
     - signed_quote.status
+    - deposit_invoice_status
+    - production_step.manufacturing_step.status
+    - delivering_step.delivery_step.status
+    - billable_amount
     - billed_amount
     - unbilled_amount
     - paid_amount
@@ -254,9 +415,18 @@ invoicing_order_index:
   <<: *quick_search
   default_query:
     criteria:
-      invoicing_step.status: 
+      status:
         action: '='
         value: 'pending'
+      invoicing_step.status: 
+        action: '='
+        value: 'pending,in_progress'
+      billed_amount:
+        action: '>'
+        value: 0
+      unpaid_amount:
+        action: '>'
+        value: 1 # unpaid_amount may return very small values instead of 0
     search_type: and
     columns:
       - reference
@@ -266,9 +436,78 @@ invoicing_order_index:
       - commercial.fullname
       - amount
       - signed_quote.status
+      - deposit_invoice_status
       - billed_amount
       - unbilled_amount
       - paid_amount
       - unpaid_amount
     order:
+    per_page: 25
+
+closed_order_index:
+  filters:
+    - reference
+    - order_type.id
+    - title
+    - customer_name: customer.name
+    - brand_names
+    - commercial_name: commercial.fullname
+    - amount
+    - status
+  columns:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - brand_names
+    - commercial.fullname
+    - amount
+    - signed_quote.status
+    - production_step.manufacturing_step.status
+    - delivering_step.delivery_step.status
+    - invoicing_step.invoice_step.status
+    - status
+    - status_since
+  group:
+    - customer.name
+    - commercial.fullname
+    - order_type.title
+    - status
+  order:
+    - reference
+    - order_type.title
+    - title
+    - customer.name
+    - commercial.fullname
+    - amount
+    - signed_quote.status
+    - production_step.manufacturing_step.status
+    - delivering_step.delivery_step.status
+    - invoicing_step.invoice_step.status
+    - status
+    - status_since
+  <<: *pagination
+  <<: *quick_search
+  default_query:
+    criteria:
+      status:
+        action: '!='
+        value: 'pending'
+    search_type: and
+    columns:
+      - reference
+      - order_type.title
+      - title
+      - customer.name
+      - brand_names
+      - commercial.fullname
+      - amount
+      - signed_quote.status
+      - production_step.manufacturing_step.status
+      - delivering_step.delivery_step.status
+      - invoicing_step.invoice_step.status
+      - status
+      - status_since
+    order:
+      - "status_since:Desc"
     per_page: 25

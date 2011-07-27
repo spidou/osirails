@@ -25,17 +25,12 @@ class Test::Unit::TestCase
     
     customer = get_customer(factorised_customer)
     
-    ## prepare society_activity_sector
-    society_activity_sector = society_activity_sectors(:fabrication)
-    society_activity_sector.order_types << OrderType.all
-    
     order = Order.new(:title => "Titre", :customer_needs => "Customer Needs", :previsional_delivery => Time.now + 10.days)
     order.commercial = employees(:john_doe)
     order.creator = users(:sales_user)
     order.customer = customer
     order.order_contact_id = customer.contacts.first.id
-    order.society_activity_sector = society_activity_sector
-    order.order_type = society_activity_sector.order_types.first
+    order.order_type = OrderType.first
     order.build_bill_to_address(order.customer.bill_to_address.attributes)
     order.build_ship_to_address(order.customer.establishments.first)
     order.approaching = approachings(:email)

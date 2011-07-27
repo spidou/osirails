@@ -6,7 +6,7 @@
   <p><span class="quote_reference"><%= link_to(signed_quote.reference, order_commercial_step_quote_step_quote_path(order, signed_quote), :title => "Voir la fiche du devis") %></span></p>
   <p><span class="net_to_paid"><%= signed_quote.net_to_paid.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></p>
 <% else %>
-  <p><span class="unsigned_quote">Devis</span><p>
+  <p><span class="unsigned_quote">Devis non signé</span><p>
   <% if quote = (order.draft_quote || order.pending_quote) %>
     <p><%= quote.net_to_paid.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</p>
   <% else %>

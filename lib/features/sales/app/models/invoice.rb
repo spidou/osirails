@@ -364,10 +364,20 @@ class Invoice < ActiveRecord::Base
   after_save :save_due_date_to_pay
   after_save :save_delivery_note_invoices
   
+  after_update :update_invoice_step_status
+  after_update :update_payment_step_status
+  
   before_destroy :can_be_deleted?
   
   has_search_index :only_attributes    => [ :reference, :status, :published_on, :sended_on, :abandoned_on, :factoring_recovered_on, :factoring_balance_paid_on ],
                    :only_relationships => [ :factor, :invoice_type ]#,:order] #TODO add :order to relationships list when bug #60 will be resolved.
+  
+  active_counter :model => 'Order', :callbacks => { :pre_invoicing_orders => :after_save,
+                                                    :pre_invoicing_total  => :after_save,
+                                                    :invoicing_orders     => :after_save,
+                                                    :invoicing_total      => :after_save,
+                                                    :in_progress_orders   => :after_save,
+                                                    :in_progress_total    => :after_save }
   
   active_counter :counters  => { :awaiting_sending_invoices => :integer,
                                  :awaiting_sending_total    => :float,
@@ -1235,23 +1245,39 @@ class Invoice < ActiveRecord::Base
     message_for_validates_date("factoring_balance_paid_on", "on_or_after", "while_factoring_recovered", self.factoring_recovered_on)
   end
   
-  def awaiting_sending_invoices_counter # @override (active_counter)
-    Invoice.awaiting_sending.count
-  end
-  
-  def awaiting_sending_total_counter # @override (active_counter)
-    Invoice.awaiting_sending.collect(&:total_with_taxes).compact.sum
-  end
-  
-  def awaiting_payment_invoices_counter # @override (active_counter)
-    Invoice.awaiting_payment.count
-  end
-  
-  def awaiting_payment_total_counter # @override (active_counter)
-    Invoice.awaiting_payment.collect(&:total_with_taxes).compact.sum
+  class << self
+    def awaiting_sending_invoices_counter # @override (active_counter)
+      Invoice.awaiting_sending.count
+    end
+    
+    def awaiting_sending_total_counter # @override (active_counter)
+      Invoice.awaiting_sending.collect(&:total_with_taxes).compact.sum
+    end
+    
+    def awaiting_payment_invoices_counter # @override (active_counter)
+      Invoice.awaiting_payment.count
+    end
+    
+    def awaiting_payment_total_counter # @override (active_counter)
+      Invoice.awaiting_payment.collect(&:total_with_taxes).compact.sum
+    end
   end
   
   private
+    def update_invoice_step_status
+      # if was_totally_paid? and order.unpaid_amount <= 0
+      if totally_paid? and !was_totally_paid? and (order.unpaid_amount - already_paid_amount) < 1 # we put '<1' instead of '<=0' because sometimes, difference between the 2 values is very small and condition is false
+        order.invoicing_step.invoice_step.terminated!
+        order.invoicing_step.payment_step.terminated!
+        
+        order.complete!
+      end
+    end
+    
+    def update_payment_step_status
+      #TODO split invoice_step on invoice_step + payment_step
+    end
+    
     def message_for_validates_date(attribute, error_type, context, restriction)
       I18n.t("activerecord.errors.models.invoice.attributes.#{attribute}.#{error_type}.#{context}", :restriction => restriction)
     end

@@ -131,20 +131,22 @@ fr:
         vat: "TVA"
         pro_rata_billing: "Facturation au temps passé"
       order:
+        approaching: "Type d'approche"
         commercial: "Commercial"
+        completed_on: "Terminé le"
         created_at: "Date de création"
-        reference: "N° dossier"
-        title: "Nom du projet"
         customer: "Client"
         customer_needs: "Besoins du client"
-        society_activity_sector: "Secteur d'activité"
         order_type: "Type de dossier"
-        ship_to_address: "Adresse de livraison"
-        ship_to_addresses: "Adresse(s) de livraison"
-        approaching: "Type d'approche"
-        created_at: "Date de création"
         previsional_delivery: "Date prévisionnelle de livraison"
         quotation_deadline: "Date butoir d'envoi du devis"
+        reference: "N° dossier"
+        ship_to_address: "Adresse de livraison"
+        ship_to_addresses: "Adresse(s) de livraison"
+        standby_on: "En attente depuis le"
+        status: "État du dossier"
+        status_since: "Depuis le"
+        title: "Nom du projet"
       order_type:
         title: "Type de dossier"
       payment:
@@ -374,6 +376,7 @@ fr:
     attributes:
       order:
         amount: "Montant"
+        billable_amount: "Montant facturable"
         billed_amount: "Déjà facturé"
         brand_names: "Enseigne(s)"
         commercial:
@@ -393,6 +396,7 @@ fr:
         delivering_step:
           delivery_step:
             status: "Livraison"
+        delivering_step_status: "État de la livraison"
         deposit_invoice_status: "Acompte"
         invoicing_step:
           invoice_step:
@@ -406,14 +410,15 @@ fr:
           manufacturing_step:
             global_progression: "Avancement production"
             manufacturing_started_on: "Mise en production le"
-            number_of_built_pieces: "Qté produits terminés / total devis"
+            number_of_available_to_deliver_pieces: "Qté produits livrables"
+            number_of_built_pieces: "Qté produits terminés"
             status: "Fabrication"
         production_step_status: "État de la production"
         ready_to_deliver_pieces: "Qté produits livrables"
         signed_quote:
           status: "Devis"
         unbilled_amount: "Restant à facturer"
-        unpaid_amount: "Restant à régler"
+        unpaid_amount: "En attente de réglement"
       product_reference:
         reference: "Réf."
         designation: "Désignation"
@@ -436,9 +441,12 @@ fr:
         fax_number: "Fax"
     page_names:
       order:
+        closed_order_index: "Les dossiers clôturés"
         commercial_order_index: "Les dossiers en Étude Commerciale"
+        delivering_order_index: "Les dossiers en Livraison"
         in_progress_order_index: "Les dossiers en cours"
         invoicing_order_index: "Les dossiers en Facturation"
+        pre_invoicing_order_index: "Les dossiers en SAS de Facturation"
         production_order_index: "Les dossiers en Production"
       product_reference:
         advanced_product_reference: "Tous les produits références"
@@ -464,6 +472,7 @@ fr:
       press_proof_step: "BAT"
       production_step: "Production"
       manufacturing_step: "Fabrication"
+      delivering_step: "Livraison"
       delivery_step: "Livraison"
       invoicing_step: "Facturation"
       invoice_step: "Factures"
@@ -473,16 +482,20 @@ fr:
       invoice: "Facture"
     order:
       statuses:
-        unstarted: "Non commencé"
-        pending: "En attente"
-        in_progress: "En cours"
-        terminated: "Terminé"
+        pending: "En cours"
+        standby: "Stand-by"
+        discarded: "Abandonné"
+        completed: "Terminé"
     quote:
       statuses:
         confirmed: "Validé"
         cancelled: "Annulé"
         sended: "Envoyé"
         signed: "Signé"
+    quotes:
+      zero: "0 devis"
+      one: "1 devis"
+      other: "{{count}} devis"
     service_delivery:
       rates:
         hourly: "en heures"
@@ -495,6 +508,12 @@ fr:
       statuses:
         signed: "Signé"
         unsigned: "Non signé"
+    step:
+      statuses:
+        unstarted: "N/C" # Non Commencé
+        pending: "En attente"
+        in_progress: "En cours"
+        terminated: "Terminé"
     steps:
       commercial: "Commercial"
       delivering: "Livraison"

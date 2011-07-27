@@ -1,11 +1,11 @@
 <h3>Statistiques</h3>
 <p>
   <label>Nombre de ventes :</label>
-  <strong><%= "#{@order.customer.terminated_orders.size} / #{@order.customer.orders.size}" %></strong> <span class="help_text">(terminées&nbsp;/&nbsp;total)</span>
+  <strong><%= "#{@order.customer.orders.closed.count} / #{@order.customer.orders.count}" %></strong> <span class="help_text">(terminées&nbsp;/&nbsp;total)</span>
 </p>
 <p>
   <label>Client depuis le :</label>
-  <strong><%= @order.customer.created_at.to_date.humanize %></strong>
+  <strong><%= l(@order.customer.collaboration_started_at.to_date, :format => :long) %></strong>
 </p>
 <p>
   <label>Note :</label>

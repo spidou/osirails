@@ -3,8 +3,6 @@
 steps = order.first_level_steps
 %>
 
-<p>Dossier créé le <%= strong l(order.created_at.to_date, :format => :long) %><% " | Dossier fermé le " + strong(l(order.closed_at.to_date)) if order.closed_at %></p>
-
 <div class="autoscroll">
   <table class="order_progress no_nth">
     <thead>
@@ -26,7 +24,7 @@ steps = order.first_level_steps
                 <li class="<%= child_step.status %>">
                   <%= link_to t("view.steps.#{child_step_name}"), send("order_#{step.class.name.underscore}_#{child_step.class.name.underscore}_path", order) %>
                   <div class="dates">
-                    <span class="period">État actuel</span> : <span class="date"><%= t("view.order.statuses.#{child_step.status}") %></span><br/>
+                    <span class="period">État actuel</span> : <span class="date"><%= t("view.step.statuses.#{child_step.status}") %></span><br/>
                     <% if child_step.started_at %><span class="period">Début</span> : <span class="date"><%= l(child_step.started_at.to_date, :format => :long) %></span><br/><% end %>
                     <% if child_step.finished_at %><span class="period">Fin</span> : <span class="date"><%= l(child_step.finished_at.to_date, :format => :long) %></span><% end %>
                   </div>

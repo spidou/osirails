@@ -15,4 +15,8 @@ class Third < ActiveRecord::Base
   def website_url
     @website_url ||= "http://#{website}" unless website.blank?
   end
+  
+  def collaboration_started_at
+    self[:collaboration_started_at] || created_at
+  end
 end

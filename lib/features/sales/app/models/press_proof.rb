@@ -304,8 +304,10 @@ class PressProof < ActiveRecord::Base
     return result.collect(&:current_version)
   end
   
-  def pending_press_proofs_counter # @override (active_counter)
-    PressProof.pending.count
+  class << self
+    def pending_press_proofs_counter # @override (active_counter)
+      PressProof.pending.count
+    end
   end
   
   private

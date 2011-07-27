@@ -69,22 +69,26 @@ class OrdersController < ApplicationController
   
   # GET /orders/:id/edit
   def edit
+    error_access_page(412) if @order.completed?
   end
   
   # PUT /orders/:id
   def update
-    if @order.update_attributes(params[:order])
-      flash[:notice] = "Dossier modifié avec succés"
-      redirect_to order_informations_path(@order)
+    unless @order.completed?
+      if @order.update_attributes(params[:order])
+        flash[:notice] = "Dossier modifié avec succés"
+        redirect_to order_informations_path(@order)
+      else
+        render :action => 'edit'
+      end
     else
-      render :action => 'edit'
+      error_access_page(412)
     end
   end
   
   private
     def load_collections
       @commercials = Employee.all
-      @society_activity_sectors = SocietyActivitySector.all
       @order_types = OrderType.all
     end
     

@@ -14,10 +14,11 @@
     <p>
       <%= form.label :title %>
       <%= form.form_or_view(form.text_field(:title), :title) %>
-    </p>
-    <p>
-      <%= form.label :society_activity_sector_id %>
-      <%= order.new_record? ? form.collection_select(:society_activity_sector_id, @society_activity_sectors, :id, :name, :include_blank => true) : strong(order.society_activity_sector.name) %>
+      
+      <% unless order.new_record? %>
+        <%= form.label :status %>
+        <%= form.select :status, %w(pending standby discarded).collect{ |s| [t("view.order.statuses.#{s}", :default => s), s] } %>
+      <% end %>
     </p>
     <p>
       <%= form.label :order_type_id %>
@@ -27,7 +28,7 @@
       <%= form.label :commercial_id %>
       <%= form.form_or_view(form.collection_select(:commercial_id, @commercials, :id, :fullname, :include_blank => order.new_record?), :commercial, :fullname) %>
     </p>
-
+    
     <h3>Client</h3>
     <p>
       <%= form.label :order_contact %>

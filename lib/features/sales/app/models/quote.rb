@@ -174,8 +174,10 @@ class Quote < ActiveRecord::Base
   has_search_index :only_attributes     => [ :reference, :status ],
                    :only_relationships  => [ :commercial_actor ]
   
-  active_counter :model => 'Order', :callbacks => { :in_progress_total  => :after_save,
-                                                    :commercial_total   => :after_save }
+  active_counter :model => 'Order', :callbacks => { :in_progress_total    => :after_save,
+                                                    :commercial_total     => :after_save,
+                                                    :pre_invoicing_orders => :after_save,
+                                                    :pre_invoicing_total  => :after_save }
   
   active_counter :counters  => { :pending_quotes  => :integer,
                                  :pending_total   => :float },
@@ -539,17 +541,25 @@ class Quote < ActiveRecord::Base
     return HIGH_PRIORITY   if now >= expiration_date
   end
   
-  def pending_quotes_counter # @override (active_counter)
-    Quote.pending.count
-  end
-  
-  def pending_total_counter # @override (active_counter)
-    Quote.pending.collect(&:total_with_taxes).compact.sum
+  class << self
+    def pending_quotes_counter # @override (active_counter)
+      Quote.pending.count
+    end
+    
+    def pending_total_counter # @override (active_counter)
+      Quote.pending.collect(&:total_with_taxes).compact.sum
+    end
   end
   
   private
     def update_quote_step_status
-      order.commercial_step.quote_step.terminated! if signed?
+      if signed?
+        order.commercial_step.quote_step.terminated!
+        if deposit > 0
+          order.invoicing_step.pending!
+          order.invoicing_step.invoice_step.pending!
+        end
+      end
     end
     
     def build_or_update_quote_item(quote_item_attributes)

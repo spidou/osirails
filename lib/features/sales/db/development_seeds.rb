@@ -4,11 +4,6 @@ require 'lib/seed_helper'
 OrderType.create! :title => "Normal"
 OrderType.create! :title => "SAV"
 
-# add society_activity_sectors to existing order_types
-OrderType.all.each do |ot|
-  ot.society_activity_sectors = SocietyActivitySector.find(:all)
-end
-
 # default subcontractors
 subcontractor = Subcontractor.create! :name => "Sous traitant par défaut", :siret_number => "12345678912345", :activity_sector_reference_id => ActivitySectorReference.first.id, :legal_form_id => LegalForm.first.id
 subcontractor.build_iban(:bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
@@ -51,14 +46,14 @@ sd3 = ServiceDelivery.create! :name => "Déplacement zone 3", :description => ""
 sd4 = ServiceDelivery.create! :name => "Installation", :description => "", :time_scale => 'hourly', :cost => 100, :margin => 2, :vat => 8.5, :pro_rata_billable => true
 
 # default orders
-order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :customer_needs => "1 visuel 10000 x 4000", :approaching_id => Approaching.first.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 10.days, :previsional_delivery => DateTime.now + 20.days)
+order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :customer_needs => "1 visuel 10000 x 4000", :approaching_id => Approaching.first.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 10.days, :previsional_delivery => DateTime.now + 20.days)
 order1.build_bill_to_address(order1.customer.bill_to_address.attributes)
 order1.order_contact_id = order1.customer.contacts.first.id
 establishment = order1.customer.establishments.first
 order1.ship_to_addresses.build(:establishment_id => establishment.id, :establishment_name => establishment.name, :should_create => 1).build_address(establishment.address.attributes)
 order1.save!
 
-order2 = Order.new(:title => "DRAPEAUX", :customer_needs => "4 drapeaux 400 x 700", :approaching_id => Approaching.first.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 5.days, :previsional_delivery => DateTime.now + 14.days)
+order2 = Order.new(:title => "DRAPEAUX", :customer_needs => "4 drapeaux 400 x 700", :approaching_id => Approaching.first.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 5.days, :previsional_delivery => DateTime.now + 14.days)
 order2.build_bill_to_address(order2.customer.bill_to_address.attributes)
 order2.order_contact_id = order2.customer.contacts.first.id
 establishment = order2.customer.establishments.first

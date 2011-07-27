@@ -286,12 +286,14 @@ ActionController::Routing::Routes.add_routes do |map|
                                                                       :action     => 'show',
                                                                       :style      => 'original'
   
-  map.closed_orders       'closed_orders',      :controller => 'closed_orders'
-  map.archived_orders     'archived_orders',    :controller => 'archived_orders'
-  map.in_progress_orders  'in_progress_orders', :controller => 'in_progress_orders'
-  map.commercial_orders   'commercial_orders',  :controller => 'commercial_orders'
-  map.production_orders   'production_orders',  :controller => 'production_orders'
-  map.invoicing_orders    'invoicing_orders',   :controller => 'invoicing_orders'
+  map.closed_orders         'closed_orders',        :controller => 'closed_orders'
+  map.archived_orders       'archived_orders',      :controller => 'archived_orders'
+  map.in_progress_orders    'in_progress_orders',   :controller => 'in_progress_orders'
+  map.commercial_orders     'commercial_orders',    :controller => 'commercial_orders'
+  map.production_orders     'production_orders',    :controller => 'production_orders'
+  map.delivering_orders     'delivering_orders',    :controller => 'delivering_orders'
+  map.pre_invoicing_orders  'pre_invoicing_orders', :controller => 'pre_invoicing_orders'
+  map.invoicing_orders      'invoicing_orders',     :controller => 'invoicing_orders'
   
   map.invoice_management  'invoice_management', :controller => 'invoice_management'
   map.quote_management    'quote_management',   :controller => 'quote_management'

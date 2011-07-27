@@ -9,15 +9,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110704131028) do
+ActiveRecord::Schema.define(:version => 20110725125410) do
 
   create_table "active_counters", :force => true do |t|
     t.string "key"
     t.string "cast_type"
     t.float  "value",     :default => 0.0
+    t.string "model"
   end
 
-  add_index "active_counters", ["key"], :name => "index_active_counters_on_key", :unique => true
+  add_index "active_counters", ["model", "key"], :name => "index_active_counters_on_model_and_key", :unique => true
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id"
@@ -963,29 +964,25 @@ ActiveRecord::Schema.define(:version => 20110704131028) do
     t.datetime "updated_at"
   end
 
-  create_table "order_types_society_activity_sectors", :id => false, :force => true do |t|
-    t.integer "society_activity_sector_id"
-    t.integer "order_type_id"
-  end
-
   create_table "orders", :force => true do |t|
     t.integer  "commercial_id"
     t.integer  "user_id"
     t.integer  "customer_id"
-    t.integer  "establishment_id"
-    t.integer  "society_activity_sector_id"
     t.integer  "order_type_id"
     t.integer  "approaching_id"
     t.integer  "order_contact_id"
     t.string   "title"
     t.string   "reference"
     t.text     "customer_needs"
-    t.datetime "closed_at"
     t.date     "previsional_delivery"
     t.date     "quotation_deadline"
     t.integer  "delivery_time"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "status"
+    t.date     "standby_on"
+    t.date     "discarded_on"
+    t.date     "completed_on"
   end
 
   add_index "orders", ["reference"], :name => "index_orders_on_reference", :unique => true

@@ -31,7 +31,7 @@ class ManufacturingStep < ActiveRecord::Base
                                                     :production_total   => :after_save }
   
   has_search_index :only_attributes       => [ :status, :started_at, :finished_at, :manufacturing_started_on, :manufacturing_finished_on ],
-                   :additional_attributes => { :global_progression => :integer, :number_of_built_pieces => :integer }
+                   :additional_attributes => { :global_progression => :integer, :number_of_built_pieces => :integer, :number_of_available_to_deliver_pieces => :integer }
   
   #TODO test this method
   def validates_manufacturing_dates

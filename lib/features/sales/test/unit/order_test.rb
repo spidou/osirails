@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/../sales_test'
 
 class OrderTest < ActiveSupport::TestCase
-  should_belong_to :society_activity_sector, :order_type, :customer, :commercial, :creator, :approaching
+  should_belong_to :order_type, :customer, :commercial, :creator, :approaching
   
   # steps
-  should_have_one :commercial_step, :production_step, :invoicing_step, :dependent => :nullify
+  should_have_one :commercial_step, :production_step, :invoicing_step
   
   # quotes
   should_have_many :quotes
@@ -22,10 +22,8 @@ class OrderTest < ActiveSupport::TestCase
   should_have_many :ship_to_addresses, :end_products, :order_logs, :mockups, :graphic_documents
   
   should_validate_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
-  should_validate_presence_of :customer, :society_activity_sector, :commercial, :approaching, :order_contact, :with_foreign_key => :default
+  should_validate_presence_of :customer, :commercial, :approaching, :order_type, :order_contact, :with_foreign_key => :default
   should_validate_presence_of :creator, :with_foreign_key => :user_id
-  #validates_presence_of :order_type_id, :if => :society_activity_sector
-  #validates_presence_of :order_type,    :if => :order_type_id
   
   #should_validate_presence_of :reference # don't work because a before_validation_on_create automatically generate a reference
   
@@ -40,42 +38,6 @@ class OrderTest < ActiveSupport::TestCase
   
   def teardown
     @order = nil
-  end
-  
-  def test_presence_and_validity_of_order_type
-    flunk "OrderType.count should be greater than 1, but was at #{OrderType.count}" unless OrderType.count > 1
-    
-    # when society_activity_sector is not yet selected
-    assert !@order.errors.invalid?(:order_type_id), "order_type_id should be valid"
-    assert !@order.errors.invalid?(:order_type), "order_type should be valid"
-    
-    # when society_activity_sector is selected
-    society_activity_sector = SocietyActivitySector.first
-    society_activity_sector.order_types << OrderType.first
-    @order.society_activity_sector = society_activity_sector
-    @order.valid?
-    assert @order.errors.invalid?(:order_type_id), "order_type_id should NOT be valid because it's nil"
-    
-    # when order_type is in the list
-    @order.order_type_id = OrderType.first.id
-    @order.valid?
-    assert !@order.errors.invalid?(:order_type_id), "order_type_id should be valid"
-    assert !@order.errors.invalid?(:order_type), "order_type should be valid"
-    
-    @order.order_type = OrderType.first
-    @order.valid?
-    assert !@order.errors.invalid?(:order_type_id), "order_type_id should be valid"
-    assert !@order.errors.invalid?(:order_type), "order_type should be valid"
-    
-    # when order_type is NOT in the list
-    @order.order_type = OrderType.last
-    @order.valid?
-    assert @order.errors.invalid?(:order_type_id), "order_type_id should NOT be valid because it's NOT in the list"
-    
-    # when order_type_id is wrong
-    @order.order_type_id = 0
-    @order.valid?
-    assert @order.errors.invalid?(:order_type_id), "order_type_id should NOT be valid because it's NOT in the list"
   end
   
   def test_presence_of_bill_to_address

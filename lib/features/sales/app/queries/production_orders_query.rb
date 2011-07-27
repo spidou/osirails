@@ -23,15 +23,27 @@ module ProductionOrdersQuery
     end
   end
   
+  def query_td_content_for_production_step_manufacturing_step_number_of_available_to_deliver_pieces_in_order
+    if @query_object.signed_quote and @query_object.production_step and @query_object.production_step.manufacturing_step
+      number_of_available_to_deliver_pieces = @query_object.production_step.manufacturing_step.number_of_available_to_deliver_pieces
+      number_of_pieces = @query_object.signed_quote.number_of_pieces.to_i
+      "#{number_of_available_to_deliver_pieces}/#{number_of_pieces}"
+    end
+  end
+  
   def query_td_content_for_ready_to_deliver_pieces_in_order
     if @query_object.production_step && @query_object.production_step.manufacturing_step && @query_object.production_step.manufacturing_step.manufacturing_started_on
-      @query_object.ready_to_deliver_pieces
+      ready_to_deliver_pieces = @query_object.ready_to_deliver_pieces
+      number_of_pieces = @query_object.signed_quote.number_of_pieces.to_i
+      "#{ready_to_deliver_pieces}/#{number_of_pieces}"
     end
   end
   
   def query_td_content_for_delivered_pieces_in_order
     if @query_object.production_step && @query_object.production_step.manufacturing_step && @query_object.production_step.manufacturing_step.manufacturing_started_on
-      @query_object.delivered_pieces
+      delivered_pieces = @query_object.delivered_pieces
+      number_of_pieces = @query_object.signed_quote.number_of_pieces.to_i
+      "#{delivered_pieces}/#{number_of_pieces}"
     end
   end
 end

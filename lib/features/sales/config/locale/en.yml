@@ -67,7 +67,6 @@ en:
         pro_rata_billing: "Pro rata billing"
       order:
         title: "Project name"
-        society_activity_sector: "Activity sector"
         ship_to_address: "Forwarding address"
         approaching: "Approcahing type"
         previsional_delivery: "Previsional delivery date"

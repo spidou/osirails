@@ -1,11 +1,21 @@
 module ActiveCounter
-
+  ALL_COUNTERS = {}
+  
   class << self
     def included base #:nodoc:
       base.extend ClassMethods
     end
+    
+    def update_all_counters
+      ALL_COUNTERS.each do |model, counters|
+        counters.keys.each do |counter_name|
+          model.constantize.send("update_#{counter_name}_counter")
+        end
+      end
+      true
+    end
   end
-
+  
   class ActiveCounterError < StandardError #:nodoc:
   end
 
@@ -15,8 +25,7 @@ module ActiveCounter
       
       options.symbolize_keys!
       
-      model = options[:model] ? options[:model].underscore : self.name.underscore
-      default_definitions = { :prefix => model }
+      model = options[:model] || self.name
       
       # counters validations
       if counters = options[:counters]
@@ -40,21 +49,19 @@ module ActiveCounter
       end
       
       write_inheritable_attribute(:active_counter_definitions, {}) if active_counter_definitions.nil?
-      active_counter_definitions[model] = (active_counter_definitions[model] || default_definitions).merge(options)
-      
-      # prefix validation
-      raise ActiveCounterError, ":prefix expected to be not nil" if active_counter_definitions[model][:prefix].nil?
+      active_counter_definitions[model] = (active_counter_definitions[model] || {}).merge(options)
       
       # define counters
       if counters
+        ActiveCounter::ALL_COUNTERS[model] = (ActiveCounter::ALL_COUNTERS[model] || {}).merge(counters)
+        
         counters.each do |counter_name, type|
           counter_method_name = "#{counter_name}_counter"
           update_counter_method_name = "update_#{counter_method_name}"
-          key = "#{active_counter_definitions[model][:prefix]}_#{counter_method_name}"
           
           class_eval <<-EOL
             def self.#{counter_method_name}
-              if counter = Counter.find_by_key("#{key}")
+              if counter = Counter.find_by_model_and_key("#{model}", "#{counter_method_name}")
                 case counter.cast_type
                 when "integer"
                   counter.value.to_i
@@ -62,18 +69,22 @@ module ActiveCounter
                   counter.value
                 end
               else
-                #TODO log error "Unable to find ActiveCounter with key: #{key}"
+                #TODO log error "Unable to find an ActiveCounter for model #{model} with key #{counter_method_name}"
                 0
               end
             end
             
-            def #{counter_method_name}; end
+            def self.#{counter_method_name}; end
             
-            def #{update_counter_method_name}
-              counter = Counter.find_by_key("#{key}") || Counter.create!(:key => "#{key}", :cast_type => "#{type.to_s}")
+            def self.#{update_counter_method_name}
+              counter = Counter.find_by_model_and_key("#{model}", "#{counter_method_name}") || Counter.create!(:model => "#{model}", :key => "#{counter_method_name}", :cast_type => "#{type.to_s}")
               if value = #{counter_method_name}
                 counter.update_attribute(:value, value)
               end
+            end
+            
+            def #{update_counter_method_name}
+              self.class.#{update_counter_method_name}
             end
           EOL
         end
@@ -84,7 +95,7 @@ module ActiveCounter
         callbacks.each do |counter_name, cbs|
           counter_method_name = "#{counter_name}_counter"
           
-          return_counter_method_name = options[:model] ? "#{active_counter_definitions[model][:prefix]}_" : ""
+          return_counter_method_name = options[:model] ? "#{options[:model].underscore}_" : ""
           return_counter_method_name << counter_method_name
           
           update_counter_method_name = "update_#{return_counter_method_name}"
@@ -92,11 +103,11 @@ module ActiveCounter
           if options[:model]
             class_eval <<-EOL
               def #{return_counter_method_name}
-                #{options[:model]}.new.send(:#{counter_method_name})
+                #{options[:model]}.#{counter_method_name}
               end
               
               def #{update_counter_method_name}
-                #{options[:model]}.new.send(:update_#{counter_method_name})
+                #{options[:model]}.update_#{counter_method_name}
               end
             EOL
           end

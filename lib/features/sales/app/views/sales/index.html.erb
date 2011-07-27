@@ -23,7 +23,7 @@
             <li>
               <div class="counter"><span><%= Order.in_progress_orders_counter %></span></div> <%= link_to "Dossiers en cours", in_progress_orders_path %>
               <div class="infos">
-                <div class="amount"><span><%= Order.in_progress_total_counter %>&nbsp;&euro;</span></div>
+                <div class="amount"><span><%= Order.in_progress_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
             </li>
           </ul>
@@ -43,7 +43,7 @@
             <li>
               <div class="counter"><span><%= Order.commercial_orders_counter %></span></div> <%= link_to "Dossiers en étude commerciale", commercial_orders_path %>
               <div class="infos">
-                <div class="amount"><span><%= Order.commercial_total_counter %>&nbsp;&euro;</span></div>
+                <div class="amount"><span><%= Order.commercial_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
             </li>
           </ul>
@@ -55,7 +55,7 @@
               <%= link_to "Gestion des devis", quote_management_path, 'data-icon' => :management %>
               <div class="infos">
                 <div class="document_counter" title="Devis en attente de signature"><span><%= Quote.pending_quotes_counter %></span></div>
-                <div class="amount"><span><%= Quote.pending_total_counter %>&nbsp;&euro;</span></div>
+                <div class="amount"><span><%= Quote.pending_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
             </li>
             <li class="disabled"><%= link_to "Planning des surveys", "#", 'data-icon' => :planning %></li>
@@ -82,14 +82,8 @@
             <li>
               <div class="counter"><span><%= Order.production_orders_counter %></span></div> <%= link_to "Dossiers en production", production_orders_path %>
               <div class="infos">
-                <div class="amount"><span><%= Order.production_total_counter %>&nbsp;&euro;</span></div>
+                <div class="amount"><span><%= Order.production_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
-            </li>
-            <li>
-              <ul>
-                <li class="disabled"><%= link_to "État de charge des dossiers", "#" %></li>
-                <li class="disabled"><%= link_to "Coût des dossiers en production", "#" %></li>
-              </ul>
             </li>
           </ul>
         </td>
@@ -110,10 +104,10 @@
                 <div class="amount"><span>0 €</span></div>
               </div>
             </li>
-            <li class="disabled">
-              <div class="counter"><span><%= Order.delivery_orders_counter %></span></div> <%= link_to "Dossiers en livraison", "#" %>
+            <li>
+              <div class="counter"><span><%= Order.delivering_orders_counter %></span></div> <%= link_to "Dossiers en livraison", delivering_orders_path %>
               <div class="infos">
-                <div class="amount"><span><%= Order.delivery_total_counter %>&nbsp;&euro;</span></div>
+                <div class="amount"><span><%= Order.delivering_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
             </li>
           </ul>
@@ -124,7 +118,7 @@
               <%= link_to "Gestion des BLs", "#", 'data-icon' => :management %>
               <div class="infos">
                 <div class="document_counter" title="BLs en attente de livraison"><span><%= DeliveryNote.pending_delivery_notes_counter %></span></div>
-                <div class="amount"><span><%= DeliveryNote.pending_total_counter %>&nbsp;&euro;</span></div>
+                <div class="amount"><span><%= DeliveryNote.pending_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
             </li>
             <li class="disabled"><%= link_to "Planning des livraisons", "#", 'data-icon' => :planning %></li>
@@ -136,22 +130,16 @@
         <th>FACTURATION</th>
         <td class="monitoring">
           <ul>
-            <li class="disabled">
-              <div class="counter"><span>0</span></div> <%= link_to "Dossiers en SAS de facturation", "#" %>
+            <li>
+              <div class="counter"><span><%= Order.pre_invoicing_orders_counter %></span></div> <%= link_to "Dossiers en SAS de facturation", pre_invoicing_orders_path %>
               <div class="infos">
-                <div class="amount"><span>0 €</span></div>
+                <div class="amount"><span><%= Order.pre_invoicing_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
             </li>
             <li>
               <div class="counter"><span><%= Order.invoicing_orders_counter %></span></div> <%= link_to "Dossiers en facturation", invoicing_orders_path %>
               <div class="infos">
-                <div class="amount"><span><%= Order.invoicing_total_counter %>&nbsp;&euro;</span></div>
-              </div>
-            </li>
-            <li class="disabled">
-              <div class="counter"><span>0</span></div> <%= link_to "Dossiers en attente de paiement", "#" %>
-              <div class="infos">
-                <div class="amount"><span>0 €</span></div>
+                <div class="amount"><span><%= Order.invoicing_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
             </li>
           </ul>
@@ -162,14 +150,14 @@
               <%= link_to "Gestion des factures", invoice_management_path, 'data-icon' => :management %>
               <div class="infos">
                 <div class="document_counter" title="Factures en attente d'envoi"><span><%= Invoice.awaiting_sending_invoices_counter %></span></div>
-                <div class="amount"><span><%= Invoice.awaiting_sending_total_counter %>&nbsp;&euro;</span></div>
+                <div class="amount"><span><%= Invoice.awaiting_sending_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
             </li>
             <li class="disabled">
               <%= link_to "Gestion des paiements", "#", 'data-icon' => :management %>
               <div class="infos">
                 <div class="document_counter" title="Factures en attente de paiement"><span><%= Invoice.awaiting_payment_invoices_counter %></span></div>
-                <div class="amount"><span><%= Invoice.awaiting_payment_total_counter %>&nbsp;&euro;</span></div>
+                <div class="amount"><span><%= Invoice.awaiting_payment_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
             </li>
           </ul>

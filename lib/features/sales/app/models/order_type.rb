@@ -1,6 +1,4 @@
 class OrderType < ActiveRecord::Base
-  has_and_belongs_to_many :society_activity_sectors
-  
   has_many :sales_processes
   #has_many :steps, :through => :sales_processes #TODO test if this assocation is good
   

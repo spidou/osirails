@@ -73,6 +73,10 @@ module OrdersQuery
     end
   end
   
+  def query_td_content_for_status_in_order
+    content_tag :span, t("view.order.statuses.#{@query_object.status}", :default => @query_object.status).gsub(' ', '&nbsp;'), :class => "order_status #{@query_object.status}"
+  end
+  
   def query_td_content_for_commercial_step_survey_step_status_in_order
     display_step_status(@query_object.commercial_step.survey_step)
   end
@@ -103,6 +107,6 @@ module OrdersQuery
   
   private
     def display_step_status(step)
-      link_to(t("view.order.statuses.#{step.status}", :default => step.status).gsub(' ', '&nbsp;'), send(step.original_step.path, step.order), :class => "step_status #{step.status}")
+      link_to(t("view.step.statuses.#{step.status}", :default => step.status).gsub(' ', '&nbsp;'), send(step.original_step.path, step.order), :class => "step_status #{step.status}", :title => "Aller à l'étape")
     end
 end

@@ -15,7 +15,7 @@ class JobContract < ActiveRecord::Base
 #  validates_presence_of :employee_state,    :if => :employee_state_id
 #  validates_presence_of :job_contract_type, :if => :job_contract_type_id
   
-  validates_presence_of :start_date,  :job_contract_type_id
+  validates_presence_of :start_date, :job_contract_type_id
   validates_presence_of :job_contract_type, :if => :job_contract_type_id
   validates_presence_of :employee, :if => :employee_id
   
