@@ -1,6 +1,8 @@
 <%
   require_locals model 
 %>
+<%= hidden_field_tag('criteria_loaded', true) %>
+
 <% criteria.each do |attribute, options|%>
   <%
     menu_link_name = get_alias(attribute.match(/.id$/) ? attribute.chomp('.id') : attribute)

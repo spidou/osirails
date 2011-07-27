@@ -17,7 +17,7 @@
       </div>
       
       <table class='no_nth'>
-        <%= render :partial => 'queries/criteria', :object => @query.criteria, :locals => { :model => @query.subject_model } %>
+        <%= render :partial => 'queries/criteria', :object => query.criteria, :locals => { :model => query.subject_model } %>
         <%= generate_attribute_chooser %>
       </table>
     </div>

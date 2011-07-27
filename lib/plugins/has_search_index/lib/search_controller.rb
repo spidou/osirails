@@ -77,8 +77,10 @@ private
       query.per_page = (params[:per_page] == 'all' ? nil : params[:per_page].to_i)
     end
     
-    if params[:criteria]
-      query.criteria = {}
+    if params[:criteria_loaded]
+      params[:criteria] ||= {}
+      query.criteria = {}  ## empty criteria to take only user choice
+      
       params[:criteria].each do |attribute, options|
         options[:value].each_with_index do |value, index|
           (query.criteria[attribute] ||= []) << {:action => options[:action].at(index), :value => value}
