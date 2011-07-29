@@ -1,0 +1,26 @@
+<% if Menu.find_by_name('rh').can_access?(current_user) %>
+  <div class="widget">
+    <h2><%= image_tag("menus/rh.png") %><%= link_to "Ressources Humaines", rh_path %></h2>
+    <table>
+      <tbody>
+        <tr>
+          <td class="counter"><span><%= Employee.actives.count %></span></td>
+          <td class="link"><%= link_to "employés actifs", employees_path %></td>
+          <td class="actions"><%= link_to "", new_employee_path, 'data-icon' => :new %></td>
+        </tr>
+        <% if current_user.employee %>
+          <tr>
+            <td class="counter"><span><%= current_user.employee.get_leave_requests_to_check.count %></span></td>
+            <td class="link"><%= link_to "demandes de congés en attente de traitement", leave_requests_path %></td>
+            <td class="actions">&nbsp;</td>
+          </tr>
+        <% end %>
+        <tr>
+          <td class="counter">&nbsp;</td>
+          <td class="link"><%= link_to "Pointage des employés", checkings_path %></td>
+          <td class="actions">&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<% end %>

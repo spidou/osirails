@@ -228,7 +228,7 @@ class FeatureManager
     end
     
     def load_paths
-      # load models, controllers and helpers
+      # load models, controllers, helpers and queries
       %w{ lib app/models app/controllers app/helpers app/queries}.each do |dir|
         dir_path = File.join(@path, dir)
         
@@ -247,6 +247,9 @@ class FeatureManager
       # load i18n feature files
       I18n.load_path += Dir[ File.join(@path, 'config', 'locale', '*.{rb,yml}') ]
       I18n.reload!
+      
+      # load widgets
+      Osirails::WidgetManager.prepend_widget_path(File.join(@path, 'app', 'widgets'))
     end
     
     def load_libs

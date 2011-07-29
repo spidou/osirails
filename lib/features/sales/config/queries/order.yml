@@ -247,6 +247,7 @@ delivering_order_index:
     - production_step.manufacturing_step.status
     - production_step.manufacturing_step.number_of_built_pieces
     - production_step.manufacturing_step.number_of_available_to_deliver_pieces
+    - delivering_step.delivery_step.status
     - delivered_pieces
     - previsional_delivery
   group:
@@ -261,6 +262,7 @@ delivering_order_index:
     - commercial.fullname
     - amount
     - production_step.manufacturing_step.status
+    - delivering_step.delivery_step.status
     - previsional_delivery
   <<: *pagination
   <<: *quick_search
@@ -283,6 +285,7 @@ delivering_order_index:
       - production_step.manufacturing_step.status
       - production_step.manufacturing_step.number_of_built_pieces
       - production_step.manufacturing_step.number_of_available_to_deliver_pieces
+      - delivering_step.delivery_step.status
       - delivered_pieces
       - previsional_delivery
     order:

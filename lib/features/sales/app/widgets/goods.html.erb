@@ -1,0 +1,27 @@
+<% if Menu.find_by_name('goods').can_access?(current_user) %>
+  <div class="widget">
+    <h2><%= image_tag("menus/goods.png") %><%= link_to "Produits", goods_path %></h2>
+    <table>
+      <tbody>
+        <tr>
+          <td class="counter"><span><%= ProductReference.count %></span></td>
+          <td class="link"><%= link_to "produits références", product_references_path %></td>
+          <td class="actions"><%= link_to "", new_product_reference_path, 'data-icon' => :new %></td>
+        </tr>
+        <tr>
+          <td class="counter"><span><%= ServiceDelivery.count %></span></td>
+          <td class="link"><%= link_to "prestations", service_deliveries_path %></td>
+          <td class="actions"><%= link_to "", new_service_delivery_path, 'data-icon' => :new %></td>
+        </tr>
+        <tr class="spacer">
+          <td colspan="3"></td>
+        </tr>
+        <tr>
+          <td class="counter">&nbsp;</td>
+          <td class="link"><%= link_to "Catalogue des produits", goods_path %></td>
+          <td class="actions">&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<% end %>

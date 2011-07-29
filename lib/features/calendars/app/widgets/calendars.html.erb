@@ -1,0 +1,14 @@
+<% if Menu.find_by_name('calendars').can_access?(current_user) %>
+  <div class="widget">
+    <h2><%= image_tag("menus/calendars.png") %><%= link_to "Calendrier", calendars_path %></h2>
+    <table>
+      <tbody>
+        <tr>
+          <td class="counter">&nbsp;</td>
+          <td class="link"><%= link_to "Voir mon calendrier", calendars_path %></td>
+          <td class="actions">&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<% end %>

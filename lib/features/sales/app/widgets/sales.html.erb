@@ -1,0 +1,36 @@
+<% if Menu.find_by_name('sales').can_access?(current_user) %>
+  <% content_for :header do %>
+    <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+  <% end %>
+  
+  <div class="widget">
+    <h2><%= image_tag("menus/sales.png") %><%= link_to "Ventes", sales_path %></h2>
+    <table>
+      <tbody>
+        <tr>
+          <td class="counter"><span><%= Order.in_progress_orders_counter %></span></td>
+          <td class="link"><%= link_to "dossiers en cours", in_progress_orders_path %></td>
+          <td class="amount"><span><%= Order.in_progress_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></td>
+        </tr>
+        <tr>
+          <td class="counter"><span><%= Quote.pending_quotes_counter %></span></td>
+          <td class="link"><%= link_to "devis en attente de signature", quote_management_path %></td>
+          <td class="amount"><span><%= Quote.pending_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></td>
+        </tr>
+        <tr>
+          <td class="counter"><span><%= Invoice.awaiting_sending_invoices_counter %></span></td>
+          <td class="link"><%= link_to "factures en attente d'envoi", invoice_management_path %></td>
+          <td class="amount"><span><%= Invoice.awaiting_sending_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></td>
+        </tr>
+        <tr class="spacer">
+          <td colspan="3"></td>
+        </tr>
+        <tr>
+          <td class="counter">&nbsp;</td>
+          <td class="link"><%= link_to "Nouveau dossier", new_order_path, 'data-icon' => :new_order %></td>
+          <td class="actions">&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<% end %>

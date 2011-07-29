@@ -1819,6 +1819,103 @@ table.mceEditor {
 	cursor:text;
 }
 
+/* HOME PAGE */
+#content_page div.home div.column1,
+#content_page div.home div.column2,
+#content_page div.home div.column3 {
+  display: inline-block;
+  vertical-align: top;
+  width: 33%;
+  
+}
+
+#content_page div.home div.widget {
+  width: auto;
+  background-color: #ededed;
+  border: 1px solid #999;
+  -moz-border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  -moz-transition: all .2s;
+}
+
+#content_page div.home div.widget:hover {
+  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.6);
+}
+
+#content_page div.home div.widget h2 {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  text-shadow: 0 0 1px rgba(0,0,0,0.4);
+  border-bottom: 1px solid #BBB;
+}
+
+#content_page div.home div.widget h2 img {
+  height: 48px;
+  width: 48px;
+}
+
+#content_page div.home div.widget h2 a {
+  position: absolute;
+  text-decoration: none;
+  font-size: 150%;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+#content_page div.home div.widget table,
+#content_page div.home div.widget table tr,
+#content_page div.home div.widget table tr td {
+  background-color: transparent;
+  border: none;
+}
+
+#content_page div.home div.widget table tr td {
+  padding: 4px 2px;
+}
+
+#content_page div.home div.widget table tr td.counter {
+  width: 0;
+  text-align: right;
+}
+
+#content_page div.home div.widget table tr td.counter span {
+  padding: 1px 7px;
+  background-color: #ffd075;
+  border: 1px solid #999;
+  -moz-border-radius: 5px;
+  font-weight: bold;
+}
+
+#content_page div.home div.widget table tr td.link {
+  text-align: left;
+}
+
+#content_page div.home div.widget table tr td.actions {
+  width: 0;
+}
+
+#content_page div.home div.widget table tr td.amount {
+  width: 0;
+}
+
+#content_page div.home div.widget table tr td.amount span {
+  padding: 2px 5px;
+  border: 1px solid #AAA;
+  background-color: white;
+  -moz-border-radius: 2px;
+}
+
+#content_page div.home div.widget table tr.spacer td {
+  height: 4px;
+}
+
+#content_page div.home div.widget table a {
+  color: #555;
+}
+
 ul#home_links {
   list-style-type: none;
   text-align: center;

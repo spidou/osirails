@@ -1,12 +1,29 @@
 <h1>Accueil</h1>
 
-<div>
-  <ul id="home_links">
-  <% for menu in @menus %>
-    <li title="<%= menu.description %>">
-      <%= link_to( image_tag("menus/#{menu.name}.png", :alt => menu.title, :title => menu.description) + menu.title,
-                   url_for_menu(menu) ) %>
-    </li>
-  <% end %>
-  </ul>
+<div class="home">
+  <% widgets = Osirails::WidgetManager.widgets %>
+  
+  <div class="column1">
+    <% widgets.select{ |k,v| v[:column] == 1 }.each do |widget_name, attr| %>
+      <div column="<%= attr[:column] %>" position="<%= attr[:position] %>">
+        <%= render :file => attr[:path] %>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="column2">
+    <% widgets.select{ |k,v| v[:column] == 2 }.each do |widget_name, attr| %>
+      <div column="<%= attr[:column] %>" position="<%= attr[:position] %>">
+        <%= render :file => attr[:path] %>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="column3">
+    <% widgets.select{ |k,v| v[:column] == 3 }.each do |widget_name, attr| %>
+      <div column="<%= attr[:column] %>" position="<%= attr[:position] %>">
+        <%= render :file => attr[:path] %>
+      </div>
+    <% end %>
+  </div>
 </div>

@@ -24,6 +24,7 @@ require 'contextual_menu'
 require 'mysql'
 require 'feature_manager'
 require 'version'
+require 'widget_manager'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.

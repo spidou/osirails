@@ -1,0 +1,42 @@
+<% if Menu.find_by_name('logistics').can_access?(current_user) %>
+  <div class="widget">
+    <h2><%= image_tag("menus/logistics.png") %><%= link_to "Logistique", logistics_path %></h2>
+    <table>
+      <tbody>
+        <tr>
+          <td class="counter"><span><%= Machine.count %></span></td>
+          <td class="link"><%= link_to "machines", machines_path %></td>
+          <td class="actions"><%= link_to "", new_machine_path, 'data-icon' => :new %></td>
+        </tr>
+        <tr>
+          <td class="counter"><span><%= Vehicle.count %></span></td>
+          <td class="link"><%= link_to "véhicules", vehicles_path %></td>
+          <td class="actions"><%= link_to "", new_vehicle_path, 'data-icon' => :new %></td>
+        </tr>
+        <tr>
+          <td class="counter"><span><%= Computer.count %></span></td>
+          <td class="link"><%= link_to "ordinateurs", computers_path %></td>
+          <td class="actions"><%= link_to "", new_computer_path, 'data-icon' => :new %></td>
+        </tr>
+        <tr>
+          <td class="counter"><span><%= Device.count %></span></td>
+          <td class="link"><%= link_to "périphériques", devices_path %></td>
+          <td class="actions"><%= link_to "", new_device_path, 'data-icon' => :new %></td>
+        </tr>
+        <tr>
+          <td class="counter"><span><%= OtherTool.count %></span></td>
+          <td class="link"><%= link_to "autres équipements", other_tools_path %></td>
+          <td class="actions"><%= link_to "", new_other_tool_path, 'data-icon' => :new %></td>
+        </tr>
+        <tr class="spacer">
+          <td colspan="3"></td>
+        </tr>
+        <tr>
+          <td class="counter">&nbsp;</td>
+          <td class="link"><%= link_to "Voir le planning des équipements", equipments_calendar_path %></td>
+          <td class="actions">&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<% end %>
