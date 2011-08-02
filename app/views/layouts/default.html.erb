@@ -15,6 +15,8 @@
     <%= stylesheet_link_tag "lightbox" %>
     <%= stylesheet_link_tag "journalization" %>
     <%= tag("link", { "rel" => "shortcut icon", "type" => "image/x-icon", "href" => "#{$CURRENT_THEME_PATH}/favicon.ico" }) %>
+    
+    <%= javascript_tag "const AUTH_TOKEN = #{form_authenticity_token.inspect}" if protect_against_forgery? %>
     <%= javascript_include_tag "prevent_close" %>
     <%= javascript_include_tag "has_search_index/integrated_search"%>
     <%= javascript_include_tag "display_time" %>

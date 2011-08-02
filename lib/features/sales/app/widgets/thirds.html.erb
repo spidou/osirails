@@ -1,30 +1,28 @@
 <!-- essayer de charger le fichier original puis d'y rajouter du contenu (au lieu de tout redéfinir) -->
 <% if Menu.find_by_name('thirds').can_access?(current_user) %>
-  <div class="widget">
-    <h2><%= image_tag("menus/thirds.png") %><%= link_to "Tiers", thirds_path %></h2>
-    <table>
-      <tbody>
-        <tr>
-          <td class="counter"><span><%= Customer.count %></span></td>
-          <td class="link"><%= link_to "clients", customers_path %></td>
-          <td class="actions"><%= link_to "", new_customer_path, 'data-icon' => :new %></td>
-        </tr>
-        <tr>
-          <td class="counter"><span><%= Supplier.count %></span></td>
-          <td class="link"><%= link_to "fournisseurs", suppliers_path %></td>
-          <td class="actions"><%= link_to "", new_supplier_path, 'data-icon' => :new %></td>
-        </tr>
-        <tr>
-          <td class="counter"><span><%= Subcontractor.count %></span></td>
-          <td class="link"><%= link_to "sous-traitants", subcontractors_path %></td>
-          <td class="actions"><%= link_to "", new_subcontractor_path, 'data-icon' => :new %></td>
-        </tr>
-        <tr>
-          <td class="counter"><span><%= Factor.count %></span></td>
-          <td class="link"><%= link_to "factors", factors_path %></td>
-          <td class="actions"><%= link_to "", new_factor_path, 'data-icon' => :new %></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <h2><%= image_tag("menus/thirds.png") %><%= link_to "Tiers", thirds_path %></h2>
+  <table>
+    <tbody>
+      <tr>
+        <td class="counter"><span><%= Customer.count %></span></td>
+        <td class="link"><%= link_to "clients", customers_path %></td>
+        <td class="actions"><%= link_to "", new_customer_path, 'data-icon' => :new %></td>
+      </tr>
+      <tr>
+        <td class="counter"><span><%= Supplier.count %></span></td>
+        <td class="link"><%= link_to "fournisseurs", suppliers_path %></td>
+        <td class="actions"><%= link_to "", new_supplier_path, 'data-icon' => :new %></td>
+      </tr>
+      <tr>
+        <td class="counter"><span><%= Subcontractor.count %></span></td>
+        <td class="link"><%= link_to "sous-traitants", subcontractors_path %></td>
+        <td class="actions"><%= link_to "", new_subcontractor_path, 'data-icon' => :new %></td>
+      </tr>
+      <tr>
+        <td class="counter"><span><%= Factor.count %></span></td>
+        <td class="link"><%= link_to "factors", factors_path %></td>
+        <td class="actions"><%= link_to "", new_factor_path, 'data-icon' => :new %></td>
+      </tr>
+    </tbody>
+  </table>
 <% end %>

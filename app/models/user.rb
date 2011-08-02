@@ -1,18 +1,13 @@
 class User < ActiveRecord::Base
+  require "digest/sha1"
   
   acts_on_journalization_with :username
   
   acts_as_watcher :identifier_method => :username, :email_method => :email
   
-  before_save :username_unicity
-  
-  # Requires
-  require "digest/sha1"
-  
-  # Relationships
   has_and_belongs_to_many :roles
+  has_many :widgets
 
-  # Validates
   validates_each :password do |record, attr, value|
     unless record.id.nil?
       record.errors.add attr, "ne doit pas être votre ancien mot de passe" if Digest::SHA1.hexdigest(value) == User.find(record['id']).password
@@ -21,6 +16,7 @@ class User < ActiveRecord::Base
   
   validates_presence_of :username
   
+  before_save    :username_unicity
   before_save    :change_password_updated_at # that callback must be before 'before_save :password_encryption'
   before_destroy :can_be_destroyed?
   

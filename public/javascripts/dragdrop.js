@@ -73,8 +73,11 @@ var Droppables = {
   },
 
   deactivate: function(drop) {
-    if(drop.hoverclass)
+    if(drop.hoverclass) {
       Element.removeClassName(drop.element, drop.hoverclass);
+      if (drop.onEndHover) // permits to run a callback when user leaves the drop area (hacked by Mathieu Fontaine)
+        drop.onEndHover(drop.element)
+    }
     this.last_active = null;
   },
 

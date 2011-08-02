@@ -29,9 +29,7 @@ module Osirails
         paths = @@widget_paths.collect{ |path| Dir.glob(path + '/[^_]*.html.erb') }.flatten.reverse # get only templates, not partials
         
         paths.each_with_index do |path, index|
-          column = (index%3)+1 #TODO I fixed number of columns at 3, but we could make it configurable
-          position = @@widgets.select{ |k,v| v[:column] == column }.size + 1
-          @@widgets[File.basename(path, ".html.erb")] = { :path => path, :column => column, :position => position }
+          @@widgets[File.basename(path, ".html.erb")] = { :path => path }
         end
         
         @@widgets

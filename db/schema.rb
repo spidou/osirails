@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110725125410) do
+ActiveRecord::Schema.define(:version => 20110801094607) do
 
   create_table "active_counters", :force => true do |t|
     t.string "key"
@@ -1613,5 +1613,14 @@ ActiveRecord::Schema.define(:version => 20110725125410) do
   end
 
   add_index "watchings_watchable_functions", ["watching_id", "watchable_function_id"], :name => "unique_index_watchings_watchable_functions", :unique => true
+
+  create_table "widgets", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.integer  "col"
+    t.integer  "position"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

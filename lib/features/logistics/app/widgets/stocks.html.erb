@@ -1,50 +1,48 @@
 <% if Menu.find_by_name('stocks').can_access?(current_user) %>
-  <div class="widget">
-    <h2><%= image_tag("menus/stocks.png") %><%= link_to "Stocks", stocks_path %></h2>
-    <table>
-      <tbody>
-        <tr>
-          <td class="counter"><span><%= Commodity.count %></span></td>
-          <td class="link"><%= link_to "matières premières", commodities_manager_path %></td>
-          <td class="actions"><%= link_to "", new_commodity_path, 'data-icon' => :new %></td>
-        </tr>
-        <tr>
-          <td class="counter"><span><%= Consumable.count %></span></td>
-          <td class="link"><%= link_to "consommables", consumables_manager_path %></td>
-          <td class="actions"><%= link_to "", new_consumable_path, 'data-icon' => :new %></td>
-        </tr>
-        <tr>
-          <td class="counter"><span><%= Commodity.restockables.count + Consumable.restockables.count %></span></td>
-          <td class="link"><%= link_to "articles à réapprovisionner", restockable_supplies_path %></td>
-          <td class="actions">&nbsp;</td>
-        </tr>
+  <h2><%= image_tag("menus/stocks.png") %><%= link_to "Stocks", stocks_path %></h2>
+  <table>
+    <tbody>
+      <tr>
+        <td class="counter"><span><%= Commodity.count %></span></td>
+        <td class="link"><%= link_to "matières premières", commodities_manager_path %></td>
+        <td class="actions"><%= link_to "", new_commodity_path, 'data-icon' => :new %></td>
+      </tr>
+      <tr>
+        <td class="counter"><span><%= Consumable.count %></span></td>
+        <td class="link"><%= link_to "consommables", consumables_manager_path %></td>
+        <td class="actions"><%= link_to "", new_consumable_path, 'data-icon' => :new %></td>
+      </tr>
+      <tr>
+        <td class="counter"><span><%= Commodity.restockables.count + Consumable.restockables.count %></span></td>
+        <td class="link"><%= link_to "articles à réapprovisionner", restockable_supplies_path %></td>
+        <td class="actions">&nbsp;</td>
+      </tr>
+      <tr>
+        <td class="counter">&nbsp;</td>
+        <td class="link"><%= link_to "Valeur estimative du stock actuel", inventories_path %></td>
+        <td class="amount"><span>N/A&nbsp;&euro;</span></td>
+      </tr>
+      <% if last_inventory = Inventory.last %>
         <tr>
           <td class="counter">&nbsp;</td>
-          <td class="link"><%= link_to "Valeur estimative du stock actuel", inventories_path %></td>
+          <td class="link"><%= link_to "Dernier inventaire réalisé le #{last_inventory.created_at}", inventory_path(last_inventory) %></td>
           <td class="amount"><span>N/A&nbsp;&euro;</span></td>
         </tr>
-        <% if last_inventory = Inventory.last %>
-          <tr>
-            <td class="counter">&nbsp;</td>
-            <td class="link"><%= link_to "Dernier inventaire réalisé le #{last_inventory.created_at}", inventory_path(last_inventory) %></td>
-            <td class="amount"><span>N/A&nbsp;&euro;</span></td>
-          </tr>
-        <% else %>
-          <tr>
-            <td class="counter">&nbsp;</td>
-            <td class="link"><%= link_to "Aucun inventaire n'a été réalisé pour le moment", inventories_path %></td>
-            <td class="amount">&nbsp;</td>
-          </tr>
-        <% end %>
-        <tr class="spacer">
-          <td colspan="3"></td>
-        </tr>
+      <% else %>
         <tr>
           <td class="counter">&nbsp;</td>
-          <td class="link"><%= link_to "Nouvel inventaire", "#", 'data-icon' => :new %></td>
-          <td class="actions">&nbsp;</td>
+          <td class="link"><%= link_to "Aucun inventaire n'a été réalisé pour le moment", inventories_path %></td>
+          <td class="amount">&nbsp;</td>
         </tr>
-      </tbody>
-    </table>
-  </div>
+      <% end %>
+      <tr class="spacer">
+        <td colspan="3"></td>
+      </tr>
+      <tr>
+        <td class="counter">&nbsp;</td>
+        <td class="link"><%= link_to "Nouvel inventaire", "#", 'data-icon' => :new %></td>
+        <td class="actions">&nbsp;</td>
+      </tr>
+    </tbody>
+  </table>
 <% end %>

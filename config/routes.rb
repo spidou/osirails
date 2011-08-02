@@ -3,6 +3,13 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'account', :action => 'index'
   map.home 'home', :controller => 'home', :action => 'index'
   
+  # widgets
+  map.connect 'widgets/:widget/:column/:position', :controller   => 'home',
+                                                   :action       => 'widgets',
+                                                   :conditions   => { :method => :post },
+                                                   :requirements => { :column   => /\d+/,
+                                                                      :position => /\d+/ }
+  
   map.context_menu ':controller/context_menu', :action => 'context_menu'
   
   map.resources :watchings

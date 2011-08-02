@@ -1,0 +1,25 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'core/widgets' %>
+  <%= javascript_include_tag 'core/widgets' %>
+<% end %>
+
+<h1>Accueil</h1>
+<div class="home">
+  
+  <div id="widgets">
+    <% (1..3).each do |index| %>
+      <div id="column_<%=index%>" class="widget_column">
+        <div id="droppable_area_top_column_<%=index%>" class="droppable_area top_column"></div>
+        
+        <% @widgets.select{ |k,v| v[:column] == index }.sort_by{ |k,v| v[:position] }.each do |widget_name, attr| %>
+          <div id="widget_container_<%= widget_name %>" class="widget_container">
+            <div id="widget_<%= widget_name %>" class="widget">
+              <%= render :file => attr[:path] %>
+            </div>
+            <div id="droppable_area_bottom_<%= widget_name %>" class="droppable_area bottom_widget"></div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
