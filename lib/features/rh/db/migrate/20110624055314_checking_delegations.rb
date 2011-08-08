@@ -1,6 +1,6 @@
 class CheckingDelegations < ActiveRecord::Migration
   def self.up
-     create_table :checking_delegations do |t|
+    create_table :checking_delegations do |t|
       t.references :delegate , :employee
       t.timestamps
     end

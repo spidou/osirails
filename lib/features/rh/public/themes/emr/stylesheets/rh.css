@@ -1,3 +1,5 @@
 /* IMAGES */
 a[data-icon=treat_leave_request] { background-image: url("/themes/emr/images/rh/treat_leave_request.png"); }
+a[data-icon=cancel_as_employee]  { background-image: url("/themes/emr/images/rh/cancel_as_employee.png"); }
+a[data-icon=check_as_employee]   { background-image: url("/themes/emr/images/rh/check_as_employee.png"); }
 /* END IMAGES */

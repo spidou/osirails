@@ -367,6 +367,10 @@ class Employee < ActiveRecord::Base
     self.employee_sensitive_data.address_attributes = address_attributes
   end
   
+  def find_or_build_checking_at(date = Date.today)
+    checkings.first(:conditions => ['date = ?', date]) || checkings.build(:date => date)
+  end
+  
   private
   
     # Method to change the case of the first_name and the last_name at the employee's creation

@@ -38,14 +38,14 @@ job_contract_authorization     = JobContract.can_view?(current_user)
   
     <% form_for(employee, :html => {:multipart => true}) do |form| %>
       
-      <% t.content_for :jobs do %>
-        <%= form.error_messages unless employee_errors[:jobs].blank? %>
-        <%= render :partial => 'employee_jobs', :object => employee.jobs, :locals => {:form => form, :employee => employee }%>
-      <% end %>
-      
       <% t.content_for :identity do %>
         <%= form.error_messages unless employee_errors[:civil_state].blank? %>
         <%= render :partial => 'employee_identity', :object => employee, :locals => {:form => form, :authorization => (sensitive_data_authorization or is_owner)}%>
+      <% end %>
+      
+      <% t.content_for :jobs do %>
+        <%= form.error_messages unless employee_errors[:jobs].blank? %>
+        <%= render :partial => 'employee_jobs', :object => employee.jobs, :locals => {:form => form, :employee => employee }%>
       <% end %>
       
       <% if job_contract_authorization or is_owner %>

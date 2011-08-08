@@ -106,6 +106,8 @@ module ActionView
       options = { :display_checkbox => true,
                   :allow_multiple_selection => true }.merge(options)
       
+      path_options = { :authenticity_token => form_authenticity_token }.merge(options[:path_options] || {})
+      
       @context_menu_classes ||= []
       klass, html = object.class, ""
       
@@ -119,7 +121,7 @@ module ActionView
 #        @context_menu_classes << klass
 #      end
       
-      html << javascript_tag("new ContextMenu('#{context_menu_path(:authenticity_token => form_authenticity_token)}', '#{selectable_item_html_class}')")
+      html << javascript_tag("new ContextMenu('#{CGI.unescapeHTML(context_menu_path(path_options))}', '#{selectable_item_html_class}')")
       html << hidden_field_tag("#{klass.name.underscore}_single_selection_template", options[:single_selection_template]) if options[:single_selection_template]
       html << hidden_field_tag("#{klass.name.underscore}_multiple_selection_template", options[:multiple_selection_template]) if options[:multiple_selection_template]
       # end OPTIMIZE

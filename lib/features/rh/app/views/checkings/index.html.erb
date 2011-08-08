@@ -1,48 +1,39 @@
- <%=stylesheet_link_tag_with_theme_support "rh/checking"%>
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'rh/rh' %>
+  <%= stylesheet_link_tag_with_theme_support "rh/checking" %>
+<% end %>
 
 <h1>Pointages</h1>
-<div class="presentation-medium">  
-  <%# J'appel à la méthode qui va afficher un message d'information si l'utilisateur va pointer a la place d'un autre employé''%>
-  <%=display_as_checking_warning(@as_employee)%>   
-
+<div>  
+  <%= display_as_checking_warning(@as_employee) %>
+  
   <div class="date_paginate">
-        <span class="precedent"><%=link_to "Précédent", :action => "index", :date => @date.yesterday,:as_employee_id => @as_employee_id %></span>
-        <span class="calendar"><%= calendar_date_field_tag("checkings",:date, :default => @date, :on_select => calendar_location(@as_employee_id) )%></span>
-        <span class="next"><%=link_to "Suivant", :action => "index", :date => @date.next ,:as_employee_id => @as_employee_id%></span>
+    <span class="precedent"><%= link_to "<&nbsp;Jour&nbsp;précédent", :action => "index", :date => @date.yesterday, :as_employee_id => @as_employee_id %></span>
+    <span class="calendar"><%= calendar_date_field_tag("checkings", :date, :default => @date, :on_select => calendar_location(@as_employee_id) )%></span>
+    <span class="next"><%= link_to "Jour&nbsp;suivant&nbsp;>", :action => "index", :date => @date.next, :as_employee_id => @as_employee_id %></span>
   </div>
-
-  <table class="no_nth">
+  
+  <table class="checkings no_nth">
     <thead>
       <tr>
-        <th class="civility" rowspan="3">Civilité</th>
-        <th class="fullname" rowspan="3">Nom Complet</th>
+        <th rowspan="2"><%= toggle_selectable_items_link(image_tag('confirm_16x16.png'), 'employee') %></th>
+        <th class="civility" rowspan="2">Civilité</th>
+        <th class="employee" rowspan="2">Employé</th>
         <th colspan="2">Matinée</th>
         <th colspan="2">Aprés Midi</th>
-        <th class="cumul_hours" rowspan="3">Cumul</th>
-        <th class="balance_hours" rowspan="3">+ / -</th>
-      <tr>
+        <th class="total_worked_hours" rowspan="2">Cumul</th>
+        <th class="balance_hours" rowspan="2">+&nbsp;/&nbsp;-</th>
       </tr>
+      <tr>
         <th class="time_slot">Arrivé</th>
         <th class="time_slot">Départ</th>
         <th class="time_slot">Arrivé</th>
         <th class="time_slot">Départ</th>
       </tr>
     </thead>
-        <tr class="group">                    <td colspan="8"> </td></tr>
     <tbody>
-
-<%# 
-  Pour chaque employé d'un service pour une date si l'employé possède un pointage je récupère ces information 
-  pour l'afficher ou bien je simule un pointage avec les horaires de services effectuer par défault
-%>
-<% 
-  @subordinates.each do |employee| 
-    checking = employee.checkings.first(:conditions => ['date = ? ' , @date]) || employee.checkings.build(:date => @date)
-%>
-  <%# Pour afficher la ligne correspondant a cet employé je fait appel au partial qui va effectuer ce traitement %>
-  <%= render :partial => "checkings/checking_in_one_line" , :object => checking , :locals => {:employee => employee}%>
-<%end%>
-      </tbody>
-    </table>  
-
+        <%= render :partial => 'checkings/checking_in_one_line', :collection => @subordinates.collect{ |s| s.find_or_build_checking_at(@date) },
+                                                                 :locals => { :as_employee_id => @as_employee_id } %>
+    </tbody>
+  </table>  
 </div>

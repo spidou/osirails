@@ -11,7 +11,6 @@ class CreateCheckings < ActiveRecord::Migration
     end
     
     #execute "ALTER TABLE checkings ADD CONSTRAINT date_employee_id_key UNIQUE (date, employee_id);"
-
   end
 
   def self.down

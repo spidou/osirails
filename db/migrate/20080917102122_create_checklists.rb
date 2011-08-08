@@ -1,4 +1,3 @@
-
 class CreateChecklists < ActiveRecord::Migration
   def self.up
     create_table :checklists do |t|

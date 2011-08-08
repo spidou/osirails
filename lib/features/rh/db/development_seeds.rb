@@ -57,7 +57,6 @@ john.user.enabled = true
 john.user.save!
 
 
-
 #### another employee ####
 employee = john.clone
 employee.first_name = "Jane"
@@ -81,5 +80,33 @@ employee.job_contracts.create do |j|
   j.job_contract_type_id = JobContractType.first(:conditions => ["limited=true"]).id
   j.salary               = "1500"
 end
+
+# leaves (useful for checkings)
+Leave.create!(:employee => Employee.find_by_first_name("Jane"), :leave_type => LeaveType.first, :start_date => Date.today - 20, :end_date => Date.today - 18, :start_half => false, :end_half => false, :duration => 2)
+Leave.create!(:employee => Employee.find_by_first_name("Jane"), :leave_type => LeaveType.first, :start_date => Date.today - 16, :end_date => Date.today - 14, :start_half => true,  :end_half => false, :duration => 2)
+Leave.create!(:employee => Employee.find_by_first_name("Jane"), :leave_type => LeaveType.first, :start_date => Date.today - 12, :end_date => Date.today - 10, :start_half => false, :end_half => true,  :duration => 2)
+Leave.create!(:employee => Employee.find_by_first_name("Jane"), :leave_type => LeaveType.first, :start_date => Date.today - 8,  :end_date => Date.today - 6,  :start_half => true,  :end_half => true,  :duration => 2)
+Leave.create!(:employee => Employee.find_by_first_name("Jane"), :leave_type => LeaveType.first, :start_date => Date.today - 6,  :end_date => Date.today,      :start_half => true,  :end_half => true,  :duration => 2)
+
+# schedules (useful for checkings)
+Schedule.create(:service => Service.first, :morning_start=> 8.5, :morning_end => 12,  :afternoon_start => 13,  :afternoon_end => 16.5, :day => "Lundi")
+Schedule.create(:service => Service.first, :morning_start=> 8.5, :morning_end => 12,  :afternoon_start => 13,  :afternoon_end => 16.5, :day => "Mardi")
+Schedule.create(:service => Service.first, :morning_start=> 8.5, :morning_end => 12,  :afternoon_start => 13,  :afternoon_end => 16.5, :day => "Mercredi")
+Schedule.create(:service => Service.first, :morning_start=> 8.5, :morning_end => 12,  :afternoon_start => 13,  :afternoon_end => 16.5, :day => "Jeudi")
+Schedule.create(:service => Service.first, :morning_start=> 8.5, :morning_end => 12,  :afternoon_start => 13,  :afternoon_end => 16.5, :day => "Vendredi")
+Schedule.create(:service => Service.first, :morning_start=> 8.5, :morning_end => 12,  :afternoon_start => nil, :afternoon_end => nil,  :day => "Samedi")
+Schedule.create(:service => Service.first, :morning_start=> nil, :morning_end => nil, :afternoon_start => nil, :afternoon_end => nil,  :day => "Dimanche")
+
+# checkings
+Checking.new(:employee => Employee.find_by_first_name("Jane"), :date=> Date.today,   :absence_comment => nil,  :absence_period => nil,         :morning_start_comment => nil,  :morning_end_comment=> nil,  :afternoon_start_comment => nil,  :afternoon_end_comment => nil)
+Checking.new(:employee => Employee.find_by_first_name("Jane"), :date=> Date.today-1, :absence_comment => nil,  :absence_period => nil,         :morning_start_comment => nil,  :morning_end_comment=> nil,  :afternoon_start_comment => nil,  :afternoon_end_comment => nil)
+Checking.new(:employee => Employee.find_by_first_name("Jane"), :date=> Date.today+1, :absence_comment => nil,  :absence_period => nil,         :morning_start_comment => nil,  :morning_end_comment=> nil,  :afternoon_start_comment => nil,  :afternoon_end_comment => nil)
+Checking.new(:employee => Employee.find_by_first_name("Jane"), :date=> Date.today,   :absence_comment => "ok", :absence_period => "morning",   :morning_start_comment => nil,  :morning_end_comment=> nil,  :afternoon_start_comment => nil,  :afternoon_end_comment => nil)
+Checking.new(:employee => Employee.find_by_first_name("Jane"), :date=> Date.today,   :absence_comment => "ok", :absence_period => "afternoon", :morning_start_comment => nil,  :morning_end_comment=> nil,  :afternoon_start_comment => nil,  :afternoon_end_comment => nil)
+Checking.new(:employee => Employee.find_by_first_name("Jane"), :date=> Date.today,   :absence_comment => "ok", :absence_period => "whole_day", :morning_start_comment => nil,  :morning_end_comment=> nil,  :afternoon_start_comment => nil,  :afternoon_end_comment => nil)
+Checking.new(:employee => Employee.find_by_first_name("Jane"), :date=> Date.today,   :absence_comment => "ok", :absence_period => "morning",   :morning_start_comment => "ok", :morning_end_comment=> "ok", :afternoon_start_comment => "ok", :afternoon_end_comment => "ok")
+Checking.new(:employee => Employee.find_by_first_name("Jane"), :date=> Date.today,   :absence_comment => nil,  :absence_period => nil,         :morning_start_comment => "ok", :morning_end_comment=> nil,  :afternoon_start_comment => nil,  :afternoon_end_comment => nil)
+Checking.new(:employee => Employee.find_by_first_name("Jane"), :date=> Date.today,   :absence_comment => nil,  :absence_period => nil,         :morning_start_comment => "ok", :morning_end_comment=> "ok", :afternoon_start_comment => nil,  :afternoon_end_comment => nil)
+Checking.new(:employee => Employee.find_by_first_name("Jane"), :date=> Date.today,   :absence_comment => nil,  :absence_period => nil,         :morning_start_comment => "ok", :morning_end_comment=> "ok", :afternoon_start_comment => "ok", :afternoon_end_comment => "ok")
 
 set_default_permissions

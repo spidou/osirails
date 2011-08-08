@@ -1,0 +1,15 @@
+<%
+checking = @object.find_or_build_checking_at(@date)
+%>
+<% display_context_menu do |c| %>
+  <%= c.title Checking.human_name %>
+  
+  <% buttons = checking_action_buttons(checking) %>
+  <% if buttons.any? %>
+    <% buttons.each do |button| %>
+      <%= c.entry button %>
+    <% end %>
+  <% else %>
+    <%= c.entry "Aucune action disponible" %>
+  <% end %>
+<% end %>

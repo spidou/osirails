@@ -1,112 +1,83 @@
-<%# Ce fichier représente le partial correspondant à l'affichage du formulaire de pointage %>
 <% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'rh/rh' %>
+  <%= stylesheet_link_tag_with_theme_support 'rh/checking' %>
   <%= javascript_include_tag 'rh/checkings' %>
-  <%=stylesheet_link_tag_with_theme_support "rh/checking"%>
 <% end %>
 
-<%# Pour afficher une bande d'information sur l'employé je fait appel a un partial qui effectura cet affichage''%>
-<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+<%= render :partial => 'employees/employee_summary', :locals => { :employee => @employee } %>
 
-<%# J'instancie une variable qui va récupérer les heures de saisies par palier de 15 minutes.%>
-<%@hours =  array_hour_to_hash_hour(step_hours_to_array_hours_with_step(15)) %>
+<% @hours = array_hour_to_hash_hour(step_hours_to_array_hours_with_step(15)) %>
 
-
-<div class="presentation_large">
-  <%# J'appel à la méthode qui va afficher un message d'information si l'utilisateur va pointer a la place d'un autre employé''%>
+<div class="presentation_small">
   <%= display_as_checking_warning(@as_employee)%>
-  <%# Début de mon formulaire %>
+  
   <% form_for checking do |f| -%> 
-    <%= f.error_messages %>  
+    <%= hidden_field_tag "as_employee_id", @as_employee_id %>
+    <%= f.hidden_field :employee_id, :value => checking.employee.id %>
+    
+    <%= f.error_messages %>
+    
     <div class="date_paginate">
       <span class="precedent">
-        <%=link_to "Précédent", :action => "new", :id => checking.id ,:employee_id => @employee.id,:date => @date.yesterday , :as_employee_id => @as_employee_id%>
+        <%= link_to "Précédent", :action => "new", :id => checking.id, :employee_id => @employee.id, :date => @date.yesterday, :as_employee_id => @as_employee_id %>
       </span>
-      <span class="calendar"><%= f.calendar_date_select(:date, :default => @date , :displayed_format => "%A %d %B %Y",:on_select => form_calendar_location(@as_employee_id,@employee.id)) %></span>
+      <span class="calendar"><%= f.calendar_date_select(:date, :default => @date, :displayed_format => "%A %d %B %Y", :on_select => form_calendar_location(@as_employee_id,@employee.id)) %></span>
       <span class="next">
-        <%=link_to "Suivant",  :action => "new" , :id => checking.id ,:employee_id => @employee.id ,:date => @date.next,:as_employee_id => @as_employee_id %>
+        <%= link_to "Suivant", :action => "new", :id => checking.id, :employee_id => @employee.id, :date => @date.next, :as_employee_id => @as_employee_id %>
       </span>
     </div>
-
-    <%# Appel à la méthode qui va afficher un message d'avertissement si l'employé ne possède pas des heures de services %>
+    
     <%= display_no_worked_warning(checking) %>
-    <%# Appel à la méthode qui va afficher un message d'avertissement si l'employé est en congé %>
     <%= display_leave_warning(checking) %>
-
-    <%= hidden_field_tag "as_employee_id", @as_employee_id %>
-    <%= f.hidden_field :employee_id, :value =>checking.employee.id %>
-
+    
     <h2>Absence</h2>
-    <div class="form_absence">
-      <p>         
-        <span class="absence_choice">  
-          <%= f.label("Tranche horaire") %>
-          <%= f.select :absence_period,Checking::ABSENCE_PERIOD %>
-        </span>
-        <span class="comment">
-          <%= f.label("Motif ") %>
-          <%= f.text_field :absence_comment %>
-        </p>
-    </div>
+    <p class="absence">         
+      <%= f.label :absence_period %>
+      <%= f.select :absence_period, Checking::ABSENCE_PERIODS.map{ |p| [t("view.checking.absence_periods.#{p || 'nil'}"), p] } %>
+      
+      <%= f.label :absence_comment %>
+      <%= f.text_field :absence_comment %>
+    </p>
 
     <h2>Présence</h2>
-    <div class="presentation_in_columns">
-      <div class="form_title_hours">
-        <span class="morning_title">  
-          <h3>Matinée</h3>
-        </span>
-        <span class="afternoon_title">  
-          <h3>Aprés midi</h3>
-        </span>
+    <div class="presentation_small presentation_in_columns">
+      <div class="morning_hours">
+        <h3>Matinée</h3>
+        <p>
+          <%= f.label("Arrivé") %>
+          <%= f.select(:morning_start_hours, @hours, :include_blank => true) %>
+          
+          <%= f.label("Motif") %>
+          <%= f.text_field :morning_start_comment %>
+        </p>
+        <p> 
+          <%= f.label("Départ") %>
+          <%= f.select(:morning_end_hours, @hours, :include_blank => true) %>
+          
+          <%= f.label("Motif") %>
+          <%= f.text_field :morning_end_comment %>
+        </p>
       </div>
-
-      <div class="form_presence_hours">
-        <div class="morning_hours">
-          <p class="start_hours">         
-            <span class="seleted_hours">
-              <%= f.label("Arrivé") %>
-              <%= f.select(:morning_start_hours,@hours,:include_blank => true) %>
-            </span>
-            <span class="comment">
-              <%= f.label("Motif ") %>
-              <%= f.text_field :morning_start_comment %>
-            </span>
-          </p>
-          <p class="end_hours"> 
-            <span class="seleted_hours">
-              <%= f.label("Départ") %>
-              <%= f.select(:morning_end_hours,@hours,:include_blank => true) %>
-            </span>
-            <span class="comment">
-              <%= f.label("Motif ") %>
-              <%= f.text_field :morning_end_comment %>
-            </span>
-          </p>
-        </div>
-        <div class="afternoon_hours">
-          <p class="start_hours">         
-            <span class="seleted_hours">
-              <%= f.label("Arrivé") %>
-              <%= f.select(:afternoon_start_hours,@hours,:include_blank => true ) %>
-            </span>
-            <span class="comment">
-              <%= f.label("Motif ") %>
-              <%= f.text_field :afternoon_start_comment %>
-            </span>
-          </p>
-          <p class="end_hours"> 
-            <span class="seleted_hours">
-              <%= f.label("Départ") %>
-              <%= f.select(:afternoon_end_hours,@hours,:include_blank => true) %>
-            </span>
-            <span class="comment">
-              <%= f.label("Motif ") %>
-              <%= f.text_field :afternoon_end_comment %>
-            </span>
-          </p> 
-        </div>
+      
+      <div class="afternoon_hours">
+        <h3>Aprés midi</h3>
+        <p>
+          <%= f.label("Arrivé") %>
+          <%= f.select(:afternoon_start_hours, @hours, :include_blank => true ) %>
+          
+          <%= f.label("Motif") %>
+          <%= f.text_field :afternoon_start_comment %>
+        </p>
+        <p> 
+          <%= f.label("Départ") %>
+          <%= f.select(:afternoon_end_hours, @hours, :include_blank => true) %>
+          
+          <%= f.label("Motif ") %>
+          <%= f.text_field :afternoon_end_comment %>
+        </p>
       </div>
     </div>
+    
     <%= f.form_buttons %>
-  <%# Fin de mon formulaire %>
   <% end %>
 </div>

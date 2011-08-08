@@ -1,24 +1,19 @@
-<%# Ce fichier représente le partial correspondant à l'affichage d'une ligne du tableau de visualisation de poinatage %>
-<% 
-  checking = checking_in_one_line           # => Je récupère ma variable checking qui passé dans le partial récupère le nom de ce fichier.
-  action = new_or_edit_action(checking)   # => Je regarde si l'employè possède un checking ou non pour déterminer quel icone action je dois afficher
+<%
+checking = checking_in_one_line
+employee = checking.employee
+as_employee_id ||= nil
+
+action = new_or_edit_action(checking)
 %>
-      <%# Création de la ligne de mon tableau représentant les horaires effectuer par l'employé pour une date %>
-      <tr>
-        <td><%=employee.civility.name%></td> 
 
-        <td>
-          <%=employee.fullname%>
-          <%# J'appel la méthode qui va afficher les icones d'action pour l'utilisateur %>
-          <%# Icones pour créer un pointage, pour la modification, la supression ou encore faire un pointage en tant que.. %>
-          <%=display_link_to_icon_action(action,checking,employee,@as_employee_id)%> 
-        </td>
-
-        <%# Ces six appel de méthodes display vont faire afficher les 6 dernières cellules de mon tableaux %>
-        <%=display_morning_start_td(checking)%>
-        <%=display_morning_end_td(checking)%>
-        <%=display_afternoon_start_td(checking)%>
-        <%=display_afternoon_end_td(checking)%> 
-        <%=display_total_worked_hours_td(checking)%>
-        <%=display_balance_hours_td(checking)%>
-      </tr>
+<tr class="employee_tr">
+  <td class="selector"><%= context_menu(employee, 'employee_tr', :path_options => { :date => checking.date, :as_employee_id => @as_employee_id }) %></td>
+  <td class="civility"><%= employee.civility.name %></td>
+  <td class="fullname"><%= employee.fullname %></td>
+  <%= display_morning_start_td(checking) %>
+  <%= display_morning_end_td(checking) %>
+  <%= display_afternoon_start_td(checking) %>
+  <%= display_afternoon_end_td(checking) %>
+  <%= display_total_worked_hours_td(checking) %>
+  <%= display_balance_hours_td(checking) %>
+</tr>

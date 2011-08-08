@@ -14,6 +14,6 @@ class CreateServiceDeliveries < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :chekings
+    drop_table :service_deliveries
   end
 end

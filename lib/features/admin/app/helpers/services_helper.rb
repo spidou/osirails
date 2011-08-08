@@ -93,9 +93,9 @@ module ServicesHelper
     else
       formated_hour = " H "
     end
-    
   end
-  def days_sort (schedules)
+  
+  def days_sort(schedules)
     tab = []
     i=1
     week = Time::DAYS

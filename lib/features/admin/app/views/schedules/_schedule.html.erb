@@ -24,11 +24,13 @@
       </tr>
     </thead>
     
-    <% if @schedules.nil?%>
-      <% params[:schedules].nil? ? days = Time::DEFAULT_DAYS_ARRAY : days = format_param(params[:schedules])%>
-    <% else %> 
-      <%( params[:schedules].nil? )? ( (@schedules == [] )? days = Time::DEFAULT_DAYS_ARRAY : days = days_sort(@schedules) ) : ( days = format_param(params[:schedules]) ) %>
-    <% end %>
+<%
+if @schedules.nil?
+  days = params[:schedules].nil? ? Time::DEFAULT_DAYS_ARRAY : format_param(params[:schedules])
+else
+  days = params[:schedules].nil? ? ( @schedules == [] ? Time::DEFAULT_DAYS_ARRAY : days_sort(@schedules) ) : format_param(params[:schedules])
+end
+%>
     
     <tbody>
     <% days.each_with_index do |elmnt,index|%>
@@ -46,7 +48,7 @@
   </table>
 
   <% 7.times do |i| %>
-    <% @schedules.nil? ? string = ' H | H | H | H |' : string = schedule_to_s(days[i+1]) %>
-    <%= hidden_field_tag( "schedules[#{i+1}]", @schedules.nil? ? ' H | H | H | H |' : schedule_to_s(days[i+1]) )%>
+    <% string = days[i+1].nil? ? ' H | H | H | H |' : schedule_to_s(days[i+1]) %>
+    <%= hidden_field_tag( "schedules[#{i+1}]", days[i+1].nil? ? ' H | H | H | H |' : schedule_to_s(days[i+1]) )%>
   <% end %>
 </fieldset>

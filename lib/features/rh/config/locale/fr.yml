@@ -18,16 +18,16 @@ fr:
       checking:
         employee_id: "Employé"
         date: "Date"
-        absence_period: "Absence"
-        absence_comment: "Commentaire de l'absence"
+        absence_period: "Période d'absence"
+        absence_comment: "Motif"
         morning_start: "Heures d'arrivée de la matinée"
         morning_end: "Heures de départ de la matinée"
         afternoon_start: "Heures d'arrivée de l'aprés-midi"
         afternoon_end: "Heures de départ de l'aprés-midi"
-        morning_start_comment: "Commentaire d'arrivée de la matinée"
-        morning_end_comment: "Commentaire de départ de la matinée"
-        afternoon_start_comment: "Commentaire d'arrivée de l'aprés-midi"
-        afternoon_end_comment: "Commentaire de départ de l'aprés-midi"
+        morning_start_comment: "Motif"
+        morning_end_comment: "Motif"
+        afternoon_start_comment: "Motif"
+        afternoon_end_comment: "Motif"
       employee:
         address: "Adresse postale"
         employee_sensitive_data: "Données privées"
@@ -126,8 +126,8 @@ fr:
               absence_afternoon: "ne peut être saisie car l'employé est en absent l'après-midi"
             base:
               leave_whole_day: "Vous ne pouvez par faire de pointage car l'employé est en congé toute la journée"
-              absence_whole_day:  "Vous ne pouvez saisir la présence de l'employé car il est absent toute la journée"
-              complete_checking:   "Vous devez saisir au moins un des champs du formulaire"
+              absence_whole_day: "Vous ne pouvez saisir la présence de l'employé car il est absent toute la journée"
+              unfilled_checking: "Vous devez saisir au moins un des champs du formulaire"
   integrated_search:
     attributes:
       employee:
@@ -169,9 +169,15 @@ fr:
     query:
       all_employees: "Tous les employés"
   view:
-    user:
-      enabled_users: "Utilisateurs activés"
-      disabled_users: "Utilisateurs désactivés"
+    checking:
+      absence_periods:
+        afternoon: "Après-midi"
+        morning: "Matinée"
+        whole_day: "Journée entière"
+        nil: ""
     summary:
       work_in_service: "Travail dans le service {{p}}"
       in_entreprise_since: "Dans l'entreprise depuis {{p}}"
+    user:
+      enabled_users: "Utilisateurs activés"
+      disabled_users: "Utilisateurs désactivés"
