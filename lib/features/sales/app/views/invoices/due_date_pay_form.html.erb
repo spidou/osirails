@@ -5,7 +5,7 @@
 
 <%= order_header %>
 
-<h1>Signaler le règlement partiel de la facture par le CLIENT</h1>
+<%= title "Signaler le règlement partiel de la facture par le CLIENT" %>
 
 <div class="presentation_medium">
   <%= render :partial => 'invoices_list', :object => [ Invoice.find(@invoice.id) ] %>

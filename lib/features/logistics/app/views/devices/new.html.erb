@@ -2,5 +2,8 @@
   <%= devices_link(:link_text => "Voir tous les périphériques") %>
 <% end %>
 
-<h1>Nouveau p&eacute;riph&eacute;rique</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Nouveau périphérique" %>
+
 <%= render :partial => "tools/tool" , :locals => {:tool => @device}%>

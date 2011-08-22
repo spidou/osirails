@@ -11,9 +11,11 @@
   <%= employee_link(@employee,:link_text => "Voir l'employé") %>
 <% end %>
 
-<h1>Historique des contrat de travail</h1>
-
 <%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+
+<% title_context "Ressources Humaines" %>
+<% title_context @employee.fullname %>
+<%= title "Historique des contrats de travail" %>
 
 <div class='presentation_medium'>
   <% if @job_contracts.empty? %>

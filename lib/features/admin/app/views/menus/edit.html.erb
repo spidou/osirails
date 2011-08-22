@@ -7,7 +7,9 @@
 	<%= menus_link %>
 <% end %>
 
-<h1>Modifier un menu</h1>
+<% title_context "Administration" %>
+<%= title "Modifier le menu" %>
+
 <div class="presentation_medium">
   <% form_for(@menu) do |form| %>
     <%= render :partial => @menu %>

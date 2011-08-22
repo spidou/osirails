@@ -2,7 +2,8 @@
      <%= javascript_include_tag 'admin/menus' %>
 <% end %>
 
-<h1>Modifier les permissions du r&ocirc;le "<%= @role.name%>"</h1>
+<% title_context "Administration" %>
+<%= title "Modifier les permissions du rôle #{@role.name}" %>
 
 <div>
   <% form_tag( role_permission_path(params[:id]), :method => 'put' ) do |form| %>

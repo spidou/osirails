@@ -1,4 +1,6 @@
-<h1>Nouveau consommable</h1>
+<% title_context "Stocks" %>
+<%= title "Nouveau consommable" %>
+
 <%= render :partial => 'supplies/supply', :object => @supply, :locals => { :supply_class => @supply_class,
                                                                            :supply_sub_category_class => @supply_sub_category_class,
                                                                            :supply_type_class => @supply_type_class,

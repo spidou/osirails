@@ -4,7 +4,7 @@
 
 <%= generate_graphic_items_contextual_menu_partial %>
 
-<h1>Tous les documents graphiques du dossier</h1>
+<%= title "Les documents graphiques" %>
 <div class="resources">
   <% unless @enabled_graphic_documents.empty? %>
     <%= render :partial => 'graphic_items/graphic_item_summary', :collection => @enabled_graphic_documents %>

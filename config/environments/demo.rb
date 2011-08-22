@@ -4,7 +4,7 @@
 # config.logger = SyslogLogger.new
 
 # Full error reports are disabled and caching is turned on
-config.action_controller.consider_all_requests_local = true
+config.action_controller.consider_all_requests_local = false
 config.action_controller.perform_caching             = true
 
 # FIXME Remove this line at Rails 2.3 upgrading

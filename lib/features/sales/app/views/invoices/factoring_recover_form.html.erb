@@ -4,7 +4,7 @@
 
 <%= javascript_include_tag 'sales/invoice' %>
 
-<h1>Signaler le définancement de la facture par le FACTOR</h1>
+<%= title "Signaler le définancement de la facture par le FACTOR" %>
 
 <div class="presentation_medium">
   <%= render :partial => 'invoices_list', :object => [ Invoice.find(@invoice.id) ] %>

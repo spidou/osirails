@@ -10,5 +10,8 @@
   <%= vehicle_tool_events_link(@vehicle, :link_text => "Voir tous les évènements du véhicule") %>
 <% end %>
 
-<h1>Fiche d&eacute;taill&eacute;e du v&eacute;hicule</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Fiche détaillée du véhicule" %>
+
 <%= render :partial => "tools/tool", :locals => {:tool => @vehicle} %>

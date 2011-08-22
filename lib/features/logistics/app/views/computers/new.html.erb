@@ -2,5 +2,8 @@
   <%= computers_link(:link_text => "Voir tous les ordinateurs") %>
 <% end %>
 
-<h1>Nouvel ordinateur</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Nouvel ordinateur" %>
+
 <%= render :partial => "tools/tool" , :locals => {:tool => @computer}%>

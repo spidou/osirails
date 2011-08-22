@@ -8,7 +8,8 @@
   <%= actives_employees_link(params[:all_employees]) %>
 <% end %>
 
-<h1><%= title_for_search %></h1>
+<% title_context "Ressources Humaines" %>
+<%= title title_for_search %>
 
 <div>
   <%= table_for_search %>

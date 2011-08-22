@@ -32,7 +32,7 @@
     <%= daynames_and_monthnames_retrieval %>   
     
     <%= yield :header %>
-		<title>Page d'accueil - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
+		<title><%= yield(:title) || t('view.untitled_page', :default => 'Untitled') %> &lt; EMR (Enseigne Maintenance Réunion)</title>
 	</head>
 	<body>
     <!-- BANNIERE -->

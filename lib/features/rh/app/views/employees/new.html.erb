@@ -2,5 +2,7 @@
 	<%= employees_link(:link_text => "Voir tous les employés") %>
 <% end %>
 
-<h1>Nouvel employ&eacute;</h1>
+<% title_context "Ressources Humaines" %>
+<%= title "Nouvel employé" %>
+
 <%= render :partial => @employee%>

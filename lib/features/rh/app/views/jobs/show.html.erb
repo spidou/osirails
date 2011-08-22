@@ -8,5 +8,7 @@
   <%= jobs_link(:link_text => "Voir toutes les fiches de poste") %>
 <% end %>
 
-<h1>Fiche d&eacute;taill&eacute;e du poste "<%=h@job.name%>"</h1>
+<% title_context "Ressources Humaines" %>
+<%= title "Fiche détaillée de la fiche de poste" %>
+
 <%= render :partial => @job, :object => @job%>

@@ -27,7 +27,7 @@ action = params[:action].gsub('_form', '')
   <%= render :partial => 'delivery_notes/delivery_notes', :object => [ delivery_note ] %>
 </div>
 
-<h1><%= header %></h1>
+<%= title header %>
 
 <%
 delivery_intervention_errors = { :schedule     => delivery_intervention.errors.any? && delivery_intervention.scheduled? ? 'errors' : '',

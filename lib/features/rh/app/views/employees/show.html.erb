@@ -21,5 +21,7 @@
   <%= employee_leaves_link(@employee, :link_text => "Historique des congés") %>
 <% end %>
 
-<h1>Fiche d&eacute;taill&eacute;e de l&apos;employ&eacute;</h1>
+<% title_context "Ressources Humaines" %>
+<%= title "Fiche détaillée de l'employé" %>
+
 <%= render :partial => @employee %>

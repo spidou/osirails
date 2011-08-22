@@ -11,7 +11,7 @@ fr:
       graphic_document: "Document graphique"
       mockup: "Maquette"
       invoice: "Facture"
-      order: "Projet"
+      order: "Dossier"
       payment: "Paiement"
       press_proof: "BAT"
       product: "Produit"

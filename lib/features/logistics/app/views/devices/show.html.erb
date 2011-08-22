@@ -10,5 +10,8 @@
   <%= device_tool_events_link(@device, :link_text => "Voir tous les évènements du périphérique") %>
 <% end %>
 
-<h1>Fiche d&eacute;taill&eacute;e du p&eacute;riph&eacute;rique</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Fiche détaillée du périphérique" %>
+
 <%= render :partial => "tools/tool", :locals => {:tool => @device} %>

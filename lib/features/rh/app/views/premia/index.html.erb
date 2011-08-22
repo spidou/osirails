@@ -3,9 +3,12 @@
   <%= employees_link(:link_text => "Voir tous les employés") %>
 <% end %>
 
-<h1>Historique des primes</h1>
-
 <%= render :partial => 'employees/employee_summary', :locals => { :employee => @employee } %>
+
+<% title_context "Ressources Humaines" %>
+<% title_context @employee.fullname %>
+<%= title "Historique des primes" %>
+
 <div class="presentation-medium">
   <% if @premia.empty? %>
     <p>Aucune prime</p>

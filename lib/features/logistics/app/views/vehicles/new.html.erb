@@ -2,5 +2,8 @@
   <%= vehicles_link(:link_text => "Voir tous les véhicules") %>
 <% end %>
 
-<h1>Nouveau v&eacute;hicule</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Nouveau véhicule" %>
+
 <%= render :partial => "tools/tool" , :locals => { :tool => @vehicle } %>

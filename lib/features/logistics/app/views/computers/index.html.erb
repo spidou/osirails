@@ -2,7 +2,9 @@
   <%= new_computer_link(:link_text => "Nouvel ordinateur") %>
 <% end %>
 
-<h1>Les ordinateurs</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Les ordinateurs" %>
 
 <div class='presentation_medium'>
   <%= render :partial => 'tools/index', :locals => {:tools => @computers}%>

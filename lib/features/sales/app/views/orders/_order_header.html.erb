@@ -3,6 +3,8 @@
   <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
 <% end -%>
 
+<% title_context "#{Order.human_name} n°#{@order.reference} : #{@order.title}" %>
+
 <%# add_contextual_menu_item :order_progress do %>
   <!-- <div id="order_progress"><object data="<%# formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object></div> -->
   <%# display_previsional_delivery_and_remaining_days(@order) %>

@@ -10,5 +10,8 @@
   <%= machine_tool_events_link(@machine, :link_text => "Voir tous les évènements de la machine") %>
 <% end %>
 
-<h1>Fiche d&eacute;taill&eacute;e de la machine</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Fiche détaillée de la machine" %>
+
 <%= render :partial => "tools/tool", :locals => {:tool => @machine} %>

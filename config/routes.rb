@@ -66,3 +66,7 @@ rescue ActiveRecord::StatementInvalid, Mysql::Error => e
   error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
   RAKE_TASK ? puts(error) : raise(error)
 end
+
+ActionController::Routing::Routes.add_routes do |map|
+  map.connect '*path', :controller => 'home', :action => 'rescue_404' unless ::ActionController::Base.consider_all_requests_local
+end

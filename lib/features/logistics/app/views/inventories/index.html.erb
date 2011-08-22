@@ -8,7 +8,10 @@
   <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>
 
-<h1>Les inventaires</h1>
+<% title_context "Stocks" %>
+<% title_context "Entrées/Sorties" %>
+<%= title "Les inventaires" %>
+
 <div>
   <% if @inventories.any? %>  
     <table>

@@ -2,5 +2,8 @@
   <%= machines_link(:link_text => "Voir toutes les machines") %>
 <% end %>
 
-<h1>Nouvelle machine</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Nouvelle machine" %>
+
 <%= render :partial => "tools/tool" , :locals => {:tool => @machine}%>

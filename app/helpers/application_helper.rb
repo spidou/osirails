@@ -1,6 +1,17 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   
+  def title(string, html_options = {})
+    @title_context ||= ""
+    content_for(:title) { string + @title_context }
+    content_tag(:h1, string, html_options)
+  end
+  
+  def title_context(string)
+    @title_context ||= ""
+    @title_context = " &lt; " + string + @title_context
+  end
+  
   def file_upload
     file_field 'upload', 'datafile'
   end

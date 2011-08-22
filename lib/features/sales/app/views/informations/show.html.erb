@@ -3,9 +3,9 @@
   <%= stylesheet_link_tag_with_theme_support 'sales/order' %>
 <% end %>
 
-<h1>Fiche détaillée du dossier</h1>
-
 <%= order_header %>
+
+<%= title "Fiche détaillée du dossier" %>
 
 <%
 documents_count = [@order.signed_quote, @order.press_proofs.signed, @order.delivery_notes.signed, @order.invoices.paid].flatten.compact.size

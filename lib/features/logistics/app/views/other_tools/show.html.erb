@@ -1,14 +1,17 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_other_tool_link(:link_text => "Nouvel équipement non référencé") %>
-  <%= edit_other_tool_link(@other_tool, :link_text => "Modifier l'équipement non référencé") %>
-  <%= delete_other_tool_link(@other_tool, :link_text => "Supprimer l'équipement non référencé") %>
+  <%= new_other_tool_link(:link_text => "Nouvel équipement divers") %>
+  <%= edit_other_tool_link(@other_tool, :link_text => "Modifier l'équipement divers") %>
+  <%= delete_other_tool_link(@other_tool, :link_text => "Supprimer l'équipement divers") %>
   <%= new_other_tool_tool_event_link(@other_tool, :link_text => "Nouvel évènement") if @other_tool.can_be_edited? %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= other_tools_link(:link_text => "Voir tous les équipements non référencés") %>
-  <%= other_tool_tool_events_link(@other_tool, :link_text => "Voir tous les évènements de l'équipement non référencé") %>
+  <%= other_tools_link(:link_text => "Voir tous les équipements divers") %>
+  <%= other_tool_tool_events_link(@other_tool, :link_text => "Voir tous les évènements de l'équipement divers") %>
 <% end %>
 
-<h1>Fiche d&eacute;taill&eacute;e de l&apos;&eacute;quipement non r&eacute;f&eacute;renc&eacute;</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Fiche détaillée de l'équipment divers" %>
+
 <%= render :partial => "tools/tool", :locals => {:tool => @other_tool} %>

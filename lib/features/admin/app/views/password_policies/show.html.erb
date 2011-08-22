@@ -4,5 +4,7 @@
                edit_password_policies_path) %>
 <% end %>
 
-<h1>Politique de s&eacute;curit&eacute;</h1>
+<% title_context "Administration" %>
+<%= title "Configuration de la sécurité" %>
+
 <%= render :partial => 'password_policies' %>

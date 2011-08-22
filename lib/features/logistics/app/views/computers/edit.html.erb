@@ -10,5 +10,8 @@
   <%= computer_tool_events_link(@computer, :link_text => "Voir tous les évènements de l'ordinateur") %>
 <% end %>
 
-<h1>Modifier  l&apos;ordinateur</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Modifier l'ordinateur" %>
+
 <%= render :partial => "tools/tool", :locals => {:tool => @computer} %>

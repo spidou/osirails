@@ -1,4 +1,7 @@
-<h1>Modifier le salaire</h1>
+<% title_context "Ressources Humaines" %>
+<% title_context @employee.fullname %>
+<%= title "Modifier le salaire" %>
+
 <div class="presentation medium">
 
 <% form_for([@employee, @salary]) do |form|%>

@@ -7,7 +7,8 @@
   <%= employees_link(:link_text => "Voir tous les employés") %>
 <% end %>
 
-<h1>Nouveau cong&eacute;</h1>
+<% title_context "Ressources Humaines" %>
+<%= title "Nouveau congé" %>
 
 <%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
 <%= render :partial => "leave"%>

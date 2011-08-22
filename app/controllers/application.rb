@@ -43,6 +43,10 @@ class ApplicationController < ActionController::Base
   
   @@models ||= {}
   
+  def rescue_404
+    render_custom_error_page(404)
+  end
+  
   def context_menu
     class_name_and_object_ids = params.detect{ |h| h.first.end_with?("_ids") }            # ["resource_ids", ["1"]]
     class_name                = class_name_and_object_ids.first.gsub("_ids", "").camelize # "Resource"
@@ -67,6 +71,24 @@ class ApplicationController < ActionController::Base
   end
     
   protected
+    def rescue_action_in_public(exception)
+      case exception
+      when ActiveRecord::RecordNotFound, ActionController::UnknownAction, ActionController::RoutingError
+        render_custom_error_page(404)
+      else
+        error_access_page(500)
+      end
+    end
+    
+    def render_custom_error_page(status)
+      render :template => "error_pages/#{status}", :status => status
+    end
+    
+    # Tell Rails to stop sucking. Normally Rails handles requests made to localhost or 127.0.0.1 differently than all others (http://brian.pontarelli.com/2007/01/14/handling-rails-404-and-500-errors/)
+    def local_request?
+      return false
+    end
+    
     def current_menu
       #OPTIMIZE remove the reference to step (which comes from sales feature) and override this method in the feature sales to add the step notion
       step = current_order_step if respond_to?("current_order_step")

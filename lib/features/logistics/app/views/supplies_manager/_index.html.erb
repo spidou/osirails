@@ -16,7 +16,8 @@
   <%= params[:inactives] ? display_supply_list_button(@supply_class) : display_supply_list_all_button(@supply_class) %>
 <% end %>
 
-<h1><%= title_for_search %></h1>
+<% title_context "Stocks" %>
+<%= title title_for_search %>
 
 <div>
   <%= table_for_search %>

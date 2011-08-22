@@ -2,5 +2,8 @@
   <%= new_vehicle_link(:link_text => "Nouveau véhicule") %>
 <% end %>
 
-<h1>Les v&eacute;hicules</h1>
+<% title_context "Logistique" %>
+<% title_context "Équipments" %>
+<%= title "Les véhicules" %>
+
 <%= render :partial => 'tools/index', :locals => {:tools => @vehicles}%>

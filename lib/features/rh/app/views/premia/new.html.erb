@@ -7,9 +7,11 @@
   <%= javascript_include_tag 'rh/premium' %>
 <% end %>
 
-<h1>Nouvelle Prime</h1>
-
 <%= render :partial => 'employees/employee_summary', :locals => { :employee => @employee } %>
+
+<% title_context "Ressources Humaines" %>
+<% title_context @employee.fullname %>
+<%= title "Nouvelle prime" %>
 
 <div class="presentation_small">
   <h2>Prime</h2>

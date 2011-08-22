@@ -2,7 +2,9 @@
   <%= javascript_include_tag "logistics/supplier_supplies" %>
 <% end %>
 
-<h1>Modifier le consommable</h1>
+<% title_context "Stocks" %>
+<%= title "Modifier le consommable" %>
+
 <%= render :partial => 'supplies/supply', :object => @supply, :locals => { :supply_class => @supply_class,
                                                                            :supply_sub_category_class => @supply_sub_category_class,
                                                                            :supply_type_class => @supply_type_class,

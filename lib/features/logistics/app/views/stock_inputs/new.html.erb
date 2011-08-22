@@ -9,6 +9,9 @@
   <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>
 
-<h1>Nouvelle entrée de stock</h1>
+<% title_context "Stocks" %>
+<% title_context "Entrées/Sorties" %>
+<%= title "Nouvelle entrée de stock" %>
+
 <%= render :partial => 'stock_flows/stock_flow', :object => @stock_flow, :locals => { :supply_class => @supply_class,
                                                                                       :supplies     => @supplies } %>

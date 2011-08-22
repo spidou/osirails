@@ -122,7 +122,30 @@ fr:
         record_invalid: "La validation a échoué : {{errors}}"
         not_blank: "ne doit pas être rempli(e)"
   
+  error_page: # http://www.codeshttp.com/
+    code_400:
+      title: "400 - Mauvaise requête"
+      body: "La requête HTTP n'a pas pu être comprise par le serveur en raison d'une syntaxe erronée."
+      help: "Le problème peut provenir d'un navigateur web trop récent ou d'un serveur HTTP trop ancien."
+    code_403:
+      title: "403 - Interdit"
+      body: "Le serveur HTTP a compris la requête, mais refuse de la traiter."
+    code_404:
+      title: "404 - Non trouvé"
+      body: "Le serveur n'a rien trouvé qui corresponde à l'adresse (URI) demandée."
+      help: "Cela signifie que l'URL que vous avez tapée ou cliquée est mauvaise ou obsolète et ne correspond à aucun document existant sur le serveur (vous pouvez essayez de supprimer progressivement les composants de l'URL en partant de la fin pour éventuellement retrouver un chemin d'accès existant)."
+    code_412:
+      title: "412 - Précondition échouée"
+      body: "Les conditions spécifiées dans la requête ne sont pas remplies."
+    code_500:
+      title: "500 - Erreur interne du serveur"
+      body: "Le serveur a rencontré une condition inattendue qui l'a empêché de traiter la requête."
+      help: "Cette erreur peut par exemple être le résultat d'une mauvaise configuration du serveur, ou d'une ressource épuisée ou refusée au serveur sur la machine hôte."
+  
   view:
+    contextual_menu_sections:
+      possible_actions: "Actions Possibles"
+      useful_links: "Liens Utiles"
     links:
       confirm: "Êtes-vous sûr ?"
       delete: "Supprimer"
@@ -130,6 +153,4 @@ fr:
       edit: "Modifier"
       index: "Lister"
       show: "Voir"
-    contextual_menu_sections:
-      possible_actions: "Actions Possibles"
-      useful_links: "Liens Utiles"
+    untitled_page: "Sans titre"

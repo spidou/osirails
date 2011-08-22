@@ -10,13 +10,15 @@
   <%= employees_link(:link_text => "Voir tous les employés") %>
 <% end %>
 
-<h1>Historique des cong&eacute;s</h1>
-
 <%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+
+<% title_context "Ressources Humaines" %>
+<% title_context @employee.fullname %>
+<%= title "Historique des congés" %>
 
 <div class='presentation_medium'>
 
-<% if @employee.job_contract.start_date.nil?%>
+<% if @employee.job_contract.nil? || @employee.job_contract.start_date.nil? %>
   <p>Le contrat de travail de l&apos;employ&eacute; n&apos;est pas d&eacute;fini.</p>
 <% else %>
   <% form_tag({:url => employee_leaves_path(@view_cancelled)}, { :method => :get ,:id => "leave_year_change" }) do %>

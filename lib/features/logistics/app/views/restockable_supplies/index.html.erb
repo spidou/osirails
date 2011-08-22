@@ -8,7 +8,9 @@
   <% end %>
 <% end %>
   
-<h1>Les articles &agrave; r&eacute;approvisionner</h1>
+<% title_context "Stocks" %>
+<%= title "Les articles à réapprovisionner" %>
+
 <div>
   <% if @commodities_to_restock.any? or @consumables_to_restock.any? %>  
     <%= render(:partial => "supplies_to_restock", :object => @commodities_to_restock) if @commodities_to_restock.any? %>

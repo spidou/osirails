@@ -6,7 +6,7 @@
 
 <%= generate_invoice_contextual_menu_partial %>
 
-<h1>Signaler que la facture a été envoyée au client</h1>
+<%= title "Signaler que la facture a été envoyée au client" %>
 
 <div class="presentation_medium">
   <%= render :partial => 'invoices_list', :object => [ Invoice.find(@invoice.id) ] %>
