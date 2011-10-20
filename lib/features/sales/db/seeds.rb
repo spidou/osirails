@@ -1,5 +1,128 @@
 require 'lib/seed_helper'
 
+# personalized_queries
+Query.create! do |q| # Draft Quotes (for quote management)
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.draft_quotes')
+  q.criteria      = { 'status' => { :action => '=', :value => '' } }
+  q.page_name     = "quote_management_index"
+  q.search_type   = "and"
+  q.columns       = ["order.reference", "order.title", "order.customer.name", "commercial_actor.fullname", "validity_delay", "total_with_taxes", "deposit", "order.quotation_deadline"]
+  q.order         = ["created_at:desc"]
+  q.public_access = true
+  q.per_page      = 25
+end
+
+Query.create! do |q| # Signed Quotes (for quote management)
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.signed_quotes')
+  q.criteria      = { 'status' => { :action => '=', :value => 'signed' } }
+  q.page_name     = "quote_management_index"
+  q.search_type   = "and"
+  q.columns       = ["order.reference", "order.title", "order.customer.name", "commercial_actor.fullname", "reference", "published_on", "total_with_taxes", "deposit", "signed_on"]
+  q.order         = ["signed_on:desc"]
+  q.public_access = true
+  q.per_page      = 25
+end
+
+Query.create! do |q| # Cancelled Quotes (for quote management)
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.cancelled_quotes')
+  q.criteria      = { 'status' => { :action => '=', :value => 'cancelled' } }
+  q.page_name     = "quote_management_index"
+  q.search_type   = "and"
+  q.columns       = ["order.reference", "order.title", "order.customer.name", "commercial_actor.fullname", "reference", "published_on", "sended_on", "total_with_taxes", "deposit", "cancelled_at"]
+  q.order         = ["cancelled_at:desc"]
+  q.public_access = true
+  q.per_page      = 25
+end
+
+
+Query.create! do |q| # Sent Invoices (for invoice management)
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.sent_invoices')
+  q.criteria      = { 'sended_on' => { :action => '!=', :value => '' } }
+  q.page_name     = "invoice_management_index"
+  q.search_type   = "and"
+  q.columns       = ["order.reference", "order.title", "order.customer.name", "invoice_contact.fullname", "reference", "invoice_type.title", "net_to_paid", "global_granted_delay", "number_of_due_dates", "upcoming_due_date", "factorised?", "delivery_notes", "sended_on", "status"]
+  q.order         = ["sended_on:desc"]
+  q.public_access = true
+  q.per_page      = 25
+end
+
+Query.create! do |q| # Draft Invoices (for invoice management)
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.draft_invoices')
+  q.criteria      = { 'status' => { :action => '=', :value => '' } }
+  q.page_name     = "invoice_management_index"
+  q.search_type   = "and"
+  q.columns       = ["order.reference", "order.title", "order.customer.name", "invoice_contact.fullname", "reference", "invoice_type.title", "net_to_paid", "global_granted_delay", "number_of_due_dates", "upcoming_due_date", "factorised?"]
+  q.order         = ["sended_on:desc"]
+  q.public_access = true
+  q.per_page      = 25
+end
+
+Query.create! do |q| # Abandoned Invoices (for invoice management)
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.abandoned_invoices')
+  q.criteria      = { 'status' => { :action => '=', :value => 'abandoned' } }
+  q.page_name     = "invoice_management_index"
+  q.search_type   = "and"
+  q.columns       = ["order.reference", "order.title", "order.customer.name", "invoice_contact.fullname", "reference", "invoice_type.title", "net_to_paid", "already_paid_amount", "factorised?", "abandoned_on", "abandoned_comment"]
+  q.order         = ["abandoned_on:desc"]
+  q.public_access = true
+  q.per_page      = 25
+end
+
+Query.create! do |q| # Cancelled Invoices (for invoice management)
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.cancelled_invoices')
+  q.criteria      = { 'status' => { :action => '=', :value => 'cancelled' } }
+  q.page_name     = "invoice_management_index"
+  q.search_type   = "and"
+  q.columns       = ["order.reference", "order.title", "order.customer.name", "invoice_contact.fullname", "reference", "invoice_type.title", "net_to_paid", "factorised?", "cancelled_at", "cancelled_comment"]
+  q.order         = ["cancelled_at:desc"]
+  q.public_access = true
+  q.per_page      = 25
+end
+
+
+Query.create! do |q| # Totally Paid Invoices (for payment management)
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.totally_paid_invoices')
+  q.criteria      = { 'status' => { :action => '=', :value => 'totally_paid,factoring_balance_paid' } }
+  q.page_name     = "payment_management_index"
+  q.search_type   = "and"
+  q.columns       = ["order.reference", "order.title", "order.customer.name", "invoice_contact.fullname", "reference", "invoice_type.title", "net_to_paid", "factorised?"]
+  q.order         = ["cancelled_at:desc"]
+  q.public_access = true
+  q.per_page      = 25
+end
+
+Query.create! do |q| # Abandoned Invoices (for payment management)
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.abandoned_invoices')
+  q.criteria      = { 'status' => { :action => '=', :value => 'abandoned' } }
+  q.page_name     = "payment_management_index"
+  q.search_type   = "and"
+  q.columns       = ["order.reference", "order.title", "order.customer.name", "invoice_contact.fullname", "reference", "invoice_type.title", "net_to_paid", "already_paid_amount", "factorised?", "abandoned_on", "abandoned_comment"]
+  q.order         = ["abandoned_on:desc"]
+  q.public_access = true
+  q.per_page      = 25
+end
+
+Query.create! do |q| # Cancelled Invoices (for payment management)
+  q.creator       = User.first
+  q.name          = I18n.t('seeds.query.cancelled_invoices')
+  q.criteria      = { 'status' => { :action => '=', :value => 'cancelled' } }
+  q.page_name     = "payment_management_index"
+  q.search_type   = "and"
+  q.columns       = ["order.reference", "order.title", "order.customer.name", "invoice_contact.fullname", "reference", "invoice_type.title", "net_to_paid", "factorised?", "cancelled_at", "cancelled_comment"]
+  q.order         = ["cancelled_at:desc"]
+  q.public_access = true
+  q.per_page      = 25
+end
+
 # default payment methods
 PaymentMethod.create! :name => "Chèque"
 PaymentMethod.create! :name => "Carte banquaire"

@@ -153,8 +153,8 @@
                 <div class="amount"><span><%= Invoice.awaiting_sending_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>
               </div>
             </li>
-            <li class="disabled">
-              <%= link_to "Gestion des paiements", "#", 'data-icon' => :management %>
+            <li>
+              <%= link_to "Gestion des paiements", payment_management_path, 'data-icon' => :management %>
               <div class="infos">
                 <div class="document_counter" title="Factures en attente de paiement"><span><%= Invoice.awaiting_payment_invoices_counter %></span></div>
                 <div class="amount"><span><%= Invoice.awaiting_payment_total_counter.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</span></div>

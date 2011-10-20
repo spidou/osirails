@@ -24,7 +24,7 @@
         <%= t.tab :dunnings,            "Relances",               :disabled => true %>
         <%= t.tab_for_history(invoice) %>
       <% end %>
-    
+      
       <% action = invoice.new_record? ? :create : :update %>
       <% method = invoice.new_record? ? :put : :post %>
       <% form_for invoice, :url => { :controller => 'invoices', :action => action, :order_id => @order.id }, :method => method, :html => { :id => :invoice_form } do |form| %>

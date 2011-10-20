@@ -120,7 +120,10 @@ class DeliveryIntervention < ActiveRecord::Base
     x.validate :validates_emptiness_of_comments_and_delivered
   end
   
+  validates_associated :delivery_note
+  
   after_save :save_discards
+  after_save :sign_delivery_note
   
   def validates_scheduled_intervention_duration
     errors.add(:scheduled_intervention_hours, "La durée de l'intervention est requise") if scheduled_intervention_hours.blank? and scheduled_intervention_minutes.blank?
@@ -334,6 +337,19 @@ class DeliveryIntervention < ActiveRecord::Base
       else
         d.destroy
       end
+    end
+  end
+  
+  def delivery_note_sign_attributes=(attributes)
+    if !attributes[:signed_on].blank? || !attributes[:attachment].blank?
+      delivery_note.attributes = attributes
+      delivery_note.status = DeliveryNote::STATUS_SIGNED
+    end
+  end
+  
+  def sign_delivery_note
+    if delivery_note
+      delivery_note.save(false) if delivery_note.changes.include?("status")
     end
   end
 end

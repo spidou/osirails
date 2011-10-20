@@ -1,0 +1,6 @@
+<% display_context_menu do |c| %>
+  <%= c.title Invoice.human_name %>
+  <% invoice_invoicing_action_buttons(@object).each do |button| %>
+    <%= c.entry button %>
+  <% end %>
+<% end %>

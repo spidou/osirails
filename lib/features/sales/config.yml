@@ -54,11 +54,15 @@ menus:
           quote_management:
             title: Gestion des devis
             description: Gestion des devis
-            position: 8
+            position: 1
           invoice_management:
             title: Gestion des factures
             description: Gestion de factures
-            position: 9
+            position: 2
+          payment_management:
+            title: Gestion des paiements
+            description: Gestion de paiements
+            position: 3
           orders:
             title: Dossier
             description: Dossier de vente

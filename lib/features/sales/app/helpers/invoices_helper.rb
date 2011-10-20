@@ -10,6 +10,18 @@ module InvoicesHelper
     render :partial => 'invoices/transition_table_for_other_invoices', :object => order.unbilled_delivery_notes
   end
   
+  def display_transition_table_for_deposit_invoice_for_current_orders #OPTIMIZE the query should be cached
+    return unless Invoice.can_add?(current_user)
+    orders = Order.pending.select{ |o| o.deposit_required? && o.deposit_invoice.nil? && o.invoices.build.can_create_deposit_invoice? }
+    render :partial => 'invoices/transition_table_for_deposit_invoice_for_current_orders', :locals => { :orders => orders }
+  end
+  
+  def display_transition_table_for_other_invoices_for_current_orders #OPTIMIZE the query should be cached
+    return unless Invoice.can_add?(current_user)
+    orders = Order.pending.select{ |o| o.unbilled_delivery_notes.any? }
+    render :partial => 'invoices/transition_table_for_other_invoices_for_current_orders', :locals => { :orders => orders }
+  end
+  
   def display_invoices(order)
     invoices = order.invoices.reject(&:new_record?)
     if invoices.empty?
@@ -37,6 +49,38 @@ module InvoicesHelper
     html << display_invoice_cancel_button(order, invoice)
     html << display_invoice_abandon_button(order, invoice)
     html << display_invoice_delete_button(order, invoice)
+    html.compact
+  end
+  
+  def invoice_invoicing_action_buttons(invoice)
+    order = invoice.order
+    html = []
+    html << display_invoice_show_button(order, invoice)
+    html << display_invoice_edit_button(order, invoice)
+    html << display_invoice_preview_button(order, invoice)
+    html << display_invoice_show_pdf_button(order, invoice)
+    
+    html << display_invoice_confirm_button(order, invoice)
+    html << display_invoice_send_button(order, invoice)
+    html << display_invoice_cancel_button(order, invoice)
+    html << display_invoice_abandon_button(order, invoice)
+    html << display_invoice_delete_button(order, invoice)
+    html.compact
+  end
+  
+  def invoice_payment_action_buttons(invoice)
+    order = invoice.order
+    html = []
+    html << display_invoice_show_button(order, invoice)
+    html << display_invoice_show_pdf_button(order, invoice)
+    
+    html << display_invoice_factoring_pay_button(order, invoice)
+    html << display_invoice_factoring_recover_button(order, invoice)
+    html << display_invoice_factoring_balance_pay_button(order, invoice)
+    html << display_invoice_due_date_pay_button(order, invoice)
+    html << display_invoice_totally_pay_button(order, invoice)
+    html << display_invoice_cancel_button(order, invoice)
+    html << display_invoice_abandon_button(order, invoice)
     html.compact
   end
   
@@ -113,35 +157,35 @@ module InvoicesHelper
   def display_invoice_factoring_pay_button(order, invoice, message = nil)
     return unless Invoice.can_factoring_pay?(current_user) and invoice.can_be_factoring_paid?
     link_to_unless_current(message || "Signaler le règlement partiel du Factor",
-                           order_invoicing_step_invoice_step_invoice_factoring_pay_form_path(order, invoice),
+                           order_invoicing_step_payment_step_invoice_factoring_pay_form_path(order, invoice),
                            'data-icon' => :factoring_pay) {nil}
   end
   
   def display_invoice_factoring_recover_button(order, invoice, message = nil)
     return unless Invoice.can_factoring_recover?(current_user) and invoice.can_be_factoring_recovered?
     link_to_unless_current(message || "Signaler le définancement par le Factor",
-                           order_invoicing_step_invoice_step_invoice_factoring_recover_form_path(order, invoice),
+                           order_invoicing_step_payment_step_invoice_factoring_recover_form_path(order, invoice),
                            'data-icon' => :factoring_recover) {nil}
   end
   
   def display_invoice_factoring_balance_pay_button(order, invoice, message = nil)
     return unless Invoice.can_factoring_balance_pay?(current_user) and invoice.can_be_factoring_balance_paid?
     link_to_unless_current(message || "Signaler le règlement du solde par le Factor",
-                           order_invoicing_step_invoice_step_invoice_factoring_balance_pay_form_path(order, invoice),
+                           order_invoicing_step_payment_step_invoice_factoring_balance_pay_form_path(order, invoice),
                            'data-icon' => :factoring_balance_pay) {nil}
   end
   
   def display_invoice_due_date_pay_button(order, invoice, message = nil)
     return unless Invoice.can_due_date_pay?(current_user) and invoice.can_be_due_date_paid?
     link_to_unless_current(message || "Signaler le règlement d'une échéance",
-                           order_invoicing_step_invoice_step_invoice_due_date_pay_form_path(order, invoice),
+                           order_invoicing_step_payment_step_invoice_due_date_pay_form_path(order, invoice),
                            'data-icon' => :due_date_pay) {nil}
   end
   
   def display_invoice_totally_pay_button(order, invoice, message = nil)
     return unless Invoice.can_totally_pay?(current_user) and invoice.can_be_totally_paid?
     link_to_unless_current(message || "Signaler le règlement du solde",
-                           order_invoicing_step_invoice_step_invoice_totally_pay_form_path(order, invoice),
+                           order_invoicing_step_payment_step_invoice_totally_pay_form_path(order, invoice),
                            'data-icon' => :totally_pay) {nil}
   end
   
@@ -167,11 +211,6 @@ module InvoicesHelper
     end
   end
   
-  def display_delay_of_paiment_for(invoice)
-    delay = invoice.due_dates.last.date - invoice.sended_on if invoice.sended_on
-    "#{delay} jour(s)"
-  end
-  
   def display_delay_of_upcoming_due_date_paiment_for(invoice)
     return "" unless invoice.upcoming_due_date
     
@@ -183,14 +222,6 @@ module InvoicesHelper
     elsif delay == 0
       return " (Jour J)"
     end
-  end
-  
-  def display_delivery_notes_references_for(invoice)
-    invoice.delivery_notes.collect(&:reference).join("<br/>")
-  end
-  
-  def display_state_of_delivery_notes_references_for(invoice)
-    invoice.delivery_notes.collect{ |n| n.signed? ? "Oui" : "Non" }.join("<br/>")
   end
   
 end

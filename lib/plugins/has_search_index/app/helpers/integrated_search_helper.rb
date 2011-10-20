@@ -717,16 +717,20 @@ module IntegratedSearchHelper
       type   = @query_object.class.search_index_attribute_type(attribute)
       return '-' if data.nil? && type != 'boolean'
       
-      case type
+      unless override_for(helper)
+        data = case type
         when "string", "text", "binary", "integer", "decimal", "float"
           data.to_s
         when "date", "datetime"
-          data.humanize
+          I18n.l(data)
         when "boolean"
           [1, true].include?(data) ? I18n.t("view.content.boolean_true") : I18n.t("view.content.boolean_false")
         else
           data
+        end
       end
+      
+      data
     end
     
     def query_group_tr(group_by, columns)

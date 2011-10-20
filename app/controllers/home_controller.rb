@@ -2,6 +2,7 @@ class HomeController < ApplicationController
   
   def index
     @widgets = Osirails::WidgetManager.widgets
+    @widgets = @widgets.each{ |k,v| v[:content] = render(:file => v[:path]); erase_results }.reject{ |k,v| v[:content].blank? } # clean widgets by removing empty ones (no contents)
     i = 0
     @widgets.each do |k, v|
       if widget = current_user.widgets.find_by_name(k)

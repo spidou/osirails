@@ -1,0 +1,25 @@
+<% require_locals order %>
+
+<div class="delivering_state">
+  <table class="delivering_state no_nth">
+    <thead>
+      <tr>
+        <th colspan="2">État de livraison</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label">Qté totale produits livrables</td>
+        <td class="value">
+          <span class="delivering_state_number_of_available_to_deliver_pieces"><%= "#{order.production_step.manufacturing_step.number_of_available_to_deliver_pieces rescue 0} / #{order.signed_quote.number_of_pieces.to_i}" if order.signed_quote %></span>
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Qté totale produits livrés</td>
+        <td class="value">
+          <span class="delivering_state_delivered_pieces"><%= "#{order.delivered_pieces} / #{order.signed_quote.number_of_pieces.to_i}" if order.signed_quote %></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

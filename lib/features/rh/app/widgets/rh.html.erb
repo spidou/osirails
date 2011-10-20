@@ -2,23 +2,27 @@
   <h2><%= image_tag("menus/rh.png") %><%= link_to "Ressources Humaines", rh_path %></h2>
   <table>
     <tbody>
+    <% if Employee.can_view?(current_user) %>
       <tr>
         <td class="counter"><span><%= Employee.actives.count %></span></td>
         <td class="link"><%= link_to "employés actifs", employees_path %></td>
-        <td class="actions"><%= link_to "", new_employee_path, 'data-icon' => :new %></td>
+        <td class="actions"><%= new_employee_link(:link_text => "") %></td>
       </tr>
-      <% if current_user.employee %>
-        <tr>
-          <td class="counter"><span><%= current_user.employee.get_leave_requests_to_check.count %></span></td>
-          <td class="link"><%= link_to "demandes de congés en attente de traitement", leave_requests_path %></td>
-          <td class="actions">&nbsp;</td>
-        </tr>
-      <% end %>
+    <% end %>
+    <% if current_user.employee %>
+      <tr>
+        <td class="counter"><span><%= current_user.employee.get_leave_requests_to_check.count %></span></td>
+        <td class="link"><%= link_to "demandes de congés en attente de traitement", leave_requests_path %></td>
+        <td class="actions">&nbsp;</td>
+      </tr>
+    <% end %>
+    <% if Checking.can_view?(current_user) %>
       <tr>
         <td class="counter">&nbsp;</td>
         <td class="link"><%= link_to "Pointage des employés", checkings_path %></td>
         <td class="actions">&nbsp;</td>
       </tr>
+    <% end %>
     </tbody>
   </table>
 <% end %>

@@ -1,0 +1,37 @@
+<% require_locals order %>
+
+<div class="payment_state">
+  <table class="payment_state no_nth">
+    <thead>
+      <tr>
+        <th colspan="2">État du paiement</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label">Total devis (TTC)</td>
+        <td class="value">
+          <span class="payment_state_quote_total"><%= order.signed_quote.net_to_paid.to_f.round_to(2).to_s(2) if order.signed_quote %></span>&nbsp;&euro;
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Total facturé</td>
+        <td class="value">
+          <span class="payment_state_total_billed"><%= order.billed_amount.to_f.round_to(2).to_s(2) %></span>&nbsp;&euro;
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Total encaissé</td>
+        <td class="value">
+          <span class="payment_state_paid"><%= order.paid_amount.to_f.round_to(2).to_s(2) %></span>&nbsp;&euro;
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Reste à encaisser<br/><span class="nota">(en fonction du "Total facturé")</span></td>
+        <td class="value">
+          <span class="payment_state_balance"><%= order.unpaid_amount.to_f.round_to(2).to_s(2) %></span>&nbsp;&euro;
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

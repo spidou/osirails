@@ -194,11 +194,11 @@ module ActionView
       ## same as #query_thead_tr_with_context_menu
       def query_tr_with_context_menu(content)
         helper = "query_tr"
-        html_class = "#{@page_model.underscore}_tr"
+        @html_class = "#{@page_model.underscore}_tr"
         style = @hide_selector_column == true ? "display:none" : ""
         
-        content = content_tag(:td, context_menu(@query_object, html_class), :class => :selector, :style => style) + content # add td element at first
-        override_for(helper) ? send(override_for(helper), content) : content_tag(:tr, content, :class => html_class)
+        content = content_tag(:td, context_menu(@query_object, @html_class), :class => :selector, :style => style) + content # add td element at first
+        override_for(helper) ? send(override_for(helper), content) : content_tag(:tr, content, :class => @html_class)
       end
       alias_method_chain :query_tr, :context_menu
       

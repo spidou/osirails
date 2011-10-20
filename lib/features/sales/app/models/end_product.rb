@@ -112,6 +112,16 @@ class EndProduct < Product
   end
   
   #TODO test this method
+  def already_delivered_quantity
+    return 0 if new_record? or delivery_note_items.empty?
+    #OPTIMIZE how can I replace that find method by a call to the named_scope ':actives' in delivery_note.rb (conditions are the same)
+    delivery_note_items.find( :all,
+                              :include    => :delivery_note,
+                              :conditions => [ "delivery_notes.status = ?", DeliveryNote::STATUS_SIGNED ]
+                             ).collect(&:really_delivered_quantity).sum
+  end
+  
+  #TODO test this method
   def remaining_quantity_to_deliver
     ( quantity || 0 ) - already_delivered_or_scheduled_quantity
   end

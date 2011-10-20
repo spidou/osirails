@@ -1,0 +1,45 @@
+<% require_locals orders %>
+
+<h2>Suggestions de factures d'acompte</h2>
+
+<% if orders.any? %>
+<div class="autoscroll">
+  <table>
+    <thead>
+      <tr>
+        <th><%= toggle_selectable_items_link(image_tag('confirm_16x16.png'), 'quote') %></th>
+        <th>N°&nbsp;dossier</th>
+        <th>Nom&nbsp;du projet</th>
+        <th>Client</th>
+        <th>Réf.&nbsp;devis</th>
+        <th>Émis&nbsp;le</th>
+        <th>Signé&nbsp;le</th>
+        <th>Nb Produits</th>
+        <th>Total&nbsp;TTC</th>
+        <th>Acompte demandé</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% orders.each do |order| %>
+      <% quote = order.signed_quote %>
+      <tr class="quote">
+        <td>
+          <%= context_menu(quote, 'quote') %>
+        </td>
+        <td><%= order.reference %></td>
+        <td><%= order.title %></td>
+        <td><%= order.customer.name %></td>
+        <td><%= quote.reference %></td>
+        <td><%= l(quote.confirmed_at, :format => :short) if quote.confirmed_at %></td>
+        <td><%= l(quote.signed_on, :format => :short) if quote.signed_on %></td>
+        <td><%= quote.number_of_products %></td>
+        <td><%= quote.net_to_paid.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
+        <td><%= quote.deposit %>&nbsp;%</td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+<% else %>
+  <p>Aucune facture d'acompte à créer pour le moment...</p>
+<% end %>

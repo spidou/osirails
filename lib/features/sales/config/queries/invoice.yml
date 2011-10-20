@@ -1,0 +1,181 @@
+conf_pagination: &pagination
+  per_page:
+    - 25
+    - 50
+    - 100
+conf_quick_search: &quick_search
+  quick_search:
+    - order.title
+    - order.customer.name
+    - invoice_contact.first_name
+    - invoice_contact.last_name
+    - reference
+
+invoice_management_index:
+  filters:
+    - order_reference: order.reference
+    - order_title: order.title
+    - order_customer_name: order.customer.name
+    - reference
+    - published_on
+    - invoice_type.id
+    - sended_on
+    - upcoming_due_date_date
+    - upcoming_due_date_amount
+    - net_to_paid
+    - already_paid_amount
+    - factorised?
+    - status
+  columns:
+    - order.reference
+    - order.title
+    - order.customer.name
+    - invoice_contact.fullname
+    - reference
+    - published_on
+    - invoice_type.title
+    - net_to_paid
+    - already_paid_amount
+    - sended_on
+    - global_granted_delay
+    - number_of_due_dates
+    - upcoming_due_date
+    - factorised?
+    - delivery_notes
+    - status
+    - abandoned_on
+    - abandoned_comment
+    - cancelled_at
+    - cancelled_comment
+  group:
+    - order.title
+    - order.customer.name
+    - invoice_type.title
+    - factorised?
+    - status
+  order:
+    - order.reference
+    - order.title
+    - order.customer.name
+    - reference
+    - published_on
+    - invoice_type.title
+    - net_to_paid
+    - already_paid_amount
+    - sended_on
+    - global_granted_delay
+    - upcoming_due_date_date
+    - upcoming_due_date_amount
+    - status
+    - abandoned_on
+    - cancelled_at
+  <<: *pagination
+  <<: *quick_search
+  default_query:
+    criteria:
+      status:
+        action: '='
+        value: 'confirmed'
+    search_type: and
+    columns:
+      - order.reference
+      - order.title
+      - order.customer.name
+      - invoice_contact.fullname
+      - reference
+      - invoice_type.title
+      - net_to_paid
+      - global_granted_delay
+      - number_of_due_dates
+      - upcoming_due_date
+      - factorised?
+      - delivery_notes
+      - status
+    order:
+      - "published_on"
+    per_page: 25
+
+payment_management_index:
+  filters:
+    - order_reference: order.reference
+    - order_title: order.title
+    - order_customer_name: order.customer.name
+    - reference
+    - published_on
+    - invoice_type.id
+    - sended_on
+    - upcoming_due_date_date
+    - upcoming_due_date_amount
+    - net_to_paid
+    - already_paid_amount
+    - factorised?
+    - status
+  columns:
+    - order.reference
+    - order.title
+    - order.customer.name
+    - invoice_contact.fullname
+    - reference
+    - published_on
+    - invoice_type.title
+    - net_to_paid
+    - already_paid_amount
+    - sended_on
+    - global_granted_delay
+    - number_of_due_dates
+    - upcoming_due_date
+    - factorised?
+    - delivery_notes
+    - status
+    - abandoned_on
+    - abandoned_comment
+    - cancelled_at
+    - cancelled_comment
+  group:
+    - order.title
+    - order.customer.name
+    - invoice_type.title
+    - factorised?
+    - status
+  order:
+    - order.reference
+    - order.title
+    - order.customer.name
+    - reference
+    - published_on
+    - invoice_type.title
+    - net_to_paid
+    - already_paid_amount
+    - sended_on
+    - global_granted_delay
+    - upcoming_due_date_date
+    - upcoming_due_date_amount
+    - status
+    - abandoned_on
+    - cancelled_at
+  <<: *pagination
+  <<: *quick_search
+  default_query:
+    criteria:
+      status:
+        action: '='
+        value: 'sended,due_date_paid,factoring_paid,factoring_recovered'
+    search_type: and
+    columns:
+      - order.reference
+      - order.title
+      - order.customer.name
+      - invoice_contact.fullname
+      - reference
+      - invoice_type.title
+      - net_to_paid
+      - global_granted_delay
+      - number_of_due_dates
+      - upcoming_due_date
+      - factorised?
+      - delivery_notes
+      - already_paid_amount
+      - status
+    order:
+      - "upcoming_due_date_date"
+    per_page: 25

@@ -1,0 +1,74 @@
+<% require_locals orders %>
+
+<h2>Suggestions de factures de situation/solde</h2>
+
+<% if orders.any? %>
+<div class="autoscroll">
+  <table>
+    <thead>
+      <tr>
+        <th><%= toggle_selectable_items_link(image_tag('confirm_16x16.png'), 'delivery_note') %></th>
+        <th>N°&nbsp;dossier</th>
+        <th>Nom&nbsp;du&nbsp;projet</th>
+        <th>Client</th>
+        <th>Réf.&nbsp;devis</th>
+        <th>Total&nbsp;TTC</th>
+        <th>Réf.&nbsp;BL/BI</th>
+        <th>Émis&nbsp;le</th>
+        <th>Ville</th>
+        <th>Livraison effectuée&nbsp;le</th>
+        <th>Signé&nbsp;le</th>
+        <th>Qté&nbsp;produits<br/>livrés&#160;/&#160;à livrer</th>
+        <th>Qté&nbsp;produits<br/>total&nbsp;(devis)</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% orders.each do |order| %>
+      <%
+      quote = order.signed_quote
+      delivery_notes = order.unbilled_delivery_notes
+      rowspan = delivery_notes.size
+      first_dn = delivery_notes.shift
+      %>
+      
+      <tr class="delivery_note">
+        <td>
+          <%= context_menu(first_dn, 'delivery_note') %>
+        </td>
+        <td rowspan="<%=rowspan%>"><%= order.reference %></td>
+        <td rowspan="<%=rowspan%>"><%= order.title %></td>
+        <td rowspan="<%=rowspan%>"><%= order.customer.name %></td>
+        <td rowspan="<%=rowspan%>"><%= quote.reference %></td>
+        <td rowspan="<%=rowspan%>"><%= quote.net_to_paid.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
+        
+        <td><%= first_dn.reference %></td>
+        <td><%= l(first_dn.published_on, :format => :short) if first_dn.published_on %></td>
+        <td><%= first_dn.ship_to_address.city_name %></td>
+        <td><%= l(first_dn.delivered_delivery_intervention.delivery_at, :format => :short) if first_dn.delivered_delivery_intervention.delivery_at %></td>
+        <td><%= l(first_dn.signed_on, :format => :short) if first_dn.signed_on %></td>
+        <td><%= "#{first_dn.number_of_delivered_pieces} / #{first_dn.number_of_pieces}" %></td>
+        <td><%= first_dn.signed_quote.number_of_pieces %></td>
+      </tr>
+      
+      <% delivery_notes.each do |dn| %>
+        <tr class="delivery_note">
+          <td>
+            <%= context_menu(dn, 'delivery_note') %>
+          </td>
+          
+          <td><%= dn.reference %></td>
+          <td><%= l(dn.published_on, :format => :short) if dn.published_on %></td>
+          <td><%= dn.ship_to_address.city_name %></td>
+          <td><%= l(dn.delivered_delivery_intervention.delivery_at, :format => :short) if dn.delivered_delivery_intervention.delivery_at %></td>
+          <td><%= l(dn.signed_on, :format => :short) if dn.signed_on %></td>
+          <td><%= "#{dn.number_of_delivered_pieces} / #{dn.number_of_pieces}" %></td>
+          <td><%= dn.signed_quote.number_of_pieces %></td>
+        </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+<% else %>
+  <p>Aucune facture de situation/solde à créer pour le moment...</p>
+<% end %>

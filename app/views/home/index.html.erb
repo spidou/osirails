@@ -14,7 +14,7 @@
         <% @widgets.select{ |k,v| v[:column] == index }.sort_by{ |k,v| v[:position] }.each do |widget_name, attr| %>
           <div id="widget_container_<%= widget_name %>" class="widget_container">
             <div id="widget_<%= widget_name %>" class="widget">
-              <%= render :file => attr[:path] %>
+              <%= attr[:content] %>
             </div>
             <div id="droppable_area_bottom_<%= widget_name %>" class="droppable_area bottom_widget"></div>
           </div>

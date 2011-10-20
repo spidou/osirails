@@ -1,45 +1,55 @@
 /* INVOICES LIST */
-table tr.confirmed_invoice td.status {
+table tr.confirmed_invoice td.status,
+table tr[data-invoice-status=confirmed] td[data-attribute=status] {
   color: #e99727;
 }
 
 table tr.cancelled_invoice td.status,
-table tr.abandoned_invoice td.status {
+table tr.abandoned_invoice td.status,
+table tr[data-invoice-status=cancelled] td[data-attribute=status],
+table tr[data-invoice-status=abandoned] td[data-attribute=status] {
   color: #ff3528;
 }
 
-table tr.sended_invoice td.status {
+table tr.sended_invoice td.status,
+table tr[data-invoice-status=sended] td[data-attribute=status] {
   color: #e99727;
   font-weight: bold;
 }
 
-table tr.due_date_paid_invoice td.status {
+table tr.due_date_paid_invoice td.status,
+table tr[data-invoice-status=due_date_paid] td[data-attribute=status] {
   color: #e99727;
   font-weight: bold;
 }
 
-table tr.totally_paid_invoice td.status {
+table tr.totally_paid_invoice td.status,
+table tr[data-invoice-status=totally_paid] td[data-attribute=status] {
   color: #60bc00;
   font-weight: bold;
 }
 
-/* INVOICING STEP & INVOICING STATE */
-div.invoice_step_notice {
+/* INVOICING STEP & INVOICING STATE & PAYMENT STEP & PAYMENT_STATE */
+div.invoice_step_notice,
+div.payment_step_notice {
   display: inline-block;
   vertical-align: top;
 }
 
-div.invoicing_state {
+div.invoicing_state,
+div.payment_state {
   display: inline-block;
   margin-left: 30px;
 }
 
-table.invoicing_state td.label {
+table.invoicing_state td.label,
+table.payment_state td.label {
   text-align: left;
   font-weight: bold;
 }
 
-table.invoicing_state td.value {
+table.invoicing_state td.value,
+table.payment_state td.value {
   text-align: right;
 }
 

@@ -2,16 +2,21 @@
   <h2><%= image_tag("menus/goods.png") %><%= link_to "Produits", goods_path %></h2>
   <table>
     <tbody>
+    <% if ProductReference.can_view?(current_user) %>
       <tr>
         <td class="counter"><span><%= ProductReference.count %></span></td>
         <td class="link"><%= link_to "produits références", product_references_path %></td>
-        <td class="actions"><%= link_to "", new_product_reference_path, 'data-icon' => :new %></td>
+        <td class="actions"><%= new_product_reference_link(:link_text => "") %></td>
       </tr>
+    <% end %>
+    <% if ServiceDelivery.can_view?(current_user) %>
       <tr>
         <td class="counter"><span><%= ServiceDelivery.count %></span></td>
         <td class="link"><%= link_to "prestations", service_deliveries_path %></td>
-        <td class="actions"><%= link_to "", new_service_delivery_path, 'data-icon' => :new %></td>
+        <td class="actions"><%= new_service_delivery_link(:link_text => "") %></td>
       </tr>
+    <% end %>
+    <% if ProductReference.can_view?(current_user) %>
       <tr class="spacer">
         <td colspan="3"></td>
       </tr>
@@ -20,6 +25,7 @@
         <td class="link"><%= link_to "Catalogue des produits", goods_path %></td>
         <td class="actions">&nbsp;</td>
       </tr>
+    <% end %>
     </tbody>
   </table>
 <% end %>

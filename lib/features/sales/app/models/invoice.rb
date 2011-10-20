@@ -369,8 +369,15 @@ class Invoice < ActiveRecord::Base
   
   before_destroy :can_be_deleted?
   
-  has_search_index :only_attributes    => [ :reference, :status, :published_on, :sended_on, :abandoned_on, :factoring_recovered_on, :factoring_balance_paid_on ],
-                   :only_relationships => [ :factor, :invoice_type ]#,:order] #TODO add :order to relationships list when bug #60 will be resolved.
+  has_search_index :only_attributes       => [ :abandoned_comment, :abandoned_on, :cancelled_at, :cancelled_comment, :factoring_balance_paid_on, :factoring_recovered_on, :published_on, :sended_on, :reference, :status],
+                   :additional_attributes => { :number_of_due_dates       => :integer,
+                                               :global_granted_delay      => :integer,
+                                               :upcoming_due_date_date    => :date,
+                                               :upcoming_due_date_amount  => :float,
+                                               :net_to_paid               => :float,
+                                               :factorised?               => :boolean,
+                                               :already_paid_amount       => :float },
+                   :only_relationships    => [ :delivery_notes, :factor, :invoice_type, :invoice_contact, :order ]
   
   active_counter :model => 'Order', :callbacks => { :pre_invoicing_orders => :after_save,
                                                     :pre_invoicing_total  => :after_save,
@@ -501,7 +508,7 @@ class Invoice < ActiveRecord::Base
     return unless published_on
     
     for due_date in due_dates.reject(&:should_destroy?)
-      due_date.errors.add(:date, "ne doit pas être AVANT la date d'émission de la facture (#{l(self.published_on, :format => :long)})") if due_date.date and due_date.date < published_on
+      due_date.errors.add(:date, "ne doit pas être AVANT la date d'émission de la facture (#{I18n.l(self.published_on, :format => :long)})") if due_date.date and due_date.date < published_on
     end
     
     errors.add(:due_dates) unless due_dates.reject{ |d| d.errors.empty? }.empty?
@@ -514,8 +521,8 @@ class Invoice < ActiveRecord::Base
     for due_date in due_dates
       for payment in due_date.payments
         if payment.paid_on
-          payment.errors.add(:paid_on, "ne doit pas être AVANT la date d'émission de la facture&#160;(#{l(self.published_on, :format => :long)})") if payment.paid_on < published_on
-          payment.errors.add(:paid_on, "ne doit pas être APRÈS aujourd'hui&#160;(#{l(Date.today, :format => :long)})") if payment.paid_on.future?
+          payment.errors.add(:paid_on, "ne doit pas être AVANT la date d'émission de la facture&#160;(#{I18n.l(self.published_on, :format => :long)})") if payment.paid_on < published_on
+          payment.errors.add(:paid_on, "ne doit pas être APRÈS aujourd'hui&#160;(#{I18n.l(Date.today, :format => :long)})") if payment.paid_on.future?
         end
       end
       
@@ -618,6 +625,14 @@ class Invoice < ActiveRecord::Base
   
   def upcoming_due_date
     unpaid_due_dates.first
+  end
+  
+  def upcoming_due_date_date
+    upcoming_due_date && upcoming_due_date.date
+  end
+  
+  def upcoming_due_date_amount
+    upcoming_due_date && upcoming_due_date.net_to_paid
   end
   
   #TODO reject(&:should_destroy?) have just been added => write or modify tests for that method and for the validation method 'validates_due_date_amounts' to take it in account
@@ -1217,6 +1232,11 @@ class Invoice < ActiveRecord::Base
     return HIGH_PRIORITY      if today >= last_limit
   end
   
+  def global_granted_delay # in days
+    return if due_dates.empty? or published_on.nil?
+    (due_dates.last.date - published_on).to_i
+  end
+  
   def message_for_validates_date_cancelled_at_on_or_after_while_confirmed
     message_for_validates_date("cancelled_at", "on_or_after", "while_confirmed", self.published_on)
   end
@@ -1266,7 +1286,7 @@ class Invoice < ActiveRecord::Base
   private
     def update_invoice_step_status
       # if was_totally_paid? and order.unpaid_amount <= 0
-      if totally_paid? and !was_totally_paid? and (order.unpaid_amount - already_paid_amount) < 1 # we put '<1' instead of '<=0' because sometimes, difference between the 2 values is very small and condition is false
+      if totally_paid? and !was_totally_paid? and order.unbilled_amount < 1 and (order.unpaid_amount - already_paid_amount) < 1 # we put '<1' instead of '<=0' because sometimes, difference between the 2 values is very small and condition is false
         order.invoicing_step.invoice_step.terminated!
         order.invoicing_step.payment_step.terminated!
         

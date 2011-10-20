@@ -66,8 +66,8 @@ class DeliveryNote < ActiveRecord::Base
     dn.validate :validates_presence_of_attachment
   end
   
-  validates_inclusion_of :status, :in => [ nil, STATUS_CONFIRMED, STATUS_CANCELLED ], :if => :was_uncomplete?
-  validates_inclusion_of :status, :in => [ STATUS_CANCELLED, STATUS_SIGNED ],         :if => :was_confirmed?
+  validates_inclusion_of :status, :in => [ nil, STATUS_CONFIRMED, STATUS_CANCELLED ],           :if => :was_uncomplete?
+  validates_inclusion_of :status, :in => [ STATUS_CONFIRMED, STATUS_CANCELLED, STATUS_SIGNED ], :if => :was_confirmed?
   
   validates_persistence_of :creator_id, :order_id
   validates_persistence_of :ship_to_address, :delivery_note_contact_id,
@@ -75,7 +75,7 @@ class DeliveryNote < ActiveRecord::Base
   validates_persistence_of :cancelled_at, :delivery_interventions, :status,           :if => :cancelled_at_was
   validates_persistence_of :signed_on, :attachment, :delivery_interventions, :status, :if => :signed_on_was
   
-  validates_associated  :delivery_note_items, :end_products, :delivery_interventions
+  validates_associated  :delivery_note_items, :end_products#, :delivery_interventions
   
   validate :validates_delivery_interventions, :validates_presence_of_delivery_note_items
   
@@ -83,6 +83,10 @@ class DeliveryNote < ActiveRecord::Base
   
   after_save :save_delivery_note_items
   after_update :update_delivery_step_status
+  
+  has_search_index :only_attributes       => [ :published_on, :reference, :signed_on, :status ],
+                   :additional_attributes => { :billed? => :boolean, :billed_and_confirmed? => :boolean },
+                   :only_relationships    => [ :delivery_note_contact, :delivery_note_type ]
   
   active_counter :model => 'Order', :callbacks => { :delivering_orders    => :after_save,
                                                     :delivering_total     => :after_save,

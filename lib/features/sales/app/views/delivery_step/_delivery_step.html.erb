@@ -8,16 +8,51 @@
 
 <%= title "Livraison" %>
 
-<div>
-  <p>
-    L'étape "Livraison" permet d'établir des bons de livraison pour le dossier en cours.<br/>
-    La signature du devis est nécessaire pour établir un bon de livraison.
-  </p>
-  <p>
-    L'étape "Livraison" est automatiquement clôturée lorsque tous les produits du dossier sont livrés et que tous les bons de livraison sont <strong>signés</strong>.
-  </p>
-  <hr/>
+<div class="delivery_step">
+  <div class="delivery_step_notice">
+    <p>
+      L'étape "Livraison" permet d'établir des bons de livraison pour le dossier en cours.<br/>
+      La signature du devis est nécessaire pour établir un bon de livraison.
+    </p>
+    <p>
+      L'étape "Livraison" est automatiquement clôturée lorsque tous les produits du dossier sont livrés et que tous les bons de livraison sont <strong>signés</strong>.
+    </p>
+  </div>
   
+  <%= render :partial => 'delivery_step/delivering_state', :locals => { :order => @order } %>
+  
+  
+  <h2>État de livraison par produit</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>R&eacute;f.</th>
+        <th>Désignation</th>
+        <th>Qté</th>
+        <th>Avancement production</th>
+        <th>Qté produits terminés</th>
+        <th>Qté produits livrables</th>
+        <th>Qté produits livrés</th>
+        <th>BL(s)</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @order.end_products.each do |end_product| %>
+      <tr>
+        <td><%= end_product.reference %></td>
+        <td><%= end_product.designation_with_dimensions %></td>
+        <td><%= end_product.quantity %></td>
+        <td><%= "#{end_product.manufacturing_progress.progression} %" if end_product.manufacturing_progress %></td>
+        <td><%= "#{end_product.manufacturing_progress.built_quantity} / #{end_product.quantity}" if end_product.manufacturing_progress %></td>
+        <td><%= "#{end_product.manufacturing_progress.available_to_deliver_quantity} / #{end_product.quantity}" if end_product.manufacturing_progress %></td>
+        <td><%= "#{end_product.already_delivered_quantity} / #{end_product.quantity}" if end_product.manufacturing_progress %></td>
+        <td><%= end_product.delivery_notes.actives.collect{ |dn| link_to(dn.reference_or_id, order_delivering_step_delivery_step_delivery_note_path(@order, dn)) }.join(", ") %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  
+  <h2>Les bons de livraison</h2>
   <%= display_delivery_notes(@step.order) %>
   <%= content_tag(:p, display_delivery_note_add_button(@order)) if is_form_view? %>
 </div>

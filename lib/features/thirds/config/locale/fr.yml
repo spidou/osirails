@@ -19,12 +19,12 @@ fr:
       third_type: "Type de tiers"
     attributes:
       third: &third_attributes
-        name: "Raison Sociale"
         legal_form: "Forme juridique"
         website: "Site Internet"
         bill_to_address: "Adresse de facturation"
       customer:
         <<: *third_attributes
+        name: "Client"
         factor: "Société d'affacturage"
         customer_grade: "Note relationnelle"  
         customer_solvency: "Degré de solvabilité"
@@ -34,6 +34,7 @@ fr:
         activated: "Actif ?"
       supplier:
         <<: *third_attributes
+        name: "Fournisseur"
         siret_number: "N° SIRET"
         activity_sector_reference: "Code NAF"
         address: "Adresse"

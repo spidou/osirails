@@ -3,59 +3,10 @@
   <%= stylesheet_link_tag_with_theme_support 'sales/quote' %>
 <% end %>
 
-<%= generate_shared_contextual_menu_partial %>
-
-<h1>Gestion des devis en cours</h1>
+<% title_context "Ventes" %>
+<% title_context "Gestion" %>
+<%= title title_for_search %>
 
 <div>
-  <% if @quotes.empty? %>
-    <p>Aucun devis n'a été trouvé</p>
-  <% else %>
-    <div class="autoscroll">
-      <table class="quote_list no_nth" id="quotes">
-        <thead>
-          <tr>
-            <th><%= toggle_selectable_items_link(image_tag('confirm_16x16.png'), 'quote') %></th>
-            <th>N° Dossier</th>
-            <th>Nom projet</th>
-            <th>Contact commercial</th>
-            <th>Client</th>
-            <th>Commercial</th>
-            <th>Date butoir d'envoi</th>
-            <th>R&eacute;f.</th>
-            <th>Date d'&eacute;mission</th>
-            <th>Dur&eacute;e de Validit&eacute;</th>
-            <th>Date limite</th>
-            <th>Envoy&eacute; le</th>
-            <th>Total TTC</th>
-            <th>Acompte</th>
-            <th>Derni&egrave;re relance effectu&eacute;e le</th>
-            <th>État</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% for quote in @quotes %>
-            <tr class="quote <%= quote.status %>_quote <%= quote.priority_level %>">
-              <td class="selector"><%= context_menu(quote, 'quote') %></td>
-              <td class="reference text"><%= quote.order.reference %></td>
-              <td class="order"><%= link_to(quote.order.title, quote.order, :title => "Voir ce dossier", :class => "no_style") %></td>
-              <td class="quote_contact"><%= quote.quote_contact.fullname %></td>
-              <td class="customer"><%= link_to(quote.order.customer.name, quote.order.customer, :title => "Voir fiche client", :class => "no_style") %></td>
-              <td class="commercial"><%= link_to(quote.order.commercial.fullname, quote.order.commercial, :title => "Voir fiche employé", :class => "no_style") %></td>
-              <td class="quotation_deadline"><%= l(quote.order.quotation_deadline.to_date, :format => :short) if quote.order.quotation_deadline %></td>
-              <td class="reference text"><%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(quote.order, quote), :title => "Voir ce devis", :class => "no_style") if quote.reference %></td>
-              <td class="confirmed_at"><%= l(quote.confirmed_at, :format => :short) if quote.confirmed_at %></td>
-              <td class="validity_delay"><%= "#{quote.validity_delay} #{quote.validity_delay_unit}" if quote.validity_delay && quote.validity_delay_unit %></td>
-              <td class="validity_date"><%= l(quote.validity_date.to_date, :format => :short) + display_remaining_days_for(quote) if quote.validity_date %></td>
-              <td class="sended_on"><%= "#{l(quote.sended_on, :format => :short)} (#{quote.send_quote_method.name})" if quote.sended_on && quote.send_quote_method.name %></td>
-              <td class="total_with_taxes amount"><%= quote.total_with_taxes.to_f.round(2).to_s(2) %>&nbsp;&euro;</td>
-              <td class="deposit amount"><%= quote.deposit.to_f.round(2).to_s(2) %>&nbsp;%</td>
-              <td>#</td>
-              <td class="status"><%= quote_status_text(quote) %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% end %>
+  <%= table_for_search %>
 </div>

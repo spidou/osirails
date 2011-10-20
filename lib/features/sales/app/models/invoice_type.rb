@@ -14,5 +14,5 @@ class InvoiceType < ActiveRecord::Base
   
   journalize :identifier_method => :name
   
-  has_search_index :only_attributes => [ :name, :title ]
+  has_search_index :only_attributes => [ :id, :name, :title ]
 end

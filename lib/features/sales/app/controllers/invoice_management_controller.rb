@@ -1,8 +1,9 @@
 class InvoiceManagementController < ApplicationController
-  helper :orders, :invoices
+  helper :orders, :invoices, :quotes, :delivery_notes
+  query :invoices
   
   # GET /invoice_management
   def index
-    @invoices = Invoice.unpaid
+    build_query_for(:invoice_management_index)
   end
 end

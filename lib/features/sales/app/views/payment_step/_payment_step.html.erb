@@ -1,18 +1,26 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'sales/invoice' %>
+<% end -%>
+
 <%= order_header %>
 
-<h1>Paiements</h1>
+<%= generate_invoicing_step_contextual_menu_partial %>
 
-<div>
-<% if is_form_view? %>
-  <% form_for(@step, :url => { :controller => "payment_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
-    <%= form.error_messages %>
-    
-    <p class="form_buttons">
-      <%= form.submit 'Enregistrer' %>
-      <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
+<%= title "Paiements" %>
+
+<div class="payment_step">
+  <div class="payment_step_notice">
+    <p>
+      L'étape "Paiements" permet de signaler le règlement des factures pour le dossier en cours.<br/>
     </p>
-  <% end %>
-<% else %>
-
-<% end %>
+    <p>
+      L'étape "Paiements" est automatiquement clôturée lorsque tous les produits sont facturés et que chaque facture est payée.
+    </p>
+  </div>
+  
+  <%= render :partial => 'payment_step/payment_state', :locals => { :order => @order } %>
+  <hr/>
+  
+  <%= display_invoices_for_payment(@order) %>
+  <%# content_tag(:p, display_invoice_add_button(@order)) if is_form_view? %>
 </div>

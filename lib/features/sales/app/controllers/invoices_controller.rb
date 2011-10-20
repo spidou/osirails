@@ -140,10 +140,12 @@ class InvoicesController < ApplicationController
     if @invoice.can_be_confirmed?
       if @invoice.confirm
         flash[:notice] = "La facture a été validée avec succès"
+        redirect_to send(@step.original_step.path)
       else
-        flash[:error] = "Une erreur est survenue à la validation de la facture"
+        flash[:error] = "Une erreur est survenue à la validation de la facture (attention, les échéances doivent être postérieures à la date d'émission de la facture)"
+        redirect_to edit_order_invoicing_step_invoice_step_invoice_path(@order, @invoice)
+        #render :action => :edit
       end
-      redirect_to send(@step.original_step.path)
     else
       error_access_page(412)
     end

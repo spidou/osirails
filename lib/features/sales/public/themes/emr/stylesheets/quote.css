@@ -1,18 +1,22 @@
 /* QUOTES LIST */
-table tr.confirmed_quote td.status {
+table tr.confirmed_quote td.status,
+table tr[data-quote-status=confirmed] td[data-attribute=status] {
   color: #e99727;
 }
 
-table tr.cancelled_quote td.status {
+table tr.cancelled_quote td.status,
+table tr[data-quote-status=cancelled] td[data-attribute=status] {
   color: #ff3528;
 }
 
-table tr.sended_quote td.status {
+table tr.sended_quote td.status,
+table tr[data-quote-status=sended] td[data-attribute=status] {
   color: #e99727;
   font-weight: bold;
 }
 
-table tr.signed_quote td.status {
+table tr.signed_quote td.status,
+table tr[data-quote-status=signed] td[data-attribute=status] {
   color: #60bc00;
   font-weight: bold;
 }

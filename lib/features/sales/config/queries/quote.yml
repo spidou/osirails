@@ -1,0 +1,84 @@
+conf_pagination: &pagination
+  per_page:
+    - 25
+    - 50
+    - 100
+conf_quick_search: &quick_search
+  quick_search:
+    - order.title
+    - order.customer.name
+    - quote_contact.first_name
+    - quote_contact.last_name
+    - commercial_actor.fullname
+    - reference
+
+quote_management_index:
+  filters:
+    - order_reference: order.reference
+    - order_title: order.title
+    - order_customer_name: order.customer.name
+    - commercial_actor_fullname: commercial_actor.fullname
+    - reference
+    - send_quote_method.id
+    - status
+  columns:
+    - order.reference
+    - order.title
+    - order.customer.name
+    - quote_contact.fullname
+    - commercial_actor.fullname
+    - reference
+    - published_on
+    - validity_delay
+    - validity_date
+    - sended_on
+    - total_with_taxes
+    - deposit
+    - order.quotation_deadline
+    - signed_on
+    - cancelled_at
+    - status
+  group:
+    - order.title
+    - order.customer.name
+    - commercial_actor.fullname
+    - status
+  order:
+    - order.reference
+    - order.title
+    - order.customer.name
+    - reference
+    - published_on
+    - sended_on
+    - total_with_taxes
+    - deposit
+    - order.quotation_deadline
+    - status
+    - created_at
+    - signed_on
+    - cancelled_at
+  <<: *pagination
+  <<: *quick_search
+  default_query:
+    criteria:
+      status:
+        action: '='
+        value: 'confirmed,sended'
+    search_type: and
+    columns:
+      - order.reference
+      - order.title
+      - order.customer.name
+      - commercial_actor.fullname
+      - reference
+      - published_on
+      - validity_date
+      - validity_delay
+      - sended_on
+      - total_with_taxes
+      - deposit
+      - order.quotation_deadline
+      - status
+    order:
+      - "published_on"
+    per_page: 25

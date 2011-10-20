@@ -64,7 +64,7 @@ fr:
         confirmed_at: "Validé le"
         published_on: "Date d'émission"
         signed_on: "Signé par le client le"
-        attachment: "Fichier (document signé)"
+        attachment: "Bon de livraison signé"
         cancelled_at: "Annulée le"
       due_date:
         date: "Date"
@@ -96,40 +96,45 @@ fr:
         end_product: "Produit fini"
         mockup_type: "Type de maquette"
       invoice:
-        reference: "Référence"
-        invoicing_actor: "Suivi facturation"
-        created_at: "Créée le"
-        status: "État"
-        invoice_type: "Type de facture"
-        published_on: "Date d'émission"
-        confirmed_at: "Validé le"
-        factor: "Factor"
-        bill_to_address: "Adresse de facturation"
-        invoice_contact: "Contact de facturation"
-        deposit: "Pourcentage d'acompte"
-        deposit_vat: "TVA appliquée sur l'acompte"
-        deposit_amount: "Montant de l'acompte"
-        deposit_comment: "Description"
-        sended_on: "Envoyée au client le"
-        send_invoice_method: "Par"
-        cancelled_at: "Annulée le"
-        cancelled_comment: "Indiquer la raison de cette annulation"
         abandoned_on: "Abandonnée le"
         abandoned_comment: "Indiquer la raison de l'abandon"
-        net_to_paid: "Montant total de la facture"
+        bill_to_address: "Adresse de facturation"
+        cancelled_at: "Annulée le"
+        cancelled_comment: "Indiquer la raison de cette annulation"
+        confirmed_at: "Validé le"
+        created_at: "Créée le"
+        delivery_note_invoices: "Bons de livraison associés"
+        deposit: "Pourcentage d'acompte"
+        deposit_amount: "Montant de l'acompte"
+        deposit_comment: "Description"
+        deposit_vat: "TVA appliquée sur l'acompte"
+        due_date: "Échéance"
+        factor: "Factor"
+        factoring_balance_paid_on: "Solde Factor reçu le"
         factoring_paid_on: "Financement du Factor le"
         factoring_recovered_on: "Définancement du Factor le"
         factoring_recovered_comment: "Indiquer la raison du définancement"
-        factoring_balance_paid_on: "Solde Factor reçu le"
+        factorised?: "Factorisée?"
+        global_granted_delay: "Délai de paiement"
+        invoice_contact: "Contact de facturation"
         invoice_item: "Ligne de facture"
-        delivery_note_invoices: "Bons de livraison associés"
-        due_date: "Échéance"
+        invoice_type: "Type de facture"
+        invoicing_actor: "Suivi facturation"
+        net_to_paid: "Montant"
+        number_of_due_dates: "Nb d'échéances"
+        published_on: "Date d'émission"
+        reference: "Référence"
+        sended_on: "Envoyée le"
+        send_invoice_method: "Par"
+        status: "État"
       invoice_item:
         name: "Nom"
         unit_price: "Prix unitaire"
         quantity: "Quantité"
         vat: "TVA"
         pro_rata_billing: "Facturation au temps passé"
+      invoice_type:
+        title: "Type"
       order:
         approaching: "Type d'approche"
         commercial: "Commercial"
@@ -374,6 +379,20 @@ fr:
   
   integrated_search:
     attributes:
+      invoice:
+        abandoned_comment: "Raison de l'abandon"
+        already_paid_amount: "Montant réglé"
+        cancelled_comment: "Raison de l'annulation"
+        delivery_notes: "Réf. BL/BI"
+        invoice_contact:
+          fullname: "Contact de facturation"
+        order_reference: "N° dossier"
+        order_title: "Nom du projet"
+        order_customer_name: "Client"
+        published_on: "Émise le"
+        upcoming_due_date: "Prochaine échéance"
+        upcoming_due_date_date: "Date"
+        upcoming_due_date_amount: "Montant"
       order:
         amount: "Montant"
         billable_amount: "Montant facturable"
@@ -430,6 +449,22 @@ fr:
         name: "Famille"
       product_reference_sub_category:
         name: "Sous-Famille"
+      quote:
+        cancelled_at: "Annulé le"
+        commercial_actor:
+          fullname: "Commercial"
+        deposit: "Acompte"
+        order:
+          quotation_deadline: "Date butoir (fixée par le client)"
+        published_on: "Émis le"
+        quote_contact:
+          fullname: "Contact commercial"
+        sended_on: "Envoyé le"
+        signed_on: "Signé le"
+        reference: "Réf. devis"
+        total_with_taxes: "Total TTC"
+        validity_date: "Expire le"
+        validity_delay: "Durée de validité"
       subcontractor:
         fax:
           formatted_with_indicative: "Fax"
@@ -440,6 +475,9 @@ fr:
         phone_number: "Téléphone"
         fax_number: "Fax"
     page_names:
+      invoice:
+        invoice_management_index: "Gestion des factures en cours"
+        payment_management_index: "Gestion des paiements en cours"
       order:
         closed_order_index: "Les dossiers clôturés"
         commercial_order_index: "Les dossiers en Étude Commerciale"
@@ -451,12 +489,25 @@ fr:
       product_reference:
         advanced_product_reference: "Tous les produits références"
         product_reference_index: "Les produits références"
+      quote:
+        quote_management_index: "Gestion des devis en cours"
       service_delivery:
         advanced_service_delivery: "Tous les prestations"
         service_delivery_index: "Les prestations"
       subcontractor:
         advanced_subcontractor: "Tous les sous-traitants"
         subcontractor_index: "Les sous-traitants"
+  
+  seeds:
+    query:
+      abandoned_invoices: "Les factures déclarées \"sans suite\""
+      cancelled_invoices: "Les factures annulées"
+      cancelled_quotes: "Les devis annulés"
+      draft_invoices: "Les factures en brouillon"
+      draft_quotes: "Les devis en brouillon"
+      sent_invoices: "Les factures envoyées récemment"
+      signed_quotes: "Les devis signés"
+      totally_paid_invoices: "Les factures réglées"
   
   view:
     contextual_menu_sections:

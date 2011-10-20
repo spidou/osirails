@@ -137,6 +137,17 @@ form.force_show_view = delivery_intervention.was_realized?
     <%= form.label :report %>
     <%= form.file_field :report %>
   </p>
+  
+  <% fields_for "delivery_intervention[delivery_note_sign_attributes]", delivery_note do |dn_form| %>
+    <%# dn_form.error_messages %>
+    <p>
+      <%= dn_form.label :attachment %>
+      <%= dn_form.file_field :attachment %>
+      
+      <%= dn_form.label :signed_on %>
+      <%= dn_form.calendar_date_select :signed_on %>
+    </p>
+  <% end if DeliveryNote.can_sign?(current_user) %>
 </div>
 
 <div id="delivery_intervention_delivered_false_div" class="presentation_large" style="<%= delivered_false_style %>">

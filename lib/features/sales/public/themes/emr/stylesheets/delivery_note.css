@@ -24,6 +24,26 @@ table tr.delivery_note td.realized_at.delivered {
   color: #60bc00;
 }
 
+/* DELIVERY STEP & DELIVERING STATE */
+div.delivery_step_notice {
+  display: inline-block;
+  vertical-align: top;
+}
+
+div.delivering_state {
+  display: inline-block;
+  margin-left: 30px;
+}
+
+table.delivering_state td.label {
+  text-align: left;
+  font-weight: bold;
+}
+
+table.delivering_state td.value {
+  text-align: right;
+}
+
 /* DELIVERY NOTE HEADER */
 #delivery_note_header {
   text-align: left;

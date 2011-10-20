@@ -154,7 +154,7 @@ class DeliveryNotesController < ApplicationController
     @delivery_intervention.installation_subcontractor_id  = @delivery_intervention.scheduled_installation_subcontractor_id
   end
   
-  # PUT /orders/:order_id/:step/delivery_notes/:delivery_note_id/schedule
+  # PUT /orders/:order_id/:step/delivery_notes/:delivery_note_id/realize
   def realize
     @return_uri = params[:return_uri] # permit to be redirected to intervention creation (or other uri) when necessary
     @delivery_intervention = @delivery_note.pending_delivery_intervention
@@ -185,7 +185,7 @@ class DeliveryNotesController < ApplicationController
     if @delivery_note.can_be_signed?
       @delivery_note.attributes = params[:delivery_note]
       if @delivery_note.sign
-        flash[:notice] = 'Le bon de livraison a été modifié avec succès'
+        flash[:notice] = 'Le bon de livraison a été signé avec succès'
         
         redirect_to send(@step.original_step.path)
       else

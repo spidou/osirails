@@ -182,6 +182,22 @@ ActionController::Routing::Routes.add_routes do |map|
                                                                             :action     => 'abandon',
                                                                             :conditions => { :method => :put }
           
+          invoice.ajax_request_for_invoice_items 'ajax_request_for_invoice_items/:delivery_note_ids',
+                                                 :controller         => 'invoices',
+                                                 :action             => 'ajax_request_for_invoice_items',
+                                                 :method             => :get,
+                                                 :delivery_note_ids  => 0
+        end
+        
+        invoice_step.ajax_request_for_invoice_items 'ajax_request_for_invoice_items/:delivery_note_ids',
+                                                    :controller         => 'invoices',
+                                                    :action             => 'ajax_request_for_invoice_items',
+                                                    :method             => :get,
+                                                    :delivery_note_ids  => 0
+      end
+      
+      invoicing.resource :payment_step, :as => 'payment', :controller => 'payment_step' do |payment_step|
+        payment_step.resources :invoices do |invoice|
           invoice.factoring_pay_form 'factoring_pay_form',                  :controller => 'invoices',
                                                                             :action     => 'factoring_pay_form',
                                                                             :conditions => { :method => :get }
@@ -221,21 +237,8 @@ ActionController::Routing::Routes.add_routes do |map|
           invoice.totally_pay 'totally_pay',                                :controller => 'invoices',
                                                                             :action     => 'totally_pay',
                                                                             :conditions => { :method => :put }
-          
-          invoice.ajax_request_for_invoice_items 'ajax_request_for_invoice_items/:delivery_note_ids',
-                                                 :controller         => 'invoices',
-                                                 :action             => 'ajax_request_for_invoice_items',
-                                                 :method             => :get,
-                                                 :delivery_note_ids  => 0
         end
-        
-        invoice_step.ajax_request_for_invoice_items 'ajax_request_for_invoice_items/:delivery_note_ids',
-                                                    :controller         => 'invoices',
-                                                    :action             => 'ajax_request_for_invoice_items',
-                                                    :method             => :get,
-                                                    :delivery_note_ids  => 0
       end
-      invoicing.resource :payment_step, :as => 'payment', :controller => 'payment_step'
     end
     
     # other resources
@@ -295,8 +298,9 @@ ActionController::Routing::Routes.add_routes do |map|
   map.pre_invoicing_orders  'pre_invoicing_orders', :controller => 'pre_invoicing_orders'
   map.invoicing_orders      'invoicing_orders',     :controller => 'invoicing_orders'
   
-  map.invoice_management  'invoice_management', :controller => 'invoice_management'
   map.quote_management    'quote_management',   :controller => 'quote_management'
+  map.invoice_management  'invoice_management', :controller => 'invoice_management'
+  map.payment_management  'payment_management', :controller => 'payment_management'
   
   map.auto_complete_for_customer_name 'auto_complete_for_customer_name', :controller  => 'customers', 
                                                                          :action      => 'auto_complete_for_customer_name',

@@ -3,26 +3,34 @@
   <h2><%= image_tag("menus/thirds.png") %><%= link_to "Tiers", thirds_path %></h2>
   <table>
     <tbody>
+    <% if Customer.can_view?(current_user) %>
       <tr>
         <td class="counter"><span><%= Customer.count %></span></td>
         <td class="link"><%= link_to "clients", customers_path %></td>
-        <td class="actions"><%= link_to "", new_customer_path, 'data-icon' => :new %></td>
+        <td class="actions"><%= new_customer_link(:link_text => "") %></td>
       </tr>
+    <% end %>
+    <% if Supplier.can_view?(current_user) %>
       <tr>
         <td class="counter"><span><%= Supplier.count %></span></td>
         <td class="link"><%= link_to "fournisseurs", suppliers_path %></td>
-        <td class="actions"><%= link_to "", new_supplier_path, 'data-icon' => :new %></td>
+        <td class="actions"><%= new_supplier_link(:link_text => "") %></td>
       </tr>
+    <% end %>
+    <% if Subcontractor.can_view?(current_user) %>
       <tr>
         <td class="counter"><span><%= Subcontractor.count %></span></td>
         <td class="link"><%= link_to "sous-traitants", subcontractors_path %></td>
-        <td class="actions"><%= link_to "", new_subcontractor_path, 'data-icon' => :new %></td>
+        <td class="actions"><%= new_subcontractor_link(:link_text => "") %></td>
       </tr>
+    <% end %>
+    <% if Factor.can_view?(current_user) %>
       <tr>
         <td class="counter"><span><%= Factor.count %></span></td>
         <td class="link"><%= link_to "factors", factors_path %></td>
-        <td class="actions"><%= link_to "", new_factor_path, 'data-icon' => :new %></td>
+        <td class="actions"><%= new_factor_link(:link_text => "") %></td>
       </tr>
+    <% end %>
     </tbody>
   </table>
 <% end %>

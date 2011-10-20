@@ -2,21 +2,28 @@
   <h2><%= image_tag("menus/stocks.png") %><%= link_to "Stocks", stocks_path %></h2>
   <table>
     <tbody>
+    <% if Commodity.can_view?(current_user) %>
       <tr>
         <td class="counter"><span><%= Commodity.count %></span></td>
         <td class="link"><%= link_to "matières premières", commodities_manager_path %></td>
-        <td class="actions"><%= link_to "", new_commodity_path, 'data-icon' => :new %></td>
+        <td class="actions"><%= new_commodity_link(:link_text => "") %></td>
       </tr>
+    <% end %>
+    <% if Consumable.can_view?(current_user) %>
       <tr>
         <td class="counter"><span><%= Consumable.count %></span></td>
         <td class="link"><%= link_to "consommables", consumables_manager_path %></td>
-        <td class="actions"><%= link_to "", new_consumable_path, 'data-icon' => :new %></td>
+        <td class="actions"><%= new_consumable_link(:link_text => "") %></td>
       </tr>
+    <% end %>
+    <% if Commodity.can_view?(current_user) && Consumable.can_view?(current_user) %>
       <tr>
         <td class="counter"><span><%= Commodity.restockables.count + Consumable.restockables.count %></span></td>
         <td class="link"><%= link_to "articles à réapprovisionner", restockable_supplies_path %></td>
         <td class="actions">&nbsp;</td>
       </tr>
+    <% end %>
+    <% if Inventory.can_view?(current_user) %>
       <tr>
         <td class="counter">&nbsp;</td>
         <td class="link"><%= link_to "Valeur estimative du stock actuel", inventories_path %></td>
@@ -35,14 +42,17 @@
           <td class="amount">&nbsp;</td>
         </tr>
       <% end %>
+    <% end %>
+    <% if Inventory.can_add?(current_user) %>
       <tr class="spacer">
         <td colspan="3"></td>
       </tr>
       <tr>
         <td class="counter">&nbsp;</td>
-        <td class="link"><%= link_to "Nouvel inventaire", "#", 'data-icon' => :new %></td>
+        <td class="link"><%= inventories_link(:link_text => "Nouvel inventaire") %></td>
         <td class="actions">&nbsp;</td>
       </tr>
+    <% end %>
     </tbody>
   </table>
 <% end %>
