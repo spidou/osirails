@@ -18,8 +18,11 @@ String.prototype.rjust = function(padSize, padStr) {
   pad = pad.substr(0, pad.length/padStr.length)
   return pad + this
 };
+String.prototype.is_numeric = function() { return isFinite(this) }
 
 Array.prototype.sum = function() { return this.inject(0, function(a,b){ return a + b }); };
+Array.prototype.empty = function() { return this.length === 0 };
+Array.prototype.any = function() { return this.length > 0 };
 
 // Add Enumerable to NamedNodeMap (used when calling $('dom_id').attributes)
 Object.extend(NamedNodeMap.prototype, Enumerable);
@@ -37,6 +40,17 @@ Object.extend(NamedNodeMap.prototype, {
     return this.collect(function(a){return a.value})
   }
 });
+
+// return the index of the given value amoung select options
+function getIndexByValue(select, value) {
+  for (var i = 0; i < select.options.length; i++) {
+    if (select.options[i].value === value) {
+      return i;
+      break;
+    }
+  }
+  return null;
+}
 
 function log(msg) {
   try {

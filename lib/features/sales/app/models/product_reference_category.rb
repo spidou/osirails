@@ -15,6 +15,9 @@ class ProductReferenceCategory < ActiveRecord::Base
   
   validates_persistence_of :reference, :unless => :can_update_reference?
   
+  journalize :attributes        => [ :reference, :name ],
+             :identifier_method => :name
+  
   has_search_index  :only_attributes    => [ :id, :reference, :name ],
                     :only_relationships => [ :product_reference_sub_categories ],
                     :identifier         => :reference_and_name

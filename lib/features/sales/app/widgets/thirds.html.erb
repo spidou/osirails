@@ -1,4 +1,4 @@
-<!-- essayer de charger le fichier original puis d'y rajouter du contenu (au lieu de tout redéfinir) -->
+<%# essayer de charger le fichier original puis d'y rajouter du contenu (au lieu de tout redéfinir) %>
 <% if Menu.find_by_name('thirds').can_access?(current_user) %>
   <h2><%= image_tag("menus/thirds.png") %><%= link_to "Tiers", thirds_path %></h2>
   <table>

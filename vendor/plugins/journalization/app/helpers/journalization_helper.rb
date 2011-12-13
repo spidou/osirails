@@ -102,7 +102,7 @@ module JournalizationHelper
                 li_html << get_translation(:one_removal, :default => 'removed')
                 li_class = :removed
               else
-                li_html << get_translation(:one_addition, :default => 'removed')
+                li_html << get_translation(:one_addition, :default => 'added')
                 li_class = :added
               end
               

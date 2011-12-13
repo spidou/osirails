@@ -8,6 +8,9 @@ class ProductReferenceSubCategory < ProductReferenceCategory
   has_many :disabled_product_references, :class_name => "ProductReference", :conditions => [ "cancelled_at IS NOT NULL" ]
   has_many :all_product_references, :class_name => "ProductReference"
   
+  journalize :attributes        => [ :reference, :name ],
+             :identifier_method => :name
+  
   has_search_index  :only_attributes    => [ :id, :reference, :name ],
                     :only_relationships => [ :product_reference_category ],
                     :identifier         => :reference_and_name

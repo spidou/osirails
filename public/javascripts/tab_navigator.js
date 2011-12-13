@@ -136,6 +136,10 @@ var Tab = Class.create({
     this.content_element.update(new_content)
   },
   
+  nav_title: function() {
+    return this.nav_element.down('a').innerHTML;
+  },
+  
   position: function() {
     position = 0
     this.parent.tabs.each(function(tab, index) {

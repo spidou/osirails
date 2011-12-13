@@ -184,7 +184,7 @@ fr:
         description: "Description"
         width: "Largeur"
         length: "Longueur"
-        heigth: "Hauteur"
+        height: "Hauteur"
         dimensions: "Côtes"
         designation: "Désignation"
         designation_with_dimensions: "Désignation"
