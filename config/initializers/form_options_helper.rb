@@ -160,9 +160,9 @@ module ActionView
         content_tag :strong, h(text), options
       end
       
-      def reset(object, text)
-        text ||= "Reset"
-        "<input type='reset' value='#{text}' name='reset' id='#{object}_reset'/>"
+      def reset(object, text, options = {})
+        options = { :value => (text || 'Reset'), :name => :reset, :id => "#{object}_reset" }.merge(options)
+        tag :input, options.merge({ :type => :reset })
       end
       
       def custom_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
@@ -507,8 +507,8 @@ module ActionView
         @template.strong(text, options)
       end
       
-      def reset(text = nil)
-        @template.reset(@object_name, text)
+      def reset(text = nil, options = {})
+        @template.reset(@object_name, text, options)
       end
       
       def force_show_view?
@@ -544,15 +544,40 @@ module ActionView
       def form_buttons(options = {})
         return unless form_view?
         
-        submit_text = options.delete(:submit_text)|| (@object.new_record? ? 'Enregistrer' : 'Enregistrer')
-        reset_text  = options.delete(:reset_text) || 'Réinitialiser'
+        submit_text              = options.delete(:submit_text)              || 'Enregistrer'
+        submit_and_continue_text = options.delete(:submit_and_continue_text) || 'Enregistrer & Continuer'
+        submit_and_new_text      = options.delete(:submit_and_new_text)      || 'Enregistrer & Nouveau'
+        submit_and_quit_text     = options.delete(:submit_and_quit_text)     || 'Enregistrer & Quitter'
+        reset_text               = options.delete(:reset_text)               || 'Réinitialiser'
+        
+        accepted_buttons = [:reset, :submit, :submit_and_continue, :submit_and_new, :submit_and_quit]
+        default_buttons = [:reset, :submit_and_continue, :submit_and_new, :submit_and_quit]
+        displayed_buttons = default_buttons
+        
+        if only_buttons = options.delete(:only)
+          raise Exception, "'only' argument (#{only_buttons.inspect}) expected to be an Array which following values : #{accepted_buttons.inspect}" if !only_buttons.is_a?(Array) || (only_buttons - accepted_buttons).any?
+          displayed_buttons = only_buttons
+        end
+        
+        if except_buttons = options.delete(:except)
+          raise Exception, "'except' argument (#{except_buttons.inspect}) expected to be an Array which following values : #{accepted_buttons.inspect}" if !except_buttons.is_a?(Array) || (except_buttons - accepted_buttons).any?
+          displayed_buttons = default_buttons - except_buttons
+        end
         
         options = { :disable_with => "Enregistrement en cours..." }.update(options)
         
-        submit      = @template.submit_tag(submit_text, options)
-        reset       = @template.reset(@object_name, reset_text)
+        return_uri_on_new_tag  = options[:return_uri_on_new]  ? @template.hidden_field(:return_uri, :on_new,  :value => options.delete(:return_uri_on_new))  : ""
+        return_uri_on_quit_tag = options[:return_uri_on_quit] ? @template.hidden_field(:return_uri, :on_quit, :value => options.delete(:return_uri_on_quit)) : ""
         
-        @template.content_tag(:p, "#{reset} #{submit}", :class => :form_buttons)
+        html_buttons = {}
+        html_buttons[:submit]              = @template.submit_tag(submit_text, options)
+        html_buttons[:submit_and_continue] = @template.submit_tag(submit_and_continue_text, options.merge(:name => :submit_and_continue))
+        html_buttons[:submit_and_new]      = @template.submit_tag(submit_and_new_text, options.merge(:name => :submit_and_new)) + return_uri_on_new_tag
+        html_buttons[:submit_and_quit]     = @template.submit_tag(submit_and_quit_text, options.merge(:name => :submit_and_quit)) + return_uri_on_quit_tag
+        html_buttons[:reset]               = @template.reset(@object_name, reset_text, :onclick => "if(confirm('Êtes-vous sûr de vouloir remettre le formulaire à zéro ? Vous allez perdre tous les changements que vous venez de faire...')) { reload(true); return false; } else { return false; }")
+        
+        html_content = displayed_buttons.collect{ |b| html_buttons[b] }.join(" ")
+        @template.content_tag(:p, html_content, :class => :form_buttons)
       end
     end
     

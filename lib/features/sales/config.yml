@@ -234,8 +234,11 @@ menus:
         description: Gestion des sous-traitants
         position: 4
 configurations:
+  product_reference_vat:
+    description: Taux de TVA appliqué par défaut sur les produits références
+    value: 8.5
   deposit_tax_coefficient:
-    description: TVA appliquée par défaut aux acomptes HT
+    description: Taux de TVA appliqué par défaut aux acomptes HT
     value: 8.5
   quote_validity_delay:
     description: Délai de validité par défaut du devis

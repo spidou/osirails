@@ -298,7 +298,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       
       subject{ @dn }
       
-      should_not_allow_values_for :status, 0, 1, 100, "string", nil, DeliveryNote::STATUS_CONFIRMED
+      should_not_allow_values_for :status, 0, 1, 100, "string", nil
       should_allow_values_for :status, DeliveryNote::STATUS_CANCELLED, DeliveryNote::STATUS_SIGNED
       
       should "have a good 'status' value" do

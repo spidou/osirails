@@ -7,7 +7,7 @@
 # A string   "reference"
 # A float    "carriage_costs",          :default => 0.0
 # A float    "prizegiving",             :default => 0.0
-# A float    "deposit",                 :default => 0.0
+# A float    "deposit"
 # A text     "sales_terms"
 # A string   "validity_delay_unit"
 # A integer  "validity_delay"
@@ -84,7 +84,8 @@ class Quote < ActiveRecord::Base
     x.validates_presence_of :order,             :if => :order_id
     x.validates_presence_of :commercial_actor,  :if => :commercial_actor_id
     
-    x.validates_numericality_of :prizegiving, :carriage_costs, :deposit, :validity_delay
+    x.validates_numericality_of :prizegiving, :carriage_costs, :validity_delay
+    x.validates_numericality_of :deposit, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 100
     
     x.validates_inclusion_of :validity_delay_unit, :in => VALIDITY_DELAY_UNITS.values
     

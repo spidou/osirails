@@ -23,7 +23,7 @@ class InventoriesController < ApplicationController
     
     if @inventory.save
       flash[:notice] = "L'inventaire a été créé avec succès"
-      redirect_to :action => :index
+      redirect_to @inventory
     else
       render :action => :new
     end

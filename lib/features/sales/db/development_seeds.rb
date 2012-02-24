@@ -73,7 +73,7 @@ order2.orders_service_deliveries.create! :service_delivery_id => sd1.id, :quanti
 order2.orders_service_deliveries.create! :service_delivery_id => sd4.id, :pro_rata_billing => true, :quantity => 1
 
 # default quote
-quote = order1.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :commercial_actor_id => Employee.first.id, :quote_contact_id => order1.all_contacts.first.id)
+quote = order1.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :commercial_actor_id => Employee.first.id, :quote_contact_id => order1.all_contacts.first.id, :deposit => 30)
 quote.build_ship_to_address(Address.first.attributes)
 quote.build_bill_to_address(Address.last.attributes)
 order1.end_products.each do |end_product|

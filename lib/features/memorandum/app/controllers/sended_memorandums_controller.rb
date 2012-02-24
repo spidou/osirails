@@ -48,7 +48,7 @@ class SendedMemorandumsController < ApplicationController
         MemorandumsService.create(:service_id => service.id, :memorandum_id => @sended_memorandum.id, :recursive => true)
       end
       flash[:notice] = "La note de service est bien créée"
-      redirect_to :action => 'index'
+      redirect_to @sended_memorandum
     else
       @sended_memorandum.errors.add("Destinataire") unless params.has_key?(:memorandums_services)
       render :action => 'new', :locals => {:id => params[:id], :memorandums_services => params[:memorandums_services]}
@@ -114,7 +114,7 @@ class SendedMemorandumsController < ApplicationController
         MemorandumsService.create(:service_id => service.id, :memorandum_id => params[:id], :recursive => true)
       end
       flash[:notice] = "La note de service est mise à jour"
-      redirect_to :action => 'index'
+      redirect_to @sended_memorandum
     else
       flash[:error] = "Erreur de mise à jour. Vérifier que la note de service est associée à un service."
       render :action => 'edit'

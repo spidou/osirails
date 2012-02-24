@@ -29,7 +29,7 @@
       <%= f.text_area_autoresize :remark %>
     </p>
     
-    <%= f.form_buttons :confirm => "Êtes-vous sûr ?\nAttention, cette action est irreversible !", :disable_with => nil %>
+    <%= f.form_buttons :only => [:reset, :submit_and_quit], :confirm => "Êtes-vous sûr ?\nAttention, cette action est irreversible !", :disable_with => nil %>
   <% end %>
   
 </div>

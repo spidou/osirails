@@ -32,6 +32,6 @@
       <%= form.label :name %>
       <%= form.form_or_view(form.text_field(:name), :name) %>
     </p>
-    <%= form.form_buttons %>
+    <%= form.form_buttons :return_uri_on_quit => product_references_path %>
   <% end %>
 </div>

@@ -46,6 +46,6 @@
       <%= f.form_or_view(f.text_area(:overtime_comment,{:rows => 5}),:overtime_comment)%>
     </p>
     
-      <%= f.form_buttons %>
+      <%= f.form_buttons :return_uri_on_new => new_checking_path(:employee_id => @checking.employee_id), :return_uri_on_quit => checkings_path(:employee_id => @checking.employee_id, :date => @checking.date) %>
   <% end %>
 </div>

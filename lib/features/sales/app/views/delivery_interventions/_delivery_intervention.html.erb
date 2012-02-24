@@ -70,7 +70,7 @@ delivery_intervention_errors = { :schedule     => delivery_intervention.errors.a
           <% end %>
         <% end %>
         
-        <%= form.form_buttons %>
+        <%= form.form_buttons(:only => [:reset, :submit]) %>
         
       <% end %>
     <% end %>

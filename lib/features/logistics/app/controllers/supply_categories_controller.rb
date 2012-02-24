@@ -27,7 +27,7 @@ class SupplyCategoriesController < ApplicationController
     @supply_category = @supply_category_class.new(params["#{@supply_category_class.name.underscore}".to_sym])
     if @supply_category.save
       flash[:notice] = "La famille a été créée"
-      redirect_to send("#{@supply_class.name.tableize}_manager_path")
+      redirect_to @supply_category
     else
       custom_callback
       render :action => 'new'
@@ -44,7 +44,7 @@ class SupplyCategoriesController < ApplicationController
     if @supply_category.can_be_edited?
       if @supply_category.update_attributes(params["#{@supply_category_class.name.underscore}".to_sym])
         flash[:notice] = "Le famille a été modifiée avec succès"
-        redirect_to send("#{@supply_class.name.tableize}_manager_path")
+        redirect_to @supply_category
       else
         custom_callback
         render :action => 'edit'

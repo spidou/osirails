@@ -34,7 +34,7 @@ class MockupsController < ApplicationController
 
     if @mockup.save
       flash[:notice] = "La maquette a été créée avec succès."
-      redirect_to order_mockups_path
+      redirect_to order_mockup_path(@order, @mockup)
     else
       render :action => "new"
     end
@@ -55,7 +55,7 @@ class MockupsController < ApplicationController
 
     if @mockup.update_attributes params[:mockup]
       flash[:notice] = "La maquette a été modifiée avec succès."
-      redirect_to order_mockup_path
+      redirect_to order_mockup_path(@order, @mockup)
     else
       render :action => "edit"
     end

@@ -18,6 +18,6 @@
       <%= form.collection_select :send_quote_method_id, SendQuoteMethod.all, :id, :name, :include_blank => true %>
     </p>
     
-    <%= form.form_buttons %>
+    <%= form.form_buttons(:only => [:reset, :submit]) %>
   <% end %>
 </div>

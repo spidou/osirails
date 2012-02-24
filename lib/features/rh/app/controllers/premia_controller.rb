@@ -21,7 +21,7 @@ class PremiaController < ApplicationController
     if @premium.save 
       @premia << @premium
       flash[:notice] = ' La prime a été ajoutée avec succès.'
-      redirect_to(@employee)
+      redirect_to employee_premium_path(@employee, @premium)
     else
       render :action => "new"
     end

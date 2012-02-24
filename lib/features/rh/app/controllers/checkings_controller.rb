@@ -43,7 +43,7 @@ class CheckingsController < ApplicationController
     Checking.transaction do
       if @checking.save
         flash[:notice] = "Pointage ajouté avec succès"
-        redirect_to checkings_path(:date => @checking.date, :employee_id => @checking.employee_id)
+        redirect_to @checking
       else
         render :action => "new"
       end
@@ -64,7 +64,7 @@ class CheckingsController < ApplicationController
     @checking = Checking.find(params[:id])
     if @checking.update_attributes(params[:checking])
       flash[:notice] = "Pointage modifié avec succès"
-      redirect_to checkings_path(:date => @checking.date, :employee_id => @checking.employee_id)
+      redirect_to @checking
     else
       render :action => "edit"
     end

@@ -25,7 +25,7 @@ class ContentsController < ApplicationController
     @content = Content.new(params[:content])
     if @content.save
       flash[:notice] = 'Votre page est crée avec succès'
-      redirect_to :action => 'index'
+      redirect_to @content
     else
       @menus = Menu.get_structured_menus
       render :action => 'new'
@@ -65,7 +65,7 @@ class ContentsController < ApplicationController
       ContentVersion.create_from_content(@content)
       
       flash[:notice] = "Contenu modifié avec succès"
-      redirect_to contents_path
+      redirect_to @content
     else
       flash[:error] = "Un problème est survenu lors de la modification du contenu"
       render :action => "edit"

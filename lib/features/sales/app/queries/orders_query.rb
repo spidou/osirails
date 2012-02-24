@@ -107,6 +107,8 @@ module OrdersQuery
   
   private
     def display_step_status(step)
-      link_to(t("view.step.statuses.#{step.status}", :default => step.status).gsub(' ', '&nbsp;'), send(step.original_step.path, step.order), :class => "step_status #{step.status}", :title => "Aller à l'étape")
+      if step
+        link_to(t("view.step.statuses.#{step.status}", :default => step.status).gsub(' ', '&nbsp;'), send(step.original_step.path, step.order), :class => "step_status #{step.status}", :title => "Aller à l'étape")
+      end
     end
 end

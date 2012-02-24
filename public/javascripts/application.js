@@ -93,6 +93,15 @@ function error(msg) {
 
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
+function reload(forceGet) {
+  var forceGet = forceGet || false
+  if (document.location) {
+    document.location.reload(forceGet)
+  } else if (window.location) {
+    window.location.reload(forceGet)
+  }
+}
+
 if (window.addEventListener)
 {
   window.addEventListener('load', initEventListeners, false);

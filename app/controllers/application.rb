@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   # Filters
   before_filter :configure_model, :authenticate, :select_theme, :initialize_contextual_menu, :select_time_zone, :select_language
   before_filter :load_features_overrides if Rails.env.development?
+  around_filter :submit_forwardings
   
   # Password will not displayed in log files
   filter_parameter_logging "password"
@@ -260,5 +261,48 @@ class ApplicationController < ActionController::Base
     
     def initialize_contextual_menu
       @contextual_menu = ContextualMenu.new
+    end
+    
+    # manage redirections according to the given submit action.
+    # to work properly, the controller methods (create & update) need to
+    # redirect to the resource (show or edit), and not to the listing page (index)
+    def submit_forwardings
+      @whats_next = nil
+      
+      if (request.post? || request.put?)
+        @whats_next = if params[:submit_and_continue]
+          :continue
+        elsif params[:submit_and_new]
+          :new
+        elsif params[:submit_and_quit]
+          :quit
+        end
+      end
+      
+      yield
+      
+      if @performed_redirect && @whats_next # assuming we 'redirect' when the model is clean (no errors), whereas we 'render' when model has errors
+        parameters = case @whats_next
+        when :continue
+          redirected_to = response.redirected_to
+          id = if redirected_to.is_a?(String)
+            ActionController::Routing::Routes.recognize_path(redirected_to, :method => :get)[:id] || raise(Exception, "You may configure the controller to redirect to the #{request.post? ? 'newly created' : 'updated'} resource, instead of #{redirected_to.inspect}")
+          elsif redirected_to.is_a?(ActiveRecord::Base)
+            redirected_to.id || raise(Exception, "You were trying to redirect to an unsaved resource. You may ensure that the controller always redirect to a saved resource")
+          else
+            raise Exception, "This redirection is not supported here. You were trying to redirect to : #{redirected_to.inspect}"
+          end
+          { :action => :edit }.merge(request.post? ? { :id => id } : {})
+        when :new
+          params[:return_uri] && params[:return_uri][:on_new] ? params[:return_uri][:on_new] : { :action => :new }
+        when :quit
+          params[:return_uri] && params[:return_uri][:on_quit] ? params[:return_uri][:on_quit] : { :action => :index }
+        end
+        
+        if parameters
+          erase_redirect_results
+          redirect_to parameters
+        end
+      end
     end
 end # class

@@ -451,7 +451,7 @@ class Invoice < ActiveRecord::Base
   
   def validates_presence_of_deposit_attributes
     return true unless deposit_invoice?
-    errors.add(:deposit, I18n.t('activerecord.errors.messages.not_a_number')) unless deposit and deposit > 0
+    errors.add(:deposit, I18n.t('activerecord.errors.messages.not_a_number')) unless deposit and deposit > 0 #TODO validate if deposit is not greater than 100
     errors.add(:deposit_amount, I18n.t('activerecord.errors.messages.not_a_number')) unless deposit_amount and deposit_amount > 0
     errors.add(:deposit_vat, I18n.t('activerecord.errors.messages.not_a_number')) unless deposit_vat and deposit_vat > 0
   end

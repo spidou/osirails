@@ -45,7 +45,7 @@
         <%= hidden_field_tag "supply_class", params[:supply_class] %>
       </p>
       
-      <%= form.form_buttons %>
+      <%= form.form_buttons(:except => [:submit_and_continue], :return_uri_on_new => new_inventory_path(:supply_class => params[:supply_class])) %>
     <% end %>
   <% else %>
     <p>Aucun article disponible pour effectuer un nouvel inventaire</p>

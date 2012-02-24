@@ -10,7 +10,7 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs
   def index
-    # TODO
+    redirect_to send(@step.original_step.path)
   end
   
   # GET /orders/:order_id/:step/press_proofs/:id
@@ -51,7 +51,7 @@ class PressProofsController < ApplicationController
     if @press_proof.can_be_created? and !@order.all_end_products_have_signed_press_proof?
       if @press_proof.save
         flash[:notice] = "Le Bon à Tirer (BAT) a été créé avec succès"
-        redirect_to send(@step.original_step.path)
+        redirect_to order_commercial_step_press_proof_step_press_proof_path(@order, @press_proof)
       else
         render :action => :new
       end
@@ -70,7 +70,7 @@ class PressProofsController < ApplicationController
     if @press_proof.can_be_edited?
       if @press_proof.update_attributes(params[:press_proof])
         flash[:notice] = "Le Bon à Tirer (BAT) a été modifié avec succès"
-        redirect_to send(@step.original_step.path)
+        redirect_to order_commercial_step_press_proof_step_press_proof_path(@order, @press_proof)
       else
         render :action => :edit
       end

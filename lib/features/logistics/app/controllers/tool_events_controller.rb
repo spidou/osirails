@@ -33,7 +33,7 @@ class ToolEventsController < ApplicationController
     
       if @tool_event.save
         flash[:notice] = "Évènement ajouté avec succès"
-        redirect_to send("#{@tool.class.to_s.tableize.singularize}_path", @tool)
+        redirect_to send("#{@tool.class.to_s.tableize.singularize}_tool_event_path", @tool, @tool_event)
       else
         render :action => :new
       end
@@ -58,7 +58,7 @@ class ToolEventsController < ApplicationController
 
       if @tool_event.update_attributes(@prepared_params[:tool_event])
         flash[:notice] = "Évènement modifiée avec succès"
-        redirect_to send("#{@tool.class.to_s.tableize.singularize}_path", @tool)
+        redirect_to send("#{@tool.class.to_s.tableize.singularize}_tool_event_path", @tool, @tool_event)
       else
         render :action => :edit
       end

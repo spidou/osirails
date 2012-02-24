@@ -47,6 +47,7 @@ class ProductReferencesController < ApplicationController
     else
       @product_reference = ProductReference.new(:product_reference_sub_category_id => params[:product_reference_sub_category_id])
     end
+    @product_reference.vat = (ConfigurationManager.sales_product_reference_vat rescue nil)
     @product_reference_categories = ProductReferenceCategory.roots.actives
   end
   
@@ -55,7 +56,7 @@ class ProductReferencesController < ApplicationController
     @product_reference = ProductReference.new(params[:product_reference])
     if @product_reference.save
       flash[:notice] = "La référence a été créée avec succès"
-      redirect_to :controller => 'product_reference_manager', :action => 'index'
+      redirect_to(@product_reference)
     else
       @product_reference_categories = ProductReferenceCategory.roots.actives
       render :action => 'new'

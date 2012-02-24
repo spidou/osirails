@@ -5,7 +5,7 @@ quote = quote_footer
 
 <p>
   <%= form.label :deposit, 'Acompte (%) :' %>
-  <%= form.form_or_view(form.text_field(:deposit, :value => quote.deposit.to_f.round_to(2).to_s(2), :size => 5), strong(quote.deposit.to_f.round_to(2).to_s(2))) %>
+  <%= form.form_or_view(form.text_field(:deposit, :value => (quote.deposit ? quote.deposit.to_f.round_to(2).to_s(2) : ''), :size => 5, :placeholder => "0 - 100"), strong(quote.deposit.to_f.round_to(2).to_s(2))) %>
 </p>
 
 <p>

@@ -47,7 +47,7 @@ class SuppliesController < ApplicationController
     
     if @supply.save
       flash[:notice] = "L'article a été créé avec succès"
-      redirect_to send("#{@supply_class.name.tableize}_manager_path")
+      redirect_to @supply
     else
       find_or_build_supplies_supply_sizes
       render :action => 'new'
@@ -64,7 +64,7 @@ class SuppliesController < ApplicationController
   def update
     if @supply.update_attributes(params["#{@supply_class.name.underscore}".to_sym])
       flash[:notice] = "L'article a été modifié avec succès"
-      redirect_to :controller => "#{@supply_class.name.tableize}_manager", :action => 'index'
+      redirect_to @supply
     else
       find_or_build_supplies_supply_sizes
       render :action => 'edit'

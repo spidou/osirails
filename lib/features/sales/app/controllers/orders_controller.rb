@@ -7,7 +7,7 @@ class OrdersController < ApplicationController
   acts_as_step_controller :sham => true, :step_name => :commercial_step
   
   def index
-    redirect_to :action => :new
+    redirect_to in_progress_orders_path
   end
   
   # GET /orders/:id
@@ -61,7 +61,7 @@ class OrdersController < ApplicationController
     @order.creator = current_user
     if @order.save
       flash[:notice] = "Dossier créé avec succès"
-      redirect_to order_informations_path(@order)
+      redirect_to order_path(@order)
     else
       render :action => "new"
     end
@@ -77,7 +77,7 @@ class OrdersController < ApplicationController
     unless @order.completed?
       if @order.update_attributes(params[:order])
         flash[:notice] = "Dossier modifié avec succés"
-        redirect_to order_informations_path(@order)
+        redirect_to order_path(@order)
       else
         render :action => 'edit'
       end

@@ -17,6 +17,6 @@
       <%= render :partial => 'factoring_payment', :collection => @invoice.due_dates %>
     </div>
     
-    <%= form.form_buttons %>
+    <%= form.form_buttons(:only => [:reset, :submit]) %>
   <% end %>
 </div>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110801094607) do
+ActiveRecord::Schema.define(:version => 20120223071650) do
 
   create_table "active_counters", :force => true do |t|
     t.string "key"
@@ -1214,7 +1214,7 @@ ActiveRecord::Schema.define(:version => 20110801094607) do
     t.string   "reference"
     t.float    "carriage_costs",          :default => 0.0
     t.float    "prizegiving",             :default => 0.0
-    t.float    "deposit",                 :default => 0.0
+    t.float    "deposit"
     t.text     "sales_terms"
     t.string   "validity_delay_unit"
     t.integer  "validity_delay"
@@ -1265,6 +1265,8 @@ ActiveRecord::Schema.define(:version => 20110801094607) do
     t.integer  "job_contract_id"
     t.decimal  "gross_amount",    :precision => 65, :scale => 20
     t.datetime "created_at"
+    t.decimal  "net_amount",      :precision => 65, :scale => 20
+    t.date     "date"
   end
 
   create_table "sales_processes", :force => true do |t|

@@ -57,6 +57,8 @@ fr:
         departure_description: "Motif du départ"
       salary:
         gross_amount: "Salaire brut"
+        net_amount: "Salaire net"
+        date: "À partir de"
       leave:
         start_date: "Du"
         end_date: "Au"

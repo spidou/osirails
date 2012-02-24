@@ -83,7 +83,7 @@
       <%= form.hidden_field :customer_id, :value  => order.customer_id if is_form_view? %>
     </p>
     
-    <%= form.form_buttons %>
+    <%= form.form_buttons :only => [:reset, :submit] %>
   <% end %>
 </div>
 

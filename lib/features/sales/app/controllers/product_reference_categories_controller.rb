@@ -32,7 +32,7 @@ class ProductReferenceCategoriesController < ApplicationController
     @product_reference_category = @product_reference_category_type.new(params[@product_reference_category_type.name.underscore.to_sym])
     if @product_reference_category.save
       flash[:notice] = "La famille de produit a été créée avec succès"
-      redirect_to product_reference_manager_path
+      redirect_to @product_reference_category
     else
       render :action => :new
     end
@@ -46,7 +46,7 @@ class ProductReferenceCategoriesController < ApplicationController
   def update
     if @product_reference_category.update_attributes(params[@product_reference_category_type.name.underscore.to_sym])
       flash[:notice] = 'La famille de produit a été modifiée avec succès'
-      redirect_to product_reference_manager_path
+      redirect_to @product_reference_category
     else
       render :action => :edit
     end

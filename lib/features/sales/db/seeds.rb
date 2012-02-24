@@ -125,7 +125,7 @@ end
 
 # default payment methods
 PaymentMethod.create! :name => "Chèque"
-PaymentMethod.create! :name => "Carte banquaire"
+PaymentMethod.create! :name => "Carte bancaire"
 PaymentMethod.create! :name => "Espèce"
 PaymentMethod.create! :name => "Virement"
 PaymentMethod.create! :name => "Mandat"

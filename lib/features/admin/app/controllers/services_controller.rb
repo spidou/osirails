@@ -44,7 +44,7 @@ class ServicesController < ApplicationController
 
     if @service.save
       flash[:notice] = 'Le service est bien créé.'
-      redirect_to( :action => "index" )
+      redirect_to @service
     else
       render :action => "new"
     end
@@ -74,7 +74,7 @@ class ServicesController < ApplicationController
     
     if @service.update_attributes(params[:service])
       flash[:notice] = 'Le service est bien mise à jour.'
-      redirect_to services_path
+      redirect_to @service
     else
       flash[:error] = 'Le service ne peut être déplacé'
       render :action => 'edit'

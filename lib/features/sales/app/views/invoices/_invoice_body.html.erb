@@ -21,7 +21,7 @@ end
       
       <p>
         <%= form.label :deposit %>
-        <%= form.form_or_view(form.text_field(:deposit, :size => 3, :onkeyup => "javascript:update_deposit_amount(this)"), :deposit) %><span> &#37;</span>
+        <%= form.form_or_view(form.text_field(:deposit, :size => 3, :placeholder => "0 - 100", :onkeyup => "javascript:update_deposit_amount(this)"), :deposit) %><span> &#37;</span>
       </p>
       
       <p>

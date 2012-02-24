@@ -18,6 +18,6 @@
       <%= form.file_field :signed_press_proof %>
     </p>
     
-    <%= form.form_buttons %>
+    <%= form.form_buttons(:only => [:reset, :submit]) %>
   <% end %>
 </div>

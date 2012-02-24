@@ -20,7 +20,7 @@ class SocietyActivitySectorsController < ApplicationController
     @society_activity_sector = SocietyActivitySector.new(params[:society_activity_sector])
     if @society_activity_sector.save
       flash[:notice] = "Le secteur d'activité a été créé avec succès"
-      redirect_to :action => 'index'
+      redirect_to @society_activity_sector
     else
       render :action => "new"
     end
@@ -31,7 +31,7 @@ class SocietyActivitySectorsController < ApplicationController
     @society_activity_sector = SocietyActivitySector.find(params[:id])
     if @society_activity_sector.update_attributes(params[:society_activity_sector])
       flash[:notice] = "Le secteur d'activité est bien mise à jour"
-      redirect_to :action => 'index'
+      redirect_to @society_activity_sector
     else
       render :action => "edit"
     end

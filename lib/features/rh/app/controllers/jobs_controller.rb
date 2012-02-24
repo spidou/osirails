@@ -29,7 +29,7 @@ class JobsController < ApplicationController
           @numbers = @employee.numbers
         end
         flash[:notice] = 'La fonction a été crée avec succès.'
-        format.html { redirect_to(jobs_path) }  
+        format.html { redirect_to(@job) }  
         format.js  
       else
         format.html { render :action => "new" }

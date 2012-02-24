@@ -426,7 +426,7 @@ class InvoiceTest < ActiveSupport::TestCase
       should "add one more asset_invoice on order" do
         before = @order.asset_invoices.count
         @invoice.save!
-        assert_equal before + 1, @order.asset_invoices.count
+        assert_equal before + 1, @order.asset_invoices(true).count
       end
     end
   end
@@ -604,7 +604,7 @@ class InvoiceTest < ActiveSupport::TestCase
       should "add a status_invoice on order" do
         before = @order.status_invoices.count
         @invoice.save!
-        assert_equal before + 1, @order.status_invoices.count
+        assert_equal before + 1, @order.status_invoices(true).count
       end
     end
     

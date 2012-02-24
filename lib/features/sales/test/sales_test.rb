@@ -61,7 +61,7 @@ class Test::Unit::TestCase
       create_default_end_product(order)
     end
     
-    quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :commercial_actor_id => Employee.first.id, :quote_contact_id => order.all_contacts.first.id)
+    quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :commercial_actor_id => Employee.first.id, :quote_contact_id => order.all_contacts.first.id, :deposit => 30)
     
     order.end_products.each do |end_product|
       quote.build_quote_item(:quotable_type   => end_product.class.name,
@@ -76,7 +76,7 @@ class Test::Unit::TestCase
                              :vat             => 19.6)
     end
     
-    flunk "Quote should be created" unless quote.save
+    flunk "Quote should be created (#{quote.errors.full_messages})" unless quote.save
     flunk "Quote should have #{x} quote_items" unless quote.quote_items.count == x
     return quote
   end

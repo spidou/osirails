@@ -23,7 +23,7 @@ class JobContractsController < ApplicationController
       @employee.save
       @job_contract.save 
       flash[:notice] = 'Le contrat de travail a été modifié avec succès.'
-      redirect_to(employee_job_contracts_path(@employee)) 
+      redirect_to(employee_job_contract_path(@employee, @job_contract))
     else
       render(:action => 'new')
     end
@@ -43,7 +43,7 @@ class JobContractsController < ApplicationController
 
     if @job_contract.update_attributes(params[:job_contract])
       flash[:notice] = 'Le contrat de travail a été modifié avec succès.'
-      redirect_to(employee_job_contracts_path(@employee))
+      redirect_to(employee_job_contract_path(@employee, @job_contract))
     else
       @employee_departure = true if params['employee_departure']
       render(:action => 'edit')

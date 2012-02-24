@@ -18,7 +18,7 @@ class MenusController < ApplicationController
     @menu = Menu.new(params[:menu])
     if @menu.save
       flash[:notice] = 'Le menu a été créé avec succès'
-      redirect_to :action => 'index'
+      redirect_to @menu
     else
       @menus = Menu.get_structured_menus
       render :action => 'new'
@@ -36,7 +36,7 @@ class MenusController < ApplicationController
     @menu = Menu.find(params[:id])
     @menu.old_parent_id, @menu.update_parent = @menu.parent_id, true
     if @menu.update_attributes(params[:menu])
-      redirect_to menus_path
+      redirect_to @menu
     else
       @menus = Menu.get_structured_menus(@menu.id)
       render :action => 'edit'

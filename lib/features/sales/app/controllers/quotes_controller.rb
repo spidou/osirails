@@ -14,6 +14,10 @@ class QuotesController < ApplicationController
   
   set_journalization_actor [:create, :update, :confirm, :send_to_customer, :sign]
   
+  def index
+    redirect_to send(@step.original_step.path)
+  end
+  
   # GET /orders/:order_id/:step/quotes/:id
   # GET /orders/:order_id/:step/quotes/:id.xml
   # GET /orders/:order_id/:step/quotes/:id.pdf
@@ -67,7 +71,7 @@ class QuotesController < ApplicationController
     if @quote.can_be_added?
       if @quote.save
         flash[:notice] = "Le devis a été créé avec succès"
-        redirect_to send(@step.original_step.path)
+        redirect_to order_commercial_step_quote_step_quote_path(@order, @quote)
       else
         render :action => :new
       end
@@ -86,7 +90,7 @@ class QuotesController < ApplicationController
     if @quote.can_be_edited?
       if @quote.update_attributes(params[:quote])
         flash[:notice] = 'Le devis a été modifié avec succès'
-        redirect_to send(@step.original_step.path)
+        redirect_to order_commercial_step_quote_step_quote_path(@order, @quote)
       else
         render :action => :edit
       end

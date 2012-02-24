@@ -32,7 +32,7 @@ class GraphicDocumentsController < ApplicationController
 
     if @graphic_document.save
       flash[:notice] = "Le document graphique a été créé avec succès."
-      redirect_to order_graphic_documents_path
+      redirect_to order_graphic_document_path(@order, @graphic_document)
     else
       render :action => "new"
     end
@@ -53,7 +53,7 @@ class GraphicDocumentsController < ApplicationController
 
     if @graphic_document.update_attributes params[:graphic_document]
       flash[:notice] = "Le document graphique a été modifié avec succès."
-      redirect_to order_graphic_document_path
+      redirect_to order_graphic_document_path(@order, @graphic_document)
     else
       render :action => "edit"
     end

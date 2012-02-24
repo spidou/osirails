@@ -1,3 +1,4 @@
 normal_salary:
   job_contract: normal_job_contract
   gross_amount: 3000
+  net_amount: 2600

@@ -46,7 +46,7 @@ class StockFlowsController < ApplicationController
     @stock_flow = @stock_flow_class.new(params[@stock_flow_class.name.underscore.to_sym])
     if @stock_flow.save
       flash[:notice] = "L'entrée de stock a été effectuée avec succès"
-      redirect_to :action => 'index'
+      redirect_to @stock_flow
     else
       render :action => 'new'
     end

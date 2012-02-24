@@ -22,6 +22,6 @@
       <%= form.file_field :order_form %>
     </p>
     
-    <%= form.form_buttons %>
+    <%= form.form_buttons(:only => [:reset, :submit]) %>
   <% end %>
 </div>

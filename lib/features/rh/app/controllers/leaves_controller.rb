@@ -29,7 +29,7 @@ class LeavesController < ApplicationController
     
     if @leave.save
       flash[:notice] = "Le congé a été ajouté avec succès"
-      redirect_to employee_leaves_path(@employee)
+      redirect_to employee_leave_path(@employee, @leave)
     else
       render :action => :new 
     end
@@ -49,7 +49,7 @@ class LeavesController < ApplicationController
     
     if @leave.update_attributes params[:leave] 
       flash[:notice] = "La congé a été modifié avec succès"
-      redirect_to employee_leaves_path(@employee)
+      redirect_to employee_leave_path(@employee, @leave)
     else
       render :action => :edit
     end

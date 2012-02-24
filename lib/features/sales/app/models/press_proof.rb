@@ -70,7 +70,7 @@ class PressProof < ActiveRecord::Base
     v.validates_date :signed_on, :on_or_after   => :sended_on,
                                  :on_or_before  => Date.today
     v.validate :validates_presence_of_signed_press_proof, :validates_with_a_end_product_not_already_referenced
-    v.validates_attachment_content_type :signed_press_proof, :content_type => [ 'application/pdf', 'application/x-pdf' ]
+    v.validates_attachment_content_type :signed_press_proof, :content_type => %w( application/pdf application/x-pdf image/jpeg image/png image/pjpeg image/x-png )
 #    v.validates_attachment_size         :signed_press_proof, :less_than    => 2.megabytes
   end
   

@@ -7,10 +7,14 @@ class InvoicesController < ApplicationController
   skip_before_filter :lookup_step_environment, :only => [:context_menu]
   
   before_filter :find_invoice
-  before_filter :check_invoice_belong_to_order, :except => [ :new, :create, :ajax_request_for_invoice_items ]
+  before_filter :check_invoice_belong_to_order, :except => [ :index, :new, :create, :ajax_request_for_invoice_items ]
   before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]
   
   after_filter :add_error_in_step_if_invoice_has_errors, :only => [ :create, :update ]
+  
+  def index
+    redirect_to send(@step.original_step.path)
+  end
   
   # GET /orders/:order_id/:step/invoices/:id
   # GET /orders/:order_id/:step/invoices/:id.xml
@@ -95,7 +99,7 @@ class InvoicesController < ApplicationController
     if @invoice.can_be_added?
       if @invoice.save
         flash[:notice] = "La facture a été créée avec succès"
-        redirect_to send(@step.original_step.path)
+        redirect_to order_invoicing_step_invoice_step_invoice_path(@order, @invoice)
       else
         render :action => :new
       end
@@ -114,7 +118,7 @@ class InvoicesController < ApplicationController
     if @invoice.can_be_edited?
       if @invoice.update_attributes(params[:invoice])
         flash[:notice] = 'La facture a été modifiée avec succès'
-        redirect_to send(@step.original_step.path)
+        redirect_to order_invoicing_step_invoice_step_invoice_path(@order, @invoice)
       else
         render :action => :edit
       end

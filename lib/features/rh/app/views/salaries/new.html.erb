@@ -2,15 +2,26 @@
 <% title_context @employee.fullname %>
 <%= title "Modifier le salaire" %>
 
-<div class="presentation medium">
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
 
-<% form_for([@employee, @salary]) do |form|%>
-  <%= form.error_messages%>
-  <p>
-    <%= form.label(:gross_amount) %>
-    <%= form.text_field(:gross_amount, :size => 8, :maxlength => 10) %>
-  </p>
-  
-  <%= form.form_buttons %>
-<% end %>
+<div class="presentation_small">
+  <% form_for([@employee, @salary]) do |form|%>
+    <%= form.error_messages%>
+    <p>
+      <%= form.label(:gross_amount) %>
+      <%= form.text_field(:gross_amount, :size => 8, :maxlength => 10) %> &euro;
+    </p>
+    
+    <p>
+      <%= form.label(:net_amount) %>
+      <%= form.text_field(:net_amount, :size => 8, :maxlength => 10) %> &euro;
+    </p>
+    
+    <p>
+      <%= form.label :date %>
+      <%= form.calendar_date_select :date %>
+    </p>
+    
+    <%= form.form_buttons :only => [:reset, :submit_and_quit] %>
+  <% end %>
 </div>

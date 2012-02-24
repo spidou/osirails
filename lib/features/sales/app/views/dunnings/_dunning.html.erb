@@ -29,6 +29,6 @@
     <%= form.text_area_autoresize :comment, :cols => 50 %>
   </p>
   
-  <%= form.form_buttons %>
+  <%= form.form_buttons(:only => [:reset, :submit]) %>
 <% end %>
 </div>

@@ -31,7 +31,7 @@ stock_flow_class = stock_flow.class.name.underscore
         </p>
       <% end %>
       
-      <%= form.form_buttons %>
+      <%= form.form_buttons(:except => [:submit_and_continue], :return_uri_on_new => send("new_#{stock_flow_class}_path", :supply_class => supply_class)) %>
     <% end %>
   <% else %>
     <p>Aucun article disponible pour effectuer un mouvement de stock</p>

@@ -11,6 +11,10 @@ class DeliveryNotesController < ApplicationController
   
   #after_filter :add_error_in_step_if_delivery_note_has_errors, :only => [ :create, :update ]
   
+  def index
+    redirect_to send(@step.original_step.path)
+  end
+  
   # GET /orders/:order_id/:step/delivery_notes/:id
   # GET /orders/:order_id/:step/delivery_notes/:id.pdf
   def show
@@ -53,7 +57,7 @@ class DeliveryNotesController < ApplicationController
     @delivery_note.creator = current_user
     if @delivery_note.save
       flash[:notice] = "Le bon de livraison a été ajouté avec succès"
-      redirect_to send(@step.original_step.path)
+      redirect_to order_delivering_step_delivery_step_delivery_note_path(@order, @delivery_note)
     else
       @delivery_note.build_missing_delivery_note_items_from_ready_to_deliver_end_products
       render :action => :new
@@ -74,7 +78,7 @@ class DeliveryNotesController < ApplicationController
     if @delivery_note.can_be_edited?
       if @delivery_note.update_attributes(params[:delivery_note])
         flash[:notice] = 'Le bon de livraison a été modifié avec succès'
-        redirect_to send(@step.original_step.path)
+        redirect_to order_delivering_step_delivery_step_delivery_note_path(@order, @delivery_note)
       else
         @delivery_note.build_missing_delivery_note_items_from_ready_to_deliver_end_products
         render :action => :edit

@@ -28,9 +28,9 @@
           </tr>
           <% salaries.each do |salary|%>
             <tr>
-              <td><%=h salary.gross_amount%> &euro;</td>
-              <td><%=h net(salary.net_amount)%> &euro;</td>
-              <td><%=h l(salary.created_at.to_date, :format => :long)%></td>
+              <td><%=h salary.gross_amount %> &euro;</td>
+              <td><%=h salary.net_amount %> &euro;</td>
+              <td><%=h l(salary.date, :format => :long) %></td>
             </tr>
           <% end %>
         <% end %>

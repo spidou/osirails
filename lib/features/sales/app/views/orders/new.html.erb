@@ -16,15 +16,11 @@
   <p>Pour cette commande, avez-vous affaire à un client connu OU à un nouveau client ? Si vous ne savez pas, n'hésitez pas à faire une recherche.</p>
 
   <h2>1. Client existant</h2>
-  <% form_for @order, :url => { :action => :new }, :html => { :method => :get } do |form| -%>
-    <div id="order_search_customer">
-      <%= hidden_field_tag :customer_id %>
-      <%= custom_text_field_with_auto_complete( :customer, :name,
-                                                { :value => "Chercher un client dans la base" },
-                                                { :after_after_update_element => "$('customer_id').value = input.readAttribute('data-autocomplete-id')" } ) %>
-      <%= form.submit 'Valider' %>
-    </div>
-  <% end -%>
+  <% form_tag customers_path, :method => :get do %>
+  <p>
+    <%= submit_tag "Chercher un client dans la base" %>
+  </p>
+  <% end %>
 
   <h2>2. Nouveau client</h2>
   <% form_tag new_customer_path, :method => :get do %>
