@@ -23,7 +23,7 @@ class SupplierSupply < ActiveRecord::Base
   validates_persistence_of :supply_id
   validates_persistence_of :supplier_id, :unless => :should_destroy?
   
-  journalize :attributes        => [:supplier_id, :supplier_reference, :lead_time, :fob_unit_price, :taxes],
+  journalize :attributes        => [:supplier_id, :supplier_reference, :fob_unit_price, :taxes, :lead_time],
              :identifier_method => Proc.new{ |s| "#{s.supplier.name}" }
   
   attr_accessor :should_destroy
@@ -41,6 +41,7 @@ class SupplierSupply < ActiveRecord::Base
   end
   
   def unit_price
+    return 0.0 if fob_unit_price.nil?
     return fob_unit_price if taxes.nil? or taxes.zero?
     fob_unit_price * ( 1 + ( taxes / 100 ) )
   end

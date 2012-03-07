@@ -142,6 +142,7 @@ fr:
         created_at: "Date de création"
         customer: "Client"
         customer_needs: "Besoins du client"
+        order_contact: "Contact"
         order_type: "Type de dossier"
         previsional_delivery: "Date prévisionnelle de livraison"
         quotation_deadline: "Date butoir d'envoi du devis"

@@ -2906,6 +2906,175 @@ class InvoiceTest < ActiveSupport::TestCase
     end
   end
   
+  # test callback 'update_invoice_step_status'
+  context "In an order with signed_quote" do
+    setup do
+      @order = create_default_order
+      @signed_quote = create_signed_quote_for(@order)
+      @delivery_note = create_signed_delivery_note_for(@order)
+      flunk "@signed_quote should have a deposit > 0 in order to update status of order's invoice_step to 'pending' state" unless @signed_quote.deposit > 0
+    end
+    
+    context "and a 'pending' invoice_step," do
+      setup do
+        @invoice = @order.invoices.build
+        flunk "@order.invoicing_step.invoice_step status should be equal to '#{InvoiceStep::PENDING}' but was '#{@order.invoicing_step.invoice_step.status}'" unless @order.invoicing_step.invoice_step.pending?
+      end
+      
+      context "create an deposit invoice" do
+        setup do
+          create_deposit_invoice(@invoice)
+        end
+        
+        should "correctly update the order invoice_step to the 'in_progress' state" do
+          assert @order.invoicing_step(true).invoice_step.in_progress?
+        end
+      end
+      
+      context "create a balance invoice" do
+        setup do
+          create_balance_invoice(@invoice)
+        end
+        
+        should "correctly update the order invoice_step to the 'in_progress' state" do
+          assert @order.invoicing_step(true).invoice_step.in_progress?
+        end
+        
+        context "and confirm it" do
+          setup do
+            confirm_invoice(@invoice)
+          end
+          
+          should "leave the order invoice_step to the 'in_progress' state" do
+            assert @order.invoicing_step(true).invoice_step.in_progress?
+          end
+          
+          #should "correctly update the order invoice_step to the 'terminated' state" do
+          #  assert @order.invoicing_step(true).invoice_step.terminated?
+          #end
+        end
+        
+        context "and send it" do
+          setup do
+            confirm_invoice(@invoice)
+            flunk "@order.unbilled_amount should be equal to 0, but was '#{@order.unbilled_amount}'" unless @order.unbilled_amount == 0
+            
+            send_invoice(@invoice)
+          end
+          
+          should "correctly update the order invoice_step to the 'terminated' state" do
+            assert @order.invoicing_step(true).invoice_step.terminated?
+          end
+        end
+      end
+    end
+  end
+  
+  # test callback 'update_payment_step_status'
+  context "In an order with signed_quote" do
+    setup do
+      @order = create_default_order
+      @signed_quote = create_signed_quote_for(@order)
+      
+      @invoice = @order.invoices.build
+      create_deposit_invoice(@invoice)
+      confirm_invoice(@invoice)
+    end
+    
+    context "and an 'unstarted' payment_step," do
+      setup do
+        flunk "@order.invoicing_step.payment_step status should be equal to '#{PaymentStep::UNSTARTED}' but was '#{@order.invoicing_step.payment_step.status}'" unless @order.invoicing_step.payment_step.unstarted?
+      end
+      
+      context "send an invoice" do
+        setup do
+          send_invoice(@invoice)
+          flunk "@invoice should be sent" unless @invoice.was_sended?
+        end
+        
+        should "correctly update the order payment_step to the 'pending' state" do
+          assert @order.invoicing_step(true).payment_step.pending?
+        end
+      end
+    end
+    
+    context "and an 'pending' payment_step," do
+      setup do
+        send_invoice(@invoice)
+        flunk "@order.invoicing_step.payment_step status should be equal to '#{PaymentStep::PENDING}' but was '#{@order.invoicing_step.payment_step.status}'" unless @order.invoicing_step.payment_step.pending?
+      end
+      
+      context "totally_pay an invoice" do
+        setup do
+          totally_pay_invoice(@invoice)
+          flunk "@invoice should be totally paid" unless @invoice.was_totally_paid?
+        end
+        
+        should "correctly update the order payment_step to the 'in_progress' state" do
+          assert @order.invoicing_step(true).payment_step.in_progress?
+        end
+      end
+    end
+  end
+  
+  # test callback 'update_payment_step_status'
+  context "In an order with signed_quote" do
+    setup do
+      @order = create_default_order
+      @signed_quote = create_signed_quote_for(@order)
+      @delivery_note = create_signed_delivery_note_for(@order)
+      
+      @invoice = @order.invoices.build
+    end
+    
+    context "and an 'pending' payment_step," do
+      setup do
+        prepare_sended_invoice(@invoice, :normal, 2) # setting up 2 due dates
+        flunk "@order.invoicing_step.payment_step status should be equal to '#{PaymentStep::PENDING}' but was '#{@order.invoicing_step.payment_step.status}'" unless @order.invoicing_step.payment_step.pending?
+      end
+      
+      context "due_date_pay an invoice" do
+        setup do
+          due_date_pay_invoice(@invoice)
+          flunk "@invoice should be due_date paid" unless @invoice.was_due_date_paid?
+        end
+        
+        should "correctly update the order payment_step to the 'in_progress' state" do
+          assert @order.invoicing_step(true).payment_step.in_progress?
+        end
+      end
+    end
+  end
+  
+  # test callback 'update_payment_step_status'
+  context "In an order with signed_quote" do
+    setup do
+      @order = create_default_order
+      @signed_quote = create_signed_quote_for(@order)
+      @delivery_note = create_signed_delivery_note_for(@order)
+      
+      @invoice = @order.invoices.build
+    end
+    
+    context "and an 'pending' payment_step," do
+      setup do
+        prepare_sended_invoice(@invoice, :factorised, 1)
+        flunk "@order.invoicing_step.payment_step status should be equal to '#{PaymentStep::PENDING}' but was '#{@order.invoicing_step.payment_step.status}'" unless @order.invoicing_step.payment_step.pending?
+      end
+      
+      context "factoring_pay an invoice" do
+        setup do
+          factoring_pay_invoice(@invoice)
+          flunk "@invoice should be factoring paid, but was <#{@invoice.status_was}> (#{@invoice.can_be_factoring_paid?})" unless @invoice.was_factoring_paid?
+        end
+        
+        should "correctly update the order payment_step to the 'in_progress' state" do
+          assert @order.invoicing_step(true).payment_step.in_progress?
+        end
+      end
+    end
+  end
+  
   context "Thanks to 'has_reference', an invoice" do
     setup do
       @reference_owner       = create_default_invoice

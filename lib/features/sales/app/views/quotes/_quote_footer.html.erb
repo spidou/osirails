@@ -5,13 +5,13 @@ quote = quote_footer
 
 <p>
   <%= form.label :deposit, 'Acompte (%) :' %>
-  <%= form.form_or_view(form.text_field(:deposit, :value => (quote.deposit ? quote.deposit.to_f.round_to(2).to_s(2) : ''), :size => 5, :placeholder => "0 - 100"), strong(quote.deposit.to_f.round_to(2).to_s(2))) %>
+  <%= form.form_or_view(form.text_field(:deposit, :value => (quote.deposit ? quote.deposit.to_f.round_to(2).to_s(2) : ''), :size => 3), strong(quote.deposit.to_f.round_to(2).to_s(2))) %>
 </p>
 
 <p>
   <%= form.label :validity_delay %>
   <% if form.form_view? %>
-    <%= form.text_field :validity_delay, :size => 2 %> <%= form.select :validity_delay_unit, Quote::VALIDITY_DELAY_UNITS %>
+    <%= form.text_field :validity_delay, :size => 3 %> <%= form.select :validity_delay_unit, Quote::VALIDITY_DELAY_UNITS %>
   <% else %>
     <%= strong display_validity_delay_and_unit_for(quote) %>
   <% end %>

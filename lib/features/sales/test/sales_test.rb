@@ -90,7 +90,7 @@ class Test::Unit::TestCase
   def create_signed_quote_for(order)
     quote = create_quote_for(order)
     flunk "Quote should be confirmed"           unless quote.confirm
-    flunk "Quote should be sended to customer"  unless quote.send_to_customer(:sended_on            => Date.today,
+    flunk "Quote should be sent to customer"    unless quote.send_to_customer(:sended_on            => Date.today,
                                                                               :send_quote_method_id => send_quote_methods(:mail).id)
     
     attachment = File.new(File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))

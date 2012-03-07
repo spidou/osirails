@@ -69,7 +69,7 @@
       <%= hidden_field_tag('return_uri', @return_uri) %>
       <%= hidden_field_tag('query[page_name]', query.page_name) %>
       
-      <%= form.form_buttons(:onclick => "validSelectOptions('group columns');") %>
+      <%= form.form_buttons(:only => [:reset, :submit], :onclick => "validSelectOptions('group columns');") %>
     <% end %>
   </div>
 

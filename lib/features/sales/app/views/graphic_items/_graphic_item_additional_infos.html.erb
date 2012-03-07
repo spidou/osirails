@@ -5,7 +5,7 @@ graphic_item = graphic_item_additional_infos
 
 <p>
   <%= form.label :created_at %>
-  <%= form.strong(graphic_item.created_at.humanize) if graphic_item.created_at %>
+  <%= form.strong(l(graphic_item.created_at, :format => :long)) if graphic_item.created_at %>
 </p>
 <p>
   <%= form.label :creator %>

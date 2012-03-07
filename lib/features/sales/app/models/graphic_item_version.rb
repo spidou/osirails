@@ -33,7 +33,7 @@ class GraphicItemVersion < ActiveRecord::Base
   end
   
   def formatted_created_at
-    created_at.humanize
+    I18n.l(created_at, :format => :long) if created_at
   end
   
   def formatted_image_for_press_proof_path

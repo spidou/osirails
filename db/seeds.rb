@@ -151,7 +151,7 @@ ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => vehicule.i
 equipments = ChecklistOption.create! :checklist_id => checklist1.id, :title => "6- Équipements particuliers"
 ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Groupe éléctrogène"
 ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Rallonge"
-ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Échaffaudage"
+ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Échafaudage"
 ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Locations"
 
 set_default_permissions

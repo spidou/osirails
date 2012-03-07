@@ -340,7 +340,8 @@ ActionController::Routing::Routes.add_routes do |map|
   map.resources :end_products
   
   map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
-  map.goods 'goods', :controller => 'products_catalog' #default page for products
+  map.products_catalog 'products_catalog', :controller => 'products_catalog'
+  map.goods 'goods', :controller => 'product_reference_manager' #default page for products
   
   # AJAX REQUESTS
   map.update_product_reference_sub_categories 'update_product_reference_sub_categories', :controller  => 'product_reference_categories',

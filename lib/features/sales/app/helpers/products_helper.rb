@@ -4,13 +4,13 @@ module ProductsHelper
     if form.form_view?
       '<span class="product_dimensions">
         <span class="product_width">' +
-          '<span title="Largeur">l :</span>' + form.text_field(:width, { :value => product.width_before_type_cast, :size => 6, :autocomplete => :off }.merge(text_field_options)) +
+          '<span title="Largeur">l :</span>' + form.text_field(:width, { :value => product.width, :size => 6, :autocomplete => :off }.merge(text_field_options)) +
         '</span>' +
         '<span class="product_length">' +
-          '<span title="Longueur">L :</span>' + form.text_field(:length, { :value => product.length_before_type_cast, :size => 6, :autocomplete => :off }.merge(text_field_options)) +
+          '<span title="Longueur">L :</span>' + form.text_field(:length, { :value => product.length, :size => 6, :autocomplete => :off }.merge(text_field_options)) +
         '</span>' +
         '<span class="product_height">' +
-          '<span title="Hauteur">H :</span>' + form.text_field(:height, { :value => product.height_before_type_cast, :size => 6, :autocomplete => :off }.merge(text_field_options)) +
+          '<span title="Hauteur">H :</span>' + form.text_field(:height, { :value => product.height, :size => 6, :autocomplete => :off }.merge(text_field_options)) +
         '</span>&nbsp;mm
       </span>'
     else

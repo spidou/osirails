@@ -51,7 +51,7 @@ graphic_item = graphic_item_infos
 <% unless graphic_item.new_record? %>
   <p>
     <%= form.label :version %>
-    <%= form.strong graphic_item.current_version.created_at.humanize %>
+    <%= form.strong l(graphic_item.current_version.created_at, :format => :long) %>
   </p>
   <div class="resource document">
     <div class="thumb">

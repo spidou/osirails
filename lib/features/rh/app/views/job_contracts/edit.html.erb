@@ -2,12 +2,12 @@
   <%= javascript_include_tag 'rh/job_contract' %> 
 <% end %>
 
-<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+<%= render :partial => 'employees/employee_summary', :locals => { :employee => @employee } %>
 
 <% title_context "Ressources Humaines" %>
 <% title_context @employee.fullname %>
 <%= title "Modifier le contrat de travail" %>
 
 <div class="presentation_medium">
-  <%= render :partial => 'job_contracts/job_contract', :object => @job_contract%>
+  <%= render :partial => @job_contract %>
 </div>

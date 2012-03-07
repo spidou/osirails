@@ -28,7 +28,7 @@ class Invoice < ActiveRecord::Base
   # status
   STATUS_CONFIRMED              = 'confirmed'
   STATUS_CANCELLED              = 'cancelled'
-  STATUS_SENDED                 = 'sended' # rename 'sended' to 'sent'
+  STATUS_SENDED                 = 'sended' # TODO rename 'sended' to 'sent'
   STATUS_ABANDONED              = 'abandoned'
   STATUS_DUE_DATE_PAID          = 'due_date_paid'
   STATUS_TOTALLY_PAID           = 'totally_paid'
@@ -364,7 +364,7 @@ class Invoice < ActiveRecord::Base
   after_save :save_due_date_to_pay
   after_save :save_delivery_note_invoices
   
-  after_update :update_invoice_step_status
+  after_save   :update_invoice_step_status
   after_update :update_payment_step_status
   
   before_destroy :can_be_deleted?
@@ -986,17 +986,32 @@ class Invoice < ActiveRecord::Base
     end
   end
   
+  def invoice_step(force_reload = false)
+    @invoice_step = nil if force_reload
+    @invoice_step ||= (order && order.invoicing_step && order.invoicing_step.invoice_step)
+  end
+  
+  def payment_step(force_reload = false)
+    @payment_step = nil if force_reload
+    @payment_step ||= (order && order.invoicing_step && order.invoicing_step.payment_step)
+  end
+  
   #TODO test this method
   def invoice_step_open?
-    order && order.invoicing_step && order.invoicing_step.invoice_step && !order.invoicing_step.invoice_step.terminated?
+    invoice_step && !invoice_step.terminated?
+  end
+  
+  #TODO test this method
+  def payment_step_open?
+    payment_step && !payment_step.terminated?
   end
   
   def factorised?
-    factor_id
+    !factor_id.nil?
   end
   
   def was_factorised?
-    factor_id_was
+    !factor_id_was.nil?
   end
   
   def deposit_invoice?
@@ -1173,7 +1188,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def can_be_cancelled?
-    !new_record? and ( was_confirmed? or was_sended? ) and invoice_step_open?
+    !new_record? and ( was_confirmed? or was_sended? ) and (invoice_step_open? or payment_step_open?)
   end
   
   def can_be_sended?
@@ -1181,27 +1196,27 @@ class Invoice < ActiveRecord::Base
   end
   
   def can_be_abandoned?
-    ( was_factorised? and was_factoring_recovered? ) or ( !was_factorised? and ( was_sended? or was_due_date_paid? ) ) and invoice_step_open?
+    ( was_factorised? and was_factoring_recovered? ) or ( !was_factorised? and ( was_sended? or was_due_date_paid? ) ) and payment_step_open?
   end
   
   def can_be_factoring_paid?
-    was_factorised? and was_sended? and invoice_step_open?
+    was_factorised? and was_sended? and payment_step_open?
   end
   
   def can_be_factoring_recovered?
-    was_factoring_paid? and invoice_step_open?
+    was_factoring_paid? and payment_step_open?
   end
   
   def can_be_factoring_balance_paid?
-    invoice_step_open? and was_factoring_paid? or was_factoring_recovered? or ( was_factorised? and was_abandoned? )
+    payment_step_open? and was_factoring_paid? or was_factoring_recovered? or ( was_factorised? and was_abandoned? )
   end
   
   def can_be_due_date_paid?
-    invoice_step_open? and !was_factorised? and ( was_sended? or was_due_date_paid? or was_abandoned? ) and unpaid_due_dates.count > 1
+    payment_step_open? and !was_factorised? and ( was_sended? or was_due_date_paid? or was_abandoned? ) and unpaid_due_dates.count > 1
   end
   
   def can_be_totally_paid?
-    invoice_step_open? and !was_factorised? and ( was_sended? or was_due_date_paid? or was_abandoned? ) and unpaid_due_dates.count == 1
+    payment_step_open? and !was_factorised? and ( was_sended? or was_due_date_paid? or was_abandoned? ) and unpaid_due_dates.count == 1
   end
   
   def dunning_level
@@ -1284,18 +1299,28 @@ class Invoice < ActiveRecord::Base
   end
   
   private
-    def update_invoice_step_status
-      # if was_totally_paid? and order.unpaid_amount <= 0
-      if totally_paid? and !was_totally_paid? and order.unbilled_amount < 1 and (order.unpaid_amount - already_paid_amount) < 1 # we put '<1' instead of '<=0' because sometimes, difference between the 2 values is very small and condition is false
-        order.invoicing_step.invoice_step.terminated!
-        order.invoicing_step.payment_step.terminated!
-        
-        order.complete!
+    def update_invoice_step_status #OPTIMIZE it would be more appropriate and logical to move this method to InvoiceStep, and to call the method from here (or anywhere)
+      if invoice_step.unstarted? || invoice_step.pending?
+        invoice_step.in_progress!
+      
+      elsif !invoice_step.terminated?
+        invoice_step.terminated! if order.unbilled_amount < 1 && order.invoices(true).billed.reject(&:sended_on_was).empty? # we put '<1' instead of '<=0' because sometimes, difference between the 2 values is very small and condition is false
       end
     end
     
-    def update_payment_step_status
-      #TODO split invoice_step on invoice_step + payment_step
+    def update_payment_step_status #OPTIMIZE it would be more appropriate and logical to move this method to PaymentStep, and to call the method from here (or anywhere)
+      if payment_step.unstarted?
+        payment_step.pending! if sended?
+      
+      elsif payment_step.pending?
+        payment_step.in_progress! if due_date_paid? || totally_paid? || factoring_paid?
+      
+      elsif !payment_step.terminated?
+        if totally_paid? && order.unbilled_amount < 1 and (order.unpaid_amount - already_paid_amount) < 1 # we put '<1' instead of '<=0' because sometimes, difference between the 2 values is very small and condition is false
+          payment_step.terminated!
+          order.complete!
+        end
+      end
     end
     
     def message_for_validates_date(attribute, error_type, context, restriction)
