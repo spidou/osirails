@@ -162,7 +162,7 @@ DunningSendingMethod.create!(:name => "Téléphone + Fax")
 DunningSendingMethod.create!(:name => "Téléphone + E-mai + Fax")
 DunningSendingMethod.create!(:name => "Courrier")
 DunningSendingMethod.create!(:name => "Courrier + Accusé de réception")
-DunningSendingMethod.create!(:name => "Courrier + Accusé de réception + lettre de mise en demeurre")
+DunningSendingMethod.create!(:name => "Courrier + Accusé de réception + lettre de mise en demeure")
 
 # default order form types
 OrderFormType.create!(:name => "Devis signé")

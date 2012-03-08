@@ -11,22 +11,22 @@ stock_flow_class = stock_flow.class.name.underscore
       <%= hidden_field_tag :supply_class, supply_class %>
       
       <p>
-        <%= form.label :supply_id %>
+        <%= form.label :supply_id, nil, :required => :required %>
         <%= form.collection_select(:supply_id, supplies, :id, :designation, :include_blank => "Veuillez choisir l'article concerné") %>
         <%= observe_field("#{stock_flow_class}_supply_id", :url => update_supply_stock_infos_path, :with => "supply_id") if stock_flow.is_a?(StockInput) %>
       </p>
       <p>
-        <%= form.label :identifier %>
+        <%= form.label :identifier, nil, :required => :required %>
         <%= form.text_field :identifier %>
       </p>
       <p>
-        <%= form.label :quantity %>
+        <%= form.label :quantity, nil, :required => :required %>
         <%= form.text_field :quantity, :size => 5 %>
       </p>
        
       <% if stock_flow.is_a?(StockInput) %>
         <p>
-          <%= form.label :unit_price %>
+          <%= form.label :unit_price, nil, :required => :required %>
           <%= form.text_field(:unit_price, :value => number_with_precision(stock_flow.unit_price, :precision => 2), :size => 10) + " &euro;" %>
         </p>
       <% end %>

@@ -6,9 +6,9 @@ require_locals form, order
 %>
 
 <p> 
-  <%= form.label :end_product %>
+  <%= form.label :end_product, nil, :required => :required %>
   <% if is_form_view? and press_proof.new_record? %>
-    <%= form.collection_select( :end_product_id, end_products, :id, :designation_with_dimensions, {}, { :onChange => "select_product(this);" } ) %>
+    <%= form.collection_select( :end_product_id, end_products, :id, :designation_with_dimensions, { :include_blank => true }, { :onChange => "select_product(this);" } ) %>
   <% else %>
     <%= strong(press_proof.end_product.designation_with_dimensions) %>
   <% end %>
@@ -22,6 +22,6 @@ require_locals form, order
 <% end %>
 
 <p>
-  <%= form.label :internal_actor %>
+  <%= form.label :internal_actor, nil, :required => :required %>
   <%= form.form_or_view(form.collection_select( :internal_actor_id, Employee.all, :id, :fullname, { :include_blank => "Veuillez choisir un employé" }), :internal_actor, :fullname) %>
 </p>

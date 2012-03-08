@@ -1,0 +1,34 @@
+<h1>Gestion des types de dossier</h1>
+
+<div>
+  <% OrderType.all.each do |ot| %>
+    <h2><%= ot.title %></h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Activated ?</th>
+          <th>Depending Previous ?</th>
+          <th>Required ?</th>
+        </tr>
+      </thead>
+      <tbody>
+    <% ot.sales_processes.ordered.each do |sp| %>
+      <tr>
+        <td class="text"><%= "#{sp.step.parent.title} -> " if sp.step.parent %><%= sp.step.title %><%= " (#{sp.step.position})" %></td>
+        <td><%= sp.activated %></td>
+        <td><%= sp.depending_previous %></td>
+        <td><%= sp.required %></td>
+      </tr>
+    <% end %>
+      </tbody>
+    </table>
+    
+    <h3>Activated Steps</h3>
+    <ul>
+    <% ot.activated_steps.each do |step| %>
+      <li><%= step.title %></li>
+    <% end %>
+    </ul>
+  <% end %>
+</div>

@@ -15,8 +15,8 @@ default_ship_to_address = quote.ship_to_address
 <div id="delivery_note_header">
   <h3>Information générales</h3>
   <p>
-    <%= form.label :delivery_note_type_id %>
-    <%= form.form_or_view(form.collection_select(:delivery_note_type_id, DeliveryNoteType.all, :id, :title), :delivery_note_type, :title) %>
+    <%= form.label :delivery_note_type_id, nil, :required => :required %>
+    <%= form.form_or_view(form.collection_select(:delivery_note_type_id, DeliveryNoteType.all, :id, :title, :include_blank => true), :delivery_note_type, :title) %>
   </p>
   <p>
     <%= form.label :published_on %>
@@ -36,7 +36,7 @@ default_ship_to_address = quote.ship_to_address
     <div id="contact_container" class="medium">
       <h3>Contact de livraison</h3>
       <p>
-        <%= label :select_contacts, "À l'attention de " %>
+        <%= label :select_contacts, "À l'attention de ", nil, :required => :required %>
         <%= display_contact_picker(delivery_note, order.all_contacts_and_customer_contacts, :form => form, :contact_key => 'delivery_note_contact', :contacts_owners => contacts_owners) %>
       </p>
     </div>

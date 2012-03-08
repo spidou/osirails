@@ -26,7 +26,7 @@ supply_type_input_name = "#{supply_class.name.underscore}[supply_type_name]"
   
   <div>
     <p>
-      <%= form.label :supply_category_id %>
+      <%= form.label :supply_category_id, nil, :required => :required %>
       <% if is_form_view? and supply.new_record? %>
         <%= form.collection_select :supply_category_id, supply_categories, :id, :name, { :include_blank => "Veuillez choisir une famille" } %>
         <%= observe_field("#{supply_class.name.underscore}_supply_category_id", :url    => self.send("update_#{supply_sub_category_class.name.tableize}_path"),
@@ -40,7 +40,7 @@ supply_type_input_name = "#{supply_class.name.underscore}[supply_type_name]"
   
   <div>
     <p>
-      <%= form.label :supply_sub_category_id %>
+      <%= form.label :supply_sub_category_id, nil, :required => :required %>
       <% if is_form_view? and supply.new_record? %>
         <select id="<%= sub_category_select_id %>" name="<%= sub_category_select_name %>">
           <%= render :partial => 'supply_categories/supply_sub_categories', :object => supply.supply_category ? supply.supply_category.children : [],
@@ -62,11 +62,11 @@ supply_type_input_name = "#{supply_class.name.underscore}[supply_type_name]"
   
   <div>
     <p>
-      <%= form.label :supply_type %>
+      <%= form.label :supply_type, nil, :required => :required %>
       <% if is_form_view? and supply.new_record? %>
         <span class="supply_type_name_select_container">
           <select id="<%= supply_type_select_id %>" name="<%= supply_type_select_name %>" class="supply_type_id_input" onchange="if (this.value == '-1') { this.clear().up('.supply_type_name_select_container').hide().up().down('.supply_type_name_input_container').show().down('.supply_type_name_input').focus(); } else { }">
-            <%= render :partial => 'supply_types/supply_types', :object => supply.supply_sub_category ? supply.supply_sub_category.supply_types : [],
+            <%= render :partial => 'supply_types/supply_types', :object => supply.supply_sub_category ? supply.supply_sub_category.supply_types.enabled : [],
                                                                 :locals => { :current => supply.supply_type_id } %>
           </select>
         </span>

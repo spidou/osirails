@@ -6,11 +6,11 @@ invoice.factoring_recovered_on ||= Date.today
 
 <% fields_for invoice do |form| %>
   <p>
-    <%= form.label :factoring_recovered_on %>
+    <%= form.label :factoring_recovered_on, nil, :required => :required %>
     <%= form.text_field :factoring_recovered_on %>
   </p>
   <p>
-    <%= form.label :factoring_recovered_comment %>
+    <%= form.label :factoring_recovered_comment, nil, :required => :required %>
     <%= form.text_area_autoresize :factoring_recovered_comment %>
   </p>
 <% end %>

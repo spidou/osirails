@@ -8,16 +8,16 @@
     <% fields_for 'invoice[due_date_to_pay][payment_attributes][]', payment, :index => nil do |form| %>
       <%= form.error_messages %>
       <p>
-        <%= form.label :paid_on %>
+        <%= form.label :paid_on, nil, :required => :required %>
         <%= form.text_field :paid_on %>
       </p>
       <p>
-        <%= form.label :amount %>
+        <%= form.label :amount, nil, :required => :required %>
         <%= form.text_field :amount, :size => 8 %>
       </p>
       <p>
-        <%= form.label :payment_method_id %>
-        <%= form.collection_select :payment_method_id, PaymentMethod.all, :id, :name %>
+        <%= form.label :payment_method_id, nil, :required => :required %>
+        <%= form.collection_select :payment_method_id, PaymentMethod.all, :id, :name, :include_blank => true %>
       </p>
       <p>
         <%= form.label :bank_name %>

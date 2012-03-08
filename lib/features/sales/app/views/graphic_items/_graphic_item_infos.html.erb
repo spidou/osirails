@@ -5,7 +5,7 @@ graphic_item = graphic_item_infos
 
 <% if graphic_item.class == Mockup %>
   <p>
-    <%= form.label :end_product_id %>
+    <%= form.label :end_product_id, nil, :required => :required %>
     <% if graphic_item.new_record? %>
       <%= form.collection_select(:end_product_id, @end_products, :id, :designation_with_dimensions, { :prompt => "Veuillez choisir un produit" }) %>
     <% else %>
@@ -15,7 +15,7 @@ graphic_item = graphic_item_infos
 <% end %>
 
 <p>
-  <%= form.label :name %>
+  <%= form.label :name, nil, :required => :required %>
   <% if graphic_item.new_record? %>
     <%= form.text_field(:name) %>
   <% else %>
@@ -35,12 +35,12 @@ graphic_item = graphic_item_infos
 </p>
 
 <p>
-  <%= form.label :description %>
+  <%= form.label :description, nil, :required => :required %>
   <%= form.form_or_view(form.autoresize_text_area(:description),:description) %>
 </p>
 
 <p>
-  <%= form.label "#{graphic_item.class.name.underscore}_type_id".to_sym %>
+  <%= form.label "#{graphic_item.class.name.underscore}_type_id".to_sym, nil, :required => :required %>
   <% if graphic_item.new_record? %>
     <%= form.collection_select("#{graphic_item.class.name.underscore}_type_id".to_sym, @graphic_item_types, :id, :name, { :prompt => "Veuillez choisir un type" }) %>
   <% else %>
@@ -92,7 +92,7 @@ graphic_item = graphic_item_infos
 
 <% if is_form_view? and graphic_item.new_record? %>
   <p>
-    <%= form.label :graphic_unit_measure_id %>
+    <%= form.label :graphic_unit_measure_id, nil, :required => :required %>
     <%= form.collection_select(:graphic_unit_measure_id, @graphic_unit_measures, :id, :name, { :prompt => "Veuillez choisir une unité de mesure" }) %>
   </p>
 <% end %>
@@ -100,7 +100,7 @@ graphic_item = graphic_item_infos
 <% if is_form_view? %>  
   <div id="add_version_div">
     <p id="new_image_paragraph">
-      <%= form.label :image %>
+      <%= form.label :image, nil, :required => :required %>
       <%= form.form_or_view(form.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_image", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][image]"}), :end_product) %>
       <span class="help_text">Fichier image consultable par tous (.jpg, .png, .bmp, .gif, etc)</span>
     </p>
@@ -113,7 +113,7 @@ graphic_item = graphic_item_infos
   <% unless graphic_item.new_record? %>
     <div id="change_version_div" style="display:none">
       <p id="change_version_paragraph">
-        <%= form.label :change_version %>
+        <%= form.label :change_version, nil, :required => :required %>
         <%= form.collection_select(:current_version_id, @graphic_item_versions, :id, :formatted_created_at) %>
       </p>
     </div>

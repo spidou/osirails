@@ -4,11 +4,11 @@
     <%= form.error_messages %>
     
     <p>
-      <%= form.label :name %>
+      <%= form.label :name, nil, :required => :required %>
       <%= form.form_or_view(form.text_field(:name), :name) %>
     </p>
     <p>
-      <%= form.label :fullname %>
+      <%= form.label :fullname, nil, :required => :required %>
       <%= form.form_or_view(form.text_field(:fullname), :fullname) %>
     </p>
     

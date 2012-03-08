@@ -24,17 +24,17 @@ identifier = generate_random_id
     
     <p>
       <p class="contain_auto_completer">
-        <%= form.label :street_name, nil, options %>
+        <%= form.label :street_name, nil, options.merge(:required => :required) %>
         <%= form.form_or_view(form.text_area_autoresize(:street_name, options.merge(:class => "street_name")), :street_name) %>
       </p>
     </p>
     
     <% if form.form_view? %>
       <p class="contain_auto_completer">
-        <%= form.label :zip_code, nil, options %>
+        <%= form.label :zip_code, nil, options.merge(:required => :required) %>
         <%= custom_text_field_with_auto_complete_for_city_zip_code(address, identifier, form, options) %>
         
-        <%= form.label :city_name, nil, options.merge(:class => :city_label) %>
+        <%= form.label :city_name, nil, options.merge(:class => :city_label, :required => :required) %>
         <%= custom_text_field_with_auto_complete_for_city_name(address, identifier, form, options) %>
       </p>
       <p class="contain_auto_completer">
@@ -42,7 +42,7 @@ identifier = generate_random_id
         <%= custom_text_field_with_auto_complete_for_region_name(address, identifier, form, options) %>
       </p>
       <p class="contain_auto_completer">
-        <%= form.label :country_name, nil, options %>
+        <%= form.label :country_name, nil, options.merge(:required => :required) %>
         <%= custom_text_field_with_auto_complete_for_country_name(address, identifier, form, options) %>
       </p>
     <% else %>

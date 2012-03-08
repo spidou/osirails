@@ -10,11 +10,11 @@
 	<% form_for @quote, :url => { :controller => "quotes", :action => "send_to_customer", :order_id => @order.id }, :method => :put do |form| %>
     <%= form.error_messages %>
     <p>
-      <%= form.label :sended_on %>
+      <%= form.label :sended_on, nil, :required => :required %>
       <%= form.calendar_date_select :sended_on %>
     </p>
     <p>
-      <%= form.label :send_quote_method_id %>
+      <%= form.label :send_quote_method_id, nil, :required => :required %>
       <%= form.collection_select :send_quote_method_id, SendQuoteMethod.all, :id, :name, :include_blank => true %>
     </p>
     

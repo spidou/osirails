@@ -20,13 +20,13 @@ end
       </p>
       
       <p>
-        <%= form.label :deposit %>
-        <%= form.form_or_view(form.text_field(:deposit, :size => 3, :placeholder => "0 - 100", :onkeyup => "javascript:update_deposit_amount(this)"), :deposit) %><span> &#37;</span>
+        <%= form.label :deposit, nil, :required => :required %>
+        <%= form.form_or_view(form.text_field(:deposit, :size => 3, :onkeyup => "javascript:update_deposit_amount(this)"), :deposit) %>
       </p>
       
       <p>
-        <%= form.label :deposit_amount %>
-        <%= form.form_or_view(form.text_field(:deposit_amount, :value => invoice.deposit_amount.to_f.round_to(2).to_s(2), :size => 12, :onkeyup => "javascript:update_deposit_amount_without_taxes(this)"), :deposit_amount) %><span> &euro; TTC</span>
+        <%= form.label :deposit_amount, nil, :required => :required %>
+        <%= form.form_or_view(form.text_field(:deposit_amount, :value => (invoice.deposit_amount > 0 && invoice.deposit_amount.to_f.round_to(2).to_s(2)), :size => 12, :onkeyup => "javascript:update_deposit_amount_without_taxes(this)"), :deposit_amount) %><span> &euro; TTC</span>
       </p>
     </div>
     
@@ -37,8 +37,8 @@ end
       </p>
       
       <p>
-        <%= form.label :deposit_vat %>
-        <%= form.form_or_view(form.collection_select(:deposit_vat, Vat.all, :rate, :name, {}, :onchange => "javascript:update_deposit_amount_without_taxes($('invoice_deposit_amount'))"), :deposit_vat) %><span> &#37; (soit <span id="deposit_amount_without_taxes"><%= invoice.deposit_amount_without_taxes.to_f.round_to(2).to_s(2) %></span> &euro; HT)</span>
+        <%= form.label :deposit_vat, nil, :required => :required %>
+        <%= form.form_or_view(form.collection_select(:deposit_vat, Vat.all, :rate, :name, {}, :onchange => "javascript:update_deposit_amount_without_taxes($('invoice_deposit_amount'))"), :deposit_vat) %><span> &#37; (soit <span id="deposit_amount_without_taxes"><%= (invoice.deposit_amount_without_taxes > 0 && invoice.deposit_amount_without_taxes.to_f.round_to(2).to_s(2)) %></span> &euro; HT)</span>
       </p>
     </div>
     

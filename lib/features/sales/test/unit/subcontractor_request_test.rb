@@ -14,7 +14,7 @@ class SubcontractorRequestTest < ActiveSupport::TestCase
   
   should_validate_numericality_of :price
   
-  should_validate_attachment_presence :attachment
+  #should_validate_attachment_presence :attachment
   should_validate_attachment_size :attachment, :less_than => 5.megabytes
   
   #FIXME this shoulda macro doesn't work. we have to find a solution

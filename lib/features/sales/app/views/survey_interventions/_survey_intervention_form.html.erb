@@ -8,7 +8,7 @@ style_attr = 'style="display:none"' unless intervention.new_record? or !interven
   <% fields_for "survey_step[survey_intervention_attributes][]", intervention, :index => nil do |form| %>
     <%= form.error_messages %>
     <p>
-      <%= form.label :start_date %>
+      <%= form.label :start_date, nil, :required => :required %>
       <%= form.calendar_datetime_select(:start_date, { :index => intervention.id }, { :index => nil }) %>
     </p>
     <p>
@@ -16,7 +16,7 @@ style_attr = 'style="display:none"' unless intervention.new_record? or !interven
       <%= form.text_field :duration_hours, :size => 1 %> h <%= form.text_field :duration_minutes, :size => 1 %> min
     </p>
     <p>
-      <%= form.label :internal_actor_id %>
+      <%= form.label :internal_actor_id, nil, :required => :required %>
       <%= form.collection_select :internal_actor_id, Employee.actives, :id, :fullname, ( intervention.new_record? ? { :include_blank => "Veuillez choisir un employee" } : {} ) %>
     </p>
     <p>

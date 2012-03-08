@@ -9,6 +9,7 @@
 
 <% add_contextual_menu_item :possible_actions do %>
   <%= new_supply_category_link(@supply_category_class) %>
+  <%= new_supply_sub_category_link(@supply_sub_category_class, :supply_category_id => @supply_category_class.first) %>
   <%= new_supply_link(@supply_class) %>
 <% end %>
 

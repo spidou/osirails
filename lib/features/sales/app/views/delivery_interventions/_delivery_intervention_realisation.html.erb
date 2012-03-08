@@ -29,11 +29,11 @@ form.force_show_view = delivery_intervention.was_realized?
     <%= strong(delivery_note.delivery_note_type.title) %>
   </p>
   <p>
-    <%= form.label :delivery_at %>
+    <%= form.label :delivery_at, nil, :required => :required %>
     <%= form.form_or_view(form.calendar_datetime_select(:delivery_at), :delivery_at, :humanize) %>
   </p>
   <p>
-    <%= form.label :intervention_hours %>
+    <%= form.label :intervention_hours, nil, :required => :required %>
     <% if is_form_view? and !form.force_show_view %>
       <%= form.text_field :intervention_hours, :size => 2 %> h
       <%= form.text_field :intervention_minutes, :size => 2 %> min
@@ -43,7 +43,7 @@ form.force_show_view = delivery_intervention.was_realized?
     <span class="help_text">(durée de l'intervention)</span>
   </p>
   <p>
-    <%= form.label :internal_actor_id %>
+    <%= form.label :internal_actor_id, nil, :required => :required %>
     <%= form.form_or_view(form.collection_select(:internal_actor_id, Employee.actives, :id, :fullname, :include_blank => "Veuillez choisir un employé"), :internal_actor, :fullname) %> <span class="help_text">(personne référente de l'intervention)</span>
   </p>
   
@@ -58,7 +58,7 @@ form.force_show_view = delivery_intervention.was_realized?
 
     <div id="delivery_internal_div" style="<%= delivery_internal_style %>">
       <p>
-        <%= form.label :deliverer_ids %>
+        <%= form.label :deliverer_ids, nil, :required => :required %>
         <% if is_form_view? and !form.force_show_view %>
           <%= form.collection_select(:deliverer_ids, Employee.actives, :id, :fullname, {}, { :multiple => true } ) %>
         <% else %>
@@ -66,7 +66,7 @@ form.force_show_view = delivery_intervention.was_realized?
         <% end %>
       </p>
       <p>
-        <%= form.label :delivery_vehicle_ids %>
+        <%= form.label :delivery_vehicle_ids, nil, :required => :required %>
         <% if is_form_view? and !form.force_show_view %>
           <%= form.collection_select(:delivery_vehicle_ids, Vehicle.all, :id, :name_and_serial_number, {}, { :multiple => true } ) %>
         <% else %>
@@ -81,7 +81,7 @@ form.force_show_view = delivery_intervention.was_realized?
 
     <div id="delivery_subcontracting_div" style="<%= delivery_subcontracting_style %>">
       <p>
-        <%= form.label :delivery_subcontractor_id %>
+        <%= form.label :delivery_subcontractor_id, nil, :required => :required %>
         <%= form.form_or_view(form.collection_select(:delivery_subcontractor_id, Subcontractor.all, :id, :name, :include_blank => "Veuillez choisir un sous-traitant"), :delivery_subcontractor, :name) %>
       </p>
     </div>
@@ -99,7 +99,7 @@ form.force_show_view = delivery_intervention.was_realized?
 
     <div id="installation_internal_div" style="<%= installation_internal_style %>">
       <p>
-        <%= form.label :installer_ids %>
+        <%= form.label :installer_ids, nil, :required => :required %>
         <% if is_form_view? and !form.force_show_view %>
           <%= form.collection_select(:installer_ids, Employee.actives, :id, :fullname, {}, { :multiple => true } ) %>
         <% else %>
@@ -122,7 +122,7 @@ form.force_show_view = delivery_intervention.was_realized?
 
     <div id="installation_subcontracting_div" style="<%= installation_subcontracting_style %>">
       <p>
-        <%= form.label :installation_subcontractor_id %>
+        <%= form.label :installation_subcontractor_id, nil, :required => :required %>
         <%= form.form_or_view(form.collection_select(:installation_subcontractor_id, Subcontractor.all, :id, :name, :include_blank => "Veuillez choisir un sous-traitant"), :installation_subcontractor, :name) %>
       </p>
     </div>
@@ -152,7 +152,7 @@ form.force_show_view = delivery_intervention.was_realized?
 
 <div id="delivery_intervention_delivered_false_div" class="presentation_large" style="<%= delivered_false_style %>">
   <p>
-    <%= form.label :comments %>
+    <%= form.label :comments, nil, :required => :required %>
     <%= form.form_or_view(form.text_area_autoresize(:comments), :comments) %> <% unless delivery_intervention.was_realized? %> <span class="help_text">(client absent, intempéries, etc)</span> <% end %>
   </p>
 </div>

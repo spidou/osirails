@@ -9,7 +9,7 @@ remark_counter += 1
   <% fields_for "#{owner_type}[remark_attributes]", remark, :index => nil do |form| -%>
     <%= form.error_messages %>
     <p>
-      <%= form.label :text %>
+      <%= form.label :text, nil, :required => :required %>
       <%= form.text_area_autoresize :text , :cols => 70, :rows => 2, :index => nil %>
       <%= link_to_function "Annuler", "this.up('.remark').remove()"%>
     </p>

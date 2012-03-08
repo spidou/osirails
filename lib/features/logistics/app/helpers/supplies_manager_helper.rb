@@ -75,10 +75,10 @@ module SuppliesManagerHelper
             'data-icon' => :new)
   end
   
-  def new_supply_sub_category_link(supply_sub_category_class)
+  def new_supply_sub_category_link(supply_sub_category_class, link_options = {})
     return unless supply_sub_category_class.can_add?(current_user)
     link_to("Nouvelle sous-famille",
-            self.send("new_#{supply_sub_category_class.name.underscore}_path"),
+            self.send("new_#{supply_sub_category_class.name.underscore}_path", link_options),
             'data-icon' => :new_sub_category)
   end
   

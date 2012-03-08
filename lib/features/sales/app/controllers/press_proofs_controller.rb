@@ -35,7 +35,6 @@ class PressProofsController < ApplicationController
     @press_proof = @order.press_proofs.build
     
     unless @order.all_end_products_have_signed_press_proof?
-      @press_proof.end_product = @order.end_products_without_signed_press_proof.first
       @press_proof.internal_actor = current_user.employee
       @press_proof.creator = current_user
     else

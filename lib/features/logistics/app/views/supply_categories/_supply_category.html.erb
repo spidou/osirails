@@ -45,7 +45,7 @@ parent = supply_category.respond_to?(:supply_category) ? supply_category.supply_
       <% if parent %>
         <div>
           <p>
-            <%= form.label :supply_category_id %>
+            <%= form.label :supply_category_id, nil, :required => :required %>
             <%= form.form_or_view(form.collection_select(:supply_category_id, @supply_categories, :id, :name, {}, { :disabled => !supply_category.new_record? }), :supply_category, :name) %>
           </p>
         </div>
@@ -53,7 +53,7 @@ parent = supply_category.respond_to?(:supply_category) ? supply_category.supply_
       
       <div>
         <p>
-          <%= form.label :name %>
+          <%= form.label :name, nil, :required => :required %>
           <%= form.form_or_view(form.text_field(:name), :name) %>
         </p>
       </div>

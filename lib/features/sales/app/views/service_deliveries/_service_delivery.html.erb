@@ -20,18 +20,25 @@
   <% tab_navigator :service_delivery_nav do |t| %>
     <% t.nav_buttons do %>
       <%= t.tab :informations,    "Informations générales", :selected => true %>
-      <%= t.tab :price_evolution, "Évolution des prix" %>
+      <%= t.tab :price_evolution, "Évolution des prix", :disabled => true %>
       <%= t.tab_for_history(service_delivery) %>
     <% end %>
-  
-    <% t.content_for :informations do %>
-      <%= render :partial => "service_delivery_main_info", :object => service_delivery %>
-    <% end %>
     
-    <% t.content_for :price_evolution do %>
-      <%= "comming soon" %>
-    <% end %>
+    <% form_for service_delivery do |form| %>
+      
+      <% t.content_for :informations do %>
+        <%= form.error_messages %>
+        <%= render :partial => "service_delivery_main_info", :object => service_delivery, :locals => { :form => form } %>
+      <% end %>
     
-    <% t.content_for_history(service_delivery) %>
+      <% t.content_for :price_evolution do %>
+        <%= "comming soon" %>
+      <% end %>
+    
+      <% t.content_for_history(service_delivery) %>
+      
+      <%= form.form_buttons %>
+    <% end %>
   <% end %>
+
 </div>

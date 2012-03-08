@@ -10,11 +10,11 @@
 	<% form_for @press_proof, :url => { :controller => "press_proofs", :action => "send_to_customer", :press_proof_id => @press_proof.id }, :method => :put do |form| %>
     <%= form.error_messages %>
     <p>
-      <%= form.label :sended_on %>
+      <%= form.label :sended_on, nil, :required => :required %>
       <%= form.calendar_date_select :sended_on %>
     </p>
     <p>
-      <%= form.label :document_sending_method_id %>
+      <%= form.label :document_sending_method_id, nil, :required => :required %>
       <%= form.collection_select :document_sending_method_id, DocumentSendingMethod.all, :id, :name, :include_blank => true %>
     </p>
     

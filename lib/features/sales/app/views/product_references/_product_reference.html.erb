@@ -37,7 +37,7 @@
       <div>
         <% if is_form_view? %>
           <p>
-            <%= form.label :product_reference_category_id %>
+            <%= form.label :product_reference_category_id, nil, :required => :required %>
             <% if is_form_view? and product_reference.new_record? %>
               <%= form.collection_select :product_reference_category_id, @product_reference_categories, :id, :reference_and_name, { :include_blank => "Veuillez choisir une famille" } %>
               <%= observe_field("product_reference_product_reference_category_id", :url    => self.send("update_product_reference_sub_categories_path"),
@@ -49,7 +49,7 @@
           </p>
         
           <p>
-            <%= form.label :product_reference_sub_category_id %>
+            <%= form.label :product_reference_sub_category_id, nil, :required => :required %>
             <% if is_form_view? and product_reference.new_record? %>
               <%
               sub_category_select_id   = "product_reference_product_reference_sub_category_id"
@@ -65,7 +65,7 @@
           </p>
           
           <p>
-            <%= form.label :name %>
+            <%= form.label :name, nil, :required => :required %>
             <%= form.form_or_view(form.text_field(:name), :name) %>
           </p>
         <% else %>

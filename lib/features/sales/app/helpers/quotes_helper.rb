@@ -102,7 +102,7 @@ module QuotesHelper
   end
   
   def display_quote_order_form_button(order, quote, message = nil)
-    return unless Quote.can_view?(current_user) and quote.signed? and quote.order_form
+    return unless Quote.can_view?(current_user) and quote.was_signed? and quote.order_form
     link_to(message || "Télécharger le \"#{quote.order_form_type.name.downcase}\"",
             order_commercial_step_quote_step_quote_order_form_path(order, quote),
             'data-icon' => :download)

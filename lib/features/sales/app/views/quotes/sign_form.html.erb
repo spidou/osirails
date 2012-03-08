@@ -10,15 +10,15 @@
 	<% form_for @quote, :url => { :controller => "quotes", :action => "sign", :order_id => @order.id }, :html => { :multipart => true }, :method => :put do |form| %>
     <%= form.error_messages %>
     <p>
-      <%= form.label :signed_on %>
+      <%= form.label :signed_on, nil, :required => :required %>
       <%= form.calendar_date_select :signed_on %>
     </p>
     <p>
-      <%= form.label :order_form_type_id %>
+      <%= form.label :order_form_type_id, nil, :required => :required %>
       <%= form.collection_select :order_form_type_id, OrderFormType.all, :id, :name, :include_blank => true %>
     </p>
     <p>
-      <%= form.label :order_form %>
+      <%= form.label :order_form, nil, :required => :required %>
       <%= form.file_field :order_form %>
     </p>
     

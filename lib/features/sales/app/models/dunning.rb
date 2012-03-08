@@ -9,7 +9,7 @@ class Dunning < ActiveRecord::Base
   belongs_to :cancelled_by, :class_name => 'User'
   belongs_to :dunning_sending_method
 
-  validates_presence_of :date, :creator_id, :dunning_sending_method_id, :comment, :has_dunning_id, :has_dunning_type
+  validates_presence_of :date, :creator_id, :dunning_sending_method_id, :has_dunning_id, :has_dunning_type
   
   validates_presence_of :dunning_sending_method, :if => :dunning_sending_method_id
   validates_presence_of :creator,                :if => :creator_id

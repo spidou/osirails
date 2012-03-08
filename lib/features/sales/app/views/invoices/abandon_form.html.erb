@@ -10,7 +10,7 @@
 	<% form_for @invoice, :url => { :controller => "invoices", :action => "abandon", :order_id => @order.id }, :method => :put do |form| %>
     <%= form.error_messages %>
     <p>
-      <%= form.label :abandoned_comment %>
+      <%= form.label :abandoned_comment, nil, :required => :required %>
       <%= form.text_area_autoresize :abandoned_comment %>
     </p>
     

@@ -12,8 +12,12 @@
   
     <h3>Informations générales</h3>
     <p>
-      <%= form.label :title %>
-      <%= form.form_or_view(form.text_field(:title), :title) %>
+      <%= form.label :title, nil, :required => :required %>
+      <% if form.form_view? %>
+        <%= form.text_field(:title) %> <span class="help_text">Cet intitulé apparaitra en entête du devis, il doit donc être clair et concis pour nous comme pour le client</span>
+      <% else %>
+        <%= strong :title %>
+      <% end %>
       
       <% unless order.new_record? %>
         <%= form.label :status %>
@@ -21,33 +25,33 @@
       <% end %>
     </p>
     <p>
-      <%= form.label :order_type_id %>
+      <%= form.label :order_type_id, nil, :required => :required %>
       <%= order.new_record? ? form.collection_select(:order_type_id, @order_types, :id, :title, :include_blank => true) : strong(order.order_type.title) %>
     </p>
     <p>
-      <%= form.label :commercial_id %>
+      <%= form.label :commercial_id, nil, :required => :required %>
       <%= form.form_or_view(form.collection_select(:commercial_id, @commercials, :id, :fullname, :include_blank => order.new_record?), :commercial, :fullname) %>
     </p>
     
     <h3>Client</h3>
     <p>
-      <%= form.label :order_contact %>
+      <%= form.label :order_contact, nil, :required => :required %>
       <%= display_contact_picker(order, order.customer.contacts, :form => form, :contact_key => "order_contact",
                                                                  :contacts_owners => order.customer.head_office_and_establishments ) %>
     </p>
     
     <p>
-      <%= form.label :approaching_id %>
+      <%= form.label :approaching_id, nil, :required => :required %>
       <%= form.form_or_view(form.collection_select(:approaching_id, Approaching.all, :id, :name, :include_blank => order.new_record?), :approaching, :name) %>
     </p>
     <p>
-      <%= form.label :customer_needs %>
+      <%= form.label :customer_needs, nil, :required => :required %>
       <%= form.form_or_view(form.text_area_autoresize(:customer_needs, :cols => 80), :customer_needs) %>
     </p>
     
     <h3>Livraison</h3>
     <p>
-      <%= form.label :ship_to_address_ids %>
+      <%= form.label :ship_to_address_ids, nil, :required => :required %>
       <%= display_ship_to_addresses_picker(order, order.customer.head_office_and_establishments) %>
       <%= display_new_establishments_list(order) %>
       <%= display_establishment_add_button_for_ship_to_address(order) %>
@@ -72,7 +76,7 @@
       <% end %>
     </p>
     <p>
-      <%= form.label :previsional_delivery %>
+      <%= form.label :previsional_delivery, nil, :required => :required %>
       <% if form.form_view? %>
         <%= form.calendar_date_select :previsional_delivery %>
       <% else %>

@@ -14,7 +14,7 @@ class SubcontractorRequest < ActiveRecord::Base
   
   validates_numericality_of :price
   
-  validates_attachment_presence :attachment
+  #validates_attachment_presence :attachment
   
   with_options :if => :attachment do |v|
     v.validates_attachment_content_type :attachment, :content_type => [ 'application/pdf', 'application/x-pdf' ],

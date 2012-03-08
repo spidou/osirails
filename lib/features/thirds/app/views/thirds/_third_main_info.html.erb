@@ -7,11 +7,11 @@ third = third_main_info
 <div class="presentation_in_columns">
   <div>
     <p>
-      <%= form.label :name %>
+      <%= form.label :name, nil, :required => :required %>
       <%= form.form_or_view(form.text_field(:name), :name) %>
     </p>
     <p>
-      <%= form.label :legal_form_id %>
+      <%= form.label :legal_form_id, nil, :required => :required %>
       <%= form.form_or_view(form.grouped_collection_select(:legal_form_id, ThirdType.find(:all), :legal_forms, :name, :id, :name, :include_blank => "Veuillez choisir une forme juridique"), :legal_form, :name) %>
     </p>
 
@@ -23,7 +23,7 @@ third = third_main_info
 
       <!-- TODO when implementing the ajax reference retrieval do not forget to do so for establihsments -->
       <p>
-        <%= form.label :activity_sector_reference_id %>
+        <%= form.label :activity_sector_reference_id, nil, :required => :required %>
         <%= form.form_or_view(form.collection_select(:activity_sector_reference_id, ActivitySectorReference.find(:all), :id, :code_and_short_name,
                                                      :include_blank => third.new_record? ? "Veuillez choisir un secteur d'activité" : false),
                                                      :activity_sector_reference, :code_and_short_name)%>

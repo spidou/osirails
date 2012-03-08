@@ -7,11 +7,11 @@
     <%= form.error_messages %>
     <% form.force_show_view = !adjustment.new_record? %>
     <p>
-      <%= form.label :amount %>
+      <%= form.label :amount, nil, :required => :required %>
       <%= form.form_or_view(form.text_field(:amount, :size => 8), :amount) %> <span class="help_text">(montant <strong>positif</strong> pour une sanctionner une pénalité, <strong>négatif</strong> pour un surplus)</span>
     </p>
     <p>
-      <%= form.label :comment %>
+      <%= form.label :comment, nil, :required => :required %>
       <%= form.form_or_view(form.text_area_autoresize(:comment, :cols => 45), :comment) %>
     </p>
     <p>

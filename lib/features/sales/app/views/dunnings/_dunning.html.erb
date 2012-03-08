@@ -15,13 +15,13 @@
 <% form_for(dunning,:url => {:action => :create}) do |form| %>  
   <%= form.error_messages %>
   <p>
-    <%= form.label :date %>
+    <%= form.label :date, nil, :required => :required %>
     <%= form.calendar_date_select :date %>
   </p>
   
   <p>
-    <%= form.label :dunning_sending_method %>
-    <%= collection_select :dunning, :dunning_sending_method_id, DunningSendingMethod.all, :id, :name %>
+    <%= form.label :dunning_sending_method, nil, :required => :required %>
+    <%= collection_select :dunning, :dunning_sending_method_id, DunningSendingMethod.all, :id, :name, :include_blank => true %>
   </p>
   
   <p>

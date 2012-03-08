@@ -20,7 +20,7 @@
     <%= form.error_messages %>
     
     <p>
-      <%= form.label :product_reference_category_id %>
+      <%= form.label :product_reference_category_id, nil, :required => :required %>
       <%= form.form_or_view(form.collection_select(:product_reference_category_id, ProductReferenceCategory.roots.actives, :id, :reference_and_name, { :include_blank => "Veuillez choisir une famille" }, :disabled => !product_reference_sub_category.can_update_product_reference_category_id?), :product_reference_category, :name) %>
       
       <% unless product_reference_sub_category.new_record? %>
@@ -29,7 +29,7 @@
       <% end %>
     </p>
     <p>
-      <%= form.label :name %>
+      <%= form.label :name, nil, :required => :required %>
       <%= form.form_or_view(form.text_field(:name), :name) %>
     </p>
     <%= form.form_buttons :return_uri_on_quit => product_references_path %>

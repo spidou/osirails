@@ -15,19 +15,19 @@ payment = due_date.payments.first || due_date.payments.build(:paid_on => Date.to
       <%= form3.error_messages %>
       <% form3.force_show_view = !payment.new_record? %>
       <p>
-        <%= form1.label :factor %>
+        <%= form1.label :factor, nil, :required => :required %>
         <%= strong invoice.factor.name_and_fullname %>
       </p>
       <p>
-        <%= form1.label :net_to_paid %>
+        <%= form1.label :net_to_paid, nil, :required => :required %>
         <%= strong invoice.net_to_paid %>
       </p>
       <p>
-        <%= form3.label :paid_on %>
+        <%= form3.label :paid_on, nil, :required => :required %>
         <%= form3.form_or_view(form3.text_field(:paid_on), :paid_on, :humanize) %>
       </p>
       <p>
-        <%= form3.label :amount %>
+        <%= form3.label :amount, nil, :required => :required %>
         <%= form3.form_or_view(form3.text_field(:amount), :amount) %>
       </p>
     <% end %>

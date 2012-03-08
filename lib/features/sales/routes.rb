@@ -358,6 +358,7 @@ ActionController::Routing::Routes.add_routes do |map|
   
   ## SALES ADMIN
   map.sales_admin 'sales_admin', :controller => 'sales_admin'
+  map.resources :order_types
   ##
   
   map.sales_monitoring 'sales_monitoring', :controller => 'sales'

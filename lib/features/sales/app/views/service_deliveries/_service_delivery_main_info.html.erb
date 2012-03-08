@@ -1,99 +1,93 @@
 <% service_delivery = service_delivery_main_info %>
 
-<% form_for service_delivery do |form| %>
-  <%= form.error_messages %>
-  
-  <p>
-    <%= form.label :reference %>
-    <%= form.strong :reference %>
-  </p>
-  <p>
-    <%= form.label :name %>
-    <%= form.form_or_view(form.text_field(:name), :name) %>
-  </p>
-  <p>
-    <%= form.label :description %>
-    <%= form.form_or_view(form.autoresize_text_area(:description), :description) %>
-  </p>
-  <div class="presentation_in_columns">
-    <div>
-      <p>
-        <%= form.label :time_scale %>
-        <% if form.form_view? %>
-          <%= form.select :time_scale, ServiceDelivery::TIME_SCALES.map{ |ts| [t("view.service_delivery.time_scales.#{ts||'fixed'}", :default => ts||'fixed'), ts] }, {}, 'readonly' => service_delivery.has_been_used? %>
-        <% else %>
-          <%= strong t("view.service_delivery.time_scales.#{service_delivery.time_scale||'fixed'}") %>
-        <% end %>
-      </p>
-      <p>
-        <%= form.label :cost %>
-        <% if form.form_view? %>
-          <%= form.text_field :cost, :value => service_delivery.cost, :size => 9, :autocomplete => :off %>&nbsp;&euro;
-        <% else %>
-          <span title="<%= service_delivery.cost %>">
-            <%= strong(service_delivery.cost) if service_delivery.cost %>&nbsp;&euro;
-          </span>
-        <% end %>
-      </p>
-      <p>
-        <%= form.label :unit_price %>
-        <% if form.form_view? %>
-          <%= text_field_tag :unit_price, service_delivery.unit_price, :size => 9, :autocomplete => :off %>&nbsp;&euro;
-        <% else %>
-          <span title="<%= service_delivery.unit_price %>">
-            <%= strong(service_delivery.unit_price.to_f.round_to(2).to_s(2)) if service_delivery.unit_price %>&nbsp;&euro;
-          </span>
-        <% end %>
-      </p>
-    </div>
-    
-    <div>
-      <p>
-        <%= form.label :pro_rata_billable %>
-        <% if form.form_view? %>
-          <%= form.check_box :pro_rata_billable, :class => :rate_check_box, 'readonly' => !service_delivery.rate? || service_delivery.has_been_used? %>
-        <% else %>
-          <%= strong t(service_delivery.pro_rata_billable?) %>
-        <% end %>
-      </p>
-      <p>
-        <%= form.label :margin %>
-        <% if form.form_view? %>
-          <%= form.text_field :margin, :value => service_delivery.margin, :size => 9, :autocomplete => :off %>
-        <% else %>
-          <span title="<%= service_delivery.margin %>">
-            <%= strong(service_delivery.margin.to_f.round_to(2).to_s(2)) if service_delivery.margin %>
-          </span>
-        <% end %>
-      </p>
-      <p>
-        <%= form.label :vat %>
-        <%= form.form_or_view(form.collection_select(:vat, Vat.all, :rate, :rate), :vat) %>
-      </p>
-    </div>
-    
-    <div>
-      <p>
-        <%= form.label :default_pro_rata_billing %>
-        <% if form.form_view? %>
-          <%= form.check_box :default_pro_rata_billing, :class => :rate_check_box, 'readonly' => !service_delivery.rate? || !service_delivery.pro_rata_billable? %>
-        <% else %>
-          <%= strong t(service_delivery.default_pro_rata_billing?) %>
-        <% end %>
-      </p>
-    </div>
+<p>
+  <%= form.label :reference %>
+  <%= form.strong :reference %>
+</p>
+<p>
+  <%= form.label :name, nil, :required => :required %>
+  <%= form.form_or_view(form.text_field(:name), :name) %>
+</p>
+<p>
+  <%= form.label :description %>
+  <%= form.form_or_view(form.autoresize_text_area(:description), :description) %>
+</p>
+<div class="presentation_in_columns">
+  <div>
+    <p>
+      <%= form.label :time_scale, nil, :required => :required %>
+      <% if form.form_view? %>
+        <%= form.select :time_scale, ServiceDelivery::TIME_SCALES.map{ |ts| [t("view.service_delivery.time_scales.#{ts||'fixed'}", :default => ts||'fixed'), ts] }, 'readonly' => service_delivery.has_been_used? %>
+      <% else %>
+        <%= strong t("view.service_delivery.time_scales.#{service_delivery.time_scale||'fixed'}") %>
+      <% end %>
+    </p>
+    <p>
+      <%= form.label :cost, nil, :required => :required %>
+      <% if form.form_view? %>
+        <%= form.text_field :cost, :value => service_delivery.cost, :size => 9, :autocomplete => :off %>&nbsp;&euro;
+      <% else %>
+        <span title="<%= service_delivery.cost %>">
+          <%= strong(service_delivery.cost) if service_delivery.cost %>&nbsp;&euro;
+        </span>
+      <% end %>
+    </p>
+    <p>
+      <%= form.label :unit_price, nil, :required => :required %>
+      <% if form.form_view? %>
+        <%= text_field_tag :unit_price, service_delivery.unit_price, :size => 9, :autocomplete => :off %>&nbsp;&euro;
+      <% else %>
+        <span title="<%= service_delivery.unit_price %>">
+          <%= strong(service_delivery.unit_price.to_f.round_to(2).to_s(2)) if service_delivery.unit_price %>&nbsp;&euro;
+        </span>
+      <% end %>
+    </p>
   </div>
   
-  <p>
-    <%= form.label :unit_price_with_taxes %>
-    <% if form.form_view? %>
-      <%= text_field_tag :unit_price_with_taxes, service_delivery.unit_price_with_taxes, :size => 9, :autocomplete => :off %>&nbsp;&euro;
-    <% else %>
-      <span title="<%= service_delivery.unit_price_with_taxes %>">
-        <%= strong(service_delivery.unit_price_with_taxes.round_to(2).to_s(2)) if service_delivery.unit_price_with_taxes %>&nbsp;&euro;
-      </span>
-    <% end %>
-  </p>
+  <div>
+    <p>
+      <%= form.label :pro_rata_billable %>
+      <% if form.form_view? %>
+        <%= form.check_box :pro_rata_billable, :class => :rate_check_box, 'readonly' => !service_delivery.rate? || service_delivery.has_been_used? %>
+      <% else %>
+        <%= strong t(service_delivery.pro_rata_billable?) %>
+      <% end %>
+    </p>
+    <p>
+      <%= form.label :margin, nil, :required => :required %>
+      <% if form.form_view? %>
+        <%= form.text_field :margin, :value => service_delivery.margin, :size => 9, :autocomplete => :off %>
+      <% else %>
+        <span title="<%= service_delivery.margin %>">
+          <%= strong(service_delivery.margin.to_f.round_to(2).to_s(2)) if service_delivery.margin %>
+        </span>
+      <% end %>
+    </p>
+    <p>
+      <%= form.label :vat, nil, :required => :required %>
+      <%= form.form_or_view(form.collection_select(:vat, Vat.all, :rate, :rate, :include_blank => true), :vat) %>
+    </p>
+  </div>
   
-  <%= form.form_buttons %>
-<% end %>
+  <div>
+    <p>
+      <%= form.label :default_pro_rata_billing %>
+      <% if form.form_view? %>
+        <%= form.check_box :default_pro_rata_billing, :class => :rate_check_box, 'readonly' => !service_delivery.rate? || !service_delivery.pro_rata_billable? %>
+      <% else %>
+        <%= strong t(service_delivery.default_pro_rata_billing?) %>
+      <% end %>
+    </p>
+  </div>
+</div>
+
+<p>
+  <%= form.label :unit_price_with_taxes, nil, :required => :required %>
+  <% if form.form_view? %>
+    <%= text_field_tag :unit_price_with_taxes, service_delivery.unit_price_with_taxes, :size => 9, :autocomplete => :off %>&nbsp;&euro;
+  <% else %>
+    <span title="<%= service_delivery.unit_price_with_taxes %>">
+      <%= strong(service_delivery.unit_price_with_taxes.round_to(2).to_s(2)) if service_delivery.unit_price_with_taxes %>&nbsp;&euro;
+    </span>
+  <% end %>
+</p>

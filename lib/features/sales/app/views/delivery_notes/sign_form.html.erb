@@ -14,11 +14,11 @@
 	<% form_for @delivery_note, :url => { :controller => "delivery_notes", :action => "sign", :order_id => @order.id }, :html => { :multipart => true }, :method => :put do |form| %>
     <%= form.error_messages %>
     <p>
-      <%= form.label :signed_on %>
+      <%= form.label :signed_on, nil, :required => :required %>
       <%= form.calendar_date_select :signed_on %>
     </p>
     <p>
-      <%= form.label :attachment %>
+      <%= form.label :attachment, nil, :required => :required %>
       <%= form.file_field :attachment %>
     </p>
     

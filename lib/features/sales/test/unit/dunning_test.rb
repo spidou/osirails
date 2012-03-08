@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../sales_test'
 class DunningTest < ActiveSupport::TestCase
   should_belong_to :has_dunning, :creator, :dunning_sending_method, :cancelled_by
   
-  should_validate_presence_of :date, :comment, :has_dunning_type
+  should_validate_presence_of :date, :has_dunning_type
   should_validate_presence_of :dunning_sending_method, :creator, :has_dunning, :with_foreign_key => :default
   
   should_have_named_scope :actives, :conditions => ["cancelled_at is NULL"]

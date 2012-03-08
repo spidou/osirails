@@ -145,6 +145,7 @@ class PressProof < ActiveRecord::Base
   end
   
   def end_product_without_signed_press_proof?
+    return true if end_product.nil?
     !end_product.has_signed_press_proof?
   end
   
@@ -329,14 +330,14 @@ class PressProof < ActiveRecord::Base
     end
     
     def validates_mockups
-      collection = self.press_proof_items.collect(&:graphic_item_version_id)
+      collection = press_proof_items.collect(&:graphic_item_version_id)
       graphic_item_versions = GraphicItemVersion.all(:conditions => ["id in (?)",collection])
       
       unless graphic_item_versions.select {|n| n.graphic_item.class == GraphicDocument}.empty?
         errors.add(:press_proof_items, "doit contenir uniquement des maquettes")
       end
       
-      unless graphic_item_versions.select {|n| n.graphic_item.class == Mockup and n.graphic_item.end_product.id != self.end_product.id}.empty?
+      unless graphic_item_versions.select {|n| n.graphic_item.class == Mockup and n.graphic_item.end_product.id != (end_product && end_product.id)}.empty?
         errors.add(:press_proof_items, "doit contenir uniquement des maquettes concernant le produit du BAT")
       end
     end

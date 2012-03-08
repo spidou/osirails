@@ -11,7 +11,7 @@
     <%= form.error_messages %>
 
     <p>
-      <%= form.label :revoked_comment %>
+      <%= form.label :revoked_comment, nil, :required => :required %>
       <%= form.text_area_autoresize :revoked_comment, :cols => 50 %>
     </p>
     

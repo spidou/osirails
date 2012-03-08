@@ -8,7 +8,7 @@ class SupplyCategory < ActiveRecord::Base
   
   validates_persistence_of :reference
   
-  named_scope :enabled, :conditions => { :enabled => true }
+  named_scope :enabled, :conditions => { :enabled => true }, :order => "name"
   named_scope :enabled_at, lambda{ |date| { :conditions => [ 'enabled = ? OR disabled_at > ?', true, date ] } }
   
   before_validation_on_create :update_reference

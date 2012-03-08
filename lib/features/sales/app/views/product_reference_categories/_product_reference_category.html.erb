@@ -20,10 +20,10 @@
     <%= form.error_messages %>
     
     <p>
-      <%= form.label :name %>
+      <%= form.label :name, nil, :required => :required %>
       <%= form.form_or_view(form.text_field(:name), :name) %>
       
-      <%= form.label :reference %>
+      <%= form.label :reference, nil, :required => :required %>
       <%= form.form_or_view(form.text_field(:reference, :disabled => !product_reference_category.can_update_reference?), :reference) %>
     </p>
     <%= form.form_buttons :return_uri_on_quit => product_references_path %>

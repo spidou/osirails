@@ -4,7 +4,7 @@ class SupplyTypesController < ApplicationController
   
   # GET /update_supply_types?id=:id (AJAX)
   def update_supply_types
-    supply_types = @supply_sub_category ? @supply_sub_category.supply_types : []
+    supply_types = @supply_sub_category ? @supply_sub_category.supply_types.enabled : []
     render :partial => 'supply_types/supply_types', :object => supply_types
   end
   

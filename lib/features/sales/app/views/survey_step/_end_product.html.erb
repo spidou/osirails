@@ -41,7 +41,7 @@ end_product_errors  = { :details    => end_product.errors.empty? ? '' : ' errors
           <%= strong("#{end_product.product_reference.reference} - #{end_product.product_reference.designation_with_dimensions}") %> <%= product_reference_link(end_product.product_reference, :link_text => "Voir la fiche de cette référence", :html_options => { :popup => true }) %>
         </p>
         <p>
-          <%= form.label :name %>
+          <%= form.label :name, nil, :required => :required %>
           <%= form.text_field :name, :value => end_product.name, :size => 50 %>
           
           <%= form.label :dimensions %>
@@ -52,7 +52,7 @@ end_product_errors  = { :details    => end_product.errors.empty? ? '' : ' errors
           <%= form.text_area_autoresize :description, :value => end_product.description, :index => nil %>
         </p>
         <p>
-          <%= form.label :quantity %>
+          <%= form.label :quantity, nil, :required => :required %>
           <%= form.text_field :quantity, :size => 3 %>
         </p>
         <p style="display:none">

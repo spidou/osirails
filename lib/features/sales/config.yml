@@ -233,6 +233,17 @@ menus:
         title: Sous-traitants
         description: Gestion des sous-traitants
         position: 4
+  admin:
+    children:
+      features:
+        children:
+          sales_admin:
+            title: "Ventes"
+            description: Administration du module Ventes
+            children:
+              order_types:
+                title: "Types de dossier"
+                description: Gestion des types de dossier
 configurations:
   product_reference_vat:
     description: Taux de TVA appliqué par défaut sur les produits références

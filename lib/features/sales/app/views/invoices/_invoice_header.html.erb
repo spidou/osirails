@@ -20,7 +20,7 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
     <%= form.hidden_field :invoice_type_id if is_form_view? %>
     <%= strong(invoice.invoice_type.title) if invoice.invoice_type %> <%= link_to( "(Changer le type de facture ?)", new_order_invoicing_step_invoice_step_invoice_path ) if invoice.new_record? %>
 
-    <%= form.label :invoicing_actor_id %>
+    <%= form.label :invoicing_actor_id, nil, :required => :required %>
     <%= form.form_or_view(form.collection_select(:invoicing_actor_id, Employee.all, :id, :fullname, :include_blank => invoice.new_record? ? "Veuillez sélectionner un employé" : false), :invoicing_actor, :fullname) %>
   </p>
   
@@ -52,7 +52,7 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
     <div id="contact_container">
       <h3>Contact de facturation</h3>
       <p>
-        <%= label :select_contacts, "À l'attention de " %>
+        <%= label :select_contacts, "À l'attention de ", nil, :required => :required %>
         <%= display_contact_picker(invoice, invoice.order_and_customer_contacts, :form => form,
                                                                                  :contact_key => "invoice_contact",
                                                                                  :contacts_owners => contacts_owners) %>

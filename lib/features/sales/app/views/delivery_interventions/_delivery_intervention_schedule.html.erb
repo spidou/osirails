@@ -19,11 +19,11 @@ form.force_show_view = delivery_intervention.realized?
   <%= strong(delivery_note.delivery_note_type.title) %>
 </p>
 <p>
-  <%= form.label :scheduled_delivery_at %>
+  <%= form.label :scheduled_delivery_at, nil, :required => :required %>
   <%= form.form_or_view(form.calendar_datetime_select(:scheduled_delivery_at), :scheduled_delivery_at, :humanize) %>
 </p>
 <p>
-  <%= form.label :scheduled_intervention_hours %>
+  <%= form.label :scheduled_intervention_hours, nil, :required => :required %>
   <% if is_form_view? and !form.force_show_view %>
     <%= form.text_field :scheduled_intervention_hours, :size => 2 %> h
     <%= form.text_field :scheduled_intervention_minutes, :size => 2 %> min
@@ -33,7 +33,7 @@ form.force_show_view = delivery_intervention.realized?
   <span class="help_text">(durée de l'intervention)</span>
 </p>
 <p>
-  <%= form.label :scheduled_internal_actor_id %>
+  <%= form.label :scheduled_internal_actor_id, nil, :required => :required %>
   <%= form.form_or_view(form.collection_select(:scheduled_internal_actor_id, Employee.actives, :id, :fullname, :include_blank => "Veuillez choisir un employé"), :scheduled_internal_actor, :fullname) %> <span class="help_text">(personne référente de l'intervention)</span>
 </p>
 
@@ -48,7 +48,7 @@ form.force_show_view = delivery_intervention.realized?
 
   <div id="schedule_delivery_internal_div" style="<%= scheduled_delivery_internal_style %>">
     <p>
-      <%= form.label :scheduled_deliverer_ids %>
+      <%= form.label :scheduled_deliverer_ids, nil, :required => :required %>
       <% if is_form_view? and !form.force_show_view %>
         <%= form.collection_select(:scheduled_deliverer_ids, Employee.actives, :id, :fullname, {}, { :multiple => true } ) %>
       <% else %>
@@ -56,7 +56,7 @@ form.force_show_view = delivery_intervention.realized?
       <% end %>
     </p>
     <p>
-      <%= form.label :scheduled_delivery_vehicle_ids %>
+      <%= form.label :scheduled_delivery_vehicle_ids, nil, :required => :required %>
       <% if is_form_view? and !form.force_show_view %>
         <%= form.collection_select(:scheduled_delivery_vehicle_ids, Vehicle.all, :id, :name_and_serial_number, {}, { :multiple => true } ) %>
       <% else %>
@@ -71,7 +71,7 @@ form.force_show_view = delivery_intervention.realized?
 
   <div id="schedule_delivery_subcontracting_div" style="<%= scheduled_delivery_subcontracting_style %>">
     <p>
-      <%= form.label :scheduled_delivery_subcontractor_id %>
+      <%= form.label :scheduled_delivery_subcontractor_id, nil, :required => :required %>
       <%= form.form_or_view(form.collection_select(:scheduled_delivery_subcontractor_id, Subcontractor.all, :id, :name, :include_blank => "Veuillez choisir un sous-traitant"), :scheduled_delivery_subcontractor, :name) %>
     </p>
   </div>
@@ -89,7 +89,7 @@ form.force_show_view = delivery_intervention.realized?
 
   <div id="schedule_installation_internal_div" style="<%= scheduled_installation_internal_style %>">
     <p>
-      <%= form.label :scheduled_installer_ids %>
+      <%= form.label :scheduled_installer_ids, nil, :required => :required %>
       <% if is_form_view? and !form.force_show_view %>
         <%= form.collection_select(:scheduled_installer_ids, Employee.actives, :id, :fullname, {}, { :multiple => true } ) %>
       <% else %>
@@ -112,7 +112,7 @@ form.force_show_view = delivery_intervention.realized?
 
   <div id="schedule_installation_subcontracting_div" style="<%= scheduled_installation_subcontracting_style %>">
     <p>
-      <%= form.label :scheduled_installation_subcontractor_id %>
+      <%= form.label :scheduled_installation_subcontractor_id, nil, :required => :required %>
       <%= form.form_or_view(form.collection_select(:scheduled_installation_subcontractor_id, Subcontractor.all, :id, :name, :include_blank => "Veuillez choisir un sous-traitant"), :scheduled_installation_subcontractor, :name) %>
     </p>
   </div>

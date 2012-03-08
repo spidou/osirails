@@ -13,16 +13,16 @@ hack_params ||= contacts_owner.is_a?(Establishment)  # used to determine, in cus
       <%= form.error_messages %>
       <% if is_form_view? %>
         <p>
-          <%= form.label :gender %>
-          <%= form.select(:gender, { 'Homme' => 'M', 'Femme' => 'F' }) %>
+          <%= form.label :gender, nil, :required => :required %>
+          <%= form.select(:gender, { 'Homme' => 'M', 'Femme' => 'F' }, :include_blank => true) %>
         </p>
       <% end %>
       <p>
-        <%= form.label :first_name %>
+        <%= form.label :first_name, nil, :required => :required %>
         <%= form.form_or_view(form.text_field(:first_name), :first_name ) %>
       </p>
       <p>
-        <%= form.label :last_name %>
+        <%= form.label :last_name, nil, :required => :required %>
         <%= form.form_or_view(form.text_field(:last_name), :last_name ) %>
       </p>
       <p>

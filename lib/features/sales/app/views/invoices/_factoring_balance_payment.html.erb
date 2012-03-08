@@ -8,7 +8,7 @@ invoice.factoring_balance_paid_on ||= Date.today
 
 <% fields_for invoice do |form| %>
   <p>
-    <%= form.label :factoring_balance_paid_on %>
+    <%= form.label :factoring_balance_paid_on, nil, :required => :required %>
     <%= form.text_field :factoring_balance_paid_on %>
   </p>
 <% end %>
