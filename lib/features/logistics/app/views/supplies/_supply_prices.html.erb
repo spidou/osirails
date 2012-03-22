@@ -1,0 +1,32 @@
+<% supply = supply_prices %>
+
+<% unless supply.new_record? %>
+  <table class="presentation no_nth">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Prix Unitaire</th>
+        <th>Prix Grandeur</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!--<tr>
+        <th>Prix fixé</th>
+        <td class="amount"><%=  %></td>
+        <td class="amount"></td>
+      </tr>-->
+      <tr>
+        <th>Valeur actuelle</th>
+        <td class="amount"><strong><%= supply.average_unit_price ? supply.average_unit_price.to_f.round_to(2).to_s(2) : '-' %>&nbsp;&euro;<strong></td>
+        <td class="amount"><strong><%= supply.average_measure_price ? supply.average_measure_price.to_f.round_to(2).to_s(2) : '-' %>&nbsp;&euro;<%= "/#{supply.unit_measure.symbol}" if supply.unit_measure %></strong></td>
+        <td><em>Calculé à partir de la moyenne des <%= link_to_function "prix fournisseurs", "supply_nav.find_tab('suppliers').select()" %></em></td>
+      </tr>
+      <tr>
+        <th>Valeur à l'achat</th>
+        <td class="amount"><%= supply.average_unit_stock_value > 0 ? supply.average_unit_stock_value.to_f.round_to(2).to_s(2) : '-' %>&nbsp;&euro;</td>
+        <td class="amount"><%= supply.average_measure_stock_value > 0 ? supply.average_measure_stock_value.to_f.round_to(2).to_s(2) : '-' %>&nbsp;&euro;<%= "/#{supply.unit_measure.symbol}" if supply.unit_measure %></td>
+        <td><em>Calculé à partir des prix d'achats et des <%= link_to_function "mouvements de stocks", "supply_nav.find_tab('stock_flows').select()" %></em></td>
+      </tr>
+    </tbody>
+  </table>
+<% end %>

@@ -28,12 +28,13 @@
   <div class="second_column">
     <p>
       Créé le <span class="created_at" title="<%= t('activerecord.attributes.order.created_at') %>"><%= l(@order.created_at.to_date, :format => :long) %></span>
-      par <span class="commercial" title="<%= t('activerecord.attributes.order.commercial') %>"><%= link_to(@order.commercial.fullname, @order.commercial) %></span>
       <span class="status <%= @order.status %>" title="<%= @order.pending? ? '' : "depuis le #{l(@order.status_since.to_date, :format => :long)}" %>">
         <%= t("view.order.statuses.#{@order.status}", :default => @order.status) %>
       </span>
     </p>
-    <pre class="customer_needs" title="<%= t('activerecord.attributes.order.customer_needs') %>"><%= @order.customer_needs %></pre>
+    <p>
+      Dossier appartenant à <span class="commercial" title="<%= t('activerecord.attributes.order.commercial') %>"><%= link_to(@order.commercial.fullname, @order.commercial) %></span>
+    </p>
   </div>
   
   <div class="third_column">

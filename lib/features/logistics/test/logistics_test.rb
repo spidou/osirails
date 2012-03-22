@@ -24,6 +24,8 @@ class Test::Unit::TestCase
   
   def create_supply_for(supply_type, attributes = {})
     supply = supply_type.supplies.build(attributes)
+    supply.measure ||= 1 if supply.unit_measure
+    supply.measure = nil if supply.unit_measure.nil?
     supply.save!
     return supply
   end

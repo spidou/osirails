@@ -364,10 +364,11 @@ module ActionView
       def to_collection_select_tag_with_custom_choice(choice_method_name, collection, value_method, text_method, options, select_options, text_field_options, link_options)
         text_field_options = { :class         => "#{choice_method_name}_input",
                                :autocomplete  => "off" }.merge(text_field_options)
+        text_field_brackets = text_field_options.delete(:remove_brackets) == true ? '' : '[]'
         
         before_select_custom_choice = options.delete(:before_select_custom_choice)  || ""
         on_select_custom_choice     = options.delete(:on_select_custom_choice)      || "this.clear().up('.#{choice_method_name}_select_container').hide().up().down('.#{choice_method_name}_input_container').show().down('.#{choice_method_name}_input').focus()"
-        after_select_custom_choice  = options.delete(:after_select_custom_choice)   || ""
+        after_select_custom_choice  = options.delete(:after_select_custom_choice)   || @method_name.to_s == choice_method_name.to_s ? "this.up('.#{choice_method_name}_select_container').down('select').disable()" : ""
         
         select_options = { :class     => "#{@method_name}_input",
                            :onchange  => "if (this.value == '#{options[:last_option_value]}') {
@@ -379,7 +380,7 @@ module ActionView
 }" }.merge(select_options)
         
         link_options = { :content   => image_tag("cross_16x16.png", :title => "Annuler", :alt => "Annuler"),
-                         :function  => "var input_container = this.up('.#{choice_method_name}_input_container'); input_container.down('.#{text_field_options[:class]}').clear(); input_container.hide().up().down('.#{choice_method_name}_select_container').show().down('select').focus();" }.merge(link_options)
+                         :function  => "var input_container = this.up('.#{choice_method_name}_input_container'); input_container.down('.#{text_field_options[:class]}').clear(); input_container.hide().up().down('.#{choice_method_name}_select_container').show().down('select').enable().focus();" }.merge(link_options)
         
         show_select = @object.send(@method_name) || InstanceTag.value_before_type_cast(@object, choice_method_name.to_s).blank?
         
@@ -390,7 +391,7 @@ module ActionView
         ) +
         content_tag_without_error_wrapping(
           #OPTIMIZE we shouldn't have to manually add the brackets '[]' after the object_name, but the call of 'to_collection_select_tag_with_custom_choice' remove end brackets to the object_name
-          :span, InstanceTag.new("#{@object_name}[]", choice_method_name, self, @object).to_input_field_tag("text", text_field_options.merge(show_select ? { :value => '' } : {})) +
+          :span, InstanceTag.new("#{@object_name}#{text_field_brackets}", choice_method_name, self, @object).to_input_field_tag("text", text_field_options.merge(show_select ? { :value => '' } : {})) +
                 link_to_function_without_error_wrapping(link_options.delete(:content), link_options.delete(:function), link_options),
           :class => "#{choice_method_name}_input_container",
           :style => show_select ? 'display:none' : ''

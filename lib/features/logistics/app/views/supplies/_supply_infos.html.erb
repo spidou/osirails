@@ -1,0 +1,37 @@
+<% supply = supply_infos %>
+
+<%= render :partial => 'supplies/supply_referencing', :object => supply, :locals => { :form => form,
+                                                                                      :supply_class => supply_class,
+                                                                                      :supply_sub_category_class => supply_sub_category_class,
+                                                                                      :supply_type_class => supply_type_class,
+                                                                                      :supply_categories => supply_categories } %>
+
+<fieldset>
+  <legend>Spécificités</legend>
+  
+  <div id="supplies_supply_sizes">
+    <%= render :partial => 'supplies_supply_sizes/supplies_supply_sizes_list', :object => supplies_supply_sizes,
+                                                                               :locals => { :supply => supply } %>
+  </div>
+</fieldset>
+
+<fieldset class="presentation_in_columns">
+  <legend>Autres caractéristiques</legend>
+  
+  <p>
+    <%= form.label :measure %>
+    <%= form.form_or_view(form.text_field(:measure, :size => 8, :value => supply.measure, :autocomplete => :off, :disabled => supply.has_been_used?), :measure) %>&#160;<%= display_supply_unit_measure(supply) %>
+  </p>
+  <p>
+    <%= form.label :unit_mass %>
+    <%= form.form_or_view(form.text_field(:unit_mass, :size => 8, :value => supply.unit_mass, :autocomplete => :off, :disabled => supply.has_been_used?), :unit_mass) %>&#160;kg
+  </p>
+  <p>
+    <%= form.label :packaging %>
+    <%= form.form_or_view(form.text_field(:packaging, :size => 8, :value => supply.packaging, :autocomplete => :off), :packaging) %><%= "&#160;par lot" if form.form_view? or !supply.packaging.blank? %>
+  </p>
+  <p>
+    <%= form.label :threshold %>
+    <%= form.form_or_view(form.text_field(:threshold, :size => 8, :value => supply.threshold, :autocomplete => :off), :threshold) %>
+  </p>
+</fieldset>

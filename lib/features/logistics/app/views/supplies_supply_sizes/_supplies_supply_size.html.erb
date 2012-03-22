@@ -9,7 +9,7 @@ should_destroy = item.should_destroy? ? "should_destroy" : ""
 <% fields_for "#{supply.class.name.underscore}[supplies_supply_size_attributes][]", item, :index => nil do |form| %>
   <p class="supplies_supply_size <%= selected %> <%= should_destroy %>">
     <span class="name"><%= item.supply_size.name_and_short_name %></span> :
-    <%= form.form_or_view(form.text_field(:value, :size => 7, :disabled => supply.has_been_used?), :value) %>
+    <%= form.form_or_view(form.text_field(:value, :size => 7, :disabled => supply.has_been_used?, :autocomplete => :off), :value) %>
     <%= item.unit_measure.symbol_and_name %>
     
     <% if form.form_view? %>

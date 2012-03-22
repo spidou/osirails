@@ -131,7 +131,7 @@ fr:
         name: "Nom"
         unit_price: "Prix unitaire"
         quantity: "Quantité"
-        vat: "TVA"
+        vat: "TVA (%)"
         pro_rata_billing: "Facturation au temps passé"
       invoice_type:
         title: "Type"
@@ -189,7 +189,7 @@ fr:
         dimensions: "Côtes"
         designation: "Désignation"
         designation_with_dimensions: "Désignation"
-        vat: "Taux de TVA"
+        vat: "TVA (%)"
       product_reference:
         reference: "Référence"
         product_reference_category: "Famille"
@@ -208,7 +208,7 @@ fr:
         cost: "Coût de revient"
         margin: "Marge"
         unit_price: "Prix de vente HT"
-        vat: "TVA"
+        vat: "TVA (%)"
         unit_price_with_taxes: "Prix de vente TTC"
         time_scale: "Type"
         pro_rata_billable: "Facturable au temps passé"
@@ -236,7 +236,7 @@ fr:
         commercial_actor: "Suivi commercial"
         bill_to_address: "Adresse de facturation"
         ship_to_address: "Adresse de livraison"
-        validity_delay: "Période de validité"
+        validity_delay: "Période de validité du devis"
         validity_delay_unit: "Unité de période de validité"
         sales_terms: "Conditions commerciales"
         deposit: "Acompte (%)"
@@ -247,13 +247,15 @@ fr:
         end_product: "Produit fini"
         prizegiving: "Remise"
         carriage_costs: "Frais de port"
+        granted_payment_time: "Délai de paiement"
+        granted_payment_method: "Moyen de paiement"
       quote_item:
         name: "Désignation"
         dimensions: "Côtes"
         quantity: "Quantité"
         unit_price: "Prix/U"
         prizegiving: "Remise"
-        vat: "Taux de TVA"
+        vat: "TVA (%)"
         end_product: "Produit fini"
         pro_rata_billing: "Facturation au temps passé"
       ship_to_address:
@@ -446,6 +448,7 @@ fr:
         description: "Description"
         name: "Nom"
         end_products_count: "Nb produits finis"
+        vat: "TVA (%)"
       product_reference_category:
         name: "Famille"
       product_reference_sub_category:

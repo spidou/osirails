@@ -190,10 +190,6 @@ menus:
                     title: Mes travaux en attente
                     description: Fichiers mis en file d'attente de production de l'utilisateur courant
                     position: 4
-              logs:
-                title: Historique
-                description: Historique des actions effectuées sur le dossier
-                position: 7
   goods:
     title: Produits
     description: Gestion des produits

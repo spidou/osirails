@@ -1,3 +1,12 @@
+## DATABASE STRUCTURE
+# A integer  "family_situation_id"
+# A integer  "employee_id"
+# A string   "social_security_number"
+# A string   "email"
+# A date     "birth_date"
+# A datetime "created_at"
+# A datetime "updated_at"
+
 class EmployeeSensitiveData < ActiveRecord::Base
   has_permissions :as_business_object
   has_address :address

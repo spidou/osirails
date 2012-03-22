@@ -303,7 +303,7 @@
   </xsl:attribute-set>
   
   <xsl:attribute-set name="sales-terms-description-block-container" use-attribute-sets="no-wrap-and-hidden">
-    <xsl:attribute name="height">4mm</xsl:attribute>
+    <xsl:attribute name="height">7mm</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="sales-terms-description-block" use-attribute-sets="default-style"/>
@@ -866,19 +866,17 @@
                 <fo:table-row page-break-inside="avoid">
                   <fo:table-cell number-columns-spanned="5">
                     <fo:block-container xsl:use-attribute-sets="representative-block-container">
-                        <fo:block>
-                          <fo:inline xsl:use-attribute-sets="representative-inline">
-                            <xsl:value-of select="../Labels/SupplierPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>&#160;:
-                          </fo:inline>
-                          <fo:inline>
-                            <xsl:value-of select="Supplier/Representative/FirstName"/>&#160;<xsl:value-of select="Supplier/Representative/LastName"/>
-                          </fo:inline>
+                        <fo:block xsl:use-attribute-sets="representative-inline">
+                          <xsl:value-of select="../Labels/SupplierPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>&#160;:
                         </fo:block>
                         <fo:block>
-                          <xsl:value-of select="../Labels/SupplierRepresentativePhone"/>&#160;:&#160;<xsl:value-of select="Supplier/Representative/Phone"/>
+                          <xsl:value-of select="Supplier/Representative/FirstName"/>&#160;<xsl:value-of select="Supplier/Representative/LastName"/>
                         </fo:block>
                         <fo:block>
-                          <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>&#160;:&#160;<xsl:value-of select="Supplier/Representative/Email"/>
+                          <xsl:value-of select="Supplier/Representative/Phone"/>
+                        </fo:block>
+                        <fo:block>
+                          <xsl:value-of select="Supplier/Representative/Email"/>
                         </fo:block>
                       </fo:block-container>
                   </fo:table-cell>
@@ -919,33 +917,10 @@
                   <fo:table-cell xsl:use-attribute-sets="sales-terms-description-cell" number-columns-spanned="10">
                     <fo:block-container xsl:use-attribute-sets="sales-terms-description-block-container">
                       <fo:block xsl:use-attribute-sets="sales-terms-description-block">
-                        <xsl:value-of select="SalesTerms/Description"/>
+                        <xsl:value-of select="SalesTerms/FirstLine"/>
                       </fo:block>
-                    </fo:block-container>
-                  </fo:table-cell>
-                </fo:table-row>
-                <fo:table-row keep-with-next="always" page-break-inside="avoid">
-                  <fo:table-cell xsl:use-attribute-sets="sales-terms-quote-validity-cell" number-columns-spanned="5">
-                    <fo:block-container xsl:use-attribute-sets="sales-terms-quote-validity-block-container">
-                      <fo:block xsl:use-attribute-sets="sales-terms-quote-validity-block">
-                        <fo:inline xsl:use-attribute-sets="sales-terms-quote-validity-label-inline">
-                         <xsl:value-of select="../Labels/QuoteValidity"/>
-                        </fo:inline>&#160;
-                        <fo:inline>
-                          <xsl:value-of select="SalesTerms/QuoteValidity"/>
-                        </fo:inline>
-                      </fo:block>
-                    </fo:block-container>
-                  </fo:table-cell>
-                  <fo:table-cell xsl:use-attribute-sets="sales-terms-deposit-cell" number-columns-spanned="5">
-                    <fo:block-container xsl:use-attribute-sets="sales-terms-deposit-block-container">
-                      <fo:block xsl:use-attribute-sets="sales-terms-deposit-block">
-                        <fo:inline xsl:use-attribute-sets="sales-terms-deposit-label-inline">
-                         <xsl:value-of select="../Labels/Deposit"/>
-                        </fo:inline>&#160;
-                        <fo:inline>
-                          <xsl:value-of select="SalesTerms/Deposit"/>
-                        </fo:inline>
+                      <fo:block xsl:use-attribute-sets="sales-terms-description-block">
+                        <xsl:value-of select="SalesTerms/SecondLine"/>
                       </fo:block>
                     </fo:block-container>
                   </fo:table-cell>

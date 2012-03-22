@@ -1,3 +1,18 @@
+## DATABASE STRUCTURE
+# A integer  "user_id"
+# A integer  "service_id"
+# A integer  "civility_id"
+# A integer  "family_situation_id"
+# A string   "first_name"
+# A string   "last_name"
+# A string   "society_email" #TODO remove that useless field with a migration
+# A string   "avatar_file_name"
+# A string   "avatar_content_type"
+# A integer  "avatar_file_size"
+# A datetime "avatar_updated_at"
+# A datetime "created_at"
+# A datetime "updated_at"
+
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
   has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
@@ -46,9 +61,6 @@ class Employee < ActiveRecord::Base
   validates_presence_of :civility,             :if => :civility_id
   validates_presence_of :service,              :if => :service_id
   
-  validates_format_of :society_email,           :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
-                                                :allow_blank  => true
-  
   # papercilp plugin validations
   with_options :if => :avatar do |v|
     v.validates_attachment_content_type :avatar, :content_type => [ 'image/jpg', 'image/png','image/jpeg']
@@ -59,13 +71,13 @@ class Employee < ActiveRecord::Base
   
   validate :validates_responsible_job_limit
   
-  journalize :attributes        => [ :first_name, :last_name, :civility_id, :service_id, :society_email ],
+  journalize :attributes        => [ :first_name, :last_name, :civility_id, :service_id ],
              :attachments       => :avatar,
              :subresources      => [ :employee_sensitive_data, :job_contracts, { :jobs => :create_and_destroy } ],
              :identifier_method => :fullname
   
-  has_search_index  :only_attributes       => [ :id, :first_name, :last_name, :society_email],
-                    :additional_attributes => { :fullname => :string },
+  has_search_index  :only_attributes       => [ :id, :first_name, :last_name],
+                    :additional_attributes => { :fullname => :string, :intranet_email => :string },
                     :only_relationships    => [ :civility, :employee_sensitive_data, :job_contract, :job_contracts, :jobs, :service, :user ],
                     :identifier            => :fullname
   

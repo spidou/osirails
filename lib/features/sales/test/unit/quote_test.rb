@@ -14,13 +14,14 @@ class QuoteTest < ActiveSupport::TestCase
   
   should_have_attached_file :order_form
   
-  should_validate_presence_of :order, :quote_contact, :with_foreign_key => :default
+  should_validate_presence_of :order, :quote_contact, :granted_payment_time, :granted_payment_method, :with_foreign_key => :default
   
   should_validate_numericality_of :prizegiving, :carriage_costs, :deposit, :validity_delay
   
   should_journalize :attributes   => [:reference, :status, :published_on, :sended_on, :signed_on, :confirmed_at, :cancelled_at,
                                       :send_quote_method_id, :order_form_type_id, :commercial_actor_id, :quote_contact_id,
-                                      :carriage_costs, :prizegiving, :deposit, :sales_terms, :validity_delay, :validity_delay_unit],
+                                      :carriage_costs, :prizegiving, :deposit, :sales_terms, :validity_delay, :validity_delay_unit,
+                                      :granted_payment_time_id, :granted_payment_method_id],
                     :subresources => [:quote_items, :bill_to_address, :ship_to_address],
                     :attachments  =>  :order_form
   

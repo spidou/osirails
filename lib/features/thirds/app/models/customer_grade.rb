@@ -1,5 +1,9 @@
+## DATABASE STRUCTURE
+# A integer "granted_payment_method_id"
+# A string  "name"
+
 class CustomerGrade < ActiveRecord::Base
-  belongs_to :granted_payment_time
+  belongs_to :granted_payment_method
   
   journalize :identifier_method => :name
   

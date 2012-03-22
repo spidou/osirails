@@ -48,7 +48,9 @@ class QuotesController < ApplicationController
                                  :validity_delay_unit => ConfigurationManager.sales_quote_validity_delay_unit)
     if @quote.can_be_added?
       @quote.quote_contact = @order.order_contact
-      @quote.commercial_actor = current_user.employee
+      @quote.commercial_actor = @order.commercial
+      @quote.granted_payment_time = @order.customer.customer_solvency.granted_payment_time if @order.customer && @order.customer.customer_solvency
+      @quote.granted_payment_method = @order.customer.customer_grade.granted_payment_method if @order.customer && @order.customer.customer_grade
       
       @order.end_products.each do |end_product|
         @quote.build_quote_item(:quotable_type  => "EndProduct",

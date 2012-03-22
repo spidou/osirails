@@ -15,9 +15,9 @@ class Supply < ActiveRecord::Base # @abstract
   has_many :supplier_supplies
   has_many :suppliers, :through => :supplier_supplies
   
-  has_many :stock_flows
-  has_many :stock_inputs
-  has_many :stock_outputs
+  has_many :stock_flows,   :order => "created_at DESC"
+  has_many :stock_inputs,  :order => "created_at DESC"
+  has_many :stock_outputs, :order => "created_at DESC"
   
   has_many :supplies_supply_sizes, :include => [ :supply_size ], :order => "supply_sizes.position"
   has_many :supply_sizes, :through => :supplies_supply_sizes
@@ -27,9 +27,12 @@ class Supply < ActiveRecord::Base # @abstract
   validates_presence_of :reference, :supply_type_id
   validates_presence_of :supply_type, :if => :supply_type_id
   
-  validates_numericality_of :unit_mass, :measure, :greater_than             => 0, :allow_blank => true
-  validates_numericality_of :packaging,           :greater_than             => 1, :allow_blank => true
-  validates_numericality_of :threshold,           :greater_than_or_equal_to => 0
+  validates_numericality_of :unit_mass, :greater_than             => 0, :allow_blank => true
+  validates_numericality_of :packaging, :greater_than             => 1, :allow_blank => true
+  validates_numericality_of :threshold, :greater_than_or_equal_to => 0
+  
+  validates_numericality_of :measure, :greater_than => 0, :if     => :unit_measure
+  validates_inclusion_of    :measure, :in => [nil],       :unless => :unit_measure
   
   validates_persistence_of :supply_type_id, :reference, :measure, :unit_mass, :supplies_supply_sizes, :if => :has_been_used?
   
@@ -311,6 +314,11 @@ class Supply < ActiveRecord::Base # @abstract
     stock_quantity(date).zero? ? 0.0 : stock_value(date) / stock_quantity(date)
   end
   
+  def average_measure_stock_value(date = Time.zone.now)
+    return 0.0 unless measure
+    stock_quantity(date).zero? ? 0.0 : average_unit_stock_value(date) / measure
+  end
+  
   def supplier_supplies_unit_prices
     supplier_supplies.reject(&:new_record?).collect(&:unit_price)
   end
@@ -329,6 +337,14 @@ class Supply < ActiveRecord::Base # @abstract
   
   def higher_measure_price
     higher_unit_price && measure && measure > 0 && higher_unit_price / measure
+  end
+  
+  def unit_price
+    average_unit_price
+  end
+  
+  def measure_price
+    average_measure_price
   end
   
   def supplier_supply_attributes=(supplier_supply_attributes)

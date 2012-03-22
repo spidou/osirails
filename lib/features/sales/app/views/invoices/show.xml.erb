@@ -23,10 +23,10 @@
       <Phone><%= ConfigurationManager.admin_society_identity_configuration_phone %></Phone>
       <Fax><%= ConfigurationManager.admin_society_identity_configuration_fax %></Fax>
       <CommercialRepresentative>
-        <LastName><%= @invoice.order.commercial.last_name %></LastName>
-        <FirstName><%= @invoice.order.commercial.first_name %></FirstName>
-        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @invoice.order.commercial.numbers.first %></Phone>
-        <Email><%= @invoice.order.commercial.email %></Email>
+        <LastName><%= @invoice.order.signed_quote.commercial_actor.last_name %></LastName>
+        <FirstName><%= @invoice.order.signed_quote.commercial_actor.first_name %></FirstName>
+        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @invoice.order.signed_quote.commercial_actor.numbers.first %></Phone>
+        <Email><%= @invoice.order.signed_quote.commercial_actor.email %></Email>
       </CommercialRepresentative>
       <InvoicingActor>
         <LastName><%= @invoice.invoicing_actor.last_name %></LastName>

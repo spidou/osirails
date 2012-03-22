@@ -274,6 +274,7 @@
   </xsl:attribute-set>
   
   <xsl:attribute-set name="invoicing-actor-block-container" use-attribute-sets="default-representative-block-container">
+    <xsl:attribute name="margin-top">3mm</xsl:attribute>
     <xsl:attribute name="margin-bottom">1mm</xsl:attribute>
   </xsl:attribute-set>
   
@@ -989,35 +990,31 @@
                   <fo:table-cell number-columns-spanned="5">
                     <fo:block-container xsl:use-attribute-sets="representative-block-container">
                       <fo:block-container xsl:use-attribute-sets="commercial-representative-block-container">
-                        <fo:block>
-                          <fo:inline xsl:use-attribute-sets="representative-inline">
-                            <xsl:value-of select="../Labels/SupplierCommercialPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>&#160;:
-                          </fo:inline>
-                          <fo:inline>
-                            <xsl:value-of select="Supplier/CommercialRepresentative/FirstName"/>&#160;<xsl:value-of select="Supplier/CommercialRepresentative/LastName"/>
-                          </fo:inline>
+                        <fo:block xsl:use-attribute-sets="representative-inline">
+                          <xsl:value-of select="../Labels/SupplierCommercialPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>
                         </fo:block>
                         <fo:block>
-                          <xsl:value-of select="../Labels/SupplierRepresentativePhone"/>&#160;:&#160;<xsl:value-of select="Supplier/CommercialRepresentative/Phone"/>
+                          <xsl:value-of select="Supplier/CommercialRepresentative/FirstName"/>&#160;<xsl:value-of select="Supplier/CommercialRepresentative/LastName"/>
                         </fo:block>
                         <fo:block>
-                          <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>&#160;:&#160;<xsl:value-of select="Supplier/CommercialRepresentative/Email"/>
+                          <xsl:value-of select="Supplier/CommercialRepresentative/Phone"/>
+                        </fo:block>
+                        <fo:block>
+                          <xsl:value-of select="Supplier/CommercialRepresentative/Email"/>
                         </fo:block>
                       </fo:block-container>
                       <fo:block-container xsl:use-attribute-sets="invoicing-actor-block-container">
+                        <fo:block xsl:use-attribute-sets="representative-inline">
+                          <xsl:value-of select="../Labels/SupplierInvoicingActorPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>
+                        </fo:block>
                         <fo:block>
-                          <fo:inline xsl:use-attribute-sets="representative-inline">
-                            <xsl:value-of select="../Labels/SupplierInvoicingActorPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>&#160;:
-                          </fo:inline>
-                          <fo:inline>
                             <xsl:value-of select="Supplier/InvoicingActor/FirstName"/>&#160;<xsl:value-of select="Supplier/InvoicingActor/LastName"/>
-                          </fo:inline>
                         </fo:block>
                         <fo:block>
-                          <xsl:value-of select="../Labels/SupplierRepresentativePhone"/>&#160;:&#160;<xsl:value-of select="Supplier/InvoicingActor/Phone"/>
+                          <xsl:value-of select="Supplier/InvoicingActor/Phone"/>
                         </fo:block>
                         <fo:block>
-                          <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>&#160;:&#160;<xsl:value-of select="Supplier/InvoicingActor/Email"/>
+                          <xsl:value-of select="Supplier/InvoicingActor/Email"/>
                         </fo:block>
                       </fo:block-container>
                     </fo:block-container>

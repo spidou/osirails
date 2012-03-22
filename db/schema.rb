@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120223071650) do
+ActiveRecord::Schema.define(:version => 20120321064512) do
 
   create_table "active_counters", :force => true do |t|
     t.string "key"
@@ -220,12 +220,12 @@ ActiveRecord::Schema.define(:version => 20120223071650) do
   end
 
   create_table "customer_grades", :force => true do |t|
-    t.integer "granted_payment_time_id"
+    t.integer "granted_payment_method_id"
     t.string  "name"
   end
 
   create_table "customer_solvencies", :force => true do |t|
-    t.integer "granted_payment_method_id"
+    t.integer "granted_payment_time_id"
     t.string  "name"
   end
 
@@ -948,16 +948,6 @@ ActiveRecord::Schema.define(:version => 20120223071650) do
     t.string "name"
   end
 
-  create_table "order_logs", :force => true do |t|
-    t.integer  "order_id"
-    t.integer  "user_id"
-    t.string   "controller"
-    t.string   "action"
-    t.text     "parameters"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "order_types", :force => true do |t|
     t.string   "title"
     t.datetime "created_at"
@@ -1212,8 +1202,8 @@ ActiveRecord::Schema.define(:version => 20120223071650) do
     t.integer  "quote_contact_id"
     t.string   "status"
     t.string   "reference"
-    t.float    "carriage_costs",          :default => 0.0
-    t.float    "prizegiving",             :default => 0.0
+    t.float    "carriage_costs",            :default => 0.0
+    t.float    "prizegiving",               :default => 0.0
     t.float    "deposit"
     t.text     "sales_terms"
     t.string   "validity_delay_unit"
@@ -1228,6 +1218,8 @@ ActiveRecord::Schema.define(:version => 20120223071650) do
     t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "granted_payment_time_id"
+    t.integer  "granted_payment_method_id"
   end
 
   add_index "quotes", ["reference"], :name => "index_quotes_on_reference", :unique => true

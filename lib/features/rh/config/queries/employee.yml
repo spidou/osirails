@@ -5,7 +5,7 @@ conf_columns: &columns
     - last_name
     - first_name
     - fullname
-    - society_email
+    - intranet_email
     - service.name
     - civility.name
     - jobs.name
@@ -52,7 +52,7 @@ advanced_employee:
     columns:
       - civility.name
       - fullname
-      - society_email
+      - intranet_email
       - service.name
       - job_contracts.start_date
       - job_contracts.job_contract_type.name
@@ -76,7 +76,7 @@ employee_index:
     - last_name
     - employee_sensitive_data.social_security_number
     - employee_sensitive_data.email
-    - society_email
+    - intranet_email
     - user.username
     - service.name
     - civility.name
@@ -92,7 +92,7 @@ employee_index:
     columns:
       - civility.name
       - fullname
-      - society_email
+      - intranet_email
       - job_contracts.start_date
       - job_contracts.job_contract_type.name
     group:

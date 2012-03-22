@@ -22,11 +22,11 @@
       <Phone><%= ConfigurationManager.admin_society_identity_configuration_phone %></Phone>
       <Fax><%= ConfigurationManager.admin_society_identity_configuration_fax %></Fax>
       <Representative>
-        <Function><%= @quote.order.commercial.jobs.first.name %></Function>
-        <LastName><%= @quote.order.commercial.last_name %></LastName>
-        <FirstName><%= @quote.order.commercial.first_name %></FirstName>
-        <Email><%= @quote.order.commercial.email %></Email>
-        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @quote.order.commercial.numbers.first %></Phone>
+        <Function><%= @quote.commercial_actor.jobs.first.name %></Function>
+        <LastName><%= @quote.commercial_actor.last_name %></LastName>
+        <FirstName><%= @quote.commercial_actor.first_name %></FirstName>
+        <Email><%= @quote.commercial_actor.email %></Email>
+        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @quote.commercial_actor.numbers.first %></Phone>
       </Representative>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
     </Supplier>
@@ -104,9 +104,13 @@
     <TotalTaxes><%= @quote.summon_of_taxes.to_f.round_to(2).to_s(2) %></TotalTaxes>
     <TotalInclusiveOfTaxNetPrice><%= @quote.net_to_paid.to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxNetPrice>
     <SalesTerms>
-      <Description><%= @quote.sales_terms %></Description>
-      <QuoteValidity><%= display_validity_delay_and_unit_for(@quote) %></QuoteValidity>
-      <Deposit><%= @quote.deposit %></Deposit>
+      <%
+      deposit = @quote.deposit.to_i == @quote.deposit ? @quote.deposit.to_i : @quote.deposit
+      payment_time_name = @quote.granted_payment_time.name if @quote.granted_payment_time
+      payment_method_name = @quote.granted_payment_method.name if @quote.granted_payment_method
+      %>
+      <FirstLine><%= "#{deposit}% d'acompte. #{payment_time_name}. #{payment_method_name}." %></FirstLine>
+      <SecondLine><%= "Devis valable #{display_validity_delay_and_unit_for(@quote)}" %></SecondLine>
     </SalesTerms>
   </Document>
   <Labels>

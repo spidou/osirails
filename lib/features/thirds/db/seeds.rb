@@ -54,36 +54,30 @@ LegalForm.create! :name => "Organisme gérant un régime de protection sociale �
 LegalForm.create! :name => "Organisme professionnel",                                                 :third_type_id => public_third_type.id
 
 # default granted payment times
-gpt1 = GrantedPaymentTime.create! :name => "60 jours après réception des travaux + facilité de paiement éventuelle"
-gpt2 = GrantedPaymentTime.create! :name => "30 jours après réception des travaux + facilité de paiement éventuelle"
-gpt3 = GrantedPaymentTime.create! :name => "30 jours + sans facilité de paiement éventuelle"
-gpt4 = GrantedPaymentTime.create! :name => "0 jours + facilité de paiement éventuelle"
-gpt5 = GrantedPaymentTime.create! :name => "0 jours + sans facilité de paiement"
-gpt6 = GrantedPaymentTime.create! :name => "Refus Client"
+gpt1 = GrantedPaymentTime.create! :name => "Solde à la livraison"
+gpt2 = GrantedPaymentTime.create! :name => "Solde à 30 jours"
+gpt3 = GrantedPaymentTime.create! :name => "Solde à 60 jours"
 
 # default granted payment methods
 gpm1 = GrantedPaymentMethod.create! :name => "Tout moyen de paiement accordé"
-gpm2 = GrantedPaymentMethod.create! :name => "CB/Espèces/Chèque/Virement/Prélèvement"
-gpm3 = GrantedPaymentMethod.create! :name => "CB/Espèces/Chèque/Virement"
-gpm4 = GrantedPaymentMethod.create! :name => "CB/Espèces/Chèque"
-gpm5 = GrantedPaymentMethod.create! :name => "Espèces/Chèque"
-gpm6 = GrantedPaymentMethod.create! :name => "Refus du Client"
+gpm2 = GrantedPaymentMethod.create! :name => "Paiement par chèque"
+gpm3 = GrantedPaymentMethod.create! :name => "Paiement par virement"
 
 # default customer grades
-CustomerGrade.create! :name => "5/5", :granted_payment_time => gpt1
-CustomerGrade.create! :name => "4/5", :granted_payment_time => gpt2
-CustomerGrade.create! :name => "3/5", :granted_payment_time => gpt3
-CustomerGrade.create! :name => "2/5", :granted_payment_time => gpt4
-CustomerGrade.create! :name => "1/5", :granted_payment_time => gpt5
-CustomerGrade.create! :name => "0/5", :granted_payment_time => gpt6
+CustomerGrade.create! :name => "5/5", :granted_payment_method => gpm1
+CustomerGrade.create! :name => "4/5", :granted_payment_method => gpm1
+CustomerGrade.create! :name => "3/5", :granted_payment_method => gpm2
+CustomerGrade.create! :name => "2/5", :granted_payment_method => gpm2
+CustomerGrade.create! :name => "1/5", :granted_payment_method => gpm2
+CustomerGrade.create! :name => "0/5", :granted_payment_method => gpm2
 
 # default customer solvencies
-CustomerSolvency.create! :name => "100%", :granted_payment_method => gpm1
-CustomerSolvency.create! :name => "80%",  :granted_payment_method => gpm2
-CustomerSolvency.create! :name => "60%",  :granted_payment_method => gpm3
-CustomerSolvency.create! :name => "40%",  :granted_payment_method => gpm4
-CustomerSolvency.create! :name => "20%",  :granted_payment_method => gpm5
-CustomerSolvency.create! :name => "0%",   :granted_payment_method => gpm6
+CustomerSolvency.create! :name => "100%", :granted_payment_time => gpt2
+CustomerSolvency.create! :name => "80%",  :granted_payment_time => gpt2
+CustomerSolvency.create! :name => "60%",  :granted_payment_time => gpt2
+CustomerSolvency.create! :name => "40%",  :granted_payment_time => gpt1
+CustomerSolvency.create! :name => "20%",  :granted_payment_time => gpt1
+CustomerSolvency.create! :name => "0%",   :granted_payment_time => gpt1
 
 ## default document types for customers (document types are created automatically when the class of the owner is parsed)
 #### get mime types

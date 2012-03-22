@@ -1,0 +1,6 @@
+all:
+  name: All
+bank_transfer_or_cash:
+  name: Bank transfer or cash
+cash_only:
+  name: Cash only

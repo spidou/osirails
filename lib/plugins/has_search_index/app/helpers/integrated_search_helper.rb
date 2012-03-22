@@ -281,6 +281,8 @@ module IntegratedSearchHelper
           :attribute  => @query.group.at(group_by.index(x)) }
       end
       
+      @group_length = group.last.size
+      
       group_row = query_group_tr(group_by, columns)
       rows      = group.last.map{ |record| generate_table_row(record, columns) }.join
       query_tbody("#{ group_row }#{ rows }")
@@ -751,6 +753,7 @@ module IntegratedSearchHelper
         send(override_for(helper), group_by)
       else
         content = group_by.map!{ |n| n[:value].blank? ? I18n.t('view.content.undefined_group_name') : n[:value] }.join(' → ')
+        content += " (#{@group_length})" if @group_length
         content_tag(:span, content, :onclick => "toggleGroup(this);", :class => 'not-collapsed')
       end
     end

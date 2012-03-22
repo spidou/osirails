@@ -110,3 +110,11 @@
   padding: 5px 10px;
   margin: -5px -13px 0 -13px;
 }
+
+.root_nav.standard div.tab_nav_header p {
+  font-size: 130%;
+}
+
+.root_nav.standard div.tab_nav_header strong {
+  color: inherit;
+}

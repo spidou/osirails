@@ -66,6 +66,7 @@ fr:
         stock_value: "Valeur totale"
         supplier: "Fournisseur principal"
         suppliers: "Fournisseurs"
+        supplier_supplies: "Fournisseurs"
         supplier_supply: "Fournisseur"
         supply_category: "Famille"
         supply_sub_category: "Sous-famille"

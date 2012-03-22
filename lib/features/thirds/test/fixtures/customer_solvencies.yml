@@ -1,7 +1,7 @@
 hundred_percent:
   name: "100%"
-  granted_payment_method: all
+  granted_payment_time: cwo
   
 zero_percent:
   name: "0%"
-  granted_payment_method: cash_only
+  granted_payment_time: cod

@@ -13,11 +13,13 @@ class ProductReference < Product
   
   validates_presence_of :reference
   
+  validates_numericality_of :vat
+  
   validates_persistence_of :product_reference_sub_category_id
   
   before_validation_on_create :update_reference
   
-  has_search_index  :only_attributes        => [ :reference, :name, :description ],
+  has_search_index  :only_attributes        => [ :reference, :name, :description, :vat ],
                     :additional_attributes  => { :designation => :string, :designation_with_dimensions => :string },
                     :only_relationships     => [ :product_reference_sub_category ]
   

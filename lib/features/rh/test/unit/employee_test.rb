@@ -11,11 +11,7 @@ class EmployeeTest < ActiveSupport::TestCase
   should_validate_presence_of :last_name, :first_name
   should_validate_presence_of :civility, :service, :with_foreign_key => :default
   
-  
-  should_allow_values_for :society_email, nil, "", "foo@bar.com", "foo.bar@bar.fr", "foo@bar.abcde"
-  should_not_allow_values_for :society_email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "Society email is incorrect"
-  
-  should_journalize :attributes          => [ :first_name, :last_name, :civility_id, :service_id, :society_email ], 
+  should_journalize :attributes          => [ :first_name, :last_name, :civility_id, :service_id ], 
                     :attachments         => :avatar, 
                     :subresources        => [ :employee_sensitive_data, { :jobs => :create_and_destroy }, :job_contracts],
                     :identifier_method   => :fullname

@@ -2,6 +2,7 @@
 # A integer  "order_id"
 # A integer  "send_quote_method_id"
 # A integer  "order_form_type_id"
+# A integer  "commercial_actor_id"
 # A integer  "quote_contact_id"
 # A string   "status"
 # A string   "reference"
@@ -21,6 +22,8 @@
 # A datetime "cancelled_at"
 # A datetime "created_at"
 # A datetime "updated_at"
+# A integer  "granted_payment_time_id"
+# A integer  "granted_payment_method_id"
 
 class Quote < ActiveRecord::Base
   STATUS_CONFIRMED  = 'confirmed'
@@ -52,6 +55,8 @@ class Quote < ActiveRecord::Base
   belongs_to :commercial_actor, :class_name => 'Employee'
   belongs_to :send_quote_method
   belongs_to :order_form_type
+  belongs_to :granted_payment_time
+  belongs_to :granted_payment_method
   
   has_many :quote_items, :order => 'position', :dependent => :delete_all # not :destroy to avoid after_destroy is called in quote_item.rb
   
@@ -80,9 +85,11 @@ class Quote < ActiveRecord::Base
   
   # when quote is UNSAVED or UNCOMPLETE
   with_options :if => Proc.new{ |quote| quote.new_record? or quote.was_uncomplete? } do |x|
-    x.validates_presence_of :order_id, :commercial_actor_id
-    x.validates_presence_of :order,             :if => :order_id
-    x.validates_presence_of :commercial_actor,  :if => :commercial_actor_id
+    x.validates_presence_of :order_id, :commercial_actor_id, :granted_payment_time_id, :granted_payment_method_id
+    x.validates_presence_of :order,                  :if => :order_id
+    x.validates_presence_of :commercial_actor,       :if => :commercial_actor_id
+    x.validates_presence_of :granted_payment_time,   :if => :granted_payment_time_id
+    x.validates_presence_of :granted_payment_method, :if => :granted_payment_time_id
     
     x.validates_numericality_of :prizegiving, :carriage_costs, :validity_delay
     x.validates_numericality_of :deposit, :greater_than_or_equal_to => 0, :less_than => 100
@@ -112,7 +119,8 @@ class Quote < ActiveRecord::Base
   # when quote is CONFIRMED and above
   with_options :if => :confirmed_at_was do |x|
     x.validates_persistence_of :confirmed_at, :published_on, :commercial_actor_id, :quote_contact_id, :carriage_costs,
-                               :prizegiving, :deposit, :sales_terms, :validity_delay_unit, :validity_delay, :quote_items
+                               :prizegiving, :deposit, :sales_terms, :validity_delay_unit, :validity_delay, :quote_items,
+                               :granted_payment_time_id, :granted_payment_method_id
   end
   
   ### while quote CANCELLATION
@@ -164,7 +172,8 @@ class Quote < ActiveRecord::Base
   
   journalize :attributes   => [:reference, :status, :published_on, :sended_on, :signed_on, :confirmed_at, :cancelled_at,
                                :send_quote_method_id, :order_form_type_id, :commercial_actor_id, :quote_contact_id,
-                               :carriage_costs, :prizegiving, :deposit, :sales_terms, :validity_delay, :validity_delay_unit],
+                               :carriage_costs, :prizegiving, :deposit, :sales_terms, :validity_delay, :validity_delay_unit,
+                               :granted_payment_time_id, :granted_payment_method_id],
              :subresources => [:quote_items, :bill_to_address, :ship_to_address],
              :attachments  =>  :order_form
   
@@ -174,7 +183,7 @@ class Quote < ActiveRecord::Base
   
   has_search_index :only_attributes       => [ :confirmed_at, :cancelled_at, :created_at, :deposit, :published_on, :reference, :sended_on, :signed_on, :status, :validity_delay ],
                    :additional_attributes => { :validity_date => :date, :total_with_taxes => :float },
-                   :only_relationships    => [ :commercial_actor, :order, :quote_contact, :send_quote_method ]
+                   :only_relationships    => [ :commercial_actor, :order, :quote_contact, :send_quote_method, :granted_payment_time, :granted_payment_method ]
   
   active_counter :model => 'Order', :callbacks => { :in_progress_total    => :after_save,
                                                     :commercial_total     => :after_save,

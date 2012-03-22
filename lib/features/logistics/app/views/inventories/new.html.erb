@@ -1,5 +1,5 @@
 <% title_context "Stocks" %>
 <% title_context "Entrées/Sorties" %>
-<%= title "Nouvel inventaire de #{params[:supply_class] == 'Commodity' ? 'matières premières' : 'consommables'}" %>
+<%= title "Nouvel inventaire de #{@inventory.supply_class == 'Commodity' ? 'matières premières' : 'consommables'}" %>
 
 <%= render :partial => 'inventories/inventory', :object => @inventory, :locals => { :supplies => @supplies } %>

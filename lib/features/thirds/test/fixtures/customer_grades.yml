@@ -1,7 +1,7 @@
 five_on_five:
   name: "5/5"
-  granted_payment_time: cod
+  granted_payment_method: all
   
 zero_on_five:
   name: "0/5"
-  granted_payment_time: cwo
+  granted_payment_method: cash_only

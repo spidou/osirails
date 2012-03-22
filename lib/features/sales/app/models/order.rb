@@ -61,7 +61,6 @@ class Order < ActiveRecord::Base
   has_many :invoices, :order => 'invoices.created_at DESC'
   
   has_many :ship_to_addresses
-  has_many :order_logs
   has_many :mockups
   has_many :graphic_documents
   

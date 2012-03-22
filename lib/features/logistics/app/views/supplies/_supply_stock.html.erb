@@ -1,0 +1,37 @@
+<% supply = supply_stock %>
+
+<%
+last_inventory = supply.last_inventory
+%>
+
+<% unless supply.new_record? %>
+  <table class="presentation no_nth">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Quantité</th>
+        <th>Grandeur totale</th>
+        <th>Valeur totale</th>
+        <th>Poids total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Estimation</th>
+        <td class="amount"><strong><%= supply.stock_quantity %></strong></td>
+        <td class="amount"><strong><%= supply.unit_measure ? "#{supply.stock_measure.to_f.round_to(2).to_s(2)}&nbsp;#{supply.unit_measure.symbol}" : "-" %></strong></td>
+        <td class="amount"><strong><%= supply.stock_value.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</strong></td>
+        <td class="amount"><strong><%= supply.unit_mass ? "#{supply.stock_mass.to_f.round_to(2).to_s(2)}&nbsp;kg" : "-" %></strong></td>
+        <td><em>Mis à jour en fonction des récents <%= link_to_function "mouvements de stocks", "supply_nav.find_tab('stock_flows').select()" %></em></td>
+      </tr>
+      <tr>
+        <th>Au dernier inventaire</th>
+        <td class="amount"><%= last_inventory ? supply.stock_quantity_at_last_inventory : "-" %></td>
+        <td class="amount"><%= supply.unit_measure ? (last_inventory ? supply.stock_measure(last_inventory.date).to_f.round_to(2).to_s(2) + "&nbsp;#{supply.unit_measure.symbol}" : "-") : "-" %></td>
+        <td class="amount"><%= last_inventory ? supply.stock_value(last_inventory.date).to_f.round_to(2).to_s(2) + "&nbsp;&euro;" : "-" %></td>
+        <td class="amount"><%= supply.unit_mass && last_inventory ? supply.stock_mass(last_inventory.date).to_f.round_to(2).to_s(2) + "&nbsp;kg" : "-" %></td>
+        <td><em><%= "Datant du<span title=\"#{l(last_inventory.date, :format => :long_ordinal)}\">#{link_to(l(last_inventory.date.to_date, :format => :long), inventory_path(last_inventory), :popup => true)}</span>" if last_inventory %></em></td>
+      </tr>
+    </tbody>
+  </table>
+<% end %>

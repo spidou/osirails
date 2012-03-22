@@ -82,15 +82,9 @@ counter ||= 1
   <td class="vat rate">
     <span class="vat">
       <% if is_form_view? %>
-        <%= form.select(:vat, Vat.find(:all, :order => :position).collect{ |vat| [ vat.name, vat.rate ] }, { :include_blank => "" }, :title => "Entrer le taux de TVA s'appliquant à cette référence") %>
-        <%= hidden_field_tag :original_vat, quote_item.original_vat, :class => :input_original_vat %>
-        <span>
-          <%= link_to( image_tag("eraser_16x16.png", :alt => "Valeur par défaut", :title => "Valeur par défaut"), "#default",
-                       :onclick => "restore_original_value(this.up('.quote_item'), 'vat')" ) %>
-        </span>
-      <% else %>
-        <%= quote_item.vat %>
+        <%= form.hidden_field :vat, :value => quote_item.vat %>
       <% end%>
+      <%= quote_item.vat %>
     </span>
   </td>
   <td class="total_with_taxes amount">

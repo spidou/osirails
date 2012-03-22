@@ -339,31 +339,6 @@ div.order_header > div.second_column {
   width: 300px;
 }
 
-div.order_header > div.second_column pre.customer_needs {
-  position: absolute;
-  max-width: 350px;
-  max-height: 40px;
-  overflow: hidden;
-  padding: 3px;
-  border: 1px solid transparent;
-  margin-top: -2px;
-  margin-left: -3px;
-  -moz-transition: all 0.5s;
-}
-
-div.order_header > div.second_column pre.customer_needs:hover {
-  position: absolute;
-  max-width: 500px;
-  max-height: 200px;
-  height: auto;
-  overflow: auto;
-  padding: 3px;
-  border: 1px solid #ccc;
-  background-color: #fafafa;
-  -moz-border-radius: 5px;
-  z-index: 2;
-}
-
 div.order_header > div.second_column span.status {
   -moz-border-radius: 5px;
   padding: 2px 4px;

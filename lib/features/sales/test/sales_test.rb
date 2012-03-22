@@ -39,7 +39,7 @@ class Test::Unit::TestCase
   end
   
   def create_default_product_reference
-    return ProductReference.create!( :product_reference_sub_category_id => product_reference_categories(:child).id, :name => "Default Product Reference" )
+    return ProductReference.create!( :product_reference_sub_category_id => product_reference_categories(:child).id, :name => "Default Product Reference", :vat => Vat.first.rate )
   end
   
   def create_default_end_product(order = nil, params = {})
@@ -61,7 +61,8 @@ class Test::Unit::TestCase
       create_default_end_product(order)
     end
     
-    quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :commercial_actor_id => Employee.first.id, :quote_contact_id => order.all_contacts.first.id, :deposit => 30)
+    quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :commercial_actor_id => Employee.first.id, :quote_contact_id => order.all_contacts.first.id,
+                               :deposit => 30, :granted_payment_time_id => GrantedPaymentTime.first.id, :granted_payment_method_id => GrantedPaymentMethod.first.id)
     
     order.end_products.each do |end_product|
       quote.build_quote_item(:quotable_type   => end_product.class.name,

@@ -34,7 +34,7 @@ fr:
         family_situation: "Situation familiale"
         social_security_number: "N° de sécurité sociale"
         email: "Email personnel"
-        society_email: "Email entreprise"
+        intranet_email: "Email entreprise"
         service: "Service"
         avatar: "Photo"
         job_contract: "Contrat de travail"
@@ -104,8 +104,6 @@ fr:
               invalid: "Le numéro de sécurité sociale doit comporter 15 chiffres"
             email:
               invalid: "L'adresse e-mail est incorrecte"
-            society_email:
-              invalid: "L'adresse e-mail entreprise est incorrecte"
   integrated_search:
     attributes:
       employee:

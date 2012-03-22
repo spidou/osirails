@@ -5,7 +5,7 @@ supplier_supply = supplier_supply_in_one_line
 
 <% fields_for "#{supply.class.name.downcase}[supplier_supply_attributes][]", supplier_supply, :index => nil do |form| %>
   <tr>
-    <td class="supplier">
+    <td class="supplier text">
       <% if form.form_view? %>
         <%= form.hidden_field :id %>
         
@@ -15,7 +15,7 @@ supplier_supply = supplier_supply_in_one_line
         <%= supplier_supply.supplier.name %>
       <% end %>
     </td>
-    <td class="supplier_reference">
+    <td class="supplier_reference text">
       <% if form.form_view? %>
         <%= form.text_field :supplier_reference %>
       <% else %>

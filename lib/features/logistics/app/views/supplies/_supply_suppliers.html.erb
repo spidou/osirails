@@ -1,0 +1,6 @@
+<% supply = supply_suppliers %>
+
+<div class="autoscroll">
+  <%= render :partial => 'supplier_supplies/supplier_supplies', :object => supply.supplier_supplies, :locals => { :supply => supply } %>
+  <%= display_supplier_supply_add_button(supply) if is_form_view? %>
+</div>

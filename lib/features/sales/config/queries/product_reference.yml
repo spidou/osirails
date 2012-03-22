@@ -8,6 +8,7 @@ conf_columns: &columns
     - name
     - designation_with_dimensions
     - description
+    - vat
     - end_products_count
 conf_group: &group
   group:

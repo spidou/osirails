@@ -25,7 +25,10 @@ gem 'orderedhash' # it can be deleted once we use ruby1.9
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
-gem 'pry', :group => :development
+group :development do
+  gem 'pry'
+  gem "rails-footnotes", '< 3.7.0'
+end
 
 group :development, :test do
   gem 'ruby-debug'

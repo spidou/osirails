@@ -39,9 +39,6 @@ module ActsAsStepController
               else                  # so I guess we want to display '/orders/new'
                 @order = Order.new
               end
-              
-              # manage logs
-              OrderLog.set(@order, current_user, params)
             end
         end
         

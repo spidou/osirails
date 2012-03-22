@@ -1,0 +1,27 @@
+<% supply = supply_stock_flows %>
+
+<table class="presentation">
+  <thead>
+    <tr>
+      <th>Variation</th>
+      <th>Prix Unitaire</th>
+      <th>Identifiant</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% supply.stock_flows.find(:all, :limit => 10).each do |stock_flow| %>
+      <% date = l(stock_flow.created_at.to_date, :format => :long) %>
+    <tr>
+      <td class="amount"><%= stock_flow.calculation_method.to_s %> <%= stock_flow.quantity %></td>
+      <td class="amount"><%= stock_flow.unit_price.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
+      <td class="text"><%= stock_flow.identifier %></td>
+      <td class="text"><%= stock_flow.inventory ? link_to(date, inventory_path(stock_flow.inventory), :popup => true) : date %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if supply.stock_flows.count > 10 %>
+  <p><%= link_to_function("Afficher tout (#{supply.stock_flows.count})", "alert('Not yet implemented')") %></p>
+<% end %>

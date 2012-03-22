@@ -276,7 +276,6 @@ ActionController::Routing::Routes.add_routes do |map|
     
     order.empty_graphic_item_spool_items 'empty_graphic_item_spool_items', :controller => 'graphic_item_spool_items', :action => 'empty_spool'
     
-    order.resources :logs
     order.informations 'informations', :controller => 'informations'
   end 
   

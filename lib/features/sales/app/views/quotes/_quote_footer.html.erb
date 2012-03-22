@@ -1,14 +1,20 @@
 <%
 require_locals form
 quote = quote_footer
+
+deposit_struct = Struct.new("DefaultDepositValues", :value, :text) #TODO make that configurable by creating table and model to manage default deposit values
+deposit_one = deposit_struct.new(30, "30")
+deposit_two = deposit_struct.new(40, "40")
+deposit_values = [deposit_one, deposit_two]
+
+deposit_values.unshift(deposit_struct.new(quote.deposit, quote.deposit.to_s)) if quote.deposit && !deposit_values.collect(&:value).include?(quote.deposit.to_i)
 %>
 
 <p>
   <%= form.label :deposit, nil, :required => :required %>
-  <%= form.form_or_view(form.text_field(:deposit, :value => (quote.deposit ? quote.deposit.to_f.round_to(2).to_s(2) : ''), :size => 3), strong(quote.deposit.to_f.round_to(2).to_s(2))) %>
-</p>
-
-<p>
+  <%# form.form_or_view(form.text_field(:deposit, :value => (quote.deposit ? quote.deposit.to_f.round_to(2).to_s(2) : ''), :size => 3), strong(quote.deposit.to_f.round_to(2).to_s(2))) %>
+  <%= form.form_or_view(form.collection_select_with_custom_choice(:deposit, :deposit, deposit_values, :value, :text, { :include_blank => true }, {}, { :remove_brackets => true, :size => 3 }), strong(quote.deposit.to_f.round_to(2).to_s(2))) %>
+  
   <%= form.label :validity_delay, nil, :required => :required %>
   <% if form.form_view? %>
     <%= form.text_field :validity_delay, :size => 3 %> <%= form.select :validity_delay_unit, Quote::VALIDITY_DELAY_UNITS %>
@@ -18,6 +24,24 @@ quote = quote_footer
 </p>
 
 <p>
+  <%= form.label :granted_payment_time, nil, :required => :required %>
+  <% if form.form_view? %>
+    <%= form.collection_select :granted_payment_time_id, GrantedPaymentTime.all, :id, :name, :include_blank => true %> <span class="help_text">Pour information, la note relationnelle de ce client est de <strong><%= quote.order.customer.customer_grade.name %></strong></span>
+  <% else %>
+    <%= strong quote.granted_payment_time.name if quote.granted_payment_time %>
+  <% end %>
+</p>
+
+<p>
+  <%= form.label :granted_payment_method, nil, :required => :required %>
+  <% if form.form_view? %>
+    <%= form.collection_select :granted_payment_method_id, GrantedPaymentMethod.all, :id, :name, :include_blank => true %> <span class="help_text">Pour information, la solvabilité de ce client est de <strong><%= quote.order.customer.customer_solvency.name %></strong></span>
+  <% else %>
+    <%= strong quote.granted_payment_method.name if quote.granted_payment_method %>
+  <% end %>
+</p>
+
+<!--<p>
   <%= form.label :sales_terms %>
   <%= form.form_or_view(form.text_area_autoresize(:sales_terms), :sales_terms) %>
-</p>
+</p>-->
