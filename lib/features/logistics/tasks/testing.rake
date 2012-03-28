@@ -28,6 +28,20 @@ namespace :osirails do
         t.verbose = true
       end
       Rake::Task['osirails:logistics:test:integration'].comment = "Run the logistics integration tests"
+      
+      Rake::TestTask.new(:benchmark) do |t|
+        t.libs << "test"
+        t.pattern = "#{File.dirname(__FILE__)}/../test/performance/*_test.rb"
+        t.verbose = true
+      end
+      Rake::Task['osirails:logistics:test:benchmark'].comment = "Run the logistics benchmark tests"
+      
+      Rake::TestTask.new(:profile) do |t|
+        t.libs << "test"
+        t.pattern = "#{File.dirname(__FILE__)}/../test/performance/*_test.rb"
+        t.verbose = true
+      end
+      Rake::Task['osirails:logistics:test:profile'].comment = "Run the logistics profile tests"
     end
   end
 end

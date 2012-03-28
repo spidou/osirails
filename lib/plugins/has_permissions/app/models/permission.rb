@@ -8,16 +8,16 @@ class Permission < ActiveRecord::Base
   validates_presence_of :has_permissions_id, :has_permissions_type, :role_id
   
   def accepted_method?(method)
-    #OPTIMIZE find a way to store that array somewhere to avoid to generate it each time
-    accepted_methods = permissions_permission_methods.collect{ |m| m.permission_method.p_name } # for getters
-    accepted_methods += permissions_permission_methods.collect{ |m| "#{m.permission_method.name}=" } # for setters
+    accepted_methods = Rails.cache.fetch("Permission:#{id}:accepted_methods", :expires_in => 30.seconds) do
+      permissions_permission_methods.collect{ |m| m.permission_method.p_name } + permissions_permission_methods.collect{ |m| "#{m.permission_method.name}=" } # getters + setters
+    end
     
     accepted_methods.include?(method.to_s)
   end
   
   def respond_to?(method, include_private = false)
     accepted_method?(method) ? true : super(method)
-  end  
+  end
   
   def method_missing(method, *args)
     return super(method, *args) unless accepted_method?(method)

@@ -337,11 +337,11 @@ class DeliveryNote < ActiveRecord::Base
   end
   
   class << self
-    def pending_delivery_notes_counter # @override (active_counter)
+    def get_pending_delivery_notes_counter # @override (active_counter)
       DeliveryNote.pending.count
     end
     
-    def pending_total_counter # @override (active_counter)
+    def get_pending_total_counter # @override (active_counter)
       DeliveryNote.pending.collect(&:total_with_taxes).compact.sum
     end
   end

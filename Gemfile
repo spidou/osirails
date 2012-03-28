@@ -21,13 +21,15 @@ gem 'RedCloth', '4.2.3'
 gem 'htmlentities', '4.2.1'
 gem 'whenever', :git => 'git://github.com/spidou/whenever.git'
 gem 'orderedhash' # it can be deleted once we use ruby1.9
+gem 'memcache-client'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
 group :development do
   gem 'pry'
-  gem "rails-footnotes", '< 3.7.0'
+  gem 'rails-footnotes', '< 3.7.0'
+  gem 'bullet'
 end
 
 group :development, :test do

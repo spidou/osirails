@@ -53,7 +53,9 @@ module HasPermissions
         end
         
         def self.all_permission_methods
-          (self.class_permission_methods + self.instance_permission_methods).uniq
+          Rails.cache.fetch("HasPermissions:#{self.name}:all_permission_methods", :expires_in => 1.day) do # permission methods for a given class should never change
+            (self.class_permission_methods + self.instance_permission_methods).uniq
+          end
         end
       end
       
@@ -180,11 +182,17 @@ module HasPermissions
       class_eval do
         private
           def can_do?(action, user_or_role)
-            self.class.get_permissions(action, user_or_role, self)
+            user_or_role_id = (user_or_role.is_a?(User) ? "User:" : "Role:") + user_or_role.id.to_s
+            Rails.cache.fetch("HasPermissions:#{user_or_role_id}:Can:#{action}:On:#{self.class.name}:#{self.id}", :expires_in => 1.hour) do #TODO we should delete cache when permissions are updated
+              self.class.get_permissions(action, user_or_role, self)
+            end
           end
           
           def self.can_do?(action, user_or_role)
-            get_permissions(action, user_or_role)
+            user_or_role_id = (user_or_role.is_a?(User) ? "User:" : "Role:") + user_or_role.id.to_s
+            Rails.cache.fetch("HasPermissions:#{user_or_role_id}:Can:#{action}:On:#{self.name}", :expires_in => 1.hour) do #TODO we should delete cache when permissions are updated
+              get_permissions(action, user_or_role)
+            end
           end
           
           # Permits to retrieve permissions to do an action (list/view/add/edit/delete) about a given object or model
@@ -228,17 +236,16 @@ module HasPermissions
           end
           
           def self.get_roles(object)
-            roles = []
             if object.instance_of?(User)
-              roles = object.roles
+              object.roles
             elsif object.instance_of?(Role)
-              roles << object
+              [object]
             elsif object.instance_of?(Fixnum)
-              roles << Role.find(object)
+              [Role.find(object)]
             elsif object.instance_of?(String)
-              roles << Role.find_by_name(object)
-            elsif object.instance_of?(Array)
-              roles = object
+              [Role.find_by_name(object)]
+            elsif object.instance_of?(Array) #TODO check if array contains only roles
+              object
             else
               raise ArgumentError, "[has_permissions] Not a valid argument passed in 'get_roles'. #{object}:#{object.class}"
             end

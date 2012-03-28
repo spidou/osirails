@@ -12,7 +12,7 @@ class Test::Unit::TestCase
   fixtures :all
   
   def create_default_supply(attributes = {})
-    supply_type = SupplyType.first
+    supply_type = SupplyType.find_by_id(attributes.delete(:supply_type_id)) || SupplyType.first
     create_supply_for(supply_type, attributes)
   end
   

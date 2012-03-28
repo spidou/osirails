@@ -3,12 +3,17 @@ class ConfigurationManager
   def self.add_method(method)
     class_eval %Q{
     def self.#{method}
-      Configuration.find_by_name('#{method}', :order => "created_at DESC").value rescue raise "The 'configurations' table seems to be empty! Please restart the server. If you're running rake tasks, you should launch them separatly. You should prefer 'rake db:schema:load && rake osirails:db:populate' than 'rake db:schema:load osirails:db:populate'"
+      Rails.cache.fetch("CM:#{method}", :expires_on => 1.day) do
+        Configuration.find_by_name('#{method}', :order => "created_at DESC").value rescue raise "The 'configurations' table seems to be empty! Please restart the server. If you're running rake tasks, you should launch them separatly. You should prefer 'rake db:schema:load && rake osirails:db:populate' than 'rake db:schema:load osirails:db:populate'"
+      end
     end
     def self.#{method}_desc
-      Configuration.find_by_name('#{method}', :order => "created_at DESC").description
+      Rails.cache.fetch("CM:#{method}_desc", :expires_on => 1.day) do
+        Configuration.find_by_name('#{method}', :order => "created_at DESC").description
+      end
     end
     def self.#{method}=(value)
+      Rails.cache.delete("CM:#{method}")
       option = Configuration.find_by_name('#{method}', :order => "created_at DESC")
       Configuration.create(:name => '#{method}', :value => value, :description => option.description)
     end

@@ -6,7 +6,7 @@ module UsersQuery
   
   def query_td_content_for_last_connection_in_user
     if @query_object.last_connection
-      @query_object.last_connection.humanize
+      l(@query_object.last_connection, :format => :long)
     else
       I18n.t('view.user.never_connected')
     end

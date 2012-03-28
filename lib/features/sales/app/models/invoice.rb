@@ -1281,19 +1281,19 @@ class Invoice < ActiveRecord::Base
   end
   
   class << self
-    def awaiting_sending_invoices_counter # @override (active_counter)
+    def get_awaiting_sending_invoices_counter # @override (active_counter)
       Invoice.awaiting_sending.count
     end
     
-    def awaiting_sending_total_counter # @override (active_counter)
+    def get_awaiting_sending_total_counter # @override (active_counter)
       Invoice.awaiting_sending.collect(&:total_with_taxes).compact.sum
     end
     
-    def awaiting_payment_invoices_counter # @override (active_counter)
+    def get_awaiting_payment_invoices_counter # @override (active_counter)
       Invoice.awaiting_payment.count
     end
     
-    def awaiting_payment_total_counter # @override (active_counter)
+    def get_awaiting_payment_total_counter # @override (active_counter)
       Invoice.awaiting_payment.collect(&:total_with_taxes).compact.sum
     end
   end

@@ -552,52 +552,52 @@ class Order < ActiveRecord::Base
   end
   
   class << self
-    def in_progress_orders_counter # @override (active_counter)
+    def get_in_progress_orders_counter # @override (active_counter)
       Order.pending.count
     end
     
-    def commercial_orders_counter # @override (active_counter)
+    def get_commercial_orders_counter # @override (active_counter)
       Order.pending.in_commercial_step.count
     end
     
-    def production_orders_counter # @override (active_counter)
+    def get_production_orders_counter # @override (active_counter)
       Order.pending.in_production_step.count
     end
     
-    def delivering_orders_counter # @override (active_counter)
+    def get_delivering_orders_counter # @override (active_counter)
       Order.pending.in_delivering_step.count
     end
     
-    def pre_invoicing_orders_counter # @override (active_counter)
+    def get_pre_invoicing_orders_counter # @override (active_counter)
       Order.search_with('status' => {:value => 'pending', :action => '='}, 'invoicing_step.status' => {:value => 'pending,in_progress', :action => '='}, 'billable_amount' => {:value => '0', :action => '>'}).count
     end
     
-    def invoicing_orders_counter # @override (active_counter)
+    def get_invoicing_orders_counter # @override (active_counter)
       Order.search_with('status' => {:value => 'pending', :action => '='}, 'invoicing_step.status' => {:value => 'pending,in_progress', :action => '='}, 'billed_amount' => {:value => '0', :action => '>'}, 'unpaid_amount' => {:value => '0', :action => '>'}).count
     end
     
-    def in_progress_total_counter # @override (active_counter)
+    def get_in_progress_total_counter # @override (active_counter)
       Order.pending.collect(&:signed_amount).compact.sum
     end
     
-    def commercial_total_counter # @override (active_counter)
+    def get_commercial_total_counter # @override (active_counter)
       #TODO get also orders with unsigned orders (instead of getting only signed ones)
       Order.pending.in_commercial_step.collect(&:signed_amount).compact.sum
     end
     
-    def production_total_counter # @override (active_counter)
+    def get_production_total_counter # @override (active_counter)
       Order.pending.in_production_step.collect(&:signed_amount).compact.sum
     end
     
-    def delivering_total_counter # @override (active_counter)
+    def get_delivering_total_counter # @override (active_counter)
       Order.pending.in_delivering_step.collect(&:signed_amount).compact.sum
     end
     
-    def pre_invoicing_total_counter # @override (active_counter)
+    def get_pre_invoicing_total_counter # @override (active_counter)
       Order.search_with('status' => {:value => 'pending', :action => '='}, 'invoicing_step.status' => {:value => 'pending,in_progress', :action => '='}, 'billable_amount' => {:value => '0', :action => '>'}).collect(&:billable_amount).compact.sum
     end
     
-    def invoicing_total_counter # @override (active_counter)
+    def get_invoicing_total_counter # @override (active_counter)
       Order.search_with('status' => {:value => 'pending', :action => '='}, 'invoicing_step.status' => {:value => 'pending,in_progress', :action => '='}, 'billed_amount' => {:value => '0', :action => '>'}, 'unpaid_amount' => {:value => '0', :action => '>'}).collect(&:unpaid_amount).compact.sum
     end
   end

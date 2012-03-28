@@ -13,6 +13,28 @@ config.action_controller.consider_all_requests_local = true
 config.action_view.debug_rjs                         = true
 config.action_controller.perform_caching             = false
 
+# Cache store
+#config.cache_store = :memory_store
+#config.cache_store = :file_store, '/path/to/cache'
+#config.cache_store = :mem_cache_store
+config.cache_store = :mem_cache_store, { :namespace => 'development' }
+#config.cache_store = :mem_cache_store, '123.456.78.9:1001', '123.456.78.9:1002'
+
+# Bullet configuration (uncomment block to activate Bullet)
+#config.after_initialize do
+#  Bullet.enable = true
+#  Bullet.alert = false
+#  Bullet.bullet_logger = true
+#  Bullet.console = true
+#  Bullet.growl = false
+#  #Bullet.xmpp = { :account => 'bullets_account@jabber.org',
+#  #                :password => 'bullets_password_for_jabber',
+#  #                :receiver => 'your_account@jabber.org',
+#  #                :show_online_status => true }
+#  Bullet.rails_logger = false
+#  Bullet.disable_browser_cache = true
+#end
+
 # Don't care if the mailer can't send
 #config.action_mailer.raise_delivery_errors = false
 

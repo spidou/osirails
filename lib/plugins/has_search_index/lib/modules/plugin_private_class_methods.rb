@@ -299,6 +299,8 @@ private
             end
         end
         object = collection.uniq
+      elsif object.nil?
+        nil
       else
         object = object.send(nested_ressource)
       end

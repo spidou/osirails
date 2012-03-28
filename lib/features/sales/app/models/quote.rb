@@ -553,11 +553,11 @@ class Quote < ActiveRecord::Base
   end
   
   class << self
-    def pending_quotes_counter # @override (active_counter)
+    def get_pending_quotes_counter # @override (active_counter)
       Quote.pending.count
     end
     
-    def pending_total_counter # @override (active_counter)
+    def get_pending_total_counter # @override (active_counter)
       Quote.pending.collect(&:total_with_taxes).compact.sum
     end
   end

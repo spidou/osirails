@@ -74,11 +74,11 @@ module ActiveCounter
               end
             end
             
-            def self.#{counter_method_name}; end
+            def self.get_#{counter_method_name}; end
             
             def self.#{update_counter_method_name}
               counter = Counter.find_by_model_and_key("#{model}", "#{counter_method_name}") || Counter.create!(:model => "#{model}", :key => "#{counter_method_name}", :cast_type => "#{type.to_s}")
-              if value = #{counter_method_name}
+              if value = get_#{counter_method_name}
                 counter.update_attribute(:value, value)
               end
             end

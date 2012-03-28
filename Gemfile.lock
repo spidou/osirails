@@ -20,6 +20,8 @@ GEM
     activeresource (2.2.3)
       activesupport (= 2.2.3)
     activesupport (2.2.3)
+    bullet (2.2.1)
+      uniform_notifier (~> 1.0.0)
     capistrano (2.5.19)
       highline
       net-scp (>= 1.0.0)
@@ -38,6 +40,7 @@ GEM
     htmlentities (4.2.1)
     json (1.4.6)
     linecache (0.43)
+    memcache-client (1.8.5)
     method_source (0.6.0)
       ruby_parser (>= 2.0.5)
     mongrel (1.1.5)
@@ -80,16 +83,19 @@ GEM
     shoulda (2.10.2)
     slop (1.9.1)
     sqlite3-ruby (1.3.2)
+    uniform_notifier (1.0.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   RedCloth (= 4.2.3)
+  bullet
   capistrano
   capistrano-ext
   htmlentities (= 4.2.1)
   json (= 1.4.6)
+  memcache-client
   mongrel (= 1.1.5)
   mysql
   orderedhash
