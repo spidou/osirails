@@ -2,6 +2,9 @@ source 'http://rubygems.org'
 
 gem 'rails', '2.2.3'
 
+# http://stackoverflow.com/questions/6085610/ruby-on-rails-and-rake-problems-uninitialized-constant-rakedsl
+gem 'rake', '0.8.7'
+
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
