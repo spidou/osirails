@@ -32,7 +32,7 @@ gem 'memcache-client'
 group :development do
   gem 'pry'
   gem 'rails-footnotes', '< 3.7.0'
-  gem 'bullet'
+  #gem 'bullet' # remove bullet because of uniform_notifier which has a failed .gemspec file
 end
 
 group :development, :test do
