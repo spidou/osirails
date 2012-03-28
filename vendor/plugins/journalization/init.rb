@@ -1,6 +1,7 @@
 require 'actor'
 require 'subject'
 require 'actor_setting'
+require 'string'
 
 %w{ models helpers }.each do |dir|
   path = File.join(File.dirname(__FILE__), 'app', dir)

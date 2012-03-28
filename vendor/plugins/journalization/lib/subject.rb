@@ -182,7 +182,11 @@ module Journalization
                       new_value = current_value.to_s
                       old_value = last_journalized_value_for(property).to_s
                       
-                      will_journalize[property] = [old_value, new_value] if new_value != old_value
+                      if new_value.numeric? && old_value.numeric?
+                        will_journalize[property] = [old_value, new_value] if new_value.to_i != old_value.to_i
+                      else
+                        will_journalize[property] = [old_value, new_value] if new_value != old_value
+                      end
                     else
                       attachment_infos = {}
                       {:name => "#{object_name}_file_name", :size => "#{object_name}_file_size"}.each_pair do |key, value|
