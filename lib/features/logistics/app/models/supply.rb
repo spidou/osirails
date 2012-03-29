@@ -248,7 +248,7 @@ class Supply < ActiveRecord::Base # @abstract
     return if new_record?
     
     if date.nil?
-      Rails.cache.fetch("Supply:#{self.id}:last_stock_flow", :expires_in => 1.day) do
+      @last_stock_flow ||= Rails.cache.fetch("Supply:#{self.id}:last_stock_flow", :expires_in => 1.day) do
         date = Time.zone.now
         StockFlow.last(:conditions => [ "supply_id = ? AND created_at < ?", self.id, date.to_s(:db) ]) # don't use the relationship method 'stock_flows' to avoid getting new records
       end
@@ -260,7 +260,7 @@ class Supply < ActiveRecord::Base # @abstract
   # return the last inventory at the given date
   def last_inventory(date = nil)
     if date.nil?
-      Rails.cache.fetch("Inventory:last", :expires_in => 1.day) do
+      @last_inventory ||= Rails.cache.fetch("#{self.class.name}:Inventory:last", :expires_in => 1.day) do
         date = Time.zone.now
         Inventory.last(:conditions => [ "supply_class = ? AND created_at < ?", self.class.name, date.to_s(:db) ])
       end
@@ -282,16 +282,7 @@ class Supply < ActiveRecord::Base # @abstract
 
   # return the stock quantity at the given date
   def stock_quantity(date = nil)
-    return if new_record?
-    
-    if date.nil?
-      Rails.cache.fetch("Supply:#{self.id}:stock_quantity", :expires_in => 1.day) do
-        date = Time.zone.now
-        last_stock_flow(date) ? last_stock_flow(date).current_stock_quantity : 0
-      end
-    else
-      last_stock_flow(date) ? last_stock_flow(date).current_stock_quantity : 0
-    end
+    last_stock_flow(date) ? last_stock_flow(date).current_stock_quantity : 0
   end
   
   # return the stock quantity stored at the last inventory from the given date
@@ -300,16 +291,7 @@ class Supply < ActiveRecord::Base # @abstract
   end
 
   def stock_value(date = nil)
-    return if new_record?
-    
-    if date.nil?
-      Rails.cache.fetch("Supply:#{self.id}:stock_value", :expires_in => 1.day) do
-        date = Time.zone.now
-        last_stock_flow(date) ? last_stock_flow(date).current_stock_value : 0.0
-      end
-    else
-      last_stock_flow(date) ? last_stock_flow(date).current_stock_value : 0.0
-    end
+    last_stock_flow(date) ? last_stock_flow(date).current_stock_value : 0.0
   end
   
   def stock_measure(date = nil)
@@ -331,7 +313,7 @@ class Supply < ActiveRecord::Base # @abstract
   end
   
   def supplier_supplies_unit_prices
-    Rails.cache.fetch("Supply:#{self.id}:supplier_supplies_unit_prices", :expires_in => 1.day, :force => self.id.nil?) do
+    @supplier_supplies_unit_prices ||= Rails.cache.fetch("Supply:#{self.id}:supplier_supplies_unit_prices", :expires_in => 1.day, :force => self.id.nil?) do
       supplier_supplies.reject(&:new_record?).collect(&:unit_price)
     end
   end
