@@ -5,7 +5,6 @@ conf_filters: &filters
     - supply_category: supply_type.supply_sub_category.supply_category.id
     - supply_sub_category: supply_type.supply_sub_category.name # don't use 'id' because it's inconsistent (sub_category names are not unique, so we can't choose exactly a sub_category with only its name)
     - supply_type: supply_type.name
-    - humanized_supply_sizes
     - measure
     - unit_mass
     - stock_quantity

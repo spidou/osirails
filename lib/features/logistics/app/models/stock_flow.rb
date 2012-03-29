@@ -25,6 +25,8 @@ class StockFlow < ActiveRecord::Base
   before_update   :can_be_edited? #OPTIMIZE can't we remove that callback? this seems to be a repetition of validates_persistence_of (be careful because validation can be skipped, unlike before_update)
   before_destroy  :can_be_destroyed?
   
+  after_save :clean_caches
+  
   # For will_paginate
   STOCK_FLOWS_PER_PAGE = 15
   
@@ -68,4 +70,12 @@ class StockFlow < ActiveRecord::Base
   def current_stock_quantity
     @current_stock_quantity ||= previous_stock_quantity.send(calculation_method, quantity)
   end
+  
+  private
+    def clean_caches
+      Rails.cache.delete("Supply:#{supply.id}:last_stock_flow")
+      Rails.cache.delete("Supply:#{supply.id}:stock_quantity")
+      Rails.cache.delete("Supply:#{supply.id}:stock_value")
+      Rails.cache.delete("Supply:stock_value")
+    end
 end

@@ -228,8 +228,6 @@ class ApplicationController < ActionController::Base
     end # authenticate
     
     def select_theme
-      #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
-      #return $CURRENT_THEME_PATH unless $CURRENT_THEME_PATH.nil? # this works, but we need to observe a changement in the configuration manager to flush the global variable when the "admin_society_identity_configuration_choosen_theme" variable has changed!
       choosen_theme = ConfigurationManager.admin_society_identity_configuration_choosen_theme
       choosen_theme_site_path = "/themes/#{choosen_theme}"
       choosen_theme_real_path = "public#{choosen_theme_site_path}"
@@ -242,13 +240,11 @@ class ApplicationController < ActionController::Base
     end
     
     def select_time_zone
-      #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
       Time.zone = ConfigurationManager.admin_society_identity_configuration_time_zone
     end
     
     def select_language
-      #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
-      I18n.default_locale = ConfigurationManager.admin_society_identity_configuration_choosen_language
+      I18n.locale = ConfigurationManager.admin_society_identity_configuration_choosen_language.to_sym
     end
     
     # this method permits to load the 'overrides.rb' file for each feature before each loaded page in the browser.

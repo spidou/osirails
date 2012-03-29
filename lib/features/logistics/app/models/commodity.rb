@@ -10,10 +10,8 @@ class Commodity < Supply
              :subresources      => [:supplier_supplies],
              :identifier_method => Proc.new{ |s| "#{s.reference} - #{s.designation}" }
   
-  has_search_index  :only_attributes        => [ :reference, :measure, :unit_mass ],
-                    :additional_attributes  => { :humanized_supply_sizes            => :string,
-                                                 :designation                       => :string,
-                                                 :average_unit_price                => :float,
+  has_search_index  :only_attributes        => [ :reference, :designation, :measure, :unit_mass ],
+                    :additional_attributes  => { :average_unit_price                => :float,
                                                  :average_measure_price             => :float,
                                                  :stock_quantity                    => :integer,
                                                  :stock_quantity_at_last_inventory  => :integer },

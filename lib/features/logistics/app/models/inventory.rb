@@ -12,7 +12,7 @@ class Inventory < ActiveRecord::Base
   validate :validates_stock_flows_uniqueness_of_supply
   validate :validates_stock_flows_supply_class
   
-  after_save :save_stock_flows
+  after_save :save_stock_flows, :clean_caches
   
   INVENTORIES_PER_PAGE = 15
   
@@ -55,4 +55,9 @@ class Inventory < ActiveRecord::Base
       s.save(false)
     end
   end
+  
+  private
+    def clean_caches
+      Rails.cache.delete("Inventory:last")
+    end
 end

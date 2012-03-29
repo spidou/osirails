@@ -10,6 +10,7 @@
 # A datetime "disabled_at"
 # A datetime "created_at"
 # A datetime "updated_at"
+# A string   "designation"
 
 class Supply < ActiveRecord::Base # @abstract
   has_many :supplier_supplies
@@ -43,8 +44,9 @@ class Supply < ActiveRecord::Base # @abstract
   
   before_validation_on_create :update_reference
   before_validation :find_or_build_supply_type
+  before_validation :update_designation_cache
   
-  after_save :save_supplier_supplies, :save_supplies_supply_sizes
+  after_save :save_supplier_supplies, :save_supplies_supply_sizes, :clean_caches
   
   SUPPLIES_PER_PAGE = 15
   
@@ -116,46 +118,19 @@ class Supply < ActiveRecord::Base # @abstract
   end
   
   # This method returns the entire stock values
-  def self.stock_value(date = Time.zone.now)
-    #OPTIMIZE use a sql statement
-    self.was_enabled_at(date).collect{ |s| s.stock_value(date) }.sum
+  def self.stock_value(date = nil) #OPTIMIZE use a sql statement
+    if date.nil?
+      Rails.cache.fetch("Supply:stock_value", :expires_in => 1.day) do
+        date = Time.zone.now
+        self.was_enabled_at(date).collect{ |s| s.stock_value(date) }.sum
+      end
+    else
+      self.was_enabled_at(date).collect{ |s| s.stock_value(date) }.sum
+    end
   end
   
   def enabled?
     enabled
-  end
-  
-  #TODO test this method
-  def sorted_supplies_supply_sizes(force_reload = false)
-    supplies_supply_sizes(force_reload).sort_by{ |sss| sss.supply_size && sss.supply_size.position || 0 }
-  end
-  
-  def humanized_supply_sizes(force_reload = false)
-    @humanized_supply_sizes = ""
-    
-    sorted_supplies_supply_sizes(force_reload).each_with_index do |item, index|
-      next_item = supplies_supply_sizes[index.next]
-      unit_measure = ( next_item && next_item.unit_measure_id == item.unit_measure_id ) ? "" : item.unit_measure && item.unit_measure.symbol
-      
-      @humanized_supply_sizes << item.supply_size.short_name if item.supply_size.display_short_name?
-      @humanized_supply_sizes << item.value.to_s
-      if next_item
-        if next_item.unit_measure_id == item.unit_measure_id
-          @humanized_supply_sizes << " x "
-        else
-          @humanized_supply_sizes << " #{unit_measure}, "
-        end
-      else
-        @humanized_supply_sizes << " #{unit_measure}"
-      end
-    end
-    
-    return @humanized_supply_sizes
-  end
-  
-  def designation(force_reload = false)
-    return unless supply_category and supply_sub_category and supply_type
-    "#{supply_category.name} #{supply_sub_category.name} #{supply_type.name} #{humanized_supply_sizes(force_reload)}".strip
   end
   
   def threshold
@@ -238,7 +213,9 @@ class Supply < ActiveRecord::Base # @abstract
   
   # return if the supply has already been used by a stock flow
   def has_been_used?
-    StockFlow.find_by_supply_id(self.id) ? true : false
+    Rails.cache.fetch("Supply:#{self.id}:has_been_used?", :expires_in => 1.month, :force => self.id.nil?) do # given that a stock_flow may not be deleted, this cache should never expire
+      StockFlow.find_by_supply_id(self.id) ? true : false
+    end
   end
   
   def disable
@@ -267,13 +244,29 @@ class Supply < ActiveRecord::Base # @abstract
   end
   
   # return the last stock_flow at the given date
-  def last_stock_flow(date = Time.zone.now)
-    StockFlow.last(:conditions => [ "supply_id = ? AND created_at < ?", self.id, date.to_s(:db) ]) # don't use the relationship method 'stock_flows' to avoid getting new records
+  def last_stock_flow(date = nil)
+    return if new_record?
+    
+    if date.nil?
+      Rails.cache.fetch("Supply:#{self.id}:last_stock_flow", :expires_in => 1.day) do
+        date = Time.zone.now
+        StockFlow.last(:conditions => [ "supply_id = ? AND created_at < ?", self.id, date.to_s(:db) ]) # don't use the relationship method 'stock_flows' to avoid getting new records
+      end
+    else
+      StockFlow.last(:conditions => [ "supply_id = ? AND created_at < ?", self.id, date.to_s(:db) ]) # don't use the relationship method 'stock_flows' to avoid getting new records
+    end
   end
   
   # return the last inventory at the given date
-  def last_inventory(date = Time.zone.now)
-    Inventory.last(:conditions => [ "supply_class = ? AND created_at < ?", self.class.name, date.to_s(:db) ])
+  def last_inventory(date = nil)
+    if date.nil?
+      Rails.cache.fetch("Inventory:last", :expires_in => 1.day) do
+        date = Time.zone.now
+        Inventory.last(:conditions => [ "supply_class = ? AND created_at < ?", self.class.name, date.to_s(:db) ])
+      end
+    else
+      Inventory.last(:conditions => [ "supply_class = ? AND created_at < ?", self.class.name, date.to_s(:db) ])
+    end
   end
   
   # return the last stock_flow providing by an inventory, at the given date
@@ -288,8 +281,17 @@ class Supply < ActiveRecord::Base # @abstract
   end
 
   # return the stock quantity at the given date
-  def stock_quantity(date = Time.zone.now)
-    last_stock_flow(date) ? last_stock_flow(date).current_stock_quantity : 0
+  def stock_quantity(date = nil)
+    return if new_record?
+    
+    if date.nil?
+      Rails.cache.fetch("Supply:#{self.id}:stock_quantity", :expires_in => 1.day) do
+        date = Time.zone.now
+        last_stock_flow(date) ? last_stock_flow(date).current_stock_quantity : 0
+      end
+    else
+      last_stock_flow(date) ? last_stock_flow(date).current_stock_quantity : 0
+    end
   end
   
   # return the stock quantity stored at the last inventory from the given date
@@ -297,30 +299,41 @@ class Supply < ActiveRecord::Base # @abstract
     last_inventory_stock_flow(date) ? last_inventory_stock_flow(date).current_stock_quantity : 0
   end
 
-  def stock_value(date = Time.zone.now)
-    last_stock_flow(date) ? last_stock_flow(date).current_stock_value : 0.0
+  def stock_value(date = nil)
+    return if new_record?
+    
+    if date.nil?
+      Rails.cache.fetch("Supply:#{self.id}:stock_value", :expires_in => 1.day) do
+        date = Time.zone.now
+        last_stock_flow(date) ? last_stock_flow(date).current_stock_value : 0.0
+      end
+    else
+      last_stock_flow(date) ? last_stock_flow(date).current_stock_value : 0.0
+    end
   end
   
-  def stock_measure(date = Time.zone.now)
+  def stock_measure(date = nil)
     measure ? stock_quantity(date) * measure : 0.0
   end
   
-  def stock_mass(date = Time.zone.now)
+  def stock_mass(date = nil)
     unit_mass ? stock_quantity(date) * unit_mass : 0.0
   end
 
   # returns the average unit value of the stock
-  def average_unit_stock_value(date = Time.zone.now)
+  def average_unit_stock_value(date = nil)
     stock_quantity(date).zero? ? 0.0 : stock_value(date) / stock_quantity(date)
   end
   
-  def average_measure_stock_value(date = Time.zone.now)
+  def average_measure_stock_value(date = nil)
     return 0.0 unless measure
     stock_quantity(date).zero? ? 0.0 : average_unit_stock_value(date) / measure
   end
   
   def supplier_supplies_unit_prices
-    supplier_supplies.reject(&:new_record?).collect(&:unit_price)
+    Rails.cache.fetch("Supply:#{self.id}:supplier_supplies_unit_prices", :expires_in => 1.day, :force => self.id.nil?) do
+      supplier_supplies.reject(&:new_record?).collect(&:unit_price)
+    end
   end
   
   def average_unit_price
@@ -402,6 +415,15 @@ class Supply < ActiveRecord::Base # @abstract
     stock_quantity_at_last_inventory < threshold
   end
   
+  def designation_value
+    return unless supply_category and supply_sub_category and supply_type
+    "#{supply_category.name} #{supply_sub_category.name} #{supply_type.name} #{humanized_supply_sizes}".strip.capitalize
+  end
+  
+  def update_designation! # called from SupplyCategory (triggered after_update)
+    update_attribute(:designation, designation_value)
+  end
+  
   private
     #TODO test this method
     def update_supply_type_counter(increment = true)
@@ -410,10 +432,46 @@ class Supply < ActiveRecord::Base # @abstract
     end
     
     #TODO test this method
+    def sorted_supplies_supply_sizes
+      supplies_supply_sizes.sort_by{ |sss| sss.supply_size && sss.supply_size.position || 0 }
+    end
+    
+    def humanized_supply_sizes
+      @humanized_supply_sizes = ""
+      
+      sorted_supplies_supply_sizes.each_with_index do |item, index|
+        next_item = supplies_supply_sizes[index.next]
+        unit_measure = ( next_item && next_item.unit_measure_id == item.unit_measure_id ) ? "" : item.unit_measure && item.unit_measure.symbol
+        
+        @humanized_supply_sizes << item.supply_size.short_name if item.supply_size.display_short_name?
+        @humanized_supply_sizes << item.value.to_s
+        if next_item
+          if next_item.unit_measure_id == item.unit_measure_id
+            @humanized_supply_sizes << " x "
+          else
+            @humanized_supply_sizes << " #{unit_measure}, "
+          end
+        else
+          @humanized_supply_sizes << " #{unit_measure}"
+        end
+      end
+      
+      @humanized_supply_sizes
+    end
+    
+    #TODO test this method
     def find_or_build_supply_type
       return if supply_type_name.blank? or supply_sub_category_id.blank?
       supply_type = supply_type_class.find_by_name_and_supply_category_id(supply_type_name, supply_sub_category_id) ||
                     supply_type_class.create(:name => supply_type_name, :supply_category_id => supply_sub_category_id)
       self.supply_type_id = supply_type.id
+    end
+    
+    def update_designation_cache
+      self.designation = designation_value
+    end
+    
+    def clean_caches
+      Rails.cache.delete("Supply:#{self.id}:supplier_supplies_unit_prices")
     end
 end

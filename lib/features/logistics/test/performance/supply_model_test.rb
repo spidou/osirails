@@ -76,7 +76,7 @@ class SupplyModelTest < ActionController::PerformanceTest
     def fetching_records(records)
       records.each do |r|
         r.id
-        r.designation(true)
+        r.designation
         r.unit_price
         r.unit_measure && r.unit_measure.symbol
         r.measure_price

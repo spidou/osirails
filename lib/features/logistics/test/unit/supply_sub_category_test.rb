@@ -15,7 +15,7 @@ module SupplySubCategoryTest
         
         #TODO
         #validates_persistence_of :supply_category_id
-        #validates_persistence_of :name, :unit_measure_id, :if => :has_children?
+        #validates_persistence_of :unit_measure_id, :if => :has_children?
         
         should "NOT generate a reference before validation without supply_category_id" do
           @supply_sub_category.valid?

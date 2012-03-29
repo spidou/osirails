@@ -15,6 +15,8 @@ class SupplyCategory < ActiveRecord::Base
   
   before_destroy :can_be_destroyed?
   
+  after_update :clean_caches
+  
   has_search_index :only_attributes => [ :id, :reference, :name ]
    
   def enabled?
@@ -101,4 +103,15 @@ class SupplyCategory < ActiveRecord::Base
   def stock_value(date = Time.zone.now)
     children.select{ |e| e.was_enabled_at(date) }.collect{ |e| e.stock_value(date) }.sum
   end
+  
+  private
+    def clean_caches
+      if children.any?
+        if children.first.is_a?(Supply)
+          children.each(&:update_designation!)
+        else
+          children.each(&:clean_caches)
+        end
+      end
+    end
 end
