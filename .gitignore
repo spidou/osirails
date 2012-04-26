@@ -11,6 +11,7 @@ db/development_structure.sql
 log/*.log
 nbproject
 tmp/**/*
+.bundle
 
 lib/features/*/import/*.csv
 lib/features/*/import/*.ods
