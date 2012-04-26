@@ -15,16 +15,24 @@ class OrderType < ActiveRecord::Base
   has_search_index :only_attributes => [ :id, :title ],
                    :identifier      => :title
   
-  ## Create all sales Process after create
-  def after_create
-    Step.find(:all, :order => 'parent_id, position').each do |step|
-      sales_processes.ordered.create(:step_id => step.id, :activated => true, :depending_previous => false, :required => true)
-    end
-  end
+  after_create :create_sales_processes
+  after_save :clean_caches
   
   ## Return activated step for order_type, and select only steps which are constantizable (so which are actually in LOAD_PATH)
   def activated_steps
     sales_processes.ordered.select{ |sp| sp.activated? }.collect{ |sp| sp.step }.select{ |step| step.name.camelize.constantize rescue false }
   end
   
+  private
+    def create_sales_processes
+      Step.find(:all, :order => 'parent_id, position').each do |step|
+        sales_processes.ordered.create(:step_id => step.id, :activated => true, :depending_previous => false, :required => true)
+      end
+    end
+    
+    def clean_caches
+      orders.each do |o|
+        o.send(:clean_caches)
+      end
+    end
 end

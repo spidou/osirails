@@ -363,6 +363,7 @@ class Invoice < ActiveRecord::Base
   after_save :save_due_dates
   after_save :save_due_date_to_pay
   after_save :save_delivery_note_invoices
+  after_save :clean_caches
   
   after_save   :update_invoice_step_status
   after_update :update_payment_step_status
@@ -1336,5 +1337,11 @@ class Invoice < ActiveRecord::Base
       end
       
       return invoice_item
+    end
+    
+    def clean_caches
+      if order
+        order.send(:clean_caches)
+      end
     end
 end

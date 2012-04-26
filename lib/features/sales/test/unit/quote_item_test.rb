@@ -5,8 +5,8 @@ class QuoteItemTest < ActiveSupport::TestCase
   
   should_validate_presence_of :name
   
-  should_journalize :attributes        => [:name, :description, :width, :length, :height, :unit_price, :prizegiving,
-                                           :quantity, :vat, :position, :pro_rata_billing]#,
+#  should_journalize :attributes        => [:name, :description, :width, :length, :height, :unit_price, :prizegiving,
+#                                           :quantity, :vat, :position, :pro_rata_billing]#,
                     #:identifier_method =>  Proc.new{ |i| "#{i.designation} (x #{i.quantity})" }
   
   #TODO QuoteItemTest need to be reviewed since we have added support of service_delivery on quotes (some methods are not tested)

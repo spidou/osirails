@@ -82,6 +82,8 @@ class DeliveryNote < ActiveRecord::Base
   before_destroy :can_be_destroyed?
   
   after_save :save_delivery_note_items
+  after_save :clean_caches
+  
   after_update :update_delivery_step_status
   
   has_search_index :only_attributes       => [ :published_on, :reference, :signed_on, :status ],
@@ -350,6 +352,12 @@ class DeliveryNote < ActiveRecord::Base
     def update_delivery_step_status
       if signed? and order.all_is_delivered?
         order.delivering_step.delivery_step.terminated!
+      end
+    end
+    
+    def clean_caches
+      if order
+        order.send(:clean_caches)
       end
     end
 end

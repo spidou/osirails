@@ -26,6 +26,7 @@ class ManufacturingStep < ActiveRecord::Base
   
   after_save :save_manufacturing_progresses
   after_save :update_status
+  after_save :clean_caches
   
   active_counter :model => 'Order', :callbacks => { :production_orders  => :after_save,
                                                     :production_total   => :after_save }
@@ -136,5 +137,11 @@ class ManufacturingStep < ActiveRecord::Base
     #TODO test this method
     def update_status
       self.terminated! if signed_quote and all_products_available_to_deliver?
+    end
+    
+    def clean_caches
+      if order
+        order.send(:clean_caches)
+      end
     end
 end

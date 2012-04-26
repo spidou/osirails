@@ -19,7 +19,7 @@ class OrderTest < ActiveSupport::TestCase
   # invoices
   should_have_many :invoices
   
-  should_have_many :ship_to_addresses, :end_products, :order_logs, :mockups, :graphic_documents
+  should_have_many :ship_to_addresses, :end_products, :mockups, :graphic_documents
   
   should_validate_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
   should_validate_presence_of :customer, :commercial, :approaching, :order_type, :order_contact, :with_foreign_key => :default

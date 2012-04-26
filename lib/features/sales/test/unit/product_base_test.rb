@@ -44,8 +44,8 @@ module ProductBaseTest
           end
         end
         
-        [nil, 0, 0.0].each do |vat|
-          should "have a 'total_with_taxes' value equal to 'total' when vat is equal to '#{vat}'" do
+        [0, 0.0].each do |vat|
+          should "have a 'total_with_taxes' value equal to 'total' when vat is equal to #{vat.inspect}" do
             @product.vat = vat
             assert_equal @product.total, @product.total_with_taxes
           end

@@ -30,9 +30,10 @@ class QuoteItem < ActiveRecord::Base
   
   validates_associated :quotable
   
-  journalize :attributes        => [:name, :description, :width, :length, :height, :unit_price, :prizegiving,
-                                    :quantity, :vat, :position, :pro_rata_billing],
-             :identifier_method =>  Proc.new{ |i| "#{i.designation_with_dimensions} (x #{i.quantity})" }
+  #journalize :attributes        => [:name, :description, :width, :length, :height, :unit_price, :prizegiving,
+  #                                  :quantity, :vat, :position, :pro_rata_billing],
+  #           :identifier_method =>  Proc.new{ |i| "#{i.designation_with_dimensions} (x #{i.quantity})" }
+  journalize :identifier_method =>  Proc.new{ |i| "#{i.designation_with_dimensions} (x #{i.quantity})" }
   
   # store a polymorphic referential object (product_reference for product_item, and service_delivery for service_item)
   attr_accessor :reference_object_type, :reference_object_id

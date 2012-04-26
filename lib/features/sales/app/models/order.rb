@@ -125,8 +125,9 @@ class Order < ActiveRecord::Base
   before_validation_on_create :update_reference
   before_validation_on_update :update_status_dates
   
-  after_save    :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
-  after_create  :create_steps
+  after_create :create_steps
+  after_save :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
+  after_save :clean_caches
   
   active_counter :counters  => { :in_progress_orders    => :integer, :in_progress_total   => :float,
                                  :commercial_orders     => :integer, :commercial_total    => :float,
@@ -193,7 +194,9 @@ class Order < ActiveRecord::Base
   end
   
   def ready_to_deliver_pieces
-    ready_to_deliver_end_products_and_quantities.collect{ |h| h[:quantity] }.sum
+    Rails.cache.fetch("Order:#{id}:ready_to_deliver_pieces", :expires_in => 1.day, :force => new_record?) do
+      ready_to_deliver_end_products_and_quantities.collect{ |h| h[:quantity] }.sum
+    end
   end
   
   # return all delivery_notes with an active invoice
@@ -243,79 +246,79 @@ class Order < ActiveRecord::Base
   end
   
   def delivered_pieces
-    signed_delivery_notes.collect(&:number_of_pieces).sum 
+    @delivered_pieces ||= Rails.cache.fetch("Order:#{id}:delivered_pieces", :expires_in => 1.day, :force => new_record?) do
+      signed_delivery_notes.collect(&:number_of_pieces).sum 
+    end
   end
   
-  def deposit_invoice(force_reload = false)
-    @deposit_invoice = nil if force_reload
-    @deposit_invoice ||= invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::DEPOSITE_INVOICE ])
+  def deposit_invoice
+    @deposit_invoice ||= Rails.cache.fetch("Order:#{id}:deposit_invoice", :expires_in => 1.day, :force => new_record?) do
+      invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::DEPOSITE_INVOICE ])
+    end
   end
   
-  def status_invoices(force_reload = false)
-    @status_invoices = nil if force_reload
-    @status_invoices ||= invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::STATUS_INVOICE ])
+  def status_invoices
+    @status_invoices ||= Rails.cache.fetch("Order:#{id}:status_invoices", :expires_in => 1.day, :force => new_record?) do
+      invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::STATUS_INVOICE ])
+    end
   end
   
-  def balance_invoice(force_reload = false)
-    @balance_invoice = nil if force_reload
-    @balance_invoice ||= invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::BALANCE_INVOICE ])
+  def balance_invoice
+    @balance_invoice ||= Rails.cache.fetch("Order:#{id}:balance_invoices", :expires_in => 1.day, :force => new_record?) do
+      invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::BALANCE_INVOICE ])
+    end
   end
   
-  def asset_invoices(force_reload = false)
-    @asset_invoices = nil if force_reload
-    @asset_invoices ||= invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
+  def asset_invoices
+    @asset_invoices ||= Rails.cache.fetch("Order:#{id}:asset_invoices", :expires_in => 1.day, :force => new_record?) do
+      invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
+    end
   end
   
   def signed_amount
-    signed_quote && signed_quote.total_with_taxes
+    @signed_amount ||= Rails.cache.fetch("Order:#{id}:signed_amount", :expires_in => 1.day, :force => new_record?) do
+      signed_quote && signed_quote.total_with_taxes
+    end
   end
   
   #TODO test this method
-  def billable_amount(force_reload = false)
-    @billable_amount = nil if force_reload
-    if @billable_amount.nil?
-      @billable_amount = 0
-      @billable_amount += delivery_notes_without_confirmed_invoice.collect(&:total_with_taxes).sum
+  def billable_amount
+    @billable_amount ||= Rails.cache.fetch("Order:#{id}:billable_amount", :expires_in => 1.day, :force => new_record?) do
+      amount = delivery_notes_without_confirmed_invoice.collect(&:total_with_taxes).sum
       if deposit_required? and ( deposit_invoice.nil? or deposit_invoice.confirmed_at_was.nil? )
-        @billable_amount += signed_amount * signed_quote.deposit / 100
+        amount += signed_amount * signed_quote.deposit / 100
       elsif deposit_invoice and deposit_invoice.confirmed_at_was
-        @billable_amount -= deposit_invoice.total_with_taxes
+        amount -= deposit_invoice.total_with_taxes
       end
-      #@billable_amount = signed_amount if @billable_amount > signed_amount
+      #amount = signed_amount if amount > signed_amount
     end
-    @billable_amount
   end
   
   #TODO test this method
-  def billed_amount(force_reload = false)
-    @billed_amount = nil if force_reload
-    @billed_amount ||= invoices(force_reload).billed.collect(&:net_to_paid).sum
-  end
-  
-  #TODO test this method
-  def unbilled_amount(force_reload = false)
-    if force_reload
-      @unbilled_amount = nil
-      @billed_amount = nil
+  def billed_amount
+    @billed_amount ||= Rails.cache.fetch("Order:#{id}:billed_amount", :expires_in => 1.day, :force => new_record?) do
+      invoices.billed.collect(&:net_to_paid).sum
     end
-    @unbilled_amount ||= ( signed_quote(force_reload) && ( signed_quote.total_with_taxes - billed_amount ) )
   end
   
   #TODO test this method
-  def paid_amount(force_reload = false)
-    @paid_amount = nil if force_reload
-    @paid_amount ||= invoices(force_reload).paid.collect(&:already_paid_amount).sum
-  end
-  
-  #TODO test this method
-  def unpaid_amount(force_reload = false)
-    if force_reload
-      @unpaid_amount = nil
-      @billed_amount = nil
-      @paid_amount = nil
+  def unbilled_amount
+    @unbilled_amount ||= Rails.cache.fetch("Order:#{id}:unbilled_amount", :expires_in => 1.day, :force => new_record?) do
+      signed_quote && signed_quote.total_with_taxes - billed_amount
     end
+  end
+  
+  #TODO test this method
+  def paid_amount
+    @paid_amount ||= Rails.cache.fetch("Order:#{id}:paid_amount", :expires_in => 1.day, :force => new_record?) do
+      invoices.paid.collect(&:already_paid_amount).sum
+    end
+  end
+  
+  #TODO test this method
+  def unpaid_amount
     #@unpaid_amount ||= ( billed_amount.to_f.round_to(2) - paid_amount.to_f.round_to(2) ) # without 'round_to', the 2 values can be different with very very small variation (eg: 7.27595761418343e-12)
-    @unpaid_amount ||= ( billed_amount - paid_amount )
+    @unpaid_amount ||= billed_amount - paid_amount
   end
   
   def build_delivery_note_with_remaining_end_products_to_deliver
@@ -356,8 +359,10 @@ class Order < ActiveRecord::Base
   
   # Return all steps of the order according to the choosen order type
   def steps
-    raise "You must configure an order type for the current order before trying to retrieve its steps. Perhaps the order is a new record and has not been created yet?" if order_type.nil?
-    order_type.activated_steps
+    @steps ||= Rails.cache.fetch("Order:#{id}:steps", :expires_in => 1.week, :force => new_record?) do
+      raise "You must configure an order type for the current order before trying to retrieve its steps. Perhaps the order is a new record and has not been created yet?" if order_type.nil?
+      order_type.activated_steps
+    end
   end
   
   # Returns steps of the first level
@@ -391,7 +396,9 @@ class Order < ActiveRecord::Base
   # @order.all_steps # => [ #<CommercialStep>, #<GraphicConceptionStep>, #<SurveyStep>, ... ]
   # 
   def all_steps
-    first_level_steps.collect { |step| [step] << step.children_steps }.flatten
+    @all_steps ||= Rails.cache.fetch("Order:#{id}:all_steps", :expires_in => 1.week, :force => new_record?) do
+      first_level_steps.collect { |step| [step] << step.children_steps }.flatten
+    end
   end
   
   def current_first_level_step
@@ -415,29 +422,31 @@ class Order < ActiveRecord::Base
   end
   
   def end_products_without_signed_press_proof
-    end_products.reject{ |p| p.has_signed_press_proof? }
-  end
-  
-  # Return a hash for advance statistics
-  def advance
-    steps_obj = []
-    advance = {}
-    steps.each do |step|
-      next if step.parent
-      steps_obj += send(step.name).children_steps
+    @end_products_without_signed_press_proof ||= Rails.cache.fetch("Order:#{id}:end_products_without_signed_press_proof", :expires_in => 1.day, :force => new_record?) do
+      end_products.reject{ |p| p.has_signed_press_proof? }
     end
-    advance[:total] = steps_obj.size
-    advance[:terminated] = 0
-    steps_obj.each { |s| advance[:terminated] += 1 if s.terminated? }
-    advance
   end
   
-  ## Return missing elements's order
-  def missing_elements
-    missing_elements = []
-    OrdersSteps.find(:all, :conditions => ["order_id = ?", self.id]).each {|order_step| order_step.missing_elements.each {|missing_element| missing_elements << missing_element} }
-    missing_elements
-  end
+#  # Return a hash for advance statistics
+#  def advance
+#    steps_obj = []
+#    advance = {}
+#    steps.each do |step|
+#      next if step.parent
+#      steps_obj += send(step.name).children_steps
+#    end
+#    advance[:total] = steps_obj.size
+#    advance[:terminated] = 0
+#    steps_obj.each { |s| advance[:terminated] += 1 if s.terminated? }
+#    advance
+#  end
+#  
+#  ## Return missing elements's order
+#  def missing_elements
+#    missing_elements = []
+#    OrdersSteps.find(:all, :conditions => ["order_id = ?", self.id]).each {|order_step| order_step.missing_elements.each {|missing_element| missing_elements << missing_element} }
+#    missing_elements
+#  end
   
   def critical_status
     return unless previsional_delivery
@@ -536,11 +545,15 @@ class Order < ActiveRecord::Base
   end
   
   def brand_names
-    ship_to_addresses.collect(&:establishment_name).join(', ') #TODO really used?
+    @brand_names ||= Rails.cache.fetch("Order:#{id}:brand_names", :expires_in => 1.day, :force => new_record?) do
+      ship_to_addresses.collect(&:establishment_name).join(', ') #TODO really used?
+    end
   end
   
   def amount # return amount of quote (signed or not)
-    ( quote = (signed_quote || pending_quote || draft_quote) ) && quote.total_with_taxes
+    @amount ||= Rails.cache.fetch("Order:#{id}:amount", :expires_in => 1.day, :force => new_record?) do
+      ( quote = (signed_quote || pending_quote || draft_quote) ) && quote.total_with_taxes
+    end
   end
   
   def deposit_invoice_status
@@ -548,7 +561,9 @@ class Order < ActiveRecord::Base
   end
   
   def deposit_required?
-    signed_quote && signed_quote.deposit > 0
+    Rails.cache.fetch("Order:#{id}:deposit_required?", :expires_in => 1.day, :force => new_record?) do
+      signed_quote && signed_quote.deposit > 0
+    end
   end
   
   class << self
@@ -660,4 +675,12 @@ class Order < ActiveRecord::Base
 #    end
 #    
 #    alias_method_chain :save_contacts, :order_support
+    
+    def clean_caches
+      %w( ready_to_deliver_pieces delivered_pieces deposit_invoice status_invoices balance_invoices asset_invoices
+          signed_amount billable_amount billed_amount unbilled_amount paid_amount steps all_steps
+          end_products_without_signed_press_proof brand_names amount deposit_required? ).each do |key|
+        Rails.cache.delete("Order:#{id}:#{key}")
+      end
+    end
 end

@@ -90,9 +90,11 @@ class PressProof < ActiveRecord::Base
   validate :validates_mockups
   
   # Callbacks
-  after_save :save_press_proof_items
   before_create :can_be_created?
   before_destroy :can_be_destroyed?
+  
+  after_save :save_press_proof_items
+  after_save :clean_caches
   
   active_counter :counters  => { :pending_press_proofs => :integer },
                  :callbacks => { :pending_press_proofs => :after_save }
@@ -352,5 +354,11 @@ class PressProof < ActiveRecord::Base
     
     def validates_presence_of_press_proof_items_custom
       errors.add(:press_proof_items, "est requis") if self.press_proof_items.select {|n| !n.should_destroy?}.empty?
+    end
+    
+    def clean_caches
+      if order
+        order.send(:clean_caches)
+      end
     end
 end

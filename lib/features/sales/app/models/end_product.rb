@@ -47,6 +47,7 @@ class EndProduct < Product
   before_validation_on_create :update_reference
   
   after_save :save_checklist_responses
+  after_save :clean_caches
   
   END_PRODUCTS_PER_PAGE = 15
   
@@ -146,4 +147,11 @@ class EndProduct < Product
       end
     end
   end
+  
+  private
+    def clean_caches
+      if order
+        order.send(:clean_caches)
+      end
+    end
 end

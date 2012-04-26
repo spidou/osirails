@@ -26,6 +26,8 @@ class Product < ActiveRecord::Base # @abstract
   
   validates_presence_of :name, :unless => :should_destroy?
   
+  after_save :clean_caches
+  
   attr_accessor :should_destroy
   
   def should_destroy?
@@ -87,4 +89,8 @@ class Product < ActiveRecord::Base # @abstract
 #      end
 #    end
 #  
+
+  private
+    def clean_caches
+    end
 end

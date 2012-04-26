@@ -174,11 +174,14 @@ class Quote < ActiveRecord::Base
                                :send_quote_method_id, :order_form_type_id, :commercial_actor_id, :quote_contact_id,
                                :carriage_costs, :prizegiving, :deposit, :sales_terms, :validity_delay, :validity_delay_unit,
                                :granted_payment_time_id, :granted_payment_method_id],
-             :subresources => [:quote_items, :bill_to_address, :ship_to_address],
+             #:subresources => [:quote_items, :bill_to_address, :ship_to_address],
+             :subresources => [:bill_to_address, :ship_to_address],
              :attachments  =>  :order_form
   
-  after_save    :save_quote_items
-  after_save    :remove_order_end_products
+  after_save :save_quote_items
+  after_save :remove_order_end_products
+  after_save :clean_caches
+  
   after_update  :update_quote_step_status
   
   has_search_index :only_attributes       => [ :confirmed_at, :cancelled_at, :created_at, :deposit, :published_on, :reference, :sended_on, :signed_on, :status, :validity_delay ],
@@ -584,5 +587,11 @@ class Quote < ActiveRecord::Base
       end
       
       return quote_item
+    end
+    
+    def clean_caches
+      if order
+        order.send(:clean_caches)
+      end
     end
 end
