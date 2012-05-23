@@ -3,8 +3,6 @@ require File.dirname(__FILE__) + '/../logistics_test'
 class SupplierSupplyTest < ActiveSupport::TestCase
   should_belong_to :supply, :supplier
   
-  should_validate_uniqueness_of :supplier_id, :scoped_to => :supply_id
-  
   should_validate_numericality_of :fob_unit_price, :taxes, :lead_time
   
   should_journalize :attributes        => [:supplier_id, :supplier_reference, :lead_time, :fob_unit_price, :taxes]

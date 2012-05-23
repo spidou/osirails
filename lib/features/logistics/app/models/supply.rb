@@ -13,7 +13,7 @@
 # A string   "designation"
 
 class Supply < ActiveRecord::Base # @abstract
-  has_many :supplier_supplies
+  has_many :supplier_supplies, :order => "supplier_supplies.supplier_id, supplier_supplies.id DESC"
   has_many :suppliers, :through => :supplier_supplies
   
   has_many :stock_flows,   :order => "created_at DESC"
@@ -404,6 +404,10 @@ class Supply < ActiveRecord::Base # @abstract
   
   def update_designation! # called from SupplyCategory (triggered after_update)
     update_attribute(:designation, designation_value)
+  end
+  
+  def uniq_suppliers
+    suppliers.uniq
   end
   
   private

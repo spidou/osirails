@@ -48,7 +48,7 @@ supply_errors  = {:informations => (supply.errors.on(:reference) || supply.error
       <%= t.tab :informations, "Caractéristiques",
                                :class    => supply_errors[:informations],
                                :selected => true %>
-      <%= t.tab :suppliers,    "Fournisseurs (#{supply.suppliers.count})",
+      <%= t.tab :suppliers,    "Fournisseurs (#{supply.uniq_suppliers.count})",
                                :class => supply_errors[:suppliers] %>
       <%= t.tab :prices,       "Prix",
                                :disabled => supply.new_record? %>

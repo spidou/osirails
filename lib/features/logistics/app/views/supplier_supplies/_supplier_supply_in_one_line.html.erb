@@ -10,7 +10,7 @@ supplier_supply = supplier_supply_in_one_line
         <%= form.hidden_field :id %>
         
         <% suppliers = supplier_supply.new_record? ? Supplier.all : [ Supplier.find(supplier_supply.supplier_id_was) ] %>
-        <%= form.collection_select :supplier_id, suppliers, :id, :name, { :include_blank => "" }, :index => nil %>
+        <%= form.collection_select :supplier_id, suppliers, :id, :name, { :include_blank => supplier_supply.new_record? ? '' : '(supprimer cette référence)' }, :index => nil %>
       <% else %>
         <%= supplier_supply.supplier.name %>
       <% end %>

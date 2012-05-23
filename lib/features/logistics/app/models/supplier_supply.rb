@@ -15,8 +15,6 @@ class SupplierSupply < ActiveRecord::Base
   validates_presence_of :supplier_id, :unless => :should_destroy?
   validates_presence_of :supplier,    :if     => :supplier_id
   
-  validates_uniqueness_of :supplier_id, :scope => :supply_id
-  
   validates_numericality_of :fob_unit_price, :taxes,  :greater_than_or_equal_to => 0
   validates_numericality_of :lead_time,               :greater_than_or_equal_to => 0, :allow_blank => true
   
