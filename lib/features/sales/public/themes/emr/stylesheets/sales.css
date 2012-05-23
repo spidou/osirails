@@ -189,6 +189,11 @@ table.sales_home tbody tr.invoicing th {
 
 
 /* ORDER INDEX */
+div#content_page h1 span.total_revenues {
+  margin-left: 50px;
+  font-variant: normal;
+}
+
 div#search_results table tr td a.step_status {
   padding: 2px 3px;
   -moz-border-radius: 5px;
@@ -298,6 +303,9 @@ div#search_results table tr td span.order_status.completed {
   border: 1px solid #80cc80;
 }
 
+div#search_results table tfoot span.revenues {
+  font-weight: bold;
+}
 
 /* ORDER HEADER */
 div.order_header {

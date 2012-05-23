@@ -5,7 +5,7 @@
 <%= generate_shared_contextual_menu_partial %>
 
 <% title_context "Ventes" %>
-<%= title title_for_search %>
+<%= title title_for_search, {}, content_tag(:span, "CA : #{Order.invoicing_total_counter.to_f.round_to(2).to_s(2)}&nbsp;&euro;", :class => :total_revenues) %>
 
 <div>
   <%= table_for_search %>

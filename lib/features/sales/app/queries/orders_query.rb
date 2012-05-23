@@ -105,6 +105,64 @@ module OrdersQuery
     display_step_status(@query_object.invoicing_step.payment_step)
   end
   
+  def query_tf_for_amount_in_in_progress_order_index(content)
+    content_tag(:td, content, :class => :amount)
+  end
+  alias_method :query_tf_for_amount_in_commercial_order_index, :query_tf_for_amount_in_in_progress_order_index
+  alias_method :query_tf_for_amount_in_production_order_index, :query_tf_for_amount_in_in_progress_order_index
+  alias_method :query_tf_for_amount_in_delivering_order_index, :query_tf_for_amount_in_in_progress_order_index
+  
+  def query_tf_content_for_amount_in_in_progress_order_index
+    #content_tag :span, value, :class => :revenues
+    "=&nbsp;#{@query_objects.collect(&:amount).compact.sum.to_f.round_to(2).to_s(2)}&nbsp;&euro;"
+  end
+  alias_method :query_tf_content_for_amount_in_commercial_order_index, :query_tf_content_for_amount_in_in_progress_order_index
+  alias_method :query_tf_content_for_amount_in_production_order_index, :query_tf_content_for_amount_in_in_progress_order_index
+  alias_method :query_tf_content_for_amount_in_delivering_order_index, :query_tf_content_for_amount_in_in_progress_order_index
+  
+  
+  def query_tf_for_billable_amount_in_order(content)
+    content_tag(:td, content, :class => :amount)
+  end
+  
+  def query_tf_for_billed_amount_in_order(content)
+    content_tag(:td, content, :class => :amount)
+  end
+  
+  def query_tf_for_unbilled_amount_in_order(content)
+    content_tag(:td, content, :class => :amount)
+  end
+  
+  def query_tf_for_paid_amount_in_order(content)
+    content_tag(:td, content, :class => :amount)
+  end
+  
+  def query_tf_for_unpaid_amount_in_order(content)
+    content_tag(:td, content, :class => :amount)
+  end
+  
+  def query_tf_content_for_billable_amount_in_pre_invoicing_order_index
+    value = "=&nbsp;#{@query_objects.collect(&:billable_amount).compact.sum.to_f.round_to(2).to_s(2)}&nbsp;&euro;"
+    content_tag :span, value, :class => :revenues
+  end
+  
+  def query_tf_content_for_billed_amount_in_order
+    "=&nbsp;#{@query_objects.collect(&:billed_amount).compact.sum.to_f.round_to(2).to_s(2)}&nbsp;&euro;"
+  end
+  
+  def query_tf_content_for_unbilled_amount_in_order
+    "=&nbsp;#{@query_objects.collect(&:unbilled_amount).compact.sum.to_f.round_to(2).to_s(2)}&nbsp;&euro;"
+  end
+  
+  def query_tf_content_for_paid_amount_in_order
+    "=&nbsp;#{@query_objects.collect(&:paid_amount).compact.sum.to_f.round_to(2).to_s(2)}&nbsp;&euro;"
+  end
+  
+  def query_tf_content_for_unpaid_amount_in_invoicing_order_index
+    value = "=&nbsp;#{@query_objects.collect(&:unpaid_amount).compact.sum.to_f.round_to(2).to_s(2)}&nbsp;&euro;"
+    content_tag :span, value, :class => :revenues
+  end
+  
   private
     def display_step_status(step)
       if step

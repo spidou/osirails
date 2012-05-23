@@ -34,7 +34,7 @@ form.force_show_view = delivery_intervention.realized?
 </p>
 <p>
   <%= form.label :scheduled_internal_actor_id, nil, :required => :required %>
-  <%= form.form_or_view(form.collection_select(:scheduled_internal_actor_id, Employee.actives, :id, :fullname, :include_blank => "Veuillez choisir un employé"), :scheduled_internal_actor, :fullname) %> <span class="help_text">(personne référente de l'intervention)</span>
+  <%= form.form_or_view(form.collection_select(:scheduled_internal_actor_id, Employee.all, :id, :fullname, :include_blank => "Veuillez choisir un employé"), :scheduled_internal_actor, :fullname) %> <span class="help_text">(personne référente de l'intervention)</span>
 </p>
 
 <% if delivery_intervention.delivery? %>
@@ -50,7 +50,7 @@ form.force_show_view = delivery_intervention.realized?
     <p>
       <%= form.label :scheduled_deliverer_ids, nil, :required => :required %>
       <% if is_form_view? and !form.force_show_view %>
-        <%= form.collection_select(:scheduled_deliverer_ids, Employee.actives, :id, :fullname, {}, { :multiple => true } ) %>
+        <%= form.collection_select(:scheduled_deliverer_ids, Employee.all, :id, :fullname, {}, { :multiple => true } ) %>
       <% else %>
         <%= strong delivery_intervention.scheduled_deliverers.collect(&:fullname).join(", ") %>
       <% end %>
@@ -91,7 +91,7 @@ form.force_show_view = delivery_intervention.realized?
     <p>
       <%= form.label :scheduled_installer_ids, nil, :required => :required %>
       <% if is_form_view? and !form.force_show_view %>
-        <%= form.collection_select(:scheduled_installer_ids, Employee.actives, :id, :fullname, {}, { :multiple => true } ) %>
+        <%= form.collection_select(:scheduled_installer_ids, Employee.all, :id, :fullname, {}, { :multiple => true } ) %>
       <% else %>
         <%= strong delivery_intervention.scheduled_installers.collect(&:fullname).join(", ") %>
       <% end %>

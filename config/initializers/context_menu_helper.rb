@@ -191,6 +191,7 @@ module ActionView
       end
       alias_method_chain :query_thead_tr, :context_menu
       
+      
       ## same as #query_thead_tr_with_context_menu
       def query_tr_with_context_menu(content)
         helper = "query_tr"
@@ -201,6 +202,7 @@ module ActionView
         override_for(helper) ? send(override_for(helper), content) : content_tag(:tr, content, :class => @html_class)
       end
       alias_method_chain :query_tr, :context_menu
+      
       
       ## same as #query_thead_tr_with_context_menu
       # override that helper method to add 1 to colspan attribute ( eg. selector column )
@@ -213,6 +215,18 @@ module ActionView
         override_for(helper) ? send(override_for(helper), content) : content_tag(:td, content, :colspan => columns.size + 1, :class => 'group')
       end
       alias_method_chain :query_group_td, :context_menu
+      
+      
+      ## same as #query_thead_tr_with_context_menu
+      def query_tfoot_tr_with_context_menu(content)
+        return query_tfoot_tr_without_context_menu(content) if @hide_selector_column
+        
+        helper = "query_tfoot_tr"
+        content = content_tag(:td, "", :class => :empty) + content # add td element at first
+        
+        override_for(helper) ? send(override_for(helper), content) : content_tag(:tr, content)
+      end
+      alias_method_chain :query_tfoot_tr, :context_menu
   end
 end
 

@@ -10,6 +10,7 @@ conf_quick_search: &quick_search
     - customer.name
     - brand_names
     - commercial.fullname
+    - order_type.title
 
 in_progress_order_index:
   filters:

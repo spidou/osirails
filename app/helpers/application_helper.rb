@@ -1,10 +1,10 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   
-  def title(string, html_options = {})
+  def title(string, html_options = {}, additional_title_content = "")
     @title_context ||= ""
     content_for(:title) { string + @title_context }
-    content_tag(:h1, string, html_options)
+    content_tag(:h1, string << additional_title_content, html_options)
   end
   
   def title_context(string)

@@ -143,6 +143,10 @@ table tr > td.amount input[type=text] {
   text-align: right !important;
 }
 
+table tfoot {
+  border-top: 1px solid #CCCCCC;
+}
+
 table tfoot > tr.nota > td {
   text-align: left;
   font-style: italic;
@@ -154,6 +158,18 @@ table tfoot > tr.nota > td {
 table tfoot > tr.nota > td strong {
   color: inherit;
   font-weight: bold;
+}
+
+table tfoot td {
+  background-color: transparent !important;
+}
+
+table tfoot td.empty {
+  border: none;
+}
+
+table tfoot td:not(.empty) {
+  border: 1px solid #CCCCCC;
 }
 
 /* // this is useless since we color fields with error in red

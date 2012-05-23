@@ -49,9 +49,9 @@ class DeliveryNoteItem < ActiveRecord::Base
   end
   
   def total_with_taxes
-    if end_product and end_product.unit_price_with_prizegiving and end_product.vat
+    if end_product and end_product.unit_price_with_prizegiving
       total = end_product.unit_price_with_prizegiving * quantity
-      taxes = total * end_product.vat / 100.0
+      taxes = end_product.vat ? (total * end_product.vat / 100.0) : 0.0
       total + taxes
     end
   end
