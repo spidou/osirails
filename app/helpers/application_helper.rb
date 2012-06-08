@@ -35,9 +35,9 @@ module ApplicationHelper
   end
   
   def display_menu
-    Rails.cache.fetch("View:Layout:MenuEntriesForMenu:#{current_menu.name}:CurrentUser:#{current_user.id}", :expires_in => 5.hours) do
+    #Rails.cache.fetch("View:Layout:MenuEntriesForMenu:#{current_menu.name}:CurrentUser:#{current_user.id}", :expires_in => 5.hours) do
       display_menu_entries(current_menu)
-    end
+    #end
   end
   
   #TODO remove that for good!

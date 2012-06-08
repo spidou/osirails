@@ -1,6 +1,7 @@
 class ProductReference < Product
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   has_reference   :symbols => [:product_reference_sub_category], :prefix => :sales
+  has_documents   :photo
   
   belongs_to :product_reference_sub_category, :counter_cache => true
   
@@ -18,9 +19,10 @@ class ProductReference < Product
   validates_persistence_of :product_reference_sub_category_id
   
   before_validation_on_create :update_reference
+  before_validation :update_designation_cache
   
-  has_search_index  :only_attributes        => [ :reference, :name, :description, :vat ],
-                    :additional_attributes  => { :designation => :string, :designation_with_dimensions => :string },
+  has_search_index  :only_attributes        => [ :reference, :name, :designation, :description, :vat ],
+                    :additional_attributes  => { :designation_with_dimensions => :string },
                     :only_relationships     => [ :product_reference_sub_category ]
   
   PRODUCT_REFERENCES_PER_PAGE = 15
@@ -44,6 +46,14 @@ class ProductReference < Product
   #TODO test this method
   def ancestors # @override
     @ancestors ||= product_reference_sub_category ? [ product_reference_sub_category.product_reference_category, product_reference_sub_category ] : []
+  end
+  
+  def designation_value
+    (ancestors + [self]).collect(&:name).join(" ").strip.capitalize
+  end
+  
+  def update_designation!
+    update_attribute(:designation, designation_value)
   end
   
 #  def after_create
@@ -78,4 +88,9 @@ class ProductReference < Product
 #      end
 #    end
 #  end
+  
+  private
+    def update_designation_cache
+      self.designation = designation_value
+    end
 end

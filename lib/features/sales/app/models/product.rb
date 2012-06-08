@@ -18,6 +18,7 @@
 # A datetime "cancelled_at"
 # A datetime "created_at"
 # A datetime "updated_at"
+# A string   "designation"
 
 class Product < ActiveRecord::Base # @abstract
   include ProductDimensions
@@ -55,13 +56,8 @@ class Product < ActiveRecord::Base # @abstract
   end
   
   #TODO test this method
-  def designation
-    (ancestors + [self]).collect(&:name).join(" ")
-  end
-  
-  #TODO test this method
   def designation_with_dimensions
-    designation + ( dimensions.blank? ? "" : " (#{dimensions})" )
+    @designation_with_dimensions ||= designation + ( dimensions.blank? ? "" : " (#{dimensions})" )
   end
   
   def duplicate

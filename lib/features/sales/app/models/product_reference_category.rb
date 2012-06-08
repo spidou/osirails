@@ -22,6 +22,8 @@ class ProductReferenceCategory < ActiveRecord::Base
                     :only_relationships => [ :product_reference_sub_categories ],
                     :identifier         => :reference_and_name
   
+  after_update :clean_caches
+  
   before_destroy :can_be_destroyed?
   
   attr_protected :cancelled_at
@@ -114,4 +116,15 @@ class ProductReferenceCategory < ActiveRecord::Base
     disabled_children.any?
   end
   
+  private
+    #TODO test this method
+    def clean_caches
+      if children.any?
+        if children.first.is_a?(ProductReference)
+          children.each(&:update_designation!)
+        else
+          children.each(&:clean_caches)
+        end
+      end
+    end
 end

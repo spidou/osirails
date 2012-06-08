@@ -334,6 +334,14 @@ class Supply < ActiveRecord::Base # @abstract
     higher_unit_price && measure && measure > 0 && higher_unit_price / measure
   end
   
+  def lower_unit_price
+    supplier_supplies_unit_prices.min
+  end
+  
+  def lower_measure_price
+    lower_unit_price && measure && measure > 0 && lower_unit_price / measure
+  end
+  
   def unit_price
     average_unit_price
   end

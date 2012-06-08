@@ -214,7 +214,8 @@ module IntegratedSearchHelper
     header  = generate_table_header(query)
     records = records_with_or_without_paginate(query, page)
     body    = generate_table_body(records, query.columns, query.group)
-    table   = query_table("#{ header }#{ body }")
+    footer  = generate_table_footer(query, records)
+    table   = query_table("#{ header }#{ body }#{ footer }")
     
     
     if records.empty?
@@ -266,6 +267,24 @@ module IntegratedSearchHelper
     end
   
     content
+  end
+  
+  # Methods to generate footer from columns
+  #
+  def generate_table_footer(query, records)
+    @query_objects = records
+    
+    columns = query.columns
+    
+    should_display_footer = columns.collect do |column|
+      helper = "query_tf_content_for_#{ column.gsub('.','_') }" # same as in #query_tf_content method
+      override_for(helper)
+    end.compact.any?
+    
+    if should_display_footer
+      content = columns.map{ |column| query_tf(column) }.join
+      query_tfoot(content)
+    end
   end
   
   # Method to generate grouped rows with records
@@ -757,7 +776,30 @@ module IntegratedSearchHelper
         content_tag(:span, content, :onclick => "toggleGroup(this);", :class => 'not-collapsed')
       end
     end
-  
+    
+    def query_tfoot(content)
+      helper = "query_tfoot"
+      tfoot_content = query_tfoot_tr(content)
+      override_for(helper) ? send(override_for(helper), thead_content) : content_tag(:tfoot, tfoot_content)
+    end
+    
+    def query_tfoot_tr(content)
+      helper = "query_tfoot_tr"
+      override_for(helper) ? send(override_for(helper), content) : content_tag(:tr, content)
+    end
+    
+    # tf <=> td for footer (as th <=> td for header)
+    def query_tf(column)
+      helper  = "query_tf_for_#{ column.gsub('.','_') }"
+      content = query_tf_content(column)
+      override_for(helper) ? send(override_for(helper), content) : content_tag(:td, content, :class => content.blank? ? :empty : nil)
+    end
+    
+    def query_tf_content(column)
+      helper = "query_tf_content_for_#{ column.gsub('.','_') }"
+      override_for(helper) ? send(override_for(helper)) : ""
+    end
+    
     def override_for(pattern)
       model_override = "#{ pattern }#{ @helper_end_with_model }"
       page_override  = "#{ pattern }#{ @helper_end_with_page_name }"

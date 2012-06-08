@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-		<meta name="author" content="Oxydium - SUPINFO PS1"/>
+		<meta name="author" content="EMR (Enseigne Maintenance Réunion)"/>
 		<meta name="category" content="ERP"/>
 		<meta name="publisher" content="Osirails - EMR (Enseigne Maintenance Réunion)"/>
 		<meta name="copyright" content="Osirails - EMR (Enseigne Maintenance Réunion)"/>
@@ -67,7 +67,12 @@
         
         <div id="content_page" class="<%= content_page_class %>" >
           <%= display_flash %>
-          <%= display_popup_box_div_for_acts_as_watchable %>
+          <div id="popup_box" style="display:none;"> <!-- used by acts_as_watchable and sales -->
+            <div id="popup_menu_actions">
+              <%= link_to_function(image_tag('cross_16x16.png', :title => hide_menu = 'Fermer la popup', :alt => hide_menu ), '$("popup_box").popup.hide();') %>
+            </div>
+            <div id="content_popup_box"></div>
+          </div>
           <div id="ajax_holder" style="display:none">
             <div id="ajax_holder_waiting">
               <%= image_tag("loading_16x16.gif", :title => "Veuillez patienter", :alt => "Veuillez patienter", :id => 'ajax_holder_loader') %>

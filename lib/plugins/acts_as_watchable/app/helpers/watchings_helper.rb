@@ -50,20 +50,4 @@ module WatchingsHelper
     html
   end
   
-  def display_popup_menu_actions
-    html = []
-    html << '<div id="popup_menu_actions">'
-    html << link_to_function( image_tag( "cross_16x16.png", :title => hide_menu = 'Fermer la popup', :alt => hide_menu ), 
-                          '$("popup_box").popup.hide();')
-    html << "</div>"
-    html
-  end
-  
-  def display_popup_box_div_for_acts_as_watchable
-     html = []
-     html << '<div id="popup_box" style="display:none;">'
-     html << '<div id="content_popup_box"></div>'
-     html << '</div>'
-  end
-  
 end

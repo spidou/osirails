@@ -51,7 +51,7 @@
     
     <h3>Livraison</h3>
     <p>
-      <%= form.label :ship_to_address_ids, nil, :required => :required %>
+      <%= form.label :ship_to_address_ids, nil %>
       <%= display_ship_to_addresses_picker(order, order.customer.head_office_and_establishments) %>
       <%= display_new_establishments_list(order) %>
       <%= display_establishment_add_button_for_ship_to_address(order) %>

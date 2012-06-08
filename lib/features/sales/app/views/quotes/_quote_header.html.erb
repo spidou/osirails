@@ -7,7 +7,10 @@ quote = quote_header
 order = quote.order
 contacts_owners = order.customer.head_office_and_establishments
 default_bill_to_address = order.customer.bill_to_address
-default_ship_to_address = order.ship_to_addresses.first.address # TODO replace that by a ship_to_addresses_picker
+default_ship_to_address = order.ship_to_addresses.first && order.ship_to_addresses.first.address # TODO replace that by a ship_to_addresses_picker
+
+bill_to_address = quote.bill_to_address || quote.build_bill_to_address(default_bill_to_address ? default_bill_to_address.attributes : {})
+ship_to_address = quote.ship_to_address || quote.build_ship_to_address(default_ship_to_address ? default_ship_to_address.attributes : {})
 %>
 
 <div id="quote_header">
@@ -29,14 +32,14 @@ default_ship_to_address = order.ship_to_addresses.first.address # TODO replace t
   <div class="presentation_in_columns small">
     <div>
       <h3>Adresse de facturation</h3>
-      <%= render :partial => 'addresses/address_form', :object => quote.bill_to_address || quote.build_bill_to_address(default_bill_to_address.attributes), :locals => { :address_owner => quote } %>
+      <%= render :partial => 'addresses/address_form', :object => bill_to_address, :locals => { :address_owner => quote } %>
     </div>
     
     <br/><br/>
     
     <div>
       <h3>Adresse de livraison</h3>
-      <%= render :partial => 'addresses/address_form', :object => quote.ship_to_address || quote.build_ship_to_address(default_ship_to_address.attributes), :locals => { :address_owner => quote } %>
+      <%= render :partial => 'addresses/address_form', :object => ship_to_address, :locals => { :address_owner => quote } %>
     </div>
   </div>
   
