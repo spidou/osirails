@@ -20,7 +20,7 @@
 
 <div>
   <p>
-    <%= form.label :establishment_type_id, nil, :required => :required %>
+    <%= form.label :establishment_type_id, nil %>
     <%= form.form_or_view(form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name, { :include_blank => "Veuillez choisir un type d'établissement" }, :index => nil), :establishment_type, :name) %>
   </p>
   <!-- TODO when implementing the ajax reference retrieval do not forget to do so for thirds -->

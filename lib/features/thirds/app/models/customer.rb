@@ -1,7 +1,7 @@
 class Customer < Third
   has_permissions :as_business_object
   has_documents   :graphic_charter
-  has_address     :bill_to_address
+  has_address     :bill_to_address, :required => false
   
   belongs_to :factor
   belongs_to :customer_solvency
@@ -17,7 +17,7 @@ class Customer < Third
                     :path   => ":rails_root/assets/thirds/customers/:id/logo/:style.:extension",
                     :url    => "/customers/:id.:extension"
   
-  validates_presence_of :bill_to_address, :head_office
+  validates_presence_of :head_office
   
   # TODO don't know if I have to let that (I'm not sure if customer_grade or customer_solvency can be filled when you create a new customer if you don't even know it)
   #validates_presence_of :customer_grade_id, :customer_solvency_id

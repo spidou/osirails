@@ -21,8 +21,8 @@ class OrderTest < ActiveSupport::TestCase
   
   should_have_many :ship_to_addresses, :end_products, :mockups, :graphic_documents
   
-  should_validate_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
-  should_validate_presence_of :customer, :commercial, :approaching, :order_type, :order_contact, :with_foreign_key => :default
+  should_validate_presence_of :title
+  should_validate_presence_of :customer, :commercial, :order_type, :with_foreign_key => :default
   should_validate_presence_of :creator, :with_foreign_key => :user_id
   
   #should_validate_presence_of :reference # don't work because a before_validation_on_create automatically generate a reference
@@ -38,26 +38,6 @@ class OrderTest < ActiveSupport::TestCase
   
   def teardown
     @order = nil
-  end
-  
-  def test_presence_of_bill_to_address
-    @invalid_address = Address.new # assuming Address.new returns an invalid record by default
-    @valid_address   = Address.new(:street_name       => "Street Name",
-                                   :country_name      => "Country",
-                                   :city_name         => "City",
-                                   :zip_code          => "01234",
-                                   :has_address_type  => "Order",
-                                   :has_address_key   => "bill_to_address")
-                                 
-    assert @order.errors.invalid?(:bill_to_address), "bill_to_address should NOT be a valid because it's nil"
-    
-    @order.bill_to_address = @invalid_address
-    @order.valid?
-    assert @order.errors.invalid?(:bill_to_address), "bill_to_address should NOT be valid"
-    
-    @order.bill_to_address = @valid_address
-    @order.valid?
-    assert !@order.errors.invalid?(:bill_to_address), "bill_to_address should be valid"
   end
   
   def test_validity_of_ship_to_addresses

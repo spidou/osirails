@@ -25,8 +25,8 @@ class Order < ActiveRecord::Base
   STATUS_COMPLETED  = 'completed'
   
   has_permissions :as_business_object
-  has_address     :bill_to_address
-  has_contact     :order_contact, :accept_from => :customer_contacts, :required => true
+  has_address     :bill_to_address, :required => false
+  has_contact     :order_contact, :accept_from => :customer_contacts
   has_reference   :prefix => :sales
   
   belongs_to :order_type
@@ -83,12 +83,11 @@ class Order < ActiveRecord::Base
   #named_scope :in_pre_invoicing_step, :include => :invoicing_step, :conditions => [ "invoicing_steps.status IN (?) AND billable_amount > 0", ['pending', 'in_progress'] ]
   named_scope :in_invoicing_step, :include => :invoicing_step, :conditions => [ "invoicing_steps.status IN (?)", ['pending', 'in_progress'] ]
   
-  validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
-  validates_presence_of :customer_id, :commercial_id, :user_id, :approaching_id, :order_type_id
+  validates_presence_of :reference, :title
+  validates_presence_of :customer_id, :commercial_id, :user_id, :order_type_id
   validates_presence_of :customer,    :if => :customer_id
   validates_presence_of :commercial,  :if => :commercial_id
   validates_presence_of :creator,     :if => :user_id
-  validates_presence_of :approaching, :if => :approaching_id
   validates_presence_of :order_type,  :if => :order_type_id
   
   validates_presence_of :standby_on,   :if => :standby?

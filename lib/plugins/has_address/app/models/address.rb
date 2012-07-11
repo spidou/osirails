@@ -17,4 +17,8 @@ class Address < ActiveRecord::Base
   def zip_code_and_city_name
     @zip_code_and_city_name ||= [zip_code, city_name].compact.join(" ")
   end
+  
+  def empty?
+    formatted.blank?
+  end
 end

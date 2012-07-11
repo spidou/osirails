@@ -35,17 +35,17 @@
     
     <h3>Client</h3>
     <p>
-      <%= form.label :order_contact, nil, :required => :required %>
+      <%= form.label :order_contact, nil %>
       <%= display_contact_picker(order, order.customer.contacts, :form => form, :contact_key => "order_contact",
                                                                  :contacts_owners => order.customer.head_office_and_establishments ) %>
     </p>
     
     <p>
-      <%= form.label :approaching_id, nil, :required => :required %>
+      <%= form.label :approaching_id, nil %>
       <%= form.form_or_view(form.collection_select(:approaching_id, Approaching.all, :id, :name, :include_blank => order.new_record?), :approaching, :name) %>
     </p>
     <p>
-      <%= form.label :customer_needs, nil, :required => :required %>
+      <%= form.label :customer_needs, nil %>
       <%= form.form_or_view(form.text_area_autoresize(:customer_needs, :cols => 80), :customer_needs) %>
     </p>
     
@@ -76,7 +76,7 @@
       <% end %>
     </p>
     <p>
-      <%= form.label :previsional_delivery, nil, :required => :required %>
+      <%= form.label :previsional_delivery, nil %>
       <% if form.form_view? %>
         <%= form.calendar_date_select :previsional_delivery %>
       <% else %>

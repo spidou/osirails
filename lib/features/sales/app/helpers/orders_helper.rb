@@ -85,6 +85,8 @@ module OrdersHelper
   end
   
   def remaining_days_before_delivery(order)
+    return unless order.previsional_delivery
+    
     days = (Date.today - order.previsional_delivery).abs
     
     case order.critical_status
@@ -98,6 +100,8 @@ module OrdersHelper
   end
   
   def display_previsional_delivery_and_remaining_days(order)
+    return unless order.previsional_delivery
+    
     status = order.critical_status
     date = l(order.previsional_delivery, :format => :short)
     message = "Date prév. de livr.<br/>#{date} #{remaining_days_before_delivery(order)}"

@@ -47,7 +47,7 @@ class OrdersController < ApplicationController
       begin
         @order.customer = Customer.find(params[:customer_id])
         @order.order_contact = @order.customer_contacts.first
-        @order.build_bill_to_address(@order.customer.bill_to_address.attributes)
+        @order.build_bill_to_address(@order.customer.bill_to_address.attributes) if @order.customer.bill_to_address
       rescue ActiveRecord::RecordNotFound => e
         flash.now[:error] = "Le client n'a pas été trouvé, merci de réessayer."
       end

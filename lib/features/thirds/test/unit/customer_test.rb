@@ -7,7 +7,7 @@ class CustomerTest < ActiveSupport::TestCase
   
   should_have_attached_file :logo
   
-  should_validate_presence_of   :bill_to_address, :head_office
+  should_validate_presence_of   :head_office
   should_validate_uniqueness_of :name
   
   should_journalize :attributes        => [ :name, :legal_form_id, :company_created_at, :collaboration_started_at, :factor_id, :customer_solvency_id, :customer_grade_id, :activated ],

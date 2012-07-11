@@ -18,8 +18,7 @@ class Establishment < ActiveRecord::Base
                     :path   => ":rails_root/assets/thirds/establishments/:id/logo/:style.:extension",
                     :url    => "/establishments/:id.:extension"
   
-  validates_presence_of :address, :establishment_type_id
-  validates_presence_of :establishment_type, :if => :establishment_type_id
+  validates_presence_of :address
   
   validates_uniqueness_of :siret_number, :allow_blank => true
   
@@ -56,7 +55,9 @@ class Establishment < ActiveRecord::Base
   end
   
   def establishment_type_and_name
-    "#{establishment_type.name} - #{name}"
+    value = ""
+    value << "#{establishment_type.name} - " if establishment_type
+    value << name
   end
   
   def formatted

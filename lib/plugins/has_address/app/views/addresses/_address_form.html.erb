@@ -8,9 +8,10 @@ address_owner_class ||= nil
 address = address_form
 owner_type = address_owner_class || address_owner.class.singularized_table_name
 force_show_view ||= false
+required = address_owner.class.send("required_#{address.has_address_key}") ? "required" : nil
 
 #FIXME remove this test block accessor when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
-if address_owner.class.one_or_many == :many
+if address_owner.class.send("one_or_many_#{address.has_address_key}") == :many
   options = { :index => nil }
 else
   options = {}
@@ -23,18 +24,20 @@ identifier = generate_random_id
     <% form.force_show_view = force_show_view %>
     
     <p>
-      <p class="contain_auto_completer">
-        <%= form.label :street_name, nil, options.merge(:required => :required) %>
-        <%= form.form_or_view(form.text_area_autoresize(:street_name, options.merge(:class => "street_name")), :street_name) %>
-      </p>
+      <%= form.label :street_name, nil, options.merge(:required => required) %>
+      <% if form.form_view? %>
+        <%= form.text_area_autoresize(:street_name, options.merge(:class => "street_name")) %>
+      <% else %>
+        <%= form.strong :street_name %>
+      <% end %>
     </p>
     
     <% if form.form_view? %>
       <p class="contain_auto_completer">
-        <%= form.label :zip_code, nil, options.merge(:required => :required) %>
+        <%= form.label :zip_code, nil, options.merge(:required => required) %>
         <%= custom_text_field_with_auto_complete_for_city_zip_code(address, identifier, form, options) %>
         
-        <%= form.label :city_name, nil, options.merge(:class => :city_label, :required => :required) %>
+        <%= form.label :city_name, nil, options.merge(:class => :city_label, :required => required) %>
         <%= custom_text_field_with_auto_complete_for_city_name(address, identifier, form, options) %>
       </p>
       <p class="contain_auto_completer">
@@ -42,7 +45,7 @@ identifier = generate_random_id
         <%= custom_text_field_with_auto_complete_for_region_name(address, identifier, form, options) %>
       </p>
       <p class="contain_auto_completer">
-        <%= form.label :country_name, nil, options.merge(:required => :required) %>
+        <%= form.label :country_name, nil, options.merge(:required => required) %>
         <%= custom_text_field_with_auto_complete_for_country_name(address, identifier, form, options) %>
       </p>
     <% else %>
