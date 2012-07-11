@@ -3,7 +3,10 @@
   border-right: 1px solid #747474;
   border-left: 1px solid #747474;
   border-top: 1px solid #747474;
+  border-radius: 10px 10px 0 0;
+  -o-border-radius: 10px 10px 0 0;
   -moz-border-radius: 10px 10px 0 0;
+  -webkit-border-radius: 10px 10px 0 0;
   position:absolute;
   top: -1.8em;
   right: 0;
@@ -34,8 +37,15 @@
 	right: 0px;
 	top: 0px;
 	border: 1px solid #747474;
+	border-radius: 10px 0 0 10px;
+	-o-border-radius: 10px 0 0 10px;
 	-moz-border-radius: 10px 0 0 10px;
+	-webkit-border-radius: 10px 0 0 10px;
+	
+	box-shadow: 6px 4px 8px rgba(0,0,0,0.3);
+	-o-box-shadow: 6px 4px 8px rgba(0,0,0,0.3);
 	-moz-box-shadow: 6px 4px 8px rgba(0,0,0,0.3);
+	-webkit-box-shadow: 6px 4px 8px rgba(0,0,0,0.3);
 	background: url("/themes/emr/images/background_contextual_menu.gif") repeat;
 	width: 230px;
 	text-indent: 0px;
@@ -48,8 +58,15 @@
   min-width: 18px;
   min-height: 20px;
   background: #e99727 url("/themes/emr/images/left_arrow_16x16.png") no-repeat 6px center;
+  border-radius: 8px 0 0 8px;
+  -o-border-radius: 8px 0 0 8px;
   -moz-border-radius: 8px 0 0 8px;
+  -webkit-border-radius: 8px 0 0 8px;
+  
+  box-shadow: -3px 2px 4px rgba(0,0,0,0.4);/*, inset -3px 0px 5px rgba(0,0,0,0.4);*/
+  -o-box-shadow: -3px 2px 4px rgba(0,0,0,0.4);/*, inset -3px 0px 5px rgba(0,0,0,0.4);*/
   -moz-box-shadow: -3px 2px 4px rgba(0,0,0,0.4);/*, inset -3px 0px 5px rgba(0,0,0,0.4);*/
+  -webkit-box-shadow: -3px 2px 4px rgba(0,0,0,0.4);/*, inset -3px 0px 5px rgba(0,0,0,0.4);*/
   cursor: pointer;
 }
 
@@ -76,7 +93,10 @@
 	font-weight: bold;
 	text-align: center;
 	color: black;
+	box-shadow: 0px 3px 4px rgba(0,0,0,0.2), 0px -3px 4px rgba(0,0,0,0.2);
+	-o-box-shadow: 0px 3px 4px rgba(0,0,0,0.2), 0px -3px 4px rgba(0,0,0,0.2);
 	-moz-box-shadow: 0px 3px 4px rgba(0,0,0,0.2), 0px -3px 4px rgba(0,0,0,0.2);
+	-webkit-box-shadow: 0px 3px 4px rgba(0,0,0,0.2), 0px -3px 4px rgba(0,0,0,0.2);
 	border: none;
 	height: auto;
 	line-height: 2.4em;
@@ -85,8 +105,15 @@
 }
 
 #contextual_menu_content h1:first-child {
+	border-radius: 10px 0 0 0;
+	-o-border-radius: 10px 0 0 0;
 	-moz-border-radius: 10px 0 0 0;
+	-webkit-border-radius: 10px 0 0 0;
+	
+	box-shadow: 0px 3px 4px rgba(0,0,0,0.2) !important;
+	-o-box-shadow: 0px 3px 4px rgba(0,0,0,0.2) !important;
 	-moz-box-shadow: 0px 3px 4px rgba(0,0,0,0.2) !important;
+	-webkit-box-shadow: 0px 3px 4px rgba(0,0,0,0.2) !important;
 }
 
 #contextual_menu_content ul {

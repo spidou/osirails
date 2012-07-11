@@ -49,7 +49,10 @@
 
 .job_details p {
   border:2px solid #AAA;
+  border-radius:5px;
+  -o-border-radius:5px;
   -moz-border-radius:5px;
+  -webkit-border-radius:5px;
   width: 400px;
   min-height: 50px;
   max-height: 100px; 

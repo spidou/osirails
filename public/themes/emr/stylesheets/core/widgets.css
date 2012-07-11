@@ -8,7 +8,10 @@
 #content_page div.home div.droppable_area {
   height: 5px;
   border: 2px dotted transparent;
+  transition: all .3s;
+  -o-transition: all .3s;
   -moz-transition: all .3s;
+  -webkit-transition: all .3s;
 }
 
 #content_page div.home div.droppable_hover div.droppable_area {
@@ -24,15 +27,28 @@
   width: auto;
   background-color: #ededed;
   border: 1px solid #999;
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
   padding: 5px;
   margin: 6px 10px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  -o-box-shadow: 0 0 2px rgba(0,0,0,0.3);
   -moz-box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  
+  transition: -moz-box-shadow .2s;
+  -o-transition: -moz-box-shadow .2s;
   -moz-transition: -moz-box-shadow .2s;
+  -webkit-transition: -moz-box-shadow .2s;
 }
 
 #content_page div.home div.widget:hover {
+  box-shadow: 0 0 5px rgba(0,0,0,0.6);
+  -o-box-shadow: 0 0 5px rgba(0,0,0,0.6);
   -moz-box-shadow: 0 0 5px rgba(0,0,0,0.6);
+  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.6);
 }
 
 #content_page div.home div.widget h2 {
@@ -77,7 +93,10 @@
   padding: 1px 7px;
   background-color: #ffd075;
   border: 1px solid #999;
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
   font-weight: bold;
 }
 
@@ -97,7 +116,10 @@
   padding: 2px 5px;
   border: 1px solid #AAA;
   background-color: white;
+  border-radius: 2px;
+  -o-border-radius: 2px;
   -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
 }
 
 #content_page div.home div.widget table tr.spacer td {

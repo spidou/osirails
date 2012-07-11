@@ -18,7 +18,10 @@
   border: 1px solid #777;
   background:white;
   list-style:none;
+  box-shadow: 2px 3px 4px rgba(0,0,0,0.3);
+  -o-box-shadow: 2px 3px 4px rgba(0,0,0,0.3);
   -moz-box-shadow: 2px 3px 4px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 2px 3px 4px rgba(0,0,0,0.3);
 }
 
 #context-menu li {

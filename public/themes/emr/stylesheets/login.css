@@ -289,12 +289,20 @@ span.version {
   padding: 5px;
   font-size: 11px;
   border: 1px solid yellow;
+  transform: rotate(18deg);
+  -o-transform: rotate(18deg);
   -moz-transform: rotate(18deg);
   -webkit-transform: rotate(18deg);
+  
+  box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 8px rgba(255,255,0,1);
+  -o-box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 8px rgba(255,255,0,1);
   -moz-box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 8px rgba(255,255,0,1);
   -wekit-box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 8px rgba(255,255,0,1);
 }
 
 span.version:hover {
+  box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 30px rgba(255,255,0,1);
+  -o-box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 30px rgba(255,255,0,1);
   -moz-box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 30px rgba(255,255,0,1);
+  -webkit-box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 30px rgba(255,255,0,1);
 }

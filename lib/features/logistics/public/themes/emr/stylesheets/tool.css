@@ -32,7 +32,10 @@ ul#tool_types li a img {
 }
 
 .event {
+  border-radius: 0px 0px 10px 10px;
+  -o-border-radius: 0px 0px 10px 10px;
   -moz-border-radius: 0px 0px 10px 10px;
+  -webkit-border-radius: 0px 0px 10px 10px;
   vertical-align: top;
   border: 1px solid gray;
   background-color: #eaeaea;
@@ -66,7 +69,10 @@ ul#tool_types li a img {
 }
 
 .event h3 {
+  border-radius: 0px 0px 10px 0px;
+  -o-border-radius: 0px 0px 10px 0px;
   -moz-border-radius: 0px 0px 10px 0px;
+  -webkit-border-radius: 0px 0px 10px 0px;
   border-right: 1px solid gray;
   border-bottom: 1px solid gray;
   position: relative;

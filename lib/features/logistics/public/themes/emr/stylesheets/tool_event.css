@@ -3,7 +3,10 @@
 }
 
 .alarm {
+  border-radius: 10px 10px 10px 10px;
+  -o-border-radius: 10px 10px 10px 10px;
   -moz-border-radius: 10px 10px 10px 10px;
+  -webkit-border-radius: 10px 10px 10px 10px;
   border: 1px solid gray;
   background-color: #eaeaea;
   display: inline-block;

@@ -30,7 +30,10 @@ table.order_progress tbody td ul {
 
 table.order_progress tbody td ul li {
   margin: 6px 0;
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 
 table.order_progress tbody td ul li a {
@@ -51,8 +54,15 @@ table.order_progress tbody td ul li div.dates {
   padding: 3px 7px;
   margin-top: 2px;
   text-align: left;
+  box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -o-box-shadow: 0 0 2px rgba(0,0,0,0.4);
   -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  
+  border-radius: 4px;
+  -o-border-radius: 4px;
   -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
 }
 
 table.order_progress tbody td ul li:hover div.dates {
@@ -68,7 +78,10 @@ table.order_progress tbody td ul li div.dates span.period {
 }
 
 table.order_progress tbody td ul li:hover {
+  box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -o-box-shadow: 0 0 2px rgba(0,0,0,0.4);
   -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,0.4);
 }
 
 table.order_progress tbody td ul li:hover a {
@@ -105,7 +118,10 @@ div.order_document {
 
 div.order_document:hover {
   background-color: #EEE;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  -o-box-shadow: 0 0 2px rgba(0,0,0,0.3);
   -moz-box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,0.3);
 }
 
 div.order_document > a {

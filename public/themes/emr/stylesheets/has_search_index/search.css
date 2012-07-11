@@ -69,8 +69,15 @@ div.public_links a {
   color: #000;
   text-decoration: none;
   text-shadow: rgba(255,255,255,.5) 0 1px 0;
+  border-radius: 3px;
+  -o-border-radius: 3px;
   -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  
+  box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 8px 3px rgba(255,255,255,0.3);
+  -o-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 8px 3px rgba(255,255,255,0.3);
   -moz-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 8px 3px rgba(255,255,255,0.3);
+  -webkit-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 8px 3px rgba(255,255,255,0.3);
   padding: 5px;
   margin-right: 10px;
 }
@@ -80,11 +87,17 @@ div.public_links a.apply {
 }
 
 div.public_links a:hover {
+  box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 10px 10px rgba(255,255,255,0.4), inset 0px -10px 10px rgba(255,255,255,0.4);
+  -o-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 10px 10px rgba(255,255,255,0.4), inset 0px -10px 10px rgba(255,255,255,0.4);
   -moz-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 10px 10px rgba(255,255,255,0.4), inset 0px -10px 10px rgba(255,255,255,0.4);
+  -webkit-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 10px 10px rgba(255,255,255,0.4), inset 0px -10px 10px rgba(255,255,255,0.4);
 }
 
 div.public_links a:active {
+  box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.1), inset 1px 1px 2px rgba(255,255,255,0.3), inset 0px 8px 3px rgba(255,255,255,0.1);
+  -o-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.1), inset 1px 1px 2px rgba(255,255,255,0.3), inset 0px 8px 3px rgba(255,255,255,0.1);
   -moz-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.1), inset 1px 1px 2px rgba(255,255,255,0.3), inset 0px 8px 3px rgba(255,255,255,0.1);
+  -webkit-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.1), inset 1px 1px 2px rgba(255,255,255,0.3), inset 0px 8px 3px rgba(255,255,255,0.1);
 }
 
 div.integrated_search_form {
@@ -115,8 +128,15 @@ div.toggle_link span.quick_search {
   position: relative;
   background-color: #E99727;
   text-align: left;
+  border-radius: 0px 0px 7px 7px;
+  -o-border-radius: 0px 0px 7px 7px;
   -moz-border-radius: 0px 0px 7px 7px;
+  -webkit-border-radius: 0px 0px 7px 7px;
+  
+  box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
+  -o-box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
   -moz-box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
   padding: 0;
   z-index: 1;
 }
@@ -150,8 +170,15 @@ span.quick_search div.quick_search_inputs input {
   width: 200px;
   padding: 2px 19px 2px 3px;
   border: 0;
+  border-radius: 2px;
+  -o-border-radius: 2px;
   -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  
+  box-shadow: inset -1px -1px 1px rgba(0,0,0,0.5), inset 1px 1px 1px rgba(0,0,0,0.5);
+  -o-box-shadow: inset -1px -1px 1px rgba(0,0,0,0.5), inset 1px 1px 1px rgba(0,0,0,0.5);
   -moz-box-shadow: inset -1px -1px 1px rgba(0,0,0,0.5), inset 1px 1px 1px rgba(0,0,0,0.5);
+  -webkit-box-shadow: inset -1px -1px 1px rgba(0,0,0,0.5), inset 1px 1px 1px rgba(0,0,0,0.5);
 }
 
 span.quick_search div.quick_search_inputs a {
@@ -185,8 +212,15 @@ div.cancel_link a.reset_query_link {
   text-decoration: none;
   color: gray;
   font-weight: bold;
+  border-radius: 0px 0px 7px 7px;
+  -o-border-radius: 0px 0px 7px 7px;
   -moz-border-radius: 0px 0px 7px 7px;
+  -webkit-border-radius: 0px 0px 7px 7px;
+  
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.3);
+  -o-box-shadow: 0px 1px 2px rgba(0,0,0,0.3);
   -moz-box-shadow: 0px 1px 2px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0px 1px 2px rgba(0,0,0,0.3);
   margin: 0px;
   padding: 4px 15px;
   
@@ -197,7 +231,10 @@ div.cancel_link a.reset_query_link {
 
 div.cancel_link a.reset_query_link:hover {
   color: #000;
+  box-shadow: 0px 2px 3px rgba(0,0,0,0.3);
+  -o-box-shadow: 0px 2px 3px rgba(0,0,0,0.3);
   -moz-box-shadow: 0px 2px 3px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0px 2px 3px rgba(0,0,0,0.3);
 }
 
 /* group styles*/
@@ -251,7 +288,10 @@ div.cancel_link a.reset_query_link:hover {
 /*Fieldset and Legend*/
 
 .search_form legend {
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
   border: solid 0.5px #D0D0D0;
   cursor: pointer;
 }
@@ -337,31 +377,49 @@ div.cancel_link a.reset_query_link:hover {
 
 .criterion div.attribute span{
   background-color: #ACBEDC;
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
   border: solid 0.5px gray;
   padding: 3px 6px;
 }
 
 .criterion div.attribute span {
+  box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 5px 3px rgba(255,255,255,0.3);
+  -o-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 5px 3px rgba(255,255,255,0.3);
   -moz-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 5px 3px rgba(255,255,255,0.3);
+  -webkit-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 5px 3px rgba(255,255,255,0.3);
 }
 
 .criterion div.attribute span:hover {
+  box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 7px 10px rgba(255,255,255,0.3), inset 0px -7px 10px rgba(255,255,255,0.3);
+  -o-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 7px 10px rgba(255,255,255,0.3), inset 0px -7px 10px rgba(255,255,255,0.3);
   -moz-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 7px 10px rgba(255,255,255,0.3), inset 0px -7px 10px rgba(255,255,255,0.3);
+  -webkit-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 7px 10px rgba(255,255,255,0.3), inset 0px -7px 10px rgba(255,255,255,0.3);
   cursor: pointer;
 }
 
 .criterion div.attribute span:active {
+  box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.1), inset 1px 1px 2px rgba(255,255,255,0.3), inset 0px 5px 3px rgba(255,255,255,0.1);
+  -o-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.1), inset 1px 1px 2px rgba(255,255,255,0.3), inset 0px 5px 3px rgba(255,255,255,0.1);
   -moz-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.1), inset 1px 1px 2px rgba(255,255,255,0.3), inset 0px 5px 3px rgba(255,255,255,0.1);
+  -webkit-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.1), inset 1px 1px 2px rgba(255,255,255,0.3), inset 0px 5px 3px rgba(255,255,255,0.1);
 }
 
 .criterion div.attribute span.relationship {
+  border-radius: 0px 5px 5px 0px;
+  -o-border-radius: 0px 5px 5px 0px;
   -moz-border-radius: 0px 5px 5px 0px;
+  -webkit-border-radius: 0px 5px 5px 0px;
   margin-right: 5px;
 }
 
 .criterion div.attribute span.attribute {
+  border-radius: 0px 5px 5px 0px;
+  -o-border-radius: 0px 5px 5px 0px;
   -moz-border-radius: 0px 5px 5px 0px;
+  -webkit-border-radius: 0px 5px 5px 0px;
   background: #93B5F3;
   color: #4D4D4D;
 }
@@ -383,20 +441,33 @@ div.cancel_link a.reset_query_link:hover {
   background-color: #7e98cb;
   list-style: none;
 	border: solid 0.5px gray;
+	border-radius: 4px;
+	-o-border-radius: 4px;
 	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	
+	box-shadow: 1px 2px 3px rgba(0,0,0,0.3);
+	-o-box-shadow: 1px 2px 3px rgba(0,0,0,0.3);
 	-moz-box-shadow: 1px 2px 3px rgba(0,0,0,0.3);
+	-webkit-box-shadow: 1px 2px 3px rgba(0,0,0,0.3);
 	padding: 5px;
 	margin: 3px 0 0 0;
 	z-index: 10;
 }
 
 .attribute_chooser ul {
+  border-radius: 4px;
+  -o-border-radius: 4px;
   -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
   margin-left: 6px;
 }
 
 .attribute_chooser li{
+  border-radius: 2px;
+  -o-border-radius: 2px;
   -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
   padding-left: 3px;
 }
 

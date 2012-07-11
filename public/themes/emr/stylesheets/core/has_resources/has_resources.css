@@ -5,7 +5,10 @@ div.resources {
 
 div.resource_group {
   display: block;
+  border-radius: 0 0 10px 10px;
+  -o-border-radius: 0 0 10px 10px;
   -moz-border-radius: 0 0 10px 10px;
+  -webkit-border-radius: 0 0 10px 10px;
   border: 1px solid #7E98CB;
   padding: 4px;
   margin: 0px 0px 8px 0px;

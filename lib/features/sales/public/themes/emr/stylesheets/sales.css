@@ -125,11 +125,17 @@ table.sales_home tbody td ul li div.infos div.amount {
   border: 1px solid #AAA;
   margin-left: 5px;
   background-color: white;
+  border-radius: 2px;
+  -o-border-radius: 2px;
   -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
 }
 
 table.sales_home tbody td ul li:hover div.infos div.amount {
+  box-shadow: 0 0 2px rgba(255, 165, 0, 1), inset 0 0 3px rgba(255, 165, 0, 1); /* orange */
+  -o-box-shadow: 0 0 2px rgba(255, 165, 0, 1), inset 0 0 3px rgba(255, 165, 0, 1); /* orange */
   -moz-box-shadow: 0 0 2px rgba(255, 165, 0, 1), inset 0 0 3px rgba(255, 165, 0, 1); /* orange */
+  -webkit-box-shadow: 0 0 2px rgba(255, 165, 0, 1), inset 0 0 3px rgba(255, 165, 0, 1); /* orange */
 }
 
 table.sales_home tbody td ul li.disabled,
@@ -196,12 +202,18 @@ div#content_page h1 span.total_revenues {
 
 div#search_results table tr td a.step_status {
   padding: 2px 3px;
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
   color: inherit;
 }
 
 div#search_results table tr td a.step_status:hover {
+  box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -o-box-shadow: 0 0 2px rgba(0,0,0,0.4);
   -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,0.4);
   text-decoration: none;
 }
 
@@ -224,12 +236,18 @@ div#search_results table tr td a.step_status.terminated {
 
 div#search_results table tr td a.deposit {
   padding: 2px 3px;
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
   color: inherit;
 }
 
 div#search_results table tr td a.deposit:hover {
+  box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -o-box-shadow: 0 0 2px rgba(0,0,0,0.4);
   -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,0.4);
   text-decoration: none;
 }
 
@@ -250,12 +268,18 @@ div#search_results table tr td a.deposit.paid {
 
 div#search_results table tr td a.quote_status {
   padding: 2px 3px;
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
   color: inherit;
 }
 
 div#search_results table tr td a.quote_status:hover {
+  box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -o-box-shadow: 0 0 2px rgba(0,0,0,0.4);
   -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,0.4);
   text-decoration: none;
 }
 
@@ -278,12 +302,18 @@ div#search_results table tr.context-menu-selection td a.quote_status {
 
 div#search_results table tr td span.order_status {
   padding: 2px 3px;
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
   color: inherit;
 }
 
 div#search_results table tr td span.order_status:hover {
+  box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -o-box-shadow: 0 0 2px rgba(0,0,0,0.4);
   -moz-box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,0.4);
   text-decoration: none;
 }
 
@@ -348,7 +378,10 @@ div.order_header > div.second_column {
 }
 
 div.order_header > div.second_column span.status {
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
   padding: 2px 4px;
   margin-left: 7px;
 }
@@ -408,7 +441,10 @@ div.order_header span.created_at {
 
 div.order_header span.order_type {
   border: 1px solid #ccc;
+  border-radius: 5px;
+  -o-border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
   padding: 2px 4px;
   font-weight: bold;
 }
@@ -427,13 +463,19 @@ div.order_header > div.order_links {
   margin: 0;
   border-top: 1px solid #ccc;
   padding-top: 4px;
+  transition: height 0.2s, opacity 0.1s;
+  -o-transition: height 0.2s, opacity 0.1s;
   -moz-transition: height 0.2s, opacity 0.1s;
+  -webkit-transition: height 0.2s, opacity 0.1s;
   height: 0;
   opacity: 0;
 }
 
 div.order_header:hover > div.order_links {
+  transition: height 0.3s, opacity 0.3s 0.1s;
+  -o-transition: height 0.3s, opacity 0.3s 0.1s;
   -moz-transition: height 0.3s, opacity 0.3s 0.1s;
+  -webkit-transition: height 0.3s, opacity 0.3s 0.1s;
   height: 14px;
   opacity: 1;
 }
@@ -644,13 +686,19 @@ table.sales_table tbody tr td.designation span.pro_rata_billing {
 
 #remarks .remark {
   border: 1px solid grey;
+  border-radius: 0 5px 0 5px;
+  -o-border-radius: 0 5px 0 5px;
   -moz-border-radius: 0 5px 0 5px;
+  -webkit-border-radius: 0 5px 0 5px;
   margin: 10px 0px 7px 0px;
 }
 
 #remarks .remark .remark_counter {
   border: 1px solid grey;
+  border-radius: 10px;
+  -o-border-radius: 10px;
   -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
   padding: 0 4px 0 4px;
 }
 
@@ -723,7 +771,10 @@ table.sales_table tbody tr td.designation span.pro_rata_billing {
 }
 
 .end_product > ul li {
+  box-shadow: none !important;
+  -o-box-shadow: none !important;
   -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
 }
 
 .end_product > ul li.selected {
@@ -754,7 +805,10 @@ table.sales_table tbody tr td.designation span.pro_rata_billing {
   margin: 3px 5px 3px -5px;
   padding: 4px 6px 4px 6px;
   border: 1px solid #737373;
+  border-radius: 20px;
+  -o-border-radius: 20px;
   -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
 }
 
 .end_product .end_product_summary .end_product_name {
@@ -999,8 +1053,10 @@ span.product_dimensions > span span:not([class=fieldWithErrors]) {
   height: 14px;
   padding: 4px 3px;
   margin-left: 3px; /* compensate padding-left value */
+  border-radius: 2px 0 0 2px;
+  -o-border-radius: 2px 0 0 2px;
   -moz-border-radius: 2px 0 0 2px;
-  
+  -webkit-border-radius: 2px 0 0 2px;
 }
 
 span.product_dimensions > span input {
