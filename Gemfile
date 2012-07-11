@@ -3,12 +3,13 @@ source 'http://rubygems.org'
 gem 'rails', '2.2.3'
 
 # http://stackoverflow.com/questions/6085610/ruby-on-rails-and-rake-problems-uninitialized-constant-rakedsl
-gem 'rake', '0.8.7'
+gem 'rake', '!= 0.9.0'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql'
+require 'mysql' # don't know why, but server doesn't start anymore without this line :/ (solution found there : http://www.ruby-forum.com/topic/207782)
 
 # Use mongrel as the web server
 gem 'mongrel', '1.1.5' # if you got an error like this : "dependencies.rb:142:in `load_without_new_constant_marking': no such file to load -- mongrel_rails (MissingSourceFile)"
@@ -25,6 +26,7 @@ gem 'htmlentities', '4.2.1'
 gem 'whenever', :git => 'git://github.com/spidou/whenever.git'
 gem 'orderedhash' # it can be deleted once we use ruby1.9
 gem 'memcache-client'
+gem 'exceptional'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
@@ -37,9 +39,7 @@ end
 
 group :development, :test do
   gem 'ruby-debug'
-  
-  # To run test:benchmark
-  gem 'ruby-prof'
+  gem 'ruby-prof' # To run test:benchmark
 end
 
 group :test do
