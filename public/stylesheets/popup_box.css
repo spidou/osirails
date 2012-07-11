@@ -1,5 +1,8 @@
 #popup_menu_actions{
+  border-radius: 7px 7px 0 0;
+  -o-border-radius: 7px 7px 0 0;
   -moz-border-radius: 7px 7px 0 0;
+  -webkit-border-radius: 7px 7px 0 0;
   background-color: white;
   border-top: 1px solid #747473;
   padding: 4px 5px 0;

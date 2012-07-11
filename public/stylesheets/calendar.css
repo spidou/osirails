@@ -75,7 +75,10 @@
 	text-align: center;
 	border: 1px solid #333;
 	color: white;
+	border-radius: 8px;
+	-o-border-radius: 8px;
 	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 }
 
 #group_day.fullday {
@@ -236,7 +239,10 @@
 	text-align: center;
 	border: 1px solid #333;
 	color: white;
+	border-radius: 8px;
+	-o-border-radius: 8px;
 	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 }
 
 #calendar #scroll .e_month {
@@ -269,9 +275,15 @@
 	text-align: center;
 	font-size: 10px;
 	color: white;
+	border-radius: 8px;
+	-o-border-radius: 8px;
 	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	
 	opacity: 0.9;
+	-o-opacity: 0.9;
 	-moz-opacity: 0.9;
+	-webkit-opacity: 0.9;
 	filter:alpha(opacity=90);
 }
 #calendar #scroll .event_content {
@@ -289,7 +301,10 @@
 	position: absolute;
 	top: 0px;
 	border: 1px solid #D2D2D2;
+	border-radius: 8px;
+	-o-border-radius: 8px;
 	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	background: #CFCFCF url("/images/calendar/event_box_gradient.png") repeat-x;
 	z-index: 1;
 	width:auto;
@@ -366,7 +381,10 @@
 	height:20px;
 	line-height:20px;
 	font-size:1.1em;
+	border-radius:8px 8px 0 0;
+	-o-border-radius:8px 8px 0 0;
 	-moz-border-radius:8px 8px 0 0;
+	-webkit-border-radius:8px 8px 0 0;
 	width:105%;
 	margin: 0 0 8px -9px;
 	padding:0;
